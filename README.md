@@ -1,4 +1,4 @@
-# Symphony Matlab version 2 (work-in-progress)
+# Symphony Matlab version 2
 
 Symphony data acquisition Matlab interface, version 2. This is a work-in-progress.
 
