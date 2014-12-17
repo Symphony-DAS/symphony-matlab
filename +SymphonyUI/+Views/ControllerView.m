@@ -95,6 +95,9 @@ classdef ControllerView < SymphonyUI.View
                 'Callback', @p.onSelectedProtocol);
             
             iconsFolder = fullfile(mfilename('fullpath'), '..', '..', '..', 'Resources', 'Icons');
+            if iconsFolder(1) == filesep
+                iconsFolder(1) = [];
+            end
             iconsUrl = strrep(['file:/' iconsFolder '/'],'\','/');
             
             controlLayout = uiextras.HBox( ...
