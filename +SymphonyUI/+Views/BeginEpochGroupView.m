@@ -1,0 +1,53 @@
+classdef BeginEpochGroupView < SymphonyUI.Dialog
+    
+    properties
+        controls
+        epochGroup
+    end
+    
+    methods
+        
+        function obj = BeginEpochGroupView()
+            obj = obj@SymphonyUI.Dialog(SymphonyUI.Presenters.BeginEpochGroupPresenter());
+        end
+        
+        function createInterface(obj)
+            clf(obj.figureHandle);
+            
+            p = obj.presenter;
+            
+            set(obj.figureHandle, 'Name', 'Begin Epoch Group');
+            
+            mainLayout = uiextras.VBox( ...
+                'Parent', obj.figureHandle, ...
+                'Padding', 11, ...
+                'Spacing', 7);
+            
+            parametersLayout = uiextras.VBox( ...
+                'Parent', mainLayout, ...
+                'Spacing', 7);
+            
+            controlLayout = uiextras.HBox( ...
+                'Parent', mainLayout, ...
+                'Spacing', 7);
+            uiextras.Empty(...
+                'Parent', controlLayout);
+            obj.controls.beginButton = uicontrol( ...
+                'Parent', controlLayout, ...
+                'Style', 'pushbutton', ...
+                'String', 'Begin', ...
+                'Callback', @p.onSelectedBegin);
+            obj.controls.cancelButton = uicontrol( ...
+                'Parent', controlLayout, ...
+                'Style', 'pushbutton', ...
+                'String', 'Cancel', ...
+                'Callback', @p.onSelectedClose);
+            set(controlLayout, 'Sizes', [-1 75 75]);
+            
+            set(mainLayout, 'Sizes', [-1 23]);
+        end
+        
+    end
+    
+end
+
