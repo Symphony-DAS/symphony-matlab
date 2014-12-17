@@ -27,7 +27,7 @@ classdef ControllerView < SymphonyUI.View
             p = obj.presenter;
             
             set(obj.figureHandle, 'Name', 'Symphony');
-            set(obj.figureHandle, 'Position', [778 531 292 129]);
+            set(obj.figureHandle, 'Position', [724 502 356 129]);
             
             obj.menus.file.root = uimenu(obj.figureHandle, ...
                 'Label', 'File');
@@ -94,7 +94,6 @@ classdef ControllerView < SymphonyUI.View
             obj.controls.protocolsPopup = uicontrol( ...
                 'Parent', mainLayout, ...
                 'Style', 'popupmenu', ...
-                'FontSize', 12, ...
                 'String', {'Pulse', 'Pulse Family', 'Seal and Leak'}, ...
                 'Callback', @p.onSelectedProtocol);
             
@@ -150,7 +149,7 @@ classdef ControllerView < SymphonyUI.View
                 'Style', 'checkbox', ...
                 'String', 'Save');
             
-            set(mainLayout, 'Sizes', [33 45 25]);
+            set(mainLayout, 'Sizes', [25 45 25]);
         end
         
         function p = getProtocol(obj)
