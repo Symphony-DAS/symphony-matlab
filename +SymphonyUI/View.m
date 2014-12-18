@@ -53,6 +53,10 @@ classdef View < handle
             delete(obj.figureHandle);
         end
         
+        function tf = isClosed(obj)
+            tf = ~isvalid(obj.figureHandle);
+        end
+        
     end
     
     methods (Abstract)

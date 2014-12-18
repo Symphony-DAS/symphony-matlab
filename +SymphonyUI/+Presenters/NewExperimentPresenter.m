@@ -5,6 +5,14 @@ classdef NewExperimentPresenter < SymphonyUI.Presenter
     
     methods
         
+        function onWindowKeyPress(obj, ~, data)
+            if strcmp(data.Key, 'return')
+                obj.onSelectedOpen();
+            elseif strcmp(data.Key, 'escape')
+                obj.onSelectedClose();
+            end
+        end
+        
         function onSelectedBrowseLocation(obj, ~, ~)
             location = uigetdir('', 'Experiment Location');
             if location ~= 0

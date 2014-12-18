@@ -69,7 +69,7 @@ classdef ControllerPresenter < SymphonyUI.Presenter
         end
         
         function onSelectedEditProtocol(obj, ~, ~)
-            if isempty(obj.parametersPresenter) || ~isvalid(obj.parametersPresenter)
+            if isempty(obj.parametersPresenter) || obj.parametersPresenter.view.isClosed
                 v = SymphonyUI.Views.ProtocolParametersView();
                 obj.parametersPresenter = v.presenter;
             end
@@ -78,7 +78,7 @@ classdef ControllerPresenter < SymphonyUI.Presenter
         end
         
         function onSelectedClose(obj, ~, ~)
-            if ~isempty(obj.parametersPresenter) && isvalid(obj.parametersPresenter)
+            if ~isempty(obj.parametersPresenter)
                 obj.parametersPresenter.onSelectedClose();
             end
             
