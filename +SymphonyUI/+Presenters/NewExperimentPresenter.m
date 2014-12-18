@@ -22,26 +22,26 @@ classdef NewExperimentPresenter < SymphonyUI.Presenter
         
         function onSelectedOpen(obj, ~, ~)
             name = obj.view.getName();
-%             if isempty(name)
-%                 errordlg('Name cannot be empty');
-%                 return;
-%             end
+            if isempty(name)
+                errordlg('Name cannot be empty');
+                return;
+            end
             
             location = obj.view.getLocation();
-%             if isempty(location)
-%                 errordlg('Location cannot be empty');
-%                 return;
-%             end
-%             if ~exist(location, 'dir')
-%                 errordlg('Location does not exist');
-%                 return;
-%             end
+            if isempty(location)
+                errordlg('Location cannot be empty');
+                return;
+            end
+            if ~exist(location, 'dir')
+                errordlg('Location does not exist');
+                return;
+            end
             
             rig = obj.view.getRig();
-%             if isempty(rig)
-%                 errordlg('Rig cannot be empty');
-%                 return;
-%             end
+            if isempty(rig)
+                errordlg('Rig cannot be empty');
+                return;
+            end
             
             purpose = obj.view.getPurpose();
             

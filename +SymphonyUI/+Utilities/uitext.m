@@ -8,5 +8,9 @@ function l = uitext(parent, string)
         'Style', 'text', ...
         'String', string, ...
         'HorizontalAlignment', 'left');
-    set(l, 'Sizes', [5 -1]);
+    if ismac
+        set(l, 'Sizes', [3 -1]);
+    else
+        set(l, 'Sizes', [5 -1]);
+    end
 end
