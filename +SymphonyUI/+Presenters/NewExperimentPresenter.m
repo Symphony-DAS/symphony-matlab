@@ -5,6 +5,10 @@ classdef NewExperimentPresenter < SymphonyUI.Presenter
     
     methods
         
+        function viewDidLoad(obj)
+            obj.view.centerOnScreen(518, 276);           
+        end
+        
         function onWindowKeyPress(obj, ~, data)
             if strcmp(data.Key, 'return')
                 obj.onSelectedOpen();

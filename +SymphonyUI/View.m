@@ -2,6 +2,7 @@ classdef View < handle
     
     properties
         figureHandle
+        position
         presenter
     end
     
@@ -30,11 +31,7 @@ classdef View < handle
             
             obj.createInterface();
             
-%             % Restore figure position.
-%             pref = [strrep(class(obj), '.', '_') '_Position'];
-%             if ispref('SymphonyUI', pref)
-%                 set(obj.figureHandle, 'Position', getpref('SymphonyUI', pref));
-%             end
+            obj.presenter.viewDidLoad();
         end
         
         function show(obj)
@@ -45,16 +42,29 @@ classdef View < handle
             set(obj.figureHandle, 'Visible', 'off');
         end
         
-        function close(obj)
-%             % Save figure position.
-%             pref = [strrep(class(obj), '.', '_') '_Position'];
-%             setpref('SymphonyUI', pref, get(obj.figureHandle, 'Position'));
-            
+        function close(obj)            
             delete(obj.figureHandle);
         end
         
         function tf = isClosed(obj)
             tf = ~isvalid(obj.figureHandle);
+        end
+        
+        function centerOnScreen(obj, w, h)
+            s = get(0, 'ScreenSize');
+            sw = s(3);
+            sh = s(4);
+            x = (sw - w) / 2;
+            y = (sh - h) / 2;
+            set(obj.figureHandle, 'Position', [x y w h]);
+        end
+        
+        function p = get.position(obj)
+            p = get(obj.figureHandle, 'Position');
+        end
+        
+        function set.position(obj, p)
+            set(obj.figureHandle, 'Position', p); %#ok<MCSUP>
         end
         
     end

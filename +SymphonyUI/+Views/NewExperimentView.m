@@ -20,7 +20,6 @@ classdef NewExperimentView < SymphonyUI.Dialog
             
             set(obj.figureHandle, 'Name', 'New Experiment');
             set(obj.figureHandle, 'WindowStyle', 'modal');
-            set(obj.figureHandle, 'Position', [693 376 518 276]);
             set(obj.figureHandle, 'WindowKeyPressFcn', @p.onWindowKeyPress);
             
             mainLayout = uiextras.VBox( ...
@@ -99,9 +98,7 @@ classdef NewExperimentView < SymphonyUI.Dialog
                 'Padding', 11, ...
                 'Spacing', 7);
             
-            uiextras.Empty('Parent', parametersLayout);
-            
-            set(parametersLayout, 'Sizes', [25 25 25 25 92 -1]);
+            set(parametersLayout, 'Sizes', [25 25 25 25 -1]);
             
             controlLayout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
@@ -123,12 +120,11 @@ classdef NewExperimentView < SymphonyUI.Dialog
             
             set(mainLayout, 'Sizes', [-1 25]);
             
-            % Focus on purpose input.
-            uicontrol(obj.controls.purposeEdit);
-            
             % Set open button to appear as the default button.
-            h = handle(obj.figureHandle);
-            h.setDefaultButton(obj.controls.openButton);
+            try %#ok<TRYNC>
+                h = handle(obj.figureHandle);
+                h.setDefaultButton(obj.controls.openButton);
+            end
         end
         
         function n = getName(obj)

@@ -11,6 +11,11 @@ classdef ControllerPresenter < SymphonyUI.Presenter
             c = obj.view.controller;
         end
         
+        function viewDidLoad(obj)
+            obj.view.centerOnScreen(274, 120);
+            viewDidLoad@SymphonyUI.Presenter(obj);            
+        end
+        
         function onSelectedNewExperiment(obj, ~, ~)
             v = SymphonyUI.Views.NewExperimentView();
             v.show();
@@ -68,13 +73,21 @@ classdef ControllerPresenter < SymphonyUI.Presenter
             obj.controller.stop();
         end
         
-        function onSelectedEditProtocol(obj, ~, ~)
+        function onSelectedProtocolParameters(obj, ~, ~)
             if isempty(obj.parametersPresenter) || obj.parametersPresenter.view.isClosed
                 v = SymphonyUI.Views.ProtocolParametersView();
                 obj.parametersPresenter = v.presenter;
             end
             
             obj.parametersPresenter.view.show();
+        end
+        
+        function onSelectedSaveCheckbox(obj, ~, ~)
+            if obj.view.getSaveCheckboxValue()
+                obj.view.setSaveCheckboxColor('black');
+            else
+                obj.view.setSaveCheckboxColor('red');
+            end
         end
         
         function onSelectedClose(obj, ~, ~)
