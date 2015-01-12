@@ -1,22 +1,37 @@
 classdef Controller < handle
     
-    properties (SetObservable)
-        experiment
-        protocol
+    properties (SetObservable, SetAccess = private)
+        state
     end
     
     methods
         
-        function run(obj)
-            disp('Controller Run');
+        function obj = Controller()
+            obj.state = SymphonyUI.Models.ControllerState.STOPPED;
+        end
+        
+        function runProtocol(obj, protocol, experiment)
+            disp('Run Protocol');
+            obj.state = SymphonyUI.Models.ControllerState.RUNNING;
+        end
+        
+        function run(obj, experiment)
+            disp('Run');
+            obj.state = SymphonyUI.Models.ControllerState.RUNNING;
         end
         
         function pause(obj)
-            disp('Controller Pause');
+            disp('Pause');
+            obj.state = SymphonyUI.Models.ControllerState.PAUSING;
+            pause(1);
+            obj.state = SymphonyUI.Models.ControllerState.PAUSED;
         end
         
         function stop(obj)
-            disp('Controller Stop');
+            disp('Stop');
+            obj.state = SymphonyUI.Models.ControllerState.STOPPING;
+            pause(1);
+            obj.state = SymphonyUI.Models.ControllerState.STOPPED;
         end
         
     end

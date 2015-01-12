@@ -1,8 +1,4 @@
-%clear all
-
 import SymphonyUI.*;
 
-controller = Models.Controller();
-
-view = Views.ControllerView(controller);
-view.show();
+p = Presenters.MainPresenter(AppConfiguration());
+p.view.show();

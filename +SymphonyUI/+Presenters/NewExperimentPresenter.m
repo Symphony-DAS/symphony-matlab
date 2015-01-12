@@ -1,19 +1,34 @@
 classdef NewExperimentPresenter < SymphonyUI.Presenter
     
-    properties
+    properties (SetAccess = private)
+        experiment
     end
     
     methods
         
-        function viewDidLoad(obj)
-            obj.view.centerOnScreen(518, 276);           
+        function obj = NewExperimentPresenter(view)
+            if nargin < 1
+                view = SymphonyUI.Views.NewExperimentView([]);
+            end
+            
+            obj = obj@SymphonyUI.Presenter(view);
+            
+            obj.addListener(view, 'BrowseLocation', @obj.onSelectedBrowseLocation);
+            obj.addListener(view, 'Open', @obj.onSelectedOpen);
+            obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
+            
+            view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
         end
+        
+    end
+    
+    methods (Access = private)
         
         function onWindowKeyPress(obj, ~, data)
             if strcmp(data.Key, 'return')
                 obj.onSelectedOpen();
             elseif strcmp(data.Key, 'escape')
-                obj.onSelectedClose();
+                obj.view.close();
             end
         end
         
@@ -25,34 +40,18 @@ classdef NewExperimentPresenter < SymphonyUI.Presenter
         end
         
         function onSelectedOpen(obj, ~, ~)
-            name = obj.view.getName();
-            if isempty(name)
-                errordlg('Name cannot be empty');
-                return;
-            end
-            
+            name = obj.view.getName();            
             location = obj.view.getLocation();
-            if isempty(location)
-                errordlg('Location cannot be empty');
-                return;
-            end
-            if ~exist(location, 'dir')
-                errordlg('Location does not exist');
-                return;
-            end
-            
             rig = obj.view.getRig();
-            if isempty(rig)
-                errordlg('Rig cannot be empty');
-                return;
-            end
-            
             purpose = obj.view.getPurpose();
+            source = [];
             
-            path = fullfile(location, name);            
+            path = fullfile(location, name);
             
-            obj.view.experiment = SymphonyUI.Models.Experiment(path, rig, purpose);
-            obj.view.close();
+            obj.experiment = SymphonyUI.Models.Experiment(path, rig, purpose, source);
+            obj.experiment.open();
+            
+            obj.view.result = true;
         end
         
     end

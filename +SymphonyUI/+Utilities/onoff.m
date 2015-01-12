@@ -1,6 +1,6 @@
 % Converts logicals to 'on'/'off'.
 
-function output = onoff(input)
+function output = onOff(input)
     if input
         output = 'on';
     else

@@ -2,6 +2,9 @@ classdef EpochGroup < handle
     
     properties
         label
+        source
+        keywords
+        attributes
         
         parent
         children
@@ -9,8 +12,11 @@ classdef EpochGroup < handle
     
     methods
         
-        function obj = EpochGroup(label)
+        function obj = EpochGroup(label, source, keywords, attributes)
             obj.label = label;
+            obj.source = source;
+            obj.keywords = keywords;
+            obj.attributes = attributes;
         end
         
     end

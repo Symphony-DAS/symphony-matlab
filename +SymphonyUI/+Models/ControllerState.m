@@ -1,4 +1,4 @@
-classdef ProtocolState
+classdef ControllerState
     
     enumeration
         STOPPED

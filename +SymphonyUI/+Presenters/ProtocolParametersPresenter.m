@@ -1,14 +1,27 @@
 classdef ProtocolParametersPresenter < SymphonyUI.Presenter
     
-    properties
+    properties (Access = private)
+        protocol
         previewPresenter
     end
     
     methods
         
+        function obj = ProtocolParametersPresenter(view)
+            if nargin < 1
+                view = SymphonyUI.Views.ProtocolParametersView([]);
+            end
+            
+            obj = obj@SymphonyUI.Presenter(view);
+        end
+        
         function setProtocol(obj, protocol)
             disp('Set protocol');
         end
+        
+    end
+    
+    methods (Access = private)
         
         function onSelectedPreview(obj, ~, ~)
             if isempty(obj.previewPresenter) || ~isvalid(obj.previewPresenter)

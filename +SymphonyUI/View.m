@@ -1,16 +1,33 @@
 classdef View < handle
     
     properties
-        figureHandle
         position
-        presenter
+        result
+    end
+    
+    properties (Access = private)
+        parent
+        parentListener
+    end
+    
+    properties (Access = protected)
+        figureHandle
+    end
+    
+    events
+        Closing
     end
     
     methods
         
-        function obj = View(presenter)
-            obj.presenter = presenter;
-            obj.presenter.view = obj;
+        function obj = View(parent)            
+            if nargin < 1
+                parent = [];
+            end
+            obj.parent = parent;
+            if ~isempty(parent)
+                obj.parentListener = addlistener(parent, 'Closing', @(h,d)obj.close);
+            end
             
             obj.figureHandle = figure( ...
                 'NumberTitle', 'off', ...
@@ -19,7 +36,7 @@ classdef View < handle
                 'HandleVisibility', 'off', ...
                 'Visible', 'off', ...
                 'DockControls', 'off', ...
-                'CloseRequestFcn', @presenter.onSelectedClose);
+                'CloseRequestFcn', @(h,d)obj.close());
             
             if ispc
                 set(obj.figureHandle, 'DefaultUicontrolFontName', 'Segoe UI');
@@ -29,34 +46,33 @@ classdef View < handle
                 set(obj.figureHandle, 'DefaultUicontrolFontSize', 12);
             end
             
-            obj.createInterface();
-            
-            obj.presenter.viewDidLoad();
+            obj.createUI();
         end
         
         function show(obj)
             figure(obj.figureHandle);
         end
         
-        function hide(obj)
-            set(obj.figureHandle, 'Visible', 'off');
+        function result = showDialog(obj)
+            set(obj.figureHandle, 'WindowStyle', 'modal');
+            figure(obj.figureHandle);
+            uiwait(obj.figureHandle);
+            result = obj.result;
         end
         
-        function close(obj)            
+        function set.result(obj, r)
+            obj.result = r;
+            obj.close();
+        end
+        
+        function close(obj)
+            notify(obj, 'Closing');
+            delete(obj.parentListener);
             delete(obj.figureHandle);
         end
         
         function tf = isClosed(obj)
             tf = ~isvalid(obj.figureHandle);
-        end
-        
-        function centerOnScreen(obj, w, h)
-            s = get(0, 'ScreenSize');
-            sw = s(3);
-            sh = s(4);
-            x = (sw - w) / 2;
-            y = (sh - h) / 2;
-            set(obj.figureHandle, 'Position', [x y w h]);
         end
         
         function p = get.position(obj)
@@ -67,10 +83,30 @@ classdef View < handle
             set(obj.figureHandle, 'Position', p); %#ok<MCSUP>
         end
         
+        function savePosition(obj)
+            pref = [strrep(class(obj), '.', '_') '_Position'];
+            setpref('SymphonyUI', pref, obj.position);
+        end
+        
+        function loadPosition(obj)
+            pref = [strrep(class(obj), '.', '_') '_Position'];
+            if ispref('SymphonyUI', pref)
+                obj.position = getpref('SymphonyUI', pref);
+            end
+        end
+        
+        function setWindowKeyPressFcn(obj, fcn)
+            set(obj.figureHandle, 'WindowKeyPressFcn', fcn);
+        end
+        
+        function clearUI(obj)
+            clf(obj.figureHandle);
+        end
+        
     end
     
     methods (Abstract)
-        createInterface(obj);
+        createUI(obj);
     end
     
 end

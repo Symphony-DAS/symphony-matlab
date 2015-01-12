@@ -1,28 +1,44 @@
 classdef Presenter < handle
     
-    properties
+    properties (SetAccess = private)
         view
+    end
+    
+    properties (Access = private)
+        listeners
     end
     
     methods
         
-        function obj = Presenter()
+        function obj = Presenter(view)
+            obj.view = view;
+            obj.addListener(view, 'Closing', @obj.onViewClosing);
         end
         
-        function viewDidLoad(obj)
-%             % Restore figure position.
-%             pref = [strrep(class(obj), '.', '_') '_Position'];
-%             if ispref('SymphonyUI', pref)
-%                 set(obj.figureHandle, 'Position', getpref('SymphonyUI', pref));
-%             end
+    end
+    
+    methods (Access = protected)
+        
+        function l = addListener(obj, varargin)
+            l = addlistener(varargin{:});
+            obj.listeners{end + 1} = l;
         end
         
-        function onSelectedClose(obj, ~, ~)
-%             % Save figure position.
-%             pref = [strrep(class(obj), '.', '_') '_Position'];
-%             setpref('SymphonyUI', pref, get(obj.figureHandle, 'Position'));
-            
-            obj.view.close();
+        function removeListener(obj, l)
+            index = find(cellfun(@(c)c==l, obj.listeners));
+            delete(obj.listeners{index});
+            obj.listeners(index) = [];
+        end
+        
+        function removeAllListeners(obj)
+            while ~isempty(obj.listeners)
+                delete(obj.listeners{1});
+                obj.listeners(1) = [];
+            end
+        end
+        
+        function onViewClosing(obj, ~, ~)
+            obj.removeAllListeners();
         end
         
     end
