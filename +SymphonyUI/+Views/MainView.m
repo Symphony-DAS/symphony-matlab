@@ -12,6 +12,9 @@ classdef MainView < SymphonyUI.View
         Pause
         Stop
         Configuration
+        Documentation
+        UserGroup
+        AboutSymphony
     end
     
     properties (Access = private)
@@ -103,12 +106,15 @@ classdef MainView < SymphonyUI.View
             obj.helpMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Help');
             obj.helpMenu.documentation = uimenu(obj.helpMenu.root, ...
-                'Label', 'Documentation');
+                'Label', 'Documentation', ...
+                'Callback', @(h,d)notify(obj, 'Documentation'));
             obj.helpMenu.userGroup = uimenu(obj.helpMenu.root, ...
-                'Label', 'User Group');
+                'Label', 'User Group', ...
+                'Callback', @(h,d)notify(obj, 'UserGroup'));
             obj.helpMenu.about = uimenu(obj.helpMenu.root, ...
                 'Label', 'About Symphony', ...
-                'Separator', 'on');
+                'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'AboutSymphony'));
             
             iconsFolder = fullfile(mfilename('fullpath'), '..', '..', '..', 'Resources', 'Icons');
             if iconsFolder(1) == filesep

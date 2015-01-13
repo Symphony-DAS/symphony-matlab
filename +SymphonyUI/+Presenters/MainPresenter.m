@@ -35,6 +35,9 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj.addListener(view, 'Run', @obj.onSelectedRun);
             obj.addListener(view, 'Pause', @obj.onSelectedPause);
             obj.addListener(view, 'Stop', @obj.onSelectedStop);
+            obj.addListener(view, 'Documentation', @obj.onSelectedDocumentation);
+            obj.addListener(view, 'UserGroup', @obj.onSelectedUserGroup);
+            obj.addListener(view, 'AboutSymphony', @obj.onSelectedAboutSymphony);
             obj.addListener(view, 'Exit', @(h,d)view.close());
             
             view.enableNewExperiment(true);
@@ -213,6 +216,19 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj.view.enableShouldSave(enableSave);
             obj.view.enableStatus(true);
             obj.view.setStatus(status);
+        end
+        
+        function onSelectedDocumentation(obj, ~, ~)
+            web('https://github.com/Symphony-DAS/Symphony/wiki');
+        end
+        
+        function onSelectedUserGroup(obj, ~, ~)
+            web('https://groups.google.com/forum/#!forum/symphony-das');
+        end
+        
+        function onSelectedAboutSymphony(obj, ~, ~)
+            p = SymphonyUI.Presenters.AboutSymphonyPresenter('2.0.0-preview');
+            p.view.showDialog();
         end
         
     end
