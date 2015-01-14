@@ -10,7 +10,7 @@ classdef AppData < handle
     end
     
     properties (SetAccess = private)
-        appConfiguration
+        appPreference
         experiment
         protocol
         controller
@@ -22,8 +22,8 @@ classdef AppData < handle
     
     methods
         
-        function obj = AppData(appConfiguration)
-            obj.appConfiguration = appConfiguration;
+        function obj = AppData(appPreference)
+            obj.appPreference = appPreference;
             
             addlistener(obj, 'SetExperiment', @obj.onSetExperiment);
             addlistener(obj, 'SetProtocol', @obj.onSetProtocol);

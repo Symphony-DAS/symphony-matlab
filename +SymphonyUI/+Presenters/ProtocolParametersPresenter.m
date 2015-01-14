@@ -13,35 +13,41 @@ classdef ProtocolParametersPresenter < SymphonyUI.Presenter
             end
             
             obj = obj@SymphonyUI.Presenter(view);
+            
+            obj.addListener(view, 'SelectedPreset', @obj.onSelectedPreset);
+            obj.addListener(view, 'Apply', @obj.onSelectedApply);
+            obj.addListener(view, 'Revert', @obj.onSelectedRevert);
+            
+            view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
         end
         
         function setProtocol(obj, protocol)
-            disp('Set protocol');
+            obj.view.clearParameters();
+            obj.view.addParameter('Param1:');
+            obj.view.addParameter('Param2:');
         end
         
     end
     
     methods (Access = private)
         
-        function onSelectedPreview(obj, ~, ~)
-            if isempty(obj.previewPresenter) || ~isvalid(obj.previewPresenter)
-                v = SymphonyUI.Views.ProtocolPreviewView();
-                obj.previewPresenter = v.presenter;
+        function onWindowKeyPress(obj, ~, data)
+            if strcmp(data.Key, 'return')
+                obj.onSelectedApply();
             end
-            
-            obj.previewPresenter.view.show();
+        end
+        
+        function onSelectedPreset(obj, ~, ~)
+            p = obj.view.getPreset();
+            disp(p);
         end
         
         function onSelectedApply(obj, ~, ~)
             disp('Apply');
         end
         
-        function onSelectedClose(obj, ~, ~)
-            if ~isempty(obj.previewPresenter) && isvalid(obj.previewPresenter)
-                obj.previewPresenter.onSelectedClose();
-            end
-            
-            onSelectedClose@SymphonyUI.Presenter(obj);
+        function onSelectedRevert(obj, ~, ~)
+            disp('Revert');
         end
         
     end

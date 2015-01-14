@@ -10,7 +10,7 @@ classdef MainPresenter < SymphonyUI.Presenter
     
     methods
         
-        function obj = MainPresenter(appConfiguration, view)
+        function obj = MainPresenter(appPreference, view)
             if nargin < 2
                 view = SymphonyUI.Views.MainView();
             end
@@ -18,7 +18,7 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj = obj@SymphonyUI.Presenter(view);
             %view.loadPosition();
             
-            obj.appData = SymphonyUI.AppData(appConfiguration);
+            obj.appData = SymphonyUI.AppData(appPreference);
             obj.addListener(obj.appData, 'SetExperiment', @obj.onSetExperiment);
             obj.addListener(obj.appData, 'SetProtocol', @obj.onSetProtocol);
             obj.addListener(obj.appData, 'SetController', @obj.onSetController);
@@ -35,6 +35,7 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj.addListener(view, 'Run', @obj.onSelectedRun);
             obj.addListener(view, 'Pause', @obj.onSelectedPause);
             obj.addListener(view, 'Stop', @obj.onSelectedStop);
+            obj.addListener(view, 'Preferences', @obj.onSelectedPreferences);
             obj.addListener(view, 'Documentation', @obj.onSelectedDocumentation);
             obj.addListener(view, 'UserGroup', @obj.onSelectedUserGroup);
             obj.addListener(view, 'AboutSymphony', @obj.onSelectedAboutSymphony);
@@ -93,7 +94,9 @@ classdef MainPresenter < SymphonyUI.Presenter
         end
         
         function onSelectedBeginEpochGroup(obj, ~, ~)
-            p = SymphonyUI.Presenters.NewEpochGroupPresenter(obj.appData.experiment);
+            experiment = obj.appData.experiment;
+            preference = obj.appData.appPreference.epochGroupPreference;
+            p = SymphonyUI.Presenters.NewEpochGroupPresenter(experiment, preference);
             p.view.showDialog();
         end
         
@@ -135,8 +138,14 @@ classdef MainPresenter < SymphonyUI.Presenter
             
             if hasProtocol
                 obj.view.setProtocol(obj.appData.protocol);
-            elseif ~isempty(obj.parametersPresenter)
-                obj.parametersPresenter.view.close();
+            end
+            
+            if ~isempty(obj.parametersPresenter)
+                if hasProtocol
+                    obj.parametersPresenter.setProtocol(obj.appData.protocol);
+                else
+                    obj.parametersPresenter.view.close();
+                end
             end
         end
         
@@ -216,6 +225,11 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj.view.enableShouldSave(enableSave);
             obj.view.enableStatus(true);
             obj.view.setStatus(status);
+        end
+        
+        function onSelectedPreferences(obj, ~, ~)
+            p = SymphonyUI.Presenters.AppPreferencePresenter(obj.appData.appPreference);
+            p.view.showDialog();
         end
         
         function onSelectedDocumentation(obj, ~, ~)

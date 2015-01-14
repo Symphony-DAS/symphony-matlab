@@ -6,8 +6,12 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
     
     methods
         
-        function obj = NewEpochGroupPresenter(experiment, view)
+        function obj = NewEpochGroupPresenter(experiment, epochGroupPreference, view)
             if nargin < 2
+                epochGroupPreference = SymphonyUI.Configurations.epochGroupPreference();
+                epochGroupPreference.setToDefaults();
+            end
+            if nargin < 3
                 view = SymphonyUI.Views.NewEpochGroupView([]);
             end
             
@@ -15,10 +19,18 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
             
             obj.experiment = experiment;
             
+            obj.addListener(view, 'AddExternalSolution', @obj.onSelectedAddExternalSolution);
+            obj.addListener(view, 'AddInternalSolution', @obj.onSelectedAddInternalSolution);
+            obj.addListener(view, 'AddOther', @obj.onSelectedAddOther);
             obj.addListener(view, 'Begin', @obj.onSelectedBegin);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
             
             view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
+            view.setLabels(epochGroupPreference.labels);
+            view.setRecordings(epochGroupPreference.recordingTypes);
+            view.setAvailableExternalSolutions(epochGroupPreference.availableExternalSolutions);
+            view.setAvailableInternalSolutions(epochGroupPreference.availableInternalSolutions);
+            view.setAvailableOthers(epochGroupPreference.availableOthers);
         end
         
     end
@@ -33,14 +45,19 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
             end
         end
         
-        function onAddExternalSolutionComponent(obj, ~, ~)
-            c = obj.view.getSelectedAvailableExternalSolutionComponent();
-            obj.view.addExternalSolutionComponent(c);
+        function onSelectedAddExternalSolution(obj, ~, ~)
+            c = obj.view.getAvailableExternalSolution();
+            disp(c);
         end
         
-        function onRemoveExternalSolutionComponent(obj, ~, ~)
-            c = obj.view.getSelectedAddedExternalSolutionComponent();
-            obj.view.removeExternalSolutionComponent(c);
+        function onSelectedAddInternalSolution(obj, ~, ~)
+            c = obj.view.getAvailableInternalSolution();
+            disp(c);
+        end
+        
+        function onSelectedAddOther(obj, ~, ~)
+            c = obj.view.getAvailableOther();
+            disp(c);
         end
         
         function onSelectedBegin(obj, ~, ~)

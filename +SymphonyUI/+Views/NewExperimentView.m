@@ -143,7 +143,7 @@ classdef NewExperimentView < SymphonyUI.View
         end
         
         function r = getRig(obj)
-            r = SymphonyUI.Utilities.getSelectedPopupValue(obj.rigPopup);
+            r = SymphonyUI.Utilities.getSelectedUIValue(obj.rigPopup);
         end
         
         function p = getPurpose(obj)

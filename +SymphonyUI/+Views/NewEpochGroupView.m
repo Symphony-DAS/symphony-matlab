@@ -1,6 +1,12 @@
 classdef NewEpochGroupView < SymphonyUI.View
     
     events
+        AddExternalSolution
+        RemoveExternalSolution
+        AddInternalSolution
+        RemoveInternalSolution
+        AddOther
+        RemoveOther
         Begin
         Cancel
     end
@@ -11,6 +17,8 @@ classdef NewEpochGroupView < SymphonyUI.View
         keywordsEdit
         propertiesPanel
         externalSolutionTab
+        internalSolutionTab
+        otherTab
         beginButton
         cancelButton
     end
@@ -82,62 +90,15 @@ classdef NewEpochGroupView < SymphonyUI.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
             
             % External solution tab.
-            layout = uiextras.HBox( ...
-                'Parent', obj.propertiesPanel, ...
-                'Padding', 11, ...
-                'Spacing', 7, ...
-                'BackgroundColor', [238/255 238/255 238/255]);
-            
-            vbox = uiextras.VBox( ...
-                'Parent', layout, ...
-                'Spacing', 3);
-            uicontrol( ...
-                'Parent', vbox, ...
-                'Style', 'text', ...
-                'String', 'Available:', ...
-                'HorizontalAlignment', 'left');
-            obj.externalSolutionTab.availableList = uicontrol( ...
-                'Parent', vbox, ...
-                'Style', 'listbox', ...
-                'String', {'Ames Bicarb', 'Ames Hepes', 'NBQX-10mM', 'TPMPA-50mM'});
-            set(vbox, 'Sizes', [15 -1]);
-            
-            vbox = uiextras.VBox( ...
-                'Parent', layout);
-            uiextras.Empty('Parent', vbox);
-            obj.externalSolutionTab.addButton = uicontrol( ...
-                'Parent', vbox, ...
-                'Style', 'pushbutton', ...
-                'String', '   Add->');
-            obj.externalSolutionTab.removeButton = uicontrol( ...
-                'Parent', vbox, ...
-                'Style', 'pushbutton', ...
-                'String', '<-Remove   ');
-            uiextras.Empty('Parent', vbox);
-            set(vbox, 'Sizes', [-1 25 25 -1]);
-            
-            vbox = uiextras.VBox( ...
-                'Parent', layout, ...
-                'Spacing', 3);
-            uicontrol( ...
-                'Parent', vbox, ...
-                'Style', 'text', ...
-                'String', 'Added:', ...
-                'HorizontalAlignment', 'left');
-            obj.externalSolutionTab.addedList = uicontrol( ...
-                'Parent', vbox, ...
-                'Style', 'listbox');
-            set(vbox, 'Sizes', [15 -1]);
-            
-            set(layout, 'Sizes', [-1 80 -1]);
+            obj.externalSolutionTab = createTabUI(obj, obj.propertiesPanel, 'AddExternalSolution', 'RemoveExternalSolution');
             
             % Internal solution tab.
-            uiextras.Empty('Parent', obj.propertiesPanel);
+            obj.internalSolutionTab = createTabUI(obj, obj.propertiesPanel, 'AddInternalSolution', 'RemoveInternalSolution');
             
-            % ND Filters tab.
-            uiextras.Empty('Parent', obj.propertiesPanel);
+            % Other tab.
+            obj.otherTab = createTabUI(obj, obj.propertiesPanel, 'AddOther', 'RemoveOther');
             
-            set(obj.propertiesPanel, 'TabTitles', {'External Solution', 'Internal Solution', 'ND Filters'});
+            set(obj.propertiesPanel, 'TabTitles', {'External Solution', 'Internal Solution', 'Other'});
             
             set(parametersLayout, 'Sizes', [25 25 25 -1]);
             
@@ -168,16 +129,48 @@ classdef NewEpochGroupView < SymphonyUI.View
             end
         end
         
+        function setLabels(obj, l)
+            set(obj.labelPopup, 'String', l);
+        end
+        
         function l = getLabel(obj)
-            l = SymphonyUI.Utilities.getSelectedPopupValue(obj.labelPopup);
+            l = SymphonyUI.Utilities.getSelectedUIValue(obj.labelPopup);
+        end
+        
+        function setRecordings(obj, r)
+            set(obj.recordingPopup, 'String', r);
         end
         
         function r = getRecording(obj)
-            r = SymphonyUI.Utilities.getSelectedPopupValue(obj.recordingPopup);
+            r = SymphonyUI.Utilities.getSelectedUIValue(obj.recordingPopup);
         end
         
         function w = getKeywords(obj)
             w = get(obj.keywordsEdit, 'String');
+        end
+        
+        function setAvailableExternalSolutions(obj, s)
+            set(obj.externalSolutionTab.availableList, 'String', s);
+        end
+        
+        function s = getAvailableExternalSolution(obj)
+            s = SymphonyUI.Utilities.getSelectedUIValue(obj.externalSolutionTab.availableList);
+        end
+        
+        function setAvailableInternalSolutions(obj, s)
+            set(obj.internalSolutionTab.availableList, 'String', s);
+        end
+        
+        function s = getAvailableInternalSolution(obj)
+            s = SymphonyUI.Utilities.getSelectedUIValue(obj.internalSolutionTab.availableList);
+        end
+        
+        function setAvailableOthers(obj, s)
+            set(obj.otherTab.availableList, 'String', s);
+        end
+        
+        function s = getAvailableOther(obj)
+            s = SymphonyUI.Utilities.getSelectedUIValue(obj.otherTab.availableList);
         end
         
         function s = getSource(obj)
@@ -188,3 +181,55 @@ classdef NewEpochGroupView < SymphonyUI.View
     
 end
 
+function tab = createTabUI(obj, parent, addEvent, removeEvent)
+    layout = uiextras.HBox( ...
+        'Parent', parent, ...
+        'Padding', 11, ...
+        'Spacing', 7, ...
+        'BackgroundColor', [238/255 238/255 238/255]);
+
+    vbox = uiextras.VBox( ...
+        'Parent', layout, ...
+        'Spacing', 3);
+    uicontrol( ...
+        'Parent', vbox, ...
+        'Style', 'text', ...
+        'String', 'Available:', ...
+        'HorizontalAlignment', 'left');
+    tab.availableList = uicontrol( ...
+        'Parent', vbox, ...
+        'Style', 'listbox', ...
+        'String', {''});
+    set(vbox, 'Sizes', [15 -1]);
+
+    vbox = uiextras.VBox( ...
+        'Parent', layout);
+    uiextras.Empty('Parent', vbox);
+    tab.addButton = uicontrol( ...
+        'Parent', vbox, ...
+        'Style', 'pushbutton', ...
+        'String', '   Add->', ...
+        'Callback', @(h,d)notify(obj, addEvent));
+    obj.externalSolutionTab.removeButton = uicontrol( ...
+        'Parent', vbox, ...
+        'Style', 'pushbutton', ...
+        'String', '<-Remove    ', ...
+        'Callback', @(h,d)notify(obj, removeEvent));
+    uiextras.Empty('Parent', vbox);
+    set(vbox, 'Sizes', [-1 25 25 -1]);
+
+    vbox = uiextras.VBox( ...
+        'Parent', layout, ...
+        'Spacing', 3);
+    uicontrol( ...
+        'Parent', vbox, ...
+        'Style', 'text', ...
+        'String', 'Added:', ...
+        'HorizontalAlignment', 'left');
+    tab.addedList = uicontrol( ...
+        'Parent', vbox, ...
+        'Style', 'listbox');
+    set(vbox, 'Sizes', [15 -1]);
+
+    set(layout, 'Sizes', [-1 80 -1]);
+end
