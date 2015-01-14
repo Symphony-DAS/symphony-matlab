@@ -130,7 +130,7 @@ classdef NewEpochGroupView < SymphonyUI.View
         end
         
         function setLabels(obj, l)
-            set(obj.labelPopup, 'String', l);
+            SymphonyUI.Utilities.setUIList(obj.labelPopup, l);
         end
         
         function l = getLabel(obj)
@@ -138,7 +138,7 @@ classdef NewEpochGroupView < SymphonyUI.View
         end
         
         function setRecordings(obj, r)
-            set(obj.recordingPopup, 'String', r);
+            SymphonyUI.Utilities.setUIList(obj.recordingPopup, r);
         end
         
         function r = getRecording(obj)
@@ -150,27 +150,63 @@ classdef NewEpochGroupView < SymphonyUI.View
         end
         
         function setAvailableExternalSolutions(obj, s)
-            set(obj.externalSolutionTab.availableList, 'String', s);
+            SymphonyUI.Utilities.setUIList(obj.externalSolutionTab.availableList, s);
         end
         
         function s = getAvailableExternalSolution(obj)
             s = SymphonyUI.Utilities.getSelectedUIValue(obj.externalSolutionTab.availableList);
         end
         
+        function setAddedExternalSolutions(obj, s)
+            SymphonyUI.Utilities.setUIList(obj.externalSolutionTab.addedList, s);
+        end
+        
+        function s = getAddedExternalSolutions(obj)
+            s = get(obj.externalSolutionTab.addedList, 'String');
+        end
+        
+        function s = getAddedExternalSolution(obj)
+            s = SymphonyUI.Utilities.getSelectedUIValue(obj.externalSolutionTab.addedList);
+        end
+        
         function setAvailableInternalSolutions(obj, s)
-            set(obj.internalSolutionTab.availableList, 'String', s);
+            SymphonyUI.Utilities.setUIList(obj.internalSolutionTab.availableList, s);
         end
         
         function s = getAvailableInternalSolution(obj)
             s = SymphonyUI.Utilities.getSelectedUIValue(obj.internalSolutionTab.availableList);
         end
         
+        function setAddedInternalSolutions(obj, s)
+            SymphonyUI.Utilities.setUIList(obj.internalSolutionTab.addedList, s);
+        end
+        
+        function s = getAddedInternalSolutions(obj)
+            s = get(obj.internalSolutionTab.addedList, 'String');
+        end
+        
+        function s = getAddedInternalSolution(obj)
+            s = SymphonyUI.Utilities.getSelectedUIValue(obj.internalSolutionTab.addedList);
+        end
+        
         function setAvailableOthers(obj, s)
-            set(obj.otherTab.availableList, 'String', s);
+            SymphonyUI.Utilities.setUIList(obj.otherTab.availableList, s);
         end
         
         function s = getAvailableOther(obj)
             s = SymphonyUI.Utilities.getSelectedUIValue(obj.otherTab.availableList);
+        end
+        
+        function setAddedOthers(obj, s)
+            SymphonyUI.Utilities.setUIList(obj.otherTab.addedList, s);
+        end
+        
+        function s = getAddedOthers(obj)
+            s = get(obj.otherTab.addedList, 'String');
+        end
+        
+        function s = getAddedOther(obj)
+            s = SymphonyUI.Utilities.getSelectedUIValue(obj.otherTab.addedList);
         end
         
         function s = getSource(obj)
