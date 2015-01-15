@@ -45,7 +45,6 @@ classdef NewExperimentView < SymphonyUI.View
             obj.nameEdit = uicontrol( ...
                 'Parent', layout, ...
                 'Style', 'edit', ...
-                'String', datestr(now, 'yyyy-mm-dd'), ...
                 'HorizontalAlignment', 'left');
             uiextras.Empty('Parent', layout);
             set(layout, 'Sizes', [60 -1 75]);
@@ -58,7 +57,6 @@ classdef NewExperimentView < SymphonyUI.View
             obj.locationEdit = uicontrol( ...
                 'Parent', layout, ...
                 'Style', 'edit', ...
-                'String', pwd, ...
                 'HorizontalAlignment', 'left');
             obj.browseLocationButton = uicontrol( ...
                 'Parent', layout, ...
@@ -134,6 +132,10 @@ classdef NewExperimentView < SymphonyUI.View
             n = get(obj.nameEdit, 'String');
         end
         
+        function setName(obj, n)
+            set(obj.nameEdit, 'String', n);
+        end
+        
         function l = getLocation(obj)
             l = get(obj.locationEdit, 'String');
         end
@@ -148,6 +150,10 @@ classdef NewExperimentView < SymphonyUI.View
         
         function p = getPurpose(obj)
             p = get(obj.purposeEdit, 'String');
+        end
+        
+        function setPurpose(obj, p)
+            set(obj.purposeEdit, 'String', p);
         end
         
     end

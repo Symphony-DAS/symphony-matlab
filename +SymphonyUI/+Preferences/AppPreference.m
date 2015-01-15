@@ -1,6 +1,7 @@
 classdef AppPreference < handle
     
     properties
+        experimentPreference
         epochGroupPreference
     end
     
@@ -9,10 +10,12 @@ classdef AppPreference < handle
         function obj = AppPreference()
             import SymphonyUI.Preferences.*;
             
+            obj.experimentPreference = ExperimentPreference();
             obj.epochGroupPreference = EpochGroupPreference();
         end
         
         function setToDefaults(obj)
+            obj.experimentPreference.setToDefaults();
             obj.epochGroupPreference.setToDefaults();
         end
         

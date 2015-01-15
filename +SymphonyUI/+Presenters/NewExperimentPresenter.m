@@ -6,8 +6,8 @@ classdef NewExperimentPresenter < SymphonyUI.Presenter
     
     methods
         
-        function obj = NewExperimentPresenter(view)
-            if nargin < 1
+        function obj = NewExperimentPresenter(experimentPreference, view)
+            if nargin < 2
                 view = SymphonyUI.Views.NewExperimentView([]);
             end
             
@@ -18,6 +18,9 @@ classdef NewExperimentPresenter < SymphonyUI.Presenter
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
             
             view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
+            view.setName(experimentPreference.defaultName());
+            view.setLocation(experimentPreference.defaultLocation());
+            view.setPurpose(experimentPreference.defaultPurpose());
         end
         
     end

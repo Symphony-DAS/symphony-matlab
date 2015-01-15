@@ -62,8 +62,9 @@ classdef MainPresenter < SymphonyUI.Presenter
     methods (Access = private)
         
         function onSelectedNewExperiment(obj, ~, ~)
+            preference = obj.appData.appPreference.experimentPreference;
             view = SymphonyUI.Views.NewExperimentView(obj.view);
-            p = SymphonyUI.Presenters.NewExperimentPresenter(view);
+            p = SymphonyUI.Presenters.NewExperimentPresenter(preference, view);
             result = p.view.showDialog();
             if result
                 obj.appData.setExperiment(p.experiment);

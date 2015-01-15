@@ -3,9 +3,9 @@ classdef EpochGroupPreference < handle
     properties (SetObservable)
         labels = {''}
         recordingTypes = {''}
-        availableExternalSolutions = {''}
-        availableInternalSolutions = {''}
-        availableOthers = {''}
+        availableExternalSolutions = {}
+        availableInternalSolutions = {}
+        availableOthers = {}
     end
     
     methods
