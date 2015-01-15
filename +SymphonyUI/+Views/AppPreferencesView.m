@@ -1,4 +1,4 @@
-classdef AppPreferenceView < SymphonyUI.View
+classdef AppPreferencesView < SymphonyUI.View
     
     events
         SelectedCard
@@ -10,7 +10,7 @@ classdef AppPreferenceView < SymphonyUI.View
     
     methods
         
-        function obj = AppPreferenceView(parent)
+        function obj = AppPreferencesView(parent)
             obj = obj@SymphonyUI.View(parent);
         end
         
@@ -28,7 +28,7 @@ classdef AppPreferenceView < SymphonyUI.View
             obj.cardList = uicontrol( ...
                 'Parent', mainLayout, ...
                 'Style', 'list', ...
-                'String', {'Experiment', 'Acquisition'}, ...
+                'String', {'Experiment', 'Epoch Group', 'Acquisition'}, ...
                 'Callback', @(h,d)notify(obj, 'SelectedCard'));
             
             uix.CardPanel( ...

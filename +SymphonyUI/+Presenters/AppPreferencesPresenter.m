@@ -1,19 +1,19 @@
-classdef AppPreferencePresenter < SymphonyUI.Presenter
+classdef AppPreferencesPresenter < SymphonyUI.Presenter
     
     properties (SetAccess = private)
-        appPreference
+        appPreferences
     end
     
     methods
         
-        function obj = AppPreferencePresenter(appPreference, view)
+        function obj = AppPreferencesPresenter(appPreferences, view)
             if nargin < 2
-                view = SymphonyUI.Views.AppPreferenceView([]);
+                view = SymphonyUI.Views.AppPreferencesView([]);
             end
             
             obj = obj@SymphonyUI.Presenter(view);
             
-            obj.appPreference = appPreference;
+            obj.appPreferences = appPreferences;
             
             obj.addListener(view, 'SelectedCard', @obj.onSelectedCard);
         end

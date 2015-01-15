@@ -10,7 +10,7 @@ classdef MainPresenter < SymphonyUI.Presenter
     
     methods
         
-        function obj = MainPresenter(appPreference, view)
+        function obj = MainPresenter(appPreferences, view)
             if nargin < 2
                 view = SymphonyUI.Views.MainView();
             end
@@ -18,7 +18,7 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj = obj@SymphonyUI.Presenter(view);
             %view.loadPosition();
             
-            obj.appData = SymphonyUI.AppData(appPreference);
+            obj.appData = SymphonyUI.AppData(appPreferences);
             obj.addListener(obj.appData, 'SetExperiment', @obj.onSetExperiment);
             obj.addListener(obj.appData, 'SetProtocol', @obj.onSetProtocol);
             obj.addListener(obj.appData, 'SetController', @obj.onSetController);
@@ -62,9 +62,9 @@ classdef MainPresenter < SymphonyUI.Presenter
     methods (Access = private)
         
         function onSelectedNewExperiment(obj, ~, ~)
-            preference = obj.appData.appPreference.experimentPreference;
+            preferences = obj.appData.appPreferences.experimentPreferences;
             view = SymphonyUI.Views.NewExperimentView(obj.view);
-            p = SymphonyUI.Presenters.NewExperimentPresenter(preference, view);
+            p = SymphonyUI.Presenters.NewExperimentPresenter(preferences, view);
             result = p.view.showDialog();
             if result
                 obj.appData.setExperiment(p.experiment);
@@ -97,9 +97,9 @@ classdef MainPresenter < SymphonyUI.Presenter
         
         function onSelectedBeginEpochGroup(obj, ~, ~)
             experiment = obj.appData.experiment;
-            preference = obj.appData.appPreference.epochGroupPreference;
+            preferences = obj.appData.appPreferences.epochGroupPreferences;
             view = SymphonyUI.Views.NewEpochGroupView(obj.view);
-            p = SymphonyUI.Presenters.NewEpochGroupPresenter(experiment, preference, view);
+            p = SymphonyUI.Presenters.NewEpochGroupPresenter(experiment, preferences, view);
             p.view.showDialog();
         end
         
@@ -231,7 +231,7 @@ classdef MainPresenter < SymphonyUI.Presenter
         end
         
         function onSelectedPreferences(obj, ~, ~)
-            p = SymphonyUI.Presenters.AppPreferencePresenter(obj.appData.appPreference);
+            p = SymphonyUI.Presenters.AppPreferencesPresenter(obj.appData.appPreferences);
             p.view.showDialog();
         end
         

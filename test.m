@@ -1,9 +1,9 @@
 import SymphonyUI.*;
 
-pref = Preferences.AppPreference();
+pref = Preferences.AppPreferences();
 pref.setToDefaults();
 
-ep = pref.epochGroupPreference;
+ep = pref.epochGroupPreferences;
 ep.availableInternalSolutions = {};
 ep.availableOthers = {'Apple', 'Banana', 'Grape'};
 

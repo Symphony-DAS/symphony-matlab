@@ -1,4 +1,4 @@
-classdef ExperimentPreference < handle
+classdef ExperimentPreferences < handle
     
     properties (SetObservable)
         defaultName = ''

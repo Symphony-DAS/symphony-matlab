@@ -1,4 +1,4 @@
-classdef EpochGroupPreference < handle
+classdef EpochGroupPreferences < handle
     
     properties (SetObservable)
         labels = {''}
