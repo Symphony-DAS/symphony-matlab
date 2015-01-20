@@ -25,8 +25,9 @@ classdef AppPreferencesPresenter < SymphonyUI.Presenter
             
             view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
             view.setDefaultName(char(experiment.defaultName));
-            view.setDefaultLocation(char(experiment.defaultLocation));
             view.setDefaultPurpose(char(experiment.defaultPurpose));
+            view.setDefaultLocation(char(experiment.defaultLocation));
+            view.setRigPathList(cellToStr(experiment.rigPathList));
             view.setSpeciesList(cellToStr(experiment.speciesList));
             view.setPhenotypeList(cellToStr(experiment.phenotypeList));
             view.setGenotypeList(cellToStr(experiment.genotypeList));
@@ -61,15 +62,23 @@ classdef AppPreferencesPresenter < SymphonyUI.Presenter
             end
             
             name = parse(obj.view.getDefaultName());
-            location = parse(obj.view.getDefaultLocation());
             purpose = parse(obj.view.getDefaultPurpose());
+            location = parse(obj.view.getDefaultLocation());
+            rigPathList = strToCell(obj.view.getRigPathList());
             speciesList = strToCell(obj.view.getSpeciesList());
+            phenotypeList = strToCell(obj.view.getPhenotypeList());
+            genotypeList = strToCell(obj.view.getGenotypeList());
+            preparationList = strToCell(obj.view.getPreparationList());
             
             experiment = obj.appPreferences.experimentPreferences;
             experiment.defaultName = name;
-            experiment.defaultLocation = location;
             experiment.defaultPurpose = purpose;
+            experiment.defaultLocation = location;
+            experiment.rigPathList = rigPathList;
             experiment.speciesList = speciesList;
+            experiment.phenotypeList = phenotypeList;
+            experiment.genotypeList = genotypeList;
+            experiment.preparationList = preparationList;
             
             obj.view.result = true;
         end

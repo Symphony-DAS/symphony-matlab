@@ -1,6 +1,10 @@
-function s = cellToStr(c)
-    s = cellfun(@(x) [char(x) ', '], c, 'UniformOutput', false);
+function s = cellToStr(c, delimiter)
+    if nargin < 2
+        delimiter = ', ';
+    end
+
+    s = cellfun(@(x) [char(x) delimiter], c, 'UniformOutput', false);
     s = cell2mat(s);
-    s(end-1:end) = [];
+    s(end-length(delimiter)+1:end) = [];
 end
 

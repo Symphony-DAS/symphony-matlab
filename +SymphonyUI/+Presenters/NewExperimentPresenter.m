@@ -19,9 +19,12 @@ classdef NewExperimentPresenter < SymphonyUI.Presenter
             
             view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
             view.setName(preferences.defaultName());
-            view.setLocation(preferences.defaultLocation());
             view.setPurpose(preferences.defaultPurpose());
+            view.setLocation(preferences.defaultLocation());
             view.setSpeciesList(preferences.speciesList());
+            view.setPhenotypeList(preferences.phenotypeList());
+            view.setGenotypeList(preferences.genotypeList());
+            view.setPreparationList(preferences.preparationList());
         end
         
     end

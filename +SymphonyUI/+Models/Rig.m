@@ -1,6 +1,7 @@
 classdef Rig < handle
     
-    properties
+    properties (Constant, Abstract)
+        name
     end
     
     methods

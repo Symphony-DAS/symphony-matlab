@@ -25,7 +25,7 @@ classdef AppPreferencesView < SymphonyUI.View
             import SymphonyUI.Utilities.UI.*;
             
             set(obj.figureHandle, 'Name', 'Preferences');
-            set(obj.figureHandle, 'Position', screenCenter(454, 356));
+            set(obj.figureHandle, 'Position', screenCenter(467, 388));
             
             labelSize = 100;
             panelLabelSize = 87;
@@ -52,8 +52,9 @@ classdef AppPreferencesView < SymphonyUI.View
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
             obj.experimentCard.defaultNameField = createLabeledTextField(experimentLayout, 'Default name:', [labelSize -1]);
-            obj.experimentCard.defaultLocationField = createLabeledTextField(experimentLayout, 'Default location:', [labelSize -1]);
             obj.experimentCard.defaultPurposeField = createLabeledTextField(experimentLayout, 'Default purpose:', [labelSize -1]);
+            obj.experimentCard.defaultLocationField = createLabeledTextField(experimentLayout, 'Default location:', [labelSize -1]);
+            obj.experimentCard.rigPathListField = createLabeledTextField(experimentLayout, 'Rig path list:', [labelSize -1]);
             
             animalPanel = uix.Panel( ...
                 'Parent', experimentLayout, ...
@@ -81,7 +82,7 @@ classdef AppPreferencesView < SymphonyUI.View
             obj.experimentCard.preparationListField = createLabeledTextField(tissueLayout, 'Preparation list:', [panelLabelSize -1]);
             set(tissueLayout, 'Sizes', [25]);
             
-            set(experimentLayout, 'Sizes', [25 25 25 132 68]);
+            set(experimentLayout, 'Sizes', [25 25 25 25 132 68]);
             
             % Epoch group card.
             layout = uiextras.VBox( ...
@@ -144,6 +145,14 @@ classdef AppPreferencesView < SymphonyUI.View
             set(obj.experimentCard.defaultNameField, 'String', n);
         end
         
+        function p = getDefaultPurpose(obj)
+            p = get(obj.experimentCard.defaultPurposeField, 'String');
+        end
+        
+        function setDefaultPurpose(obj, p)
+            set(obj.experimentCard.defaultPurposeField, 'String', p);
+        end
+        
         function l = getDefaultLocation(obj)
             l = get(obj.experimentCard.defaultLocationField, 'String');
         end
@@ -152,12 +161,12 @@ classdef AppPreferencesView < SymphonyUI.View
             set(obj.experimentCard.defaultLocationField, 'String', l);
         end
         
-        function p = getDefaultPurpose(obj)
-            p = get(obj.experimentCard.defaultPurposeField, 'String');
+        function r = getRigPathList(obj)
+            r = get(obj.experimentCard.rigPathListField, 'String');
         end
         
-        function setDefaultPurpose(obj, p)
-            set(obj.experimentCard.defaultPurposeField, 'String', p);
+        function setRigPathList(obj, r)
+            set(obj.experimentCard.rigPathListField, 'String', r);
         end
         
         function s = getSpeciesList(obj)

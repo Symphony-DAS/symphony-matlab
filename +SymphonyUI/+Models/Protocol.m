@@ -1,6 +1,6 @@
 classdef Protocol < handle
     
-    properties (Constant)
+    properties (Constant, Abstract)
         name
     end
     

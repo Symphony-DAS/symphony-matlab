@@ -8,9 +8,9 @@ classdef NewExperimentView < SymphonyUI.View
     
     properties (Access = private)
         nameField
+        purposeField
         locationField
         browseLocationButton
-        purposeField
         rigDropDown
         speciesDropDown
         phenotypeDropDown
@@ -46,7 +46,6 @@ classdef NewExperimentView < SymphonyUI.View
             
             obj.nameField = createLabeledTextField(parametersLayout, 'Name:', [labelSize -1]);
             obj.purposeField = createLabeledTextField(parametersLayout, 'Purpose:', [labelSize -1]);
-            obj.rigDropDown = createLabeledDropDownMenu(parametersLayout, 'Rig:', [labelSize -1]);
             [obj.locationField, l] = createLabeledTextField(parametersLayout, 'Location:', [labelSize -1]);
             obj.browseLocationButton = uicontrol( ...
                 'Parent', l, ...
@@ -54,6 +53,7 @@ classdef NewExperimentView < SymphonyUI.View
                 'String', 'Browse...', ...
                 'Callback', @(h,d)notify(obj, 'BrowseLocation'));
             set(l, 'Sizes', [labelSize -1 75]);
+            obj.rigDropDown = createLabeledDropDownMenu(parametersLayout, 'Rig:', [labelSize -1]);
             
             animalPanel = uix.Panel( ...
                 'Parent', parametersLayout, ...
@@ -137,12 +137,28 @@ classdef NewExperimentView < SymphonyUI.View
             r = SymphonyUI.Utilities.UI.getSelectedValue(obj.rigDropDown);
         end
         
+        function setRigList(obj, r)
+            SymphonyUI.Utilities.UI.setStringList(obj.rigDropDown, r);
+        end
+        
         function s = getSpecies(obj)
             s = SymphonyUI.Utilities.UI.getSelectedValue(obj.speciesDropDown);
         end
         
         function setSpeciesList(obj, s)
-            set(obj.speciesDropDown, 'String', s);
+            SymphonyUI.Utilities.UI.setStringList(obj.speciesDropDown, s);
+        end
+        
+        function setPhenotypeList(obj, s)
+            SymphonyUI.Utilities.UI.setStringList(obj.phenotypeDropDown, s);
+        end
+        
+        function setGenotypeList(obj, s)
+            SymphonyUI.Utilities.UI.setStringList(obj.genotypeDropDown, s);
+        end
+        
+        function setPreparationList(obj, s)
+            SymphonyUI.Utilities.UI.setStringList(obj.preparationDropDown, s);
         end
         
     end
