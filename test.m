@@ -4,8 +4,8 @@ pref = Preferences.AppPreferences();
 pref.setToDefaults();
 
 ep = pref.epochGroupPreferences;
-ep.availableInternalSolutions = {};
-ep.availableOthers = {'Apple', 'Banana', 'Grape'};
+ep.availableInternalSolutionList = {};
+ep.availableOtherList = {'Apple', 'Banana', 'Grape'};
 
 p = Presenters.MainPresenter(pref);
 p.view.show();

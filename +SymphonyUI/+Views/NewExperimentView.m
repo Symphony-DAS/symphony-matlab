@@ -7,11 +7,15 @@ classdef NewExperimentView < SymphonyUI.View
     end
     
     properties (Access = private)
-        nameEdit
-        locationEdit
+        nameField
+        locationField
         browseLocationButton
-        rigPopup
-        purposeEdit
+        purposeField
+        rigDropDown
+        speciesDropDown
+        phenotypeDropDown
+        genotypeDropDown
+        preparationDropDown
         openButton
         cancelButton
     end
@@ -24,10 +28,13 @@ classdef NewExperimentView < SymphonyUI.View
         
         function createUI(obj)
             import SymphonyUI.Utilities.*;
+            import SymphonyUI.Utilities.UI.*;
             
             set(obj.figureHandle, 'Name', 'New Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(518, 276));
+            set(obj.figureHandle, 'Position', screenCenter(330, 389));
             
+            labelSize = 58;
+            panelLabelSize = 72;
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
@@ -37,87 +44,61 @@ classdef NewExperimentView < SymphonyUI.View
                 'Parent', mainLayout, ...
                 'Spacing', 7);
             
-            % Name input.
-            layout = uiextras.HBox( ...
-                'Parent', parametersLayout, ...
-                'Spacing', 7);
-            uiLabel(layout, 'Name:');
-            obj.nameEdit = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'edit', ...
-                'HorizontalAlignment', 'left');
-            uiextras.Empty('Parent', layout);
-            set(layout, 'Sizes', [60 -1 75]);
-            
-            % Location input.
-            layout = uiextras.HBox( ...
-                'Parent', parametersLayout, ...
-                'Spacing', 7);
-            uiLabel(layout, 'Location:');
-            obj.locationEdit = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'edit', ...
-                'HorizontalAlignment', 'left');
+            obj.nameField = createLabeledTextField(parametersLayout, 'Name:', [labelSize -1]);
+            obj.purposeField = createLabeledTextField(parametersLayout, 'Purpose:', [labelSize -1]);
+            obj.rigDropDown = createLabeledDropDownMenu(parametersLayout, 'Rig:', [labelSize -1]);
+            [obj.locationField, l] = createLabeledTextField(parametersLayout, 'Location:', [labelSize -1]);
             obj.browseLocationButton = uicontrol( ...
-                'Parent', layout, ...
+                'Parent', l, ...
                 'Style', 'pushbutton', ...
                 'String', 'Browse...', ...
                 'Callback', @(h,d)notify(obj, 'BrowseLocation'));
-            set(layout, 'Sizes', [60 -1 75]);
+            set(l, 'Sizes', [labelSize -1 75]);
             
-            % Rig input.
-            layout = uiextras.HBox( ...
+            animalPanel = uix.Panel( ...
                 'Parent', parametersLayout, ...
-                'Spacing', 7);
-            uiLabel(layout, 'Rig:');
-            obj.rigPopup = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'popupmenu', ...
-                'String', {' '}, ...
-                'HorizontalAlignment', 'left');
-            uiextras.Empty('Parent', layout);
-            set(layout, 'Sizes', [60 -1 75]);
-            
-            % Purpose input.
-            layout = uiextras.HBox( ...
-                'Parent', parametersLayout, ...
-                'Spacing', 7);
-            uiLabel(layout, 'Purpose:');
-            obj.purposeEdit = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'edit', ...
-                'HorizontalAlignment', 'left');
-            uiextras.Empty('Parent', layout);
-            set(layout, 'Sizes', [60 -1 75]);
-            
-            % Source input.
-            layout = uiextras.HBox( ...
-                'Parent', parametersLayout, ...
-                'Spacing', 7);
-            sourcePanel = uix.Panel( ...
-                'Parent', layout, ...
-                'Title', 'Source', ...
+                'Title', 'Animal', ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
+            animalLayout = uiextras.VBox( ...
+                'Parent', animalPanel, ...
+                'Padding', 11, ...
+                'Spacing', 7);
+            obj.speciesDropDown = createLabeledDropDownMenu(animalLayout, 'Species:', [panelLabelSize -1]);
+            obj.phenotypeDropDown = createLabeledDropDownMenu(animalLayout, 'Phenotype:', [panelLabelSize -1]);
+            obj.genotypeDropDown = createLabeledDropDownMenu(animalLayout, 'Genotype:', [panelLabelSize -1]);
+            set(animalLayout, 'Sizes', [25 25 25]);
             
-            set(parametersLayout, 'Sizes', [25 25 25 25 -1]);
+            tissuePanel = uix.Panel( ...
+                'Parent', parametersLayout, ...
+                'Title', 'Tissue', ...
+                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
+            tissueLayout = uiextras.VBox( ...
+                'Parent', tissuePanel, ...
+                'Padding', 11, ...
+                'Spacing', 7);
+            obj.preparationDropDown = createLabeledDropDownMenu(tissueLayout, 'Preparation:', [panelLabelSize -1]);
+            set(tissueLayout, 'Sizes', [25]);
+            
+            set(parametersLayout, 'Sizes', [25 25 25 25 132 68]);
             
             % Open/Cancel controls.
-            controlLayout = uiextras.HBox( ...
+            controlsLayout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
-            uiextras.Empty('Parent', controlLayout);
+            uiextras.Empty('Parent', controlsLayout);
             obj.openButton = uicontrol( ...
-                'Parent', controlLayout, ...
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', 'Open', ...
                 'Callback', @(h,d)notify(obj, 'Open'));
             obj.cancelButton = uicontrol( ...
-                'Parent', controlLayout, ...
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', 'Cancel', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
-            set(controlLayout, 'Sizes', [-1 75 75]);
+            set(controlsLayout, 'Sizes', [-1 75 75]);
             
             set(mainLayout, 'Sizes', [-1 25]);       
             
@@ -129,31 +110,39 @@ classdef NewExperimentView < SymphonyUI.View
         end
         
         function n = getName(obj)
-            n = get(obj.nameEdit, 'String');
+            n = get(obj.nameField, 'String');
         end
         
         function setName(obj, n)
-            set(obj.nameEdit, 'String', n);
+            set(obj.nameField, 'String', n);
         end
         
         function l = getLocation(obj)
-            l = get(obj.locationEdit, 'String');
+            l = get(obj.locationField, 'String');
         end
         
         function setLocation(obj, l)
-            set(obj.locationEdit, 'String', l);
-        end
-        
-        function r = getRig(obj)
-            r = SymphonyUI.Utilities.getSelectedUIValue(obj.rigPopup);
+            set(obj.locationField, 'String', l);
         end
         
         function p = getPurpose(obj)
-            p = get(obj.purposeEdit, 'String');
+            p = get(obj.purposeField, 'String');
         end
         
         function setPurpose(obj, p)
-            set(obj.purposeEdit, 'String', p);
+            set(obj.purposeField, 'String', p);
+        end
+        
+        function r = getRig(obj)
+            r = SymphonyUI.Utilities.UI.getSelectedValue(obj.rigDropDown);
+        end
+        
+        function s = getSpecies(obj)
+            s = SymphonyUI.Utilities.UI.getSelectedValue(obj.speciesDropDown);
+        end
+        
+        function setSpeciesList(obj, s)
+            set(obj.speciesDropDown, 'String', s);
         end
         
     end

@@ -8,7 +8,7 @@ classdef ProtocolParametersView < SymphonyUI.View
     
     properties (Access = private)
         parametersLayout
-        presetsPopup
+        presetDropDown
         applyButton
         revertButton
     end
@@ -21,6 +21,7 @@ classdef ProtocolParametersView < SymphonyUI.View
         
         function createUI(obj)
             import SymphonyUI.Utilities.*;
+            import SymphonyUI.Utilities.UI.*;
             
             set(obj.figureHandle, 'Name', 'Protocol Parameters');
             set(obj.figureHandle, 'Position', screenCenter(326, 326));
@@ -38,9 +39,9 @@ classdef ProtocolParametersView < SymphonyUI.View
             layout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
-            uiLabel(layout, 'Presets:');
-            obj.presetsPopup = uiPopupMenu(layout, {'', 'Default', 'Preset1'});
-            set(obj.presetsPopup, 'Callback', @(h,d)notify(obj, 'SelectedPreset'));
+            createLabel(layout, 'Preset:');
+            obj.presetDropDown = createDropDownMenu(layout, {'', 'Default', 'Preset1'});
+            set(obj.presetDropDown, 'Callback', @(h,d)notify(obj, 'SelectedPreset'));
             uiextras.Empty('Parent', layout);
             obj.applyButton = uicontrol( ...
                 'Parent', layout, ...
@@ -64,17 +65,7 @@ classdef ProtocolParametersView < SymphonyUI.View
         end
         
         function addParameter(obj, name)
-            import SymphonyUI.Utilities.*;
-            
-            layout = uiextras.HBox( ...
-                'Parent', obj.parametersLayout);
-            uiLabel(layout, name);
-            uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'edit', ...
-                'HorizontalAlignment', 'left');
-            uiextras.Empty('Parent', layout);
-            set(layout, 'Sizes', [-3 -5 -2]);
+            SymphonyUI.Utilities.UI.createLabeledTextField(obj.parametersLayout, name, [-1 -2]);
             
             sizes = get(obj.parametersLayout, 'Sizes');
             sizes(end) = 25;
@@ -86,7 +77,7 @@ classdef ProtocolParametersView < SymphonyUI.View
         end
         
         function p = getPreset(obj)
-            p = SymphonyUI.Utilities.getSelectedUIValue(obj.presetsPopup);
+            p = SymphonyUI.Utilities.getSelectedUIValue(obj.presetDropDown);
         end
         
     end

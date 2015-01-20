@@ -32,15 +32,16 @@ classdef AboutSymphonyView < SymphonyUI.View
                 'String', 'Symphony Data Acquisition System', ...
                 'HorizontalAlignment', 'center');
             
-            layout = uiextras.HBox('Parent', mainLayout);
-            uiextras.Empty('Parent', layout');
+            % Ok control.
+            controlsLayout = uiextras.HBox('Parent', mainLayout);
+            uiextras.Empty('Parent', controlsLayout');
             obj.okButton = uicontrol( ...
-                'Parent', layout, ...
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', 'OK', ...
                 'Callback', @(h,d)notify(obj, 'Ok'));
-            uiextras.Empty('Parent', layout');
-            set(layout, 'Sizes', [-1 75 -1]);
+            uiextras.Empty('Parent', controlsLayout');
+            set(controlsLayout, 'Sizes', [-1 75 -1]);
             
             set(mainLayout, 'Sizes', [-1 25]);
         end

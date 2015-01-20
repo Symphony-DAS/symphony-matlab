@@ -23,7 +23,7 @@ classdef MainView < SymphonyUI.View
         acquisitionMenu
         toolsMenu
         helpMenu
-        protocolsPopup
+        protocolDropDown
         protocolParametersButton
         runButton
         pauseButton
@@ -36,6 +36,7 @@ classdef MainView < SymphonyUI.View
         
         function createUI(obj)
             import SymphonyUI.Utilities.*;
+            import SymphonyUI.Utilities.UI.*;
             
             set(obj.figureHandle, 'Name', 'Symphony');
             set(obj.figureHandle, 'Position', screenCenter(290, 130));
@@ -131,8 +132,8 @@ classdef MainView < SymphonyUI.View
             layout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 3);
-            obj.protocolsPopup = uiPopupMenu(layout, {'Pulse', 'Pulse Family', 'Seal and Leak'});
-            set(obj.protocolsPopup, ...
+            obj.protocolDropDown = createDropDownMenu(layout, {'Pulse', 'Pulse Family', 'Seal and Leak'});
+            set(obj.protocolDropDown, ...
                 'TooltipString', 'Protocol', ...
                 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
             obj.protocolParametersButton = uicontrol( ...
@@ -175,7 +176,7 @@ classdef MainView < SymphonyUI.View
                 'Parent', layout, ...
                 'Style', 'checkbox', ...
                 'String', 'Save');
-            obj.statusText = uiLabel(layout, 'Stopped');
+            obj.statusText = createLabel(layout, 'Stopped');
             set(obj.statusText, 'HorizontalAlignment', 'right');
             set(layout, 'Sizes', [60 -1]);
             
@@ -211,7 +212,7 @@ classdef MainView < SymphonyUI.View
         end
         
         function enableSelectProtocol(obj, tf)
-            set(obj.protocolsPopup, 'Enable', SymphonyUI.Utilities.onOff(tf));
+            set(obj.protocolDropDown, 'Enable', SymphonyUI.Utilities.onOff(tf));
         end
         
         function enableProtocolParameters(obj, tf)
@@ -239,11 +240,11 @@ classdef MainView < SymphonyUI.View
         end
         
         function p = getProtocol(obj)
-            p = SymphonyUI.Utilities.getSelectedUIValue(obj.protocolsPopup);
+            p = SymphonyUI.Utilities.UI.getSelectedValue(obj.protocolDropDown);
         end
         
         function setProtocol(obj, p)
-            SymphonyUI.Utilities.setSelectedUIValue(obj.protocolsPopup, p);
+            SymphonyUI.Utilities.UI.setSelectedValue(obj.protocolDropDown, p);
         end
         
         function enableShouldSave(obj, tf)

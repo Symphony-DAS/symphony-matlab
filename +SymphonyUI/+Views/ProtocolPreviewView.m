@@ -5,6 +5,10 @@ classdef ProtocolPreviewView < SymphonyUI.View
     
     methods
         
+        function obj = ProtocolPreviewView(parent)
+            obj = obj@SymphonyUI.View(parent);
+        end
+        
         function createUI(obj)
             set(obj.figureHandle, 'Name', 'Protocol Preview');
         end

@@ -1,47 +1,43 @@
 classdef EpochGroupPreferences < handle
     
     properties (SetObservable)
-        labels = {''}
-        recordingTypes = {''}
-        availableExternalSolutions = {}
-        availableInternalSolutions = {}
-        availableOthers = {}
+        labelList = {''}
+        recordingList = {''}
+        availableExternalSolutionList = {''}
+        availableInternalSolutionList = {''}
+        availableOtherList = {''}
     end
     
     methods
         
         function setToDefaults(obj)
-            obj.labels = { ...
+            obj.labelList = { ...
                 'Control', ...
                 'Drug', ...
                 'Wash'};
-            
-            obj.recordingTypes = { ...
+            obj.recordingList = { ...
                 'Extracellular', ...
                 'Whole-cell', ...
                 'Suction'};
-            
-            obj.availableExternalSolutions = { ...
+            obj.availableExternalSolutionList = { ...
                 'Ames Bicarb', ...
                 'Ames Hepes', ...
                 'NBQX-10mM', ...
                 'TPMPA-50mM'};
-            
-            obj.availableInternalSolutions = { ...
+            obj.availableInternalSolutionList = { ...
                 ''};
-            
-            obj.availableOthers = { ...
+            obj.availableOtherList = { ...
                 ''};
         end
         
-        function set.labels(obj, l)
+        function set.labelList(obj, l)
             if ~iscell(l)
-                error('Labels must be a cell array');
+                error('Label list must be a cell array');
             end
             if isempty(l)
-                error('Labels must not be empty');
+                error('Label list must not be empty');
             end
-            obj.labels = l;
+            obj.labelList = l;
         end
         
         % TODO: Create setters.

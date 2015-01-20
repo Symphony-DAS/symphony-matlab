@@ -1,4 +1,4 @@
-function v = getSelectedUIValue(control)
+function v = getSelectedValue(control)
     string = get(control, 'String');
     if ~isempty(string)
         value = get(control, 'Value');

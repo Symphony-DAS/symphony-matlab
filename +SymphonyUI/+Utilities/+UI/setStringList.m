@@ -1,4 +1,4 @@
-function setUIList(control, list)
+function setStringList(control, list)
     value = get(control, 'Value');
     if value < 1
         value = 1;

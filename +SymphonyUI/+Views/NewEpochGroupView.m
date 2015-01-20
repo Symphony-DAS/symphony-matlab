@@ -12,10 +12,9 @@ classdef NewEpochGroupView < SymphonyUI.View
     end
     
     properties (Access = private)
-        labelPopup
-        recordingPopup
-        keywordsEdit
-        propertiesPanel
+        labelDropDown
+        recordingDropDown
+        keywordsField
         externalSolutionTab
         internalSolutionTab
         otherTab
@@ -31,10 +30,12 @@ classdef NewEpochGroupView < SymphonyUI.View
         
         function createUI(obj)
             import SymphonyUI.Utilities.*;
+            import SymphonyUI.Utilities.UI.*;
             
             set(obj.figureHandle, 'Name', 'Begin Epoch Group');
             set(obj.figureHandle, 'Position', screenCenter(420, 320));
             
+            labelSize = 60;
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
@@ -44,81 +45,43 @@ classdef NewEpochGroupView < SymphonyUI.View
                 'Parent', mainLayout, ...
                 'Spacing', 7);
             
-            % Label input.
-            layout = uiextras.HBox( ...
-                'Parent', parametersLayout, ...
-                'Spacing', 7);
-            uiLabel(layout, 'Label:');
-            obj.labelPopup = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'popupmenu', ...
-                'String', {'Control', 'Drug', 'Wash'}, ...
-                'HorizontalAlignment', 'left');
-            set(layout, 'Sizes', [60 -1]);
+            obj.labelDropDown = createLabeledDropDownMenu(parametersLayout, 'Label:', [labelSize -1]);
+            obj.recordingDropDown = createLabeledDropDownMenu(parametersLayout, 'Recording:', [labelSize -1]);
+            obj.keywordsField = createLabeledTextField(parametersLayout, 'Keywords:', [labelSize -1]);
             
-            % Recording input.
-            layout = uiextras.HBox( ...
-                'Parent', parametersLayout, ...
-                'Spacing', 7);
-            uiLabel(layout, 'Recording:');
-            obj.recordingPopup = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'popupmenu', ...
-                'String', {'Extracellular', 'Whole-cell', 'Suction'}, ...
-                'HorizontalAlignment', 'left');
-            set(layout, 'Sizes', [60 -1]);
-            
-            % Keywords input.
-            layout = uiextras.HBox( ...
-                'Parent', parametersLayout, ...
-                'Spacing', 7);
-            uiLabel(layout, 'Keywords:');
-            obj.keywordsEdit = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'edit', ...
-                'HorizontalAlignment', 'left');
-            set(layout, 'Sizes', [60 -1]);
-            
-            % Properties panel.
             panel = uix.Panel( ...
                 'Parent', parametersLayout, ...
                 'Padding', 1);
-            obj.propertiesPanel = uix.TabPanel( ...
+            propertiesPanel = uix.TabPanel( ...
                 'Parent', panel, ...
                 'TabWidth', 100, ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
             
-            % External solution tab.
-            obj.externalSolutionTab = createTabUI(obj, obj.propertiesPanel, 'AddExternalSolution', 'RemoveExternalSolution');
-            
-            % Internal solution tab.
-            obj.internalSolutionTab = createTabUI(obj, obj.propertiesPanel, 'AddInternalSolution', 'RemoveInternalSolution');
-            
-            % Other tab.
-            obj.otherTab = createTabUI(obj, obj.propertiesPanel, 'AddOther', 'RemoveOther');
-            
-            set(obj.propertiesPanel, 'TabTitles', {'External Solution', 'Internal Solution', 'Other'});
+            obj.externalSolutionTab = createTabUI(obj, propertiesPanel, 'AddExternalSolution', 'RemoveExternalSolution');
+            obj.internalSolutionTab = createTabUI(obj, propertiesPanel, 'AddInternalSolution', 'RemoveInternalSolution');
+            obj.otherTab = createTabUI(obj, propertiesPanel, 'AddOther', 'RemoveOther');
+            set(propertiesPanel, 'TabTitles', {'External Solution', 'Internal Solution', 'Other'});
             
             set(parametersLayout, 'Sizes', [25 25 25 -1]);
             
             % Begin/Cancel controls.
-            controlLayout = uiextras.HBox( ...
+            controlsLayout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
             uiextras.Empty(...
-                'Parent', controlLayout);
+                'Parent', controlsLayout);
             obj.beginButton = uicontrol( ...
-                'Parent', controlLayout, ...
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', 'Begin', ...
                 'Callback', @(h,d)notify(obj, 'Begin'));
             obj.cancelButton = uicontrol( ...
-                'Parent', controlLayout, ...
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', 'Cancel', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
-            set(controlLayout, 'Sizes', [-1 75 75]);
+            set(controlsLayout, 'Sizes', [-1 75 75]);
             
             set(mainLayout, 'Sizes', [-1 25]);
             
@@ -129,88 +92,84 @@ classdef NewEpochGroupView < SymphonyUI.View
             end
         end
         
-        function setLabels(obj, l)
-            SymphonyUI.Utilities.setUIList(obj.labelPopup, l);
+        function setLabelList(obj, l)
+            SymphonyUI.Utilities.UI.setStringList(obj.labelDropDown, l);
         end
         
         function l = getLabel(obj)
-            l = SymphonyUI.Utilities.getSelectedUIValue(obj.labelPopup);
+            l = SymphonyUI.Utilities.UI.getSelectedValue(obj.labelDropDown);
         end
         
-        function setRecordings(obj, r)
-            SymphonyUI.Utilities.setUIList(obj.recordingPopup, r);
+        function setRecordingList(obj, r)
+            SymphonyUI.Utilities.UI.setStringList(obj.recordingDropDown, r);
         end
         
         function r = getRecording(obj)
-            r = SymphonyUI.Utilities.getSelectedUIValue(obj.recordingPopup);
+            r = SymphonyUI.Utilities.UI.getSelectedValue(obj.recordingDropDown);
         end
         
         function w = getKeywords(obj)
-            w = get(obj.keywordsEdit, 'String');
+            w = get(obj.keywordsField, 'String');
         end
         
-        function setAvailableExternalSolutions(obj, s)
-            SymphonyUI.Utilities.setUIList(obj.externalSolutionTab.availableList, s);
+        function setAvailableExternalSolutionList(obj, s)
+            SymphonyUI.Utilities.UI.setStringList(obj.externalSolutionTab.availableList, s);
         end
         
         function s = getAvailableExternalSolution(obj)
-            s = SymphonyUI.Utilities.getSelectedUIValue(obj.externalSolutionTab.availableList);
+            s = SymphonyUI.Utilities.UI.getSelectedValue(obj.externalSolutionTab.availableList);
         end
         
-        function s = getAddedExternalSolutions(obj)
+        function s = getAddedExternalSolutionList(obj)
             s = get(obj.externalSolutionTab.addedList, 'String');
         end
         
-        function setAddedExternalSolutions(obj, s)
-            SymphonyUI.Utilities.setUIList(obj.externalSolutionTab.addedList, s);
+        function setAddedExternalSolutionList(obj, s)
+            SymphonyUI.Utilities.UI.setStringList(obj.externalSolutionTab.addedList, s);
         end
         
         function s = getAddedExternalSolution(obj)
-            s = SymphonyUI.Utilities.getSelectedUIValue(obj.externalSolutionTab.addedList);
+            s = SymphonyUI.Utilities.UI.getSelectedValue(obj.externalSolutionTab.addedList);
         end
         
-        function setAvailableInternalSolutions(obj, s)
-            SymphonyUI.Utilities.setUIList(obj.internalSolutionTab.availableList, s);
+        function setAvailableInternalSolutionList(obj, s)
+            SymphonyUI.Utilities.UI.setStringList(obj.internalSolutionTab.availableList, s);
         end
         
         function s = getAvailableInternalSolution(obj)
-            s = SymphonyUI.Utilities.getSelectedUIValue(obj.internalSolutionTab.availableList);
+            s = SymphonyUI.Utilities.UI.getSelectedValue(obj.internalSolutionTab.availableList);
         end
         
-        function s = getAddedInternalSolutions(obj)
+        function s = getAddedInternalSolutionList(obj)
             s = get(obj.internalSolutionTab.addedList, 'String');
         end
         
-        function setAddedInternalSolutions(obj, s)
-            SymphonyUI.Utilities.setUIList(obj.internalSolutionTab.addedList, s);
+        function setAddedInternalSolutionList(obj, s)
+            SymphonyUI.Utilities.UI.setStringList(obj.internalSolutionTab.addedList, s);
         end
         
         function s = getAddedInternalSolution(obj)
-            s = SymphonyUI.Utilities.getSelectedUIValue(obj.internalSolutionTab.addedList);
+            s = SymphonyUI.Utilities.UI.getSelectedValue(obj.internalSolutionTab.addedList);
         end
         
-        function setAvailableOthers(obj, s)
-            SymphonyUI.Utilities.setUIList(obj.otherTab.availableList, s);
+        function setAvailableOtherList(obj, s)
+            SymphonyUI.Utilities.UI.setStringList(obj.otherTab.availableList, s);
         end
         
         function s = getAvailableOther(obj)
-            s = SymphonyUI.Utilities.getSelectedUIValue(obj.otherTab.availableList);
+            s = SymphonyUI.Utilities.UI.getSelectedValue(obj.otherTab.availableList);
         end
         
-        function s = getAddedOthers(obj)
+        function s = getAddedOtherList(obj)
             s = get(obj.otherTab.addedList, 'String');
         end
         
-        function setAddedOthers(obj, s)
-            SymphonyUI.Utilities.setUIList(obj.otherTab.addedList, s);
+        function setAddedOtherList(obj, s)
+            SymphonyUI.Utilities.UI.setStringList(obj.otherTab.addedList, s);
         end
         
         function s = getAddedOther(obj)
-            s = SymphonyUI.Utilities.getSelectedUIValue(obj.otherTab.addedList);
-        end
-        
-        function s = getSource(obj)
-            s = [];
+            s = SymphonyUI.Utilities.UI.getSelectedValue(obj.otherTab.addedList);
         end
         
     end
@@ -221,8 +180,7 @@ function tab = createTabUI(obj, parent, addEvent, removeEvent)
     layout = uiextras.HBox( ...
         'Parent', parent, ...
         'Padding', 11, ...
-        'Spacing', 7, ...
-        'BackgroundColor', [238/255 238/255 238/255]);
+        'Spacing', 7);
 
     vbox = uiextras.VBox( ...
         'Parent', layout, ...
@@ -244,12 +202,12 @@ function tab = createTabUI(obj, parent, addEvent, removeEvent)
     tab.addButton = uicontrol( ...
         'Parent', vbox, ...
         'Style', 'pushbutton', ...
-        'String', '   Add->', ...
+        'String', 'Add->', ...
         'Callback', @(h,d)notify(obj, addEvent));
     obj.externalSolutionTab.removeButton = uicontrol( ...
         'Parent', vbox, ...
         'Style', 'pushbutton', ...
-        'String', '<-Remove    ', ...
+        'String', '<-Remove', ...
         'Callback', @(h,d)notify(obj, removeEvent));
     uiextras.Empty('Parent', vbox);
     set(vbox, 'Sizes', [-1 25 25 -1]);

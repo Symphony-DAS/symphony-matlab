@@ -1,6 +1,6 @@
-% A silly hack to get vertically aligned popup menus.
+% A silly hack to get vertically aligned drop-down menus.
 
-function c = uiPopupMenu(parent, string)
+function c = createDropDownMenu(parent, string)
     vbox = uiextras.VBox('Parent', parent);
     uiextras.Empty('Parent', vbox);
     c = uicontrol( ...

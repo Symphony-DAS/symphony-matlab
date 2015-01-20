@@ -6,10 +6,10 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
     
     methods
         
-        function obj = NewEpochGroupPresenter(experiment, epochGroupPreference, view)
+        function obj = NewEpochGroupPresenter(experiment, preferences, view)
             if nargin < 2
-                epochGroupPreference = SymphonyUI.Configurations.epochGroupPreference();
-                epochGroupPreference.setToDefaults();
+                preferences = SymphonyUI.Configurations.epochGroupPreference();
+                preferences.setToDefaults();
             end
             if nargin < 3
                 view = SymphonyUI.Views.NewEpochGroupView([]);
@@ -29,11 +29,11 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
             
             view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            view.setLabels(epochGroupPreference.labels);
-            view.setRecordings(epochGroupPreference.recordingTypes);
-            view.setAvailableExternalSolutions(epochGroupPreference.availableExternalSolutions);
-            view.setAvailableInternalSolutions(epochGroupPreference.availableInternalSolutions);
-            view.setAvailableOthers(epochGroupPreference.availableOthers);
+            view.setLabelList(preferences.labelList);
+            view.setRecordingList(preferences.recordingList);
+            view.setAvailableExternalSolutionList(preferences.availableExternalSolutionList);
+            view.setAvailableInternalSolutionList(preferences.availableInternalSolutionList);
+            view.setAvailableOtherList(preferences.availableOtherList);
         end
         
     end
@@ -53,11 +53,11 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
             if ~ischar(c)
                 return;
             end
-            added = obj.view.getAddedExternalSolutions();
+            added = obj.view.getAddedExternalSolutionList();
             if any(ismember(added, c))
                 return;
             end
-            obj.view.setAddedExternalSolutions([added;{c}]);
+            obj.view.setAddedExternalSolutionList([added;{c}]);
         end
         
         function onSelectedRemoveExternalSolution(obj, ~, ~)
@@ -65,10 +65,10 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
             if ~ischar(c)
                 return;
             end
-            added = obj.view.getAddedExternalSolutions();
+            added = obj.view.getAddedExternalSolutionList();
             index = ismember(added, c);
             added(index) = [];
-            obj.view.setAddedExternalSolutions(added);
+            obj.view.setAddedExternalSolutionList(added);
         end
         
         function onSelectedAddInternalSolution(obj, ~, ~)
@@ -76,11 +76,11 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
             if ~ischar(c)
                 return;
             end
-            added = obj.view.getAddedInternalSolutions();
+            added = obj.view.getAddedInternalSolutionList();
             if any(ismember(added, c))
                 return;
             end
-            obj.view.setAddedInternalSolutions([added;{c}]);
+            obj.view.setAddedInternalSolutionList([added;{c}]);
         end
         
         function onSelectedRemoveInternalSolution(obj, ~, ~)
@@ -88,10 +88,10 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
             if ~ischar(c)
                 return;
             end
-            added = obj.view.getAddedInternalSolutions();
+            added = obj.view.getAddedInternalSolutionList();
             index = ismember(added, c);
             added(index) = [];
-            obj.view.setAddedInternalSolutions(added);
+            obj.view.setAddedInternalSolutionList(added);
         end
         
         function onSelectedAddOther(obj, ~, ~)
@@ -99,11 +99,11 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
             if ~ischar(c)
                 return;
             end
-            added = obj.view.getAddedOthers();
+            added = obj.view.getAddedOtherList();
             if any(ismember(added, c))
                 return;
             end
-            obj.view.setAddedOthers([added;{c}]);
+            obj.view.setAddedOtherList([added;{c}]);
         end
         
         function onSelectedRemoveOther(obj, ~, ~)
@@ -111,17 +111,17 @@ classdef NewEpochGroupPresenter < SymphonyUI.Presenter
             if ~ischar(c)
                 return;
             end
-            added = obj.view.getAddedOthers();
+            added = obj.view.getAddedOtherList();
             index = ismember(added, c);
             added(index) = [];
-            obj.view.setAddedOthers(added);
+            obj.view.setAddedOtherList(added);
         end
         
         function onSelectedBegin(obj, ~, ~)
             label = obj.view.getLabel();
             recording = obj.view.getRecording();
             keywords = obj.view.getKeywords();
-            source = obj.view.getSource();
+            source = [];
             
             attributes = [];
             

@@ -1,6 +1,6 @@
 % A silly hack to get vertically aligned labels.
 
-function c = uiLabel(parent, string)
+function c = createLabel(parent, string)
     vbox = uiextras.VBox('Parent', parent);
     uiextras.Empty('Parent', vbox);
     c = uicontrol( ...
