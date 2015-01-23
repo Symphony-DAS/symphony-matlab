@@ -1,7 +1,7 @@
 classdef Protocol < handle
     
     properties (Constant, Abstract)
-        name
+        displayName
     end
     
     methods

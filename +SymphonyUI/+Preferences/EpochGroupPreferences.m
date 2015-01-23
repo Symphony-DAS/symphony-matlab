@@ -1,11 +1,11 @@
 classdef EpochGroupPreferences < handle
     
     properties (SetObservable)
-        labelList = {''}
-        recordingList = {''}
-        availableExternalSolutionList = {''}
-        availableInternalSolutionList = {''}
-        availableOtherList = {''}
+        labelList
+        recordingList
+        availableExternalSolutionList
+        availableInternalSolutionList
+        availableOtherList
     end
     
     methods
@@ -24,10 +24,6 @@ classdef EpochGroupPreferences < handle
                 'Ames Hepes', ...
                 'NBQX-10mM', ...
                 'TPMPA-50mM'};
-            obj.availableInternalSolutionList = { ...
-                ''};
-            obj.availableOtherList = { ...
-                ''};
         end
         
         function set.labelList(obj, l)

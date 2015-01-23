@@ -1,7 +1,6 @@
 classdef ProtocolParametersPresenter < SymphonyUI.Presenter
     
     properties (Access = private)
-        protocol
         previewPresenter
     end
     

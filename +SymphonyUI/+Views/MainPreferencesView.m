@@ -1,4 +1,4 @@
-classdef AppPreferencesView < SymphonyUI.View
+classdef MainPreferencesView < SymphonyUI.View
     
     events
         SelectedCard
@@ -9,6 +9,7 @@ classdef AppPreferencesView < SymphonyUI.View
     properties (Access = private)
         cardList
         cardPanel
+        mainCard
         experimentCard
         okButton
         cancelButton
@@ -16,7 +17,7 @@ classdef AppPreferencesView < SymphonyUI.View
     
     methods
         
-        function obj = AppPreferencesView(parent)
+        function obj = MainPreferencesView(parent)
             obj = obj@SymphonyUI.View(parent);
         end
         
@@ -25,10 +26,8 @@ classdef AppPreferencesView < SymphonyUI.View
             import SymphonyUI.Utilities.UI.*;
             
             set(obj.figureHandle, 'Name', 'Preferences');
-            set(obj.figureHandle, 'Position', screenCenter(467, 388));
+            set(obj.figureHandle, 'Position', screenCenter(467, 356));
             
-            labelSize = 100;
-            panelLabelSize = 87;
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
@@ -41,23 +40,34 @@ classdef AppPreferencesView < SymphonyUI.View
             obj.cardList = uicontrol( ...
                 'Parent', preferencesLayout, ...
                 'Style', 'list', ...
-                'String', {'Experiment', 'Epoch Group', 'Acquisition'}, ...
+                'String', {'Main', 'Experiment', 'Epoch Group'}, ...
                 'Callback', @(h,d)notify(obj, 'SelectedCard'));
             
             obj.cardPanel = uix.CardPanel( ...
                 'Parent', preferencesLayout);
             
-            % Experiment card.
-            experimentLayout = uiextras.VBox( ...
+            % Main card.
+            mainLabelSize = 120;
+            mainCardLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
-            obj.experimentCard.defaultNameField = createLabeledTextField(experimentLayout, 'Default name:', [labelSize -1]);
-            obj.experimentCard.defaultPurposeField = createLabeledTextField(experimentLayout, 'Default purpose:', [labelSize -1]);
-            obj.experimentCard.defaultLocationField = createLabeledTextField(experimentLayout, 'Default location:', [labelSize -1]);
-            obj.experimentCard.rigPathListField = createLabeledTextField(experimentLayout, 'Rig path list:', [labelSize -1]);
+            obj.mainCard.rigSearchPathsField = createLabeledTextField(mainCardLayout, 'Rig search paths:', [mainLabelSize -1]);
+            obj.mainCard.protocolSearchPathsField = createLabeledTextField(mainCardLayout, 'Protocol search paths:', [mainLabelSize -1]);
+            
+            set(mainCardLayout, 'Sizes', [25 25]);
+            
+            % Experiment card.
+            experimentLabelSize = 100;
+            experimentPanelLabelSize = 87;
+            experimentCardLayout = uiextras.VBox( ...
+                'Parent', obj.cardPanel, ...
+                'Spacing', 7);
+            obj.experimentCard.defaultNameField = createLabeledTextField(experimentCardLayout, 'Default name:', [experimentLabelSize -1]);
+            obj.experimentCard.defaultPurposeField = createLabeledTextField(experimentCardLayout, 'Default purpose:', [experimentLabelSize -1]);
+            obj.experimentCard.defaultLocationField = createLabeledTextField(experimentCardLayout, 'Default location:', [experimentLabelSize -1]);
             
             animalPanel = uix.Panel( ...
-                'Parent', experimentLayout, ...
+                'Parent', experimentCardLayout, ...
                 'Title', 'Animal', ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
@@ -65,13 +75,13 @@ classdef AppPreferencesView < SymphonyUI.View
                 'Parent', animalPanel, ...
                 'Padding', 11, ...
                 'Spacing', 7);
-            obj.experimentCard.speciesListField = createLabeledTextField(animalLayout, 'Species list:', [panelLabelSize -1]);
-            obj.experimentCard.phenotypeListField = createLabeledTextField(animalLayout, 'Phenotype list:', [panelLabelSize -1]);
-            obj.experimentCard.genotypeListField = createLabeledTextField(animalLayout, 'Genotype list:', [panelLabelSize -1]);
+            obj.experimentCard.speciesListField = createLabeledTextField(animalLayout, 'Species list:', [experimentPanelLabelSize -1]);
+            obj.experimentCard.phenotypeListField = createLabeledTextField(animalLayout, 'Phenotype list:', [experimentPanelLabelSize -1]);
+            obj.experimentCard.genotypeListField = createLabeledTextField(animalLayout, 'Genotype list:', [experimentPanelLabelSize -1]);
             set(animalLayout, 'Sizes', [25 25 25]);
             
             tissuePanel = uix.Panel( ...
-                'Parent', experimentLayout, ...
+                'Parent', experimentCardLayout, ...
                 'Title', 'Tissue', ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
@@ -79,18 +89,12 @@ classdef AppPreferencesView < SymphonyUI.View
                 'Parent', tissuePanel, ...
                 'Padding', 11, ...
                 'Spacing', 7);
-            obj.experimentCard.preparationListField = createLabeledTextField(tissueLayout, 'Preparation list:', [panelLabelSize -1]);
+            obj.experimentCard.preparationListField = createLabeledTextField(tissueLayout, 'Preparation list:', [experimentPanelLabelSize -1]);
             set(tissueLayout, 'Sizes', [25]);
             
-            set(experimentLayout, 'Sizes', [25 25 25 25 132 68]);
+            set(experimentCardLayout, 'Sizes', [25 25 25 132 68]);
             
             % Epoch group card.
-            layout = uiextras.VBox( ...
-                'Parent', obj.cardPanel, ...
-                'Padding', 11, ...
-                'Spacing', 7);
-            
-            % Acquisition card.
             layout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Padding', 11, ...
@@ -137,6 +141,22 @@ classdef AppPreferencesView < SymphonyUI.View
             SymphonyUI.Utilities.UI.setSelectedValue(obj.cardList, c);
         end
         
+        function p = getRigSearchPaths(obj)
+            p = get(obj.mainCard.rigSearchPathsField, 'String');
+        end
+        
+        function setRigSearchPaths(obj, p)
+            set(obj.mainCard.rigSearchPathsField, 'String', p);
+        end
+        
+        function p = getProtocolSearchPaths(obj)
+            p = get(obj.mainCard.protocolSearchPathsField, 'String');
+        end
+        
+        function setProtocolSearchPaths(obj, p)
+            set(obj.mainCard.protocolSearchPathsField, 'String', p);
+        end
+        
         function n = getDefaultName(obj)
             n = get(obj.experimentCard.defaultNameField, 'String');
         end
@@ -159,14 +179,6 @@ classdef AppPreferencesView < SymphonyUI.View
         
         function setDefaultLocation(obj, l)
             set(obj.experimentCard.defaultLocationField, 'String', l);
-        end
-        
-        function r = getRigPathList(obj)
-            r = get(obj.experimentCard.rigPathListField, 'String');
-        end
-        
-        function setRigPathList(obj, r)
-            set(obj.experimentCard.rigPathListField, 'String', r);
         end
         
         function s = getSpeciesList(obj)

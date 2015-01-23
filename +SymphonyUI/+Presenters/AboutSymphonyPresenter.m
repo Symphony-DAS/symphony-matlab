@@ -12,7 +12,7 @@ classdef AboutSymphonyPresenter < SymphonyUI.Presenter
             
             obj = obj@SymphonyUI.Presenter(view);
             
-            obj.addListener(view, 'Ok', @obj.onOk);
+            obj.addListener(view, 'Ok', @obj.onSelectedOk);
             
             text = { ...
                 'Symphony Data Acquisition System', ...
@@ -21,7 +21,7 @@ classdef AboutSymphonyPresenter < SymphonyUI.Presenter
             obj.view.setAboutText(text);
         end
         
-        function onOk(obj, ~, ~)
+        function onSelectedOk(obj, ~, ~)
             obj.view.close();
         end
         

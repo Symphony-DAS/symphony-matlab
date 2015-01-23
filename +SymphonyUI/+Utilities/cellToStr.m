@@ -1,4 +1,7 @@
 function s = cellToStr(c, delimiter)
+    if ~iscell(c)
+        c = {c};
+    end
     if nargin < 2
         delimiter = ', ';
     end

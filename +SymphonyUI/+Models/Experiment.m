@@ -7,7 +7,6 @@ classdef Experiment < handle
     
     properties
         path
-        rig
         purpose
         source
         epochGroup
@@ -15,9 +14,8 @@ classdef Experiment < handle
     
     methods
         
-        function obj = Experiment(path, rig, purpose, source)
+        function obj = Experiment(path, purpose, source)
             obj.path = path;
-            obj.rig = rig;
             obj.purpose = purpose;
             obj.source = source;
         end

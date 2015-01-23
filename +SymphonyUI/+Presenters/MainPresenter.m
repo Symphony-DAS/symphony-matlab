@@ -1,16 +1,15 @@
 classdef MainPresenter < SymphonyUI.Presenter
     
-    properties (SetAccess = private)
-        appData
-    end
-    
     properties (Access = private)
+        preferences
+        appData
+        protocol
         parametersPresenter
     end
     
     methods
         
-        function obj = MainPresenter(appPreferences, view)
+        function obj = MainPresenter(preferences, view)            
             if nargin < 2
                 view = SymphonyUI.Views.MainView();
             end
@@ -18,13 +17,13 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj = obj@SymphonyUI.Presenter(view);
             %view.loadPosition();
             
-            obj.appData = SymphonyUI.AppData(appPreferences);
+            obj.preferences = preferences;
+            obj.addListener(preferences, 'protocolSearchPaths', 'PostSet', @obj.onSetProtocolSearchPaths);
+            
+            obj.appData = SymphonyUI.AppData();
+            obj.addListener(obj.appData, 'SetRig', @obj.onSetRig);
             obj.addListener(obj.appData, 'SetExperiment', @obj.onSetExperiment);
-            obj.addListener(obj.appData, 'SetProtocol', @obj.onSetProtocol);
-            obj.addListener(obj.appData, 'SetController', @obj.onSetController);
-            obj.addListener(obj.appData, 'BeganEpochGroup', @obj.onBeganEpochGroup);
-            obj.addListener(obj.appData, 'EndedEpochGroup', @obj.onEndedEpochGroup);
-            obj.addListener(obj.appData, 'SetState', @obj.onSetState);
+            obj.addListener(obj.appData, 'SetControllerState', @obj.onSetControllerState);
             
             obj.addListener(view, 'NewExperiment', @obj.onSelectedNewExperiment);
             obj.addListener(view, 'CloseExperiment', @obj.onSelectedCloseExperiment);
@@ -35,18 +34,19 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj.addListener(view, 'Run', @obj.onSelectedRun);
             obj.addListener(view, 'Pause', @obj.onSelectedPause);
             obj.addListener(view, 'Stop', @obj.onSelectedStop);
+            obj.addListener(view, 'SetRig', @obj.onSelectedSetRig);
             obj.addListener(view, 'Preferences', @obj.onSelectedPreferences);
             obj.addListener(view, 'Documentation', @obj.onSelectedDocumentation);
             obj.addListener(view, 'UserGroup', @obj.onSelectedUserGroup);
             obj.addListener(view, 'AboutSymphony', @obj.onSelectedAboutSymphony);
             obj.addListener(view, 'Exit', @(h,d)view.close());
             
-            view.enableNewExperiment(true);
+            view.enableNewExperiment(false);
             view.enableCloseExperiment(false);
             view.enableBeginEpochGroup(false);
             view.enableEndEpochGroup(false);
-            view.enableViewNotes(false);
             view.enableAddNote(false);
+            view.enableViewNotes(false);
             view.enableViewRig(false);
             view.enableSelectProtocol(false);
             view.enableProtocolParameters(false);
@@ -54,7 +54,9 @@ classdef MainPresenter < SymphonyUI.Presenter
             view.enablePause(false);
             view.enableStop(false);
             view.enableShouldSave(false);
-            view.enableStatus(false);
+            
+            obj.onSetProtocolSearchPaths();
+            obj.onSetControllerState();
         end
         
     end
@@ -62,9 +64,8 @@ classdef MainPresenter < SymphonyUI.Presenter
     methods (Access = private)
         
         function onSelectedNewExperiment(obj, ~, ~)
-            preferences = obj.appData.appPreferences.experimentPreferences;
             view = SymphonyUI.Views.NewExperimentView(obj.view);
-            p = SymphonyUI.Presenters.NewExperimentPresenter(preferences, view);
+            p = SymphonyUI.Presenters.NewExperimentPresenter(obj.preferences.experimentPreferences, view);
             result = p.view.showDialog();
             if result
                 obj.appData.setExperiment(p.experiment);
@@ -73,9 +74,7 @@ classdef MainPresenter < SymphonyUI.Presenter
         
         function onSelectedCloseExperiment(obj, ~, ~)
             obj.appData.experiment.close();
-            obj.appData.setController([]);
-            obj.appData.setProtocol([]);
-            obj.appData.setExperiment([]);
+            obj.appData.experiment = [];
         end
         
         function onSetExperiment(obj, ~, ~)
@@ -84,22 +83,16 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj.view.enableNewExperiment(~hasExperiment);
             obj.view.enableCloseExperiment(hasExperiment);
             obj.view.enableBeginEpochGroup(hasExperiment);
-            obj.view.enableViewNotes(hasExperiment);
             obj.view.enableAddNote(hasExperiment);
-            obj.view.enableViewRig(hasExperiment);
-            obj.view.enableSelectProtocol(hasExperiment);
-            
-            if hasExperiment
-                obj.onSelectedProtocol();
-                obj.appData.setController(SymphonyUI.Models.Controller());
-            end
+            obj.view.enableViewNotes(hasExperiment);
+            obj.view.enableSetRig(~hasExperiment);
+            obj.view.enableShouldSave(hasExperiment);
         end
         
         function onSelectedBeginEpochGroup(obj, ~, ~)
             experiment = obj.appData.experiment;
-            preferences = obj.appData.appPreferences.epochGroupPreferences;
             view = SymphonyUI.Views.NewEpochGroupView(obj.view);
-            p = SymphonyUI.Presenters.NewEpochGroupPresenter(experiment, preferences, view);
+            p = SymphonyUI.Presenters.NewEpochGroupPresenter(experiment, obj.preferences.epochGroupPreferences, view);
             p.view.showDialog();
         end
         
@@ -117,21 +110,26 @@ classdef MainPresenter < SymphonyUI.Presenter
             end
         end
         
-        function onSelectedViewNotes(obj, ~, ~)
-            disp('Selected View Notes');
-        end
-        
         function onSelectedAddNote(obj, ~, ~)
             disp('Selected Add Note');
         end
         
-        function onSelectedViewRig(obj, ~, ~)
-            disp('Selected View Rig');
+        function onSelectedViewNotes(obj, ~, ~)
+            disp('Selected View Notes');
+        end
+        
+        function onSetProtocolSearchPaths(obj, ~, ~)
+            list = SymphonyUI.Utilities.search(obj.preferences.protocolSearchPaths, 'SymphonyUI.Models.Protocol');
+            obj.view.setProtocolList(list);
         end
         
         function onSelectedProtocol(obj, ~, ~)
             p = obj.view.getProtocol();
-            obj.appData.setProtocol(p);
+            if isempty(p)
+                obj.protocol = [];
+            else
+                obj.protocol = obj.protocolMap(p);
+            end
         end
         
         function onSetProtocol(obj, ~, ~)
@@ -166,19 +164,6 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj.parametersPresenter = [];
         end
         
-        function onSetController(obj, ~, ~)
-            hasController = ~isempty(obj.appData.controller);
-            if hasController
-                obj.onSetState();
-            else
-                obj.view.enableRun(false);
-                obj.view.enablePause(false);
-                obj.view.enableStop(false);
-                obj.view.enableShouldSave(false);
-                obj.view.enableStatus(false);
-            end
-        end
-        
         function onSelectedRun(obj, ~, ~)
             p = obj.appData.protocol;
             e = obj.appData.experiment;
@@ -193,19 +178,19 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj.appData.controller.stop();
         end
         
-        function onSetState(obj, ~, ~)
+        function onSetControllerState(obj, ~, ~)
             import SymphonyUI.Models.*;
             
             enableRun = false;
             enablePause = false;
             enableStop = false;
-            enableSave = false;
             status = 'Unknown';
             
             switch obj.appData.controller.state
+                case ControllerState.NOT_READY
+                    status = 'Not Ready';
                 case ControllerState.STOPPED
                     enableRun = true;
-                    enableSave = true;
                     status = 'Stopped';
                 case ControllerState.STOPPING
                     status = 'Stopping';
@@ -225,13 +210,36 @@ classdef MainPresenter < SymphonyUI.Presenter
             obj.view.enableRun(enableRun);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
-            obj.view.enableShouldSave(enableSave);
-            obj.view.enableStatus(true);
             obj.view.setStatus(status);
         end
         
+        function onSelectedSetRig(obj, ~, ~)
+            rigMap = SymphonyUI.Utilities.search(obj.preferences.rigSearchPaths, 'SymphonyUI.Models.Rig');
+            view = SymphonyUI.Views.SetRigView(obj.view);
+            p = SymphonyUI.Presenters.SetRigPresenter(rigMap, view);
+            result = p.view.showDialog();
+            if result
+                rig = p.rig;
+                rig.createDevices();
+                obj.appData.setRig(rig);
+            end
+        end
+        
+        function onSetRig(obj, ~, ~)
+            hasRig = ~isempty(obj.appData.rig);
+            
+            obj.view.enableViewRig(hasRig);
+            obj.view.enableNewExperiment(hasRig);
+            obj.view.enableSelectProtocol(hasRig);
+            
+            if hasRig
+                obj.onSelectedProtocol();
+            end
+        end
+        
         function onSelectedPreferences(obj, ~, ~)
-            p = SymphonyUI.Presenters.AppPreferencesPresenter(obj.appData.appPreferences);
+            view = SymphonyUI.Views.MainPreferencesView(obj.view);
+            p = SymphonyUI.Presenters.MainPreferencesPresenter(obj.preferences, view);
             p.view.showDialog();
         end
         

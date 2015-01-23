@@ -1,7 +1,6 @@
 classdef NewExperimentView < SymphonyUI.View
     
     events
-        BrowseLocation
         Open
         Cancel
     end
@@ -10,8 +9,6 @@ classdef NewExperimentView < SymphonyUI.View
         nameField
         purposeField
         locationField
-        browseLocationButton
-        rigDropDown
         speciesDropDown
         phenotypeDropDown
         genotypeDropDown
@@ -31,7 +28,7 @@ classdef NewExperimentView < SymphonyUI.View
             import SymphonyUI.Utilities.UI.*;
             
             set(obj.figureHandle, 'Name', 'New Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(330, 389));
+            set(obj.figureHandle, 'Position', screenCenter(330, 357));
             
             labelSize = 58;
             panelLabelSize = 72;
@@ -46,14 +43,7 @@ classdef NewExperimentView < SymphonyUI.View
             
             obj.nameField = createLabeledTextField(parametersLayout, 'Name:', [labelSize -1]);
             obj.purposeField = createLabeledTextField(parametersLayout, 'Purpose:', [labelSize -1]);
-            [obj.locationField, l] = createLabeledTextField(parametersLayout, 'Location:', [labelSize -1]);
-            obj.browseLocationButton = uicontrol( ...
-                'Parent', l, ...
-                'Style', 'pushbutton', ...
-                'String', 'Browse...', ...
-                'Callback', @(h,d)notify(obj, 'BrowseLocation'));
-            set(l, 'Sizes', [labelSize -1 75]);
-            obj.rigDropDown = createLabeledDropDownMenu(parametersLayout, 'Rig:', [labelSize -1]);
+            obj.locationField = createLabeledTextField(parametersLayout, 'Location:', [labelSize -1]);
             
             animalPanel = uix.Panel( ...
                 'Parent', parametersLayout, ...
@@ -81,7 +71,7 @@ classdef NewExperimentView < SymphonyUI.View
             obj.preparationDropDown = createLabeledDropDownMenu(tissueLayout, 'Preparation:', [panelLabelSize -1]);
             set(tissueLayout, 'Sizes', [25]);
             
-            set(parametersLayout, 'Sizes', [25 25 25 25 132 68]);
+            set(parametersLayout, 'Sizes', [25 25 25 132 68]);
             
             % Open/Cancel controls.
             controlsLayout = uiextras.HBox( ...
@@ -131,14 +121,6 @@ classdef NewExperimentView < SymphonyUI.View
         
         function setPurpose(obj, p)
             set(obj.purposeField, 'String', p);
-        end
-        
-        function r = getRig(obj)
-            r = SymphonyUI.Utilities.UI.getSelectedValue(obj.rigDropDown);
-        end
-        
-        function setRigList(obj, r)
-            SymphonyUI.Utilities.UI.setStringList(obj.rigDropDown, r);
         end
         
         function s = getSpecies(obj)

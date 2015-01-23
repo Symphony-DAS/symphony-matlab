@@ -1,6 +1,7 @@
 classdef ControllerState
     
     enumeration
+        NOT_READY
         STOPPED
         STOPPING
         PAUSED

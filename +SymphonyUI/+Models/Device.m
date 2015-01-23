@@ -1,7 +1,6 @@
-classdef Pulse < SymphonyUI.Protocol
+classdef Device < handle
     
     properties
-        name = 'Pulse'
     end
     
     methods

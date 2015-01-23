@@ -11,6 +11,8 @@ classdef MainView < SymphonyUI.View
         Run
         Pause
         Stop
+        SetRig
+        ViewRig
         Preferences
         Documentation
         UserGroup
@@ -64,15 +66,12 @@ classdef MainView < SymphonyUI.View
             obj.experimentMenu.endEpochGroup = uimenu(obj.experimentMenu.root, ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
-            obj.experimentMenu.viewNotes = uimenu(obj.experimentMenu.root, ...
-                'Label', 'View Notes', ...
-                'Separator', 'on');
             obj.experimentMenu.addNote = uimenu(obj.experimentMenu.root, ...
                 'Label', 'Add Note...', ...
-                'Accelerator', 't');
-            obj.experimentMenu.viewRig = uimenu(obj.experimentMenu.root, ...
-                'Label', 'View Rig', ...
+                'Accelerator', 't', ...
                 'Separator', 'on');
+            obj.experimentMenu.viewNotes = uimenu(obj.experimentMenu.root, ...
+                'Label', 'View Notes');
             
             % Acquisition menu.
             obj.acquisitionMenu.root = uimenu(obj.figureHandle, ...
@@ -98,6 +97,13 @@ classdef MainView < SymphonyUI.View
                 'Label', 'Tools');
             obj.toolsMenu.modulesMenu.root = uimenu(obj.toolsMenu.root, ...
                 'Label', 'Modules');
+            obj.toolsMenu.setRig = uimenu(obj.toolsMenu.root, ...
+                'Label', 'Set Rig...', ...
+                'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'SetRig'));
+            obj.toolsMenu.viewRig = uimenu(obj.toolsMenu.root, ...
+                'Label', 'View Rig', ...
+                'Callback', @(h,d)notify(obj, 'ViewRig'));
             obj.toolsMenu.options = uimenu(obj.toolsMenu.root, ...
                 'Label', 'Preferences...', ...
                 'Separator', 'on', ...
@@ -132,7 +138,7 @@ classdef MainView < SymphonyUI.View
             layout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 3);
-            obj.protocolDropDown = createDropDownMenu(layout, {'Pulse', 'Pulse Family', 'Seal and Leak'});
+            obj.protocolDropDown = createDropDownMenu(layout, {''});
             set(obj.protocolDropDown, ...
                 'TooltipString', 'Protocol', ...
                 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
@@ -199,16 +205,20 @@ classdef MainView < SymphonyUI.View
             set(obj.experimentMenu.endEpochGroup, 'Enable', SymphonyUI.Utilities.onOff(tf));
         end
         
-        function enableViewNotes(obj, tf)
-            set(obj.experimentMenu.viewNotes, 'Enable', SymphonyUI.Utilities.onOff(tf));
-        end
-        
         function enableAddNote(obj, tf)
             set(obj.experimentMenu.addNote, 'Enable', SymphonyUI.Utilities.onOff(tf));
         end
         
+        function enableViewNotes(obj, tf)
+            set(obj.experimentMenu.viewNotes, 'Enable', SymphonyUI.Utilities.onOff(tf));
+        end
+        
+        function enableSetRig(obj, tf)
+            set(obj.toolsMenu.setRig, 'Enable', SymphonyUI.Utilities.onOff(tf));
+        end
+        
         function enableViewRig(obj, tf)
-            set(obj.experimentMenu.viewRig, 'Enable', SymphonyUI.Utilities.onOff(tf));
+            set(obj.toolsMenu.viewRig, 'Enable', SymphonyUI.Utilities.onOff(tf));
         end
         
         function enableSelectProtocol(obj, tf)
@@ -245,6 +255,10 @@ classdef MainView < SymphonyUI.View
         
         function setProtocol(obj, p)
             SymphonyUI.Utilities.UI.setSelectedValue(obj.protocolDropDown, p);
+        end
+        
+        function setProtocolList(obj, p)
+            SymphonyUI.Utilities.UI.setStringList(obj.protocolDropDown, p);
         end
         
         function enableShouldSave(obj, tf)

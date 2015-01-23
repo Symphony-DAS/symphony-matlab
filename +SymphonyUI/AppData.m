@@ -1,18 +1,14 @@
 classdef AppData < handle
     
     events
+        SetRig
         SetExperiment
-        SetProtocol
-        SetController
-        BeganEpochGroup
-        EndedEpochGroup
-        SetState
+        SetControllerState
     end
     
     properties (SetAccess = private)
-        appPreferences
+        rig
         experiment
-        protocol
         controller
     end
     
@@ -22,66 +18,28 @@ classdef AppData < handle
     
     methods
         
-        function obj = AppData(appPreferences)
-            obj.appPreferences = appPreferences;
+        function obj = AppData(controller)
+            if nargin < 1
+                controller = SymphonyUI.Models.Controller();
+            end
             
-            addlistener(obj, 'SetExperiment', @obj.onSetExperiment);
-            addlistener(obj, 'SetProtocol', @obj.onSetProtocol);
-            addlistener(obj, 'SetController', @obj.onSetController);
-            
-            obj.listeners.experiment = [];
-            obj.listeners.protocol = [];
-            obj.listeners.controller = [];
-        end
-        
-        function setExperiment(obj, experiment)            
-            obj.experiment = experiment;
-            notify(obj, 'SetExperiment');
-        end
-        
-        function setProtocol(obj, protocol)
-            obj.protocol = protocol;
-            notify(obj, 'SetProtocol');
-        end
-        
-        function setController(obj, controller)
             obj.controller = controller;
-            notify(obj, 'SetController');
+            
+            addlistener(controller, 'state', 'PostSet', @(h,d)notify(obj, 'SetControllerState'));
+            addlistener(controller, 'rig', 'PostSet', @(h,d)notify(obj, 'SetRig'));
         end
         
-    end
-    
-    methods (Access = private)
-        
-        function onSetExperiment(obj, ~, ~)
-            while ~isempty(obj.listeners.experiment)
-                delete(obj.listeners.experiment{1});
-                obj.listeners.experiment(1) = [];
-            end
-            
-            if isempty(obj.experiment)
-                return;
-            end
-            
-            obj.listeners.experiment{end + 1} = addlistener(obj.experiment, 'BeganEpochGroup', @(h,d)notify(obj, 'BeganEpochGroup'));
-            obj.listeners.experiment{end + 1} = addlistener(obj.experiment, 'EndedEpochGroup', @(h,d)notify(obj, 'EndedEpochGroup'));
+        function setRig(obj, r)
+            obj.controller.setRig(r);
         end
         
-        function onSetProtocol(obj, ~, ~)
-            
+        function r = get.rig(obj)
+            r = obj.controller.rig;
         end
         
-        function onSetController(obj, ~, ~)
-            while ~isempty(obj.listeners.controller)
-                delete(obj.listeners.controller{1});
-                obj.listeners.controller(1) = [];
-            end
-            
-            if isempty(obj.controller)
-                return;
-            end
-            
-            obj.listeners.controller{end + 1} = addlistener(obj.controller, 'state', 'PostSet', @(h,d)notify(obj, 'SetState'));
+        function setExperiment(obj, e)
+            obj.experiment = e;
+            notify(obj, 'SetExperiment');
         end
         
     end

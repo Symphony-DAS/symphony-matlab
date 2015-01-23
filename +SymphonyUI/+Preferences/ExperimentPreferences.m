@@ -1,14 +1,13 @@
 classdef ExperimentPreferences < handle
     
     properties (SetObservable)
-        defaultName = ''
-        defaultPurpose = ''
-        defaultLocation = ''
-        rigPathList = {''}
-        speciesList = {''}
-        phenotypeList = {''}
-        genotypeList = {''}
-        preparationList = {''}
+        defaultName
+        defaultPurpose
+        defaultLocation
+        speciesList
+        phenotypeList
+        genotypeList
+        preparationList
     end
     
     methods
@@ -16,9 +15,6 @@ classdef ExperimentPreferences < handle
         function setToDefaults(obj)
             obj.defaultName = @()datestr(now, 'yyyy-mm-dd');
             obj.defaultLocation = @()pwd;
-            obj.rigPathList = { ...
-                'C:\', ...
-                'C:\Banana'};
             obj.speciesList = { ...
                 'C57BL/6', ...
                 '???'};

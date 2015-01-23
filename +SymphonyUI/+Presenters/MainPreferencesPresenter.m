@@ -1,33 +1,35 @@
-classdef AppPreferencesPresenter < SymphonyUI.Presenter
+classdef MainPreferencesPresenter < SymphonyUI.Presenter
     
     properties (SetAccess = private)
-        appPreferences
+        preferences
     end
     
     methods
         
-        function obj = AppPreferencesPresenter(preferences, view)
+        function obj = MainPreferencesPresenter(preferences, view)
             import SymphonyUI.Utilities.*;
             
             if nargin < 2
-                view = SymphonyUI.Views.AppPreferencesView([]);
+                view = SymphonyUI.Views.MainPreferencesView([]);
             end
             
             obj = obj@SymphonyUI.Presenter(view);
             
-            obj.appPreferences = preferences;
+            obj.preferences = preferences;
             
             obj.addListener(view, 'SelectedCard', @obj.onSelectedCard);
             obj.addListener(view, 'Ok', @obj.onSelectedOk);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
             
+            main = preferences;
             experiment = preferences.experimentPreferences;
             
             view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
+            view.setRigSearchPaths(cellToStr(main.rigSearchPaths));
+            view.setProtocolSearchPaths(cellToStr(main.protocolSearchPaths));
             view.setDefaultName(char(experiment.defaultName));
             view.setDefaultPurpose(char(experiment.defaultPurpose));
             view.setDefaultLocation(char(experiment.defaultLocation));
-            view.setRigPathList(cellToStr(experiment.rigPathList));
             view.setSpeciesList(cellToStr(experiment.speciesList));
             view.setPhenotypeList(cellToStr(experiment.phenotypeList));
             view.setGenotypeList(cellToStr(experiment.genotypeList));
@@ -61,20 +63,24 @@ classdef AppPreferencesPresenter < SymphonyUI.Presenter
                 out = in;
             end
             
+            rigSearchPaths = strToCell(obj.view.getRigSearchPaths);
+            protocolSearchPaths = strToCell(obj.view.getProtocolSearchPaths);
             name = parse(obj.view.getDefaultName());
             purpose = parse(obj.view.getDefaultPurpose());
             location = parse(obj.view.getDefaultLocation());
-            rigPathList = strToCell(obj.view.getRigPathList());
             speciesList = strToCell(obj.view.getSpeciesList());
             phenotypeList = strToCell(obj.view.getPhenotypeList());
             genotypeList = strToCell(obj.view.getGenotypeList());
             preparationList = strToCell(obj.view.getPreparationList());
             
-            experiment = obj.appPreferences.experimentPreferences;
+            main = obj.preferences;
+            experiment = obj.preferences.experimentPreferences;
+            
+            main.rigSearchPaths = rigSearchPaths;
+            main.protocolSearchPaths = protocolSearchPaths;
             experiment.defaultName = name;
             experiment.defaultPurpose = purpose;
             experiment.defaultLocation = location;
-            experiment.rigPathList = rigPathList;
             experiment.speciesList = speciesList;
             experiment.phenotypeList = phenotypeList;
             experiment.genotypeList = genotypeList;
