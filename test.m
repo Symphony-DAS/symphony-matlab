@@ -1,7 +1,7 @@
-import SymphonyUI.*;
+import symphonyui.*;
 
-pref = Preferences.MainPreferences();
+pref = preferences.MainPreferences();
 pref.setToDefaults();
 
-p = Presenters.MainPresenter(pref);
+p = presenters.MainPresenter(pref);
 p.view.show();
