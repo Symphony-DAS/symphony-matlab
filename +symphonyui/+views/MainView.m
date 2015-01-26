@@ -41,7 +41,7 @@ classdef MainView < symphonyui.View
             import symphonyui.utilities.ui.*;
             
             set(obj.figureHandle, 'Name', 'Symphony');
-            set(obj.figureHandle, 'Position', screenCenter(290, 130));
+            set(obj.figureHandle, 'Position', screenCenter(344, 136));
             
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...

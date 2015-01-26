@@ -34,9 +34,7 @@ classdef SetRigPresenter < symphonyui.Presenter
         end
         
         function onSelectedOk(obj, ~, ~)
-            constructor = str2func(obj.view.getRig());
-            
-            obj.rig = constructor();
+            obj.rig = obj.view.getRig();
             
             obj.view.result = true;
         end

@@ -1,9 +1,7 @@
 classdef MainPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        preferences
         appData
-        protocol
         parametersPresenter
     end
     
@@ -17,12 +15,11 @@ classdef MainPresenter < symphonyui.Presenter
             obj = obj@symphonyui.Presenter(view);
             %view.loadPosition();
             
-            obj.preferences = preferences;
-            obj.addListener(preferences, 'protocolSearchPaths', 'PostSet', @obj.onSetProtocolSearchPaths);
-            
-            obj.appData = symphonyui.AppData();
+            obj.appData = symphonyui.AppData(preferences);
             obj.addListener(obj.appData, 'SetRig', @obj.onSetRig);
             obj.addListener(obj.appData, 'SetExperiment', @obj.onSetExperiment);
+            obj.addListener(obj.appData, 'SetProtocol', @obj.onSetProtocol);
+            obj.addListener(obj.appData, 'SetProtocolList', @obj.onSetProtocolList);
             obj.addListener(obj.appData, 'SetControllerState', @obj.onSetControllerState);
             
             obj.addListener(view, 'NewExperiment', @obj.onSelectedNewExperiment);
@@ -54,9 +51,9 @@ classdef MainPresenter < symphonyui.Presenter
             view.enablePause(false);
             view.enableStop(false);
             view.enableShouldSave(false);
+            view.enableStatus(false);
             
-            obj.onSetProtocolSearchPaths();
-            obj.onSetControllerState();
+            obj.onSetProtocolList();
         end
         
     end
@@ -65,7 +62,7 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onSelectedNewExperiment(obj, ~, ~)
             view = symphonyui.views.NewExperimentView(obj.view);
-            p = symphonyui.presenters.NewExperimentPresenter(obj.preferences.experimentPreferences, view);
+            p = symphonyui.presenters.NewExperimentPresenter(obj.appData.experimentPreferences, view);
             result = p.view.showDialog();
             if result
                 obj.appData.setExperiment(p.experiment);
@@ -87,12 +84,14 @@ classdef MainPresenter < symphonyui.Presenter
             obj.view.enableViewNotes(hasExperiment);
             obj.view.enableSetRig(~hasExperiment);
             obj.view.enableShouldSave(hasExperiment);
+            obj.view.setShouldSave(hasExperiment);
         end
         
         function onSelectedBeginEpochGroup(obj, ~, ~)
             experiment = obj.appData.experiment;
+            preferences = obj.appData.epochGroupPreferences;
             view = symphonyui.views.NewEpochGroupView(obj.view);
-            p = symphonyui.presenters.NewEpochGroupPresenter(experiment, obj.preferences.epochGroupPreferences, view);
+            p = symphonyui.presenters.NewEpochGroupPresenter(experiment, preferences, view);
             p.view.showDialog();
         end
         
@@ -118,28 +117,16 @@ classdef MainPresenter < symphonyui.Presenter
             disp('Selected View Notes');
         end
         
-        function onSetProtocolSearchPaths(obj, ~, ~)
-            list = symphonyui.utilities.search(obj.preferences.protocolSearchPaths, 'symphonyui.models.Protocol');
-            obj.view.setProtocolList(list);
-        end
-        
         function onSelectedProtocol(obj, ~, ~)
             p = obj.view.getProtocol();
-            if isempty(p)
-                obj.protocol = [];
-            else
-                
-            end
+            obj.appData.setProtocol(p);
         end
         
         function onSetProtocol(obj, ~, ~)
             hasProtocol = ~isempty(obj.appData.protocol);
             
             obj.view.enableProtocolParameters(hasProtocol);
-            
-            if hasProtocol
-                obj.view.setProtocol(obj.appData.protocol);
-            end
+            obj.view.setProtocol(obj.appData.getProtocolName);
             
             if ~isempty(obj.parametersPresenter)
                 if hasProtocol
@@ -148,6 +135,10 @@ classdef MainPresenter < symphonyui.Presenter
                     obj.parametersPresenter.view.close();
                 end
             end
+        end
+        
+        function onSetProtocolList(obj, ~, ~)
+            obj.view.setProtocolList(obj.appData.getProtocolList);
         end
         
         function onSelectedProtocolParameters(obj, ~, ~)
@@ -166,8 +157,7 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onSelectedRun(obj, ~, ~)
             p = obj.appData.protocol;
-            e = obj.appData.experiment;
-            obj.appData.controller.runProtocol(p, e);
+            obj.appData.controller.runProtocol(p);
         end
         
         function onSelectedPause(obj, ~, ~)
@@ -184,6 +174,8 @@ classdef MainPresenter < symphonyui.Presenter
             enableRun = false;
             enablePause = false;
             enableStop = false;
+            enableShouldSave = false;
+            enableStatus = false;
             status = 'Unknown';
             
             switch obj.appData.controller.state
@@ -191,37 +183,44 @@ classdef MainPresenter < symphonyui.Presenter
                     status = 'Not Ready';
                 case ControllerState.STOPPED
                     enableRun = true;
+                    enableShouldSave = true;
+                    enableStatus = true;
                     status = 'Stopped';
                 case ControllerState.STOPPING
+                    enableStatus = true;
                     status = 'Stopping';
                 case ControllerState.PAUSED
                     enableRun = true;
                     enableStop = true;
+                    enableShouldSave = true;
+                    enableStatus = true;
                     status = 'Paused';
                 case ControllerState.PAUSING
                     enableStop = true;
+                    enableStatus = true;
                     status = 'Pausing';
                 case ControllerState.RUNNING
                     enablePause = true;
                     enableStop = true;
+                    enableStatus = true;
                     status = 'Running';
             end
             
             obj.view.enableRun(enableRun);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
+            obj.view.enableShouldSave(enableShouldSave && ~isempty(obj.appData.experiment));
+            obj.view.enableStatus(enableStatus);
             obj.view.setStatus(status);
         end
         
         function onSelectedSetRig(obj, ~, ~)
-            list = symphonyui.utilities.search(obj.preferences.rigSearchPaths, 'symphonyui.models.Rig');
+            list = obj.appData.getRigList();
             view = symphonyui.views.SetRigView(obj.view);
             p = symphonyui.presenters.SetRigPresenter(list, view);
             result = p.view.showDialog();
             if result
-                rig = p.rig;
-                rig.createDevices();
-                obj.appData.setRig(rig);
+                obj.appData.setRig(p.rig);
             end
         end
         
@@ -238,8 +237,9 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedPreferences(obj, ~, ~)
-            view = symphonyui.views.MainPreferencesView(obj.view);
-            p = symphonyui.presenters.MainPreferencesPresenter(obj.preferences, view);
+            preferences = obj.appData.preferences;
+            view = symphonyui.views.AppPreferencesView(obj.view);
+            p = symphonyui.presenters.AppPreferencesPresenter(preferences, view);
             p.view.showDialog();
         end
         

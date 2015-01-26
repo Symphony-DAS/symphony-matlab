@@ -1,4 +1,4 @@
-classdef MainPreferences < handle
+classdef AppPreferences < handle
     
     properties (SetObservable)
         rigSearchPaths
@@ -12,7 +12,7 @@ classdef MainPreferences < handle
     
     methods
         
-        function obj = MainPreferences()
+        function obj = AppPreferences()
             import symphonyui.preferences.*;
             
             obj.experimentPreferences = ExperimentPreferences();

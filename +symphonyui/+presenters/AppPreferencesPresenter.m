@@ -1,4 +1,4 @@
-classdef MainPreferencesPresenter < symphonyui.Presenter
+classdef AppPreferencesPresenter < symphonyui.Presenter
     
     properties (SetAccess = private)
         preferences
@@ -6,11 +6,11 @@ classdef MainPreferencesPresenter < symphonyui.Presenter
     
     methods
         
-        function obj = MainPreferencesPresenter(preferences, view)
+        function obj = AppPreferencesPresenter(preferences, view)
             import symphonyui.utilities.*;
             
             if nargin < 2
-                view = symphonyui.views.MainPreferencesView([]);
+                view = symphonyui.views.AppPreferencesView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);

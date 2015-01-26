@@ -1,6 +1,6 @@
 import symphonyui.*;
 
-pref = preferences.MainPreferences();
+pref = preferences.AppPreferences();
 pref.setToDefaults();
 
 p = presenters.MainPresenter(pref);

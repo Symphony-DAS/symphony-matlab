@@ -22,7 +22,7 @@ classdef SetRigView < symphonyui.View
             import symphonyui.utilities.ui.*;
             
             set(obj.figureHandle, 'Name', 'Set Rig');
-            set(obj.figureHandle, 'Position', screenCenter(236, 79));
+            set(obj.figureHandle, 'Position', screenCenter(330, 79));
             
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
