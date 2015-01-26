@@ -15,6 +15,7 @@ classdef NewExperimentPresenter < symphonyui.Presenter
             
             obj = obj@symphonyui.Presenter(view);
             
+            obj.addListener(view, 'BrowseLocation', @obj.onSelectedBrowseLocation);
             obj.addListener(view, 'Open', @obj.onSelectedOpen);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
             
@@ -37,6 +38,13 @@ classdef NewExperimentPresenter < symphonyui.Presenter
                 obj.onSelectedOpen();
             elseif strcmp(data.Key, 'escape')
                 obj.view.close();
+            end
+        end
+        
+        function onSelectedBrowseLocation(obj, ~, ~)
+            location = uigetdir(pwd, 'Experiment Location');
+            if location ~= 0
+                obj.view.setLocation(location);
             end
         end
         

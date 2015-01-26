@@ -1,6 +1,7 @@
 classdef NewExperimentView < symphonyui.View
     
     events
+        BrowseLocation
         Open
         Cancel
     end
@@ -9,6 +10,7 @@ classdef NewExperimentView < symphonyui.View
         nameField
         purposeField
         locationField
+        browseLocationButton
         speciesDropDown
         phenotypeDropDown
         genotypeDropDown
@@ -43,7 +45,13 @@ classdef NewExperimentView < symphonyui.View
             
             obj.nameField = createLabeledTextField(parametersLayout, 'Name:', [labelSize -1]);
             obj.purposeField = createLabeledTextField(parametersLayout, 'Purpose:', [labelSize -1]);
-            obj.locationField = createLabeledTextField(parametersLayout, 'Location:', [labelSize -1]);
+            [obj.locationField, l] = createLabeledTextField(parametersLayout, 'Location:', [labelSize -1]);
+            obj.browseLocationButton = uicontrol( ...
+                'Parent', l, ...
+                'Style', 'pushbutton', ...
+                'String', '...', ...
+                'Callback', @(h,d)notify(obj, 'BrowseLocation'));
+            set(l, 'Sizes', [labelSize -1 30]);
             
             animalPanel = uix.Panel( ...
                 'Parent', parametersLayout, ...

@@ -54,6 +54,7 @@ classdef MainPresenter < symphonyui.Presenter
             view.enableStatus(false);
             
             obj.onSetProtocolList();
+            obj.onSelectedSetRig();
         end
         
     end
