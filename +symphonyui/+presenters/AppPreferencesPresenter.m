@@ -23,6 +23,7 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
             
             main = preferences;
             experiment = preferences.experimentPreferences;
+            epochGroup = preferences.epochGroupPreferences;
             
             view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
             view.setRigSearchPaths(cellToStr(main.rigSearchPaths));
@@ -34,6 +35,12 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
             view.setPhenotypeList(cellToStr(experiment.phenotypeList));
             view.setGenotypeList(cellToStr(experiment.genotypeList));
             view.setPreparationList(cellToStr(experiment.preparationList));
+            view.setLabelList(cellToStr(epochGroup.labelList));
+            view.setRecordingList(cellToStr(epochGroup.recordingList));
+            view.setDefaultKeywords(cellToStr(epochGroup.defaultKeywords));
+            view.setExternalSolutionList(cellToStr(epochGroup.availableExternalSolutionList));
+            view.setInternalSolutionList(cellToStr(epochGroup.availableInternalSolutionList));
+            view.setOtherList(cellToStr(epochGroup.availableOtherList));
         end
         
     end
@@ -72,9 +79,16 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
             phenotypeList = strToCell(obj.view.getPhenotypeList());
             genotypeList = strToCell(obj.view.getGenotypeList());
             preparationList = strToCell(obj.view.getPreparationList());
+            labelList = strToCell(obj.view.getLabelList());
+            recordingList = strToCell(obj.view.getRecordingList());
+            keywords = parse(obj.view.getDefaultKeywords());
+            externalSolutionList = strToCell(obj.view.getExternalSolutionList());
+            internalSolutionList = strToCell(obj.view.getInternalSolutionList());
+            otherList = strToCell(obj.view.getOtherList());
             
             main = obj.preferences;
             experiment = obj.preferences.experimentPreferences;
+            epochGroup = obj.preferences.epochGroupPreferences;
             
             main.rigSearchPaths = rigSearchPaths;
             main.protocolSearchPaths = protocolSearchPaths;
@@ -85,6 +99,12 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
             experiment.phenotypeList = phenotypeList;
             experiment.genotypeList = genotypeList;
             experiment.preparationList = preparationList;
+            epochGroup.labelList = labelList;
+            epochGroup.recordingList = recordingList;
+            epochGroup.defaultKeywords = keywords;
+            epochGroup.availableExternalSolutionList = externalSolutionList;
+            epochGroup.availableInternalSolutionList = internalSolutionList;
+            epochGroup.availableOtherList = otherList;
             
             obj.view.result = true;
         end

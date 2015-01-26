@@ -3,6 +3,7 @@ classdef EpochGroupPreferences < handle
     properties (SetObservable)
         labelList
         recordingList
+        defaultKeywords
         availableExternalSolutionList
         availableInternalSolutionList
         availableOtherList

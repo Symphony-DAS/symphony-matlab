@@ -11,6 +11,7 @@ classdef AppPreferencesView < symphonyui.View
         cardPanel
         generalCard
         experimentCard
+        epochGroupCard
         okButton
         cancelButton
     end
@@ -95,10 +96,18 @@ classdef AppPreferencesView < symphonyui.View
             set(experimentLayout, 'Sizes', [25 25 25 132 68]);
             
             % Epoch group card.
-            layout = uiextras.VBox( ...
+            epochGroupLabelSize = 115;
+            epochGroupLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
-                'Padding', 11, ...
                 'Spacing', 7);
+            obj.epochGroupCard.labelListField = createLabeledTextField(epochGroupLayout, 'Label list:', [epochGroupLabelSize -1]);
+            obj.epochGroupCard.recordingListField = createLabeledTextField(epochGroupLayout, 'Recording list:', [epochGroupLabelSize -1]);
+            obj.epochGroupCard.defaultKeywordsField = createLabeledTextField(epochGroupLayout, 'Default keywords:', [epochGroupLabelSize -1]);
+            obj.epochGroupCard.externalSolutionListField = createLabeledTextField(epochGroupLayout, 'External solution list:', [epochGroupLabelSize -1]);
+            obj.epochGroupCard.internalSolutionListField = createLabeledTextField(epochGroupLayout, 'Internal solution list:', [epochGroupLabelSize -1]);
+            obj.epochGroupCard.otherListField = createLabeledTextField(epochGroupLayout, 'Other list:', [epochGroupLabelSize -1]);
+            
+            set(epochGroupLayout, 'Sizes', [25 25 25 25 25 25]);
             
             set(obj.cardPanel, 'Selection', 1);
             
@@ -211,6 +220,54 @@ classdef AppPreferencesView < symphonyui.View
         
         function setPreparationList(obj, p)
             set(obj.experimentCard.preparationListField, 'String', p);
+        end
+        
+        function l = getLabelList(obj)
+            l = get(obj.epochGroupCard.labelListField, 'String');
+        end
+        
+        function setLabelList(obj, s)
+            set(obj.epochGroupCard.labelListField, 'String', s);
+        end
+        
+        function r = getRecordingList(obj)
+            r = get(obj.epochGroupCard.recordingListField, 'String');
+        end
+        
+        function setRecordingList(obj, r)
+            set(obj.epochGroupCard.recordingListField, 'String', r);
+        end
+        
+        function k = getDefaultKeywords(obj)
+            k = get(obj.epochGroupCard.defaultKeywordsField, 'String');
+        end
+        
+        function setDefaultKeywords(obj, k)
+            set(obj.epochGroupCard.defaultKeywordsField, 'String', k);
+        end
+        
+        function s = getExternalSolutionList(obj)
+            s = get(obj.epochGroupCard.externalSolutionListField, 'String');
+        end
+        
+        function setExternalSolutionList(obj, s)
+            set(obj.epochGroupCard.externalSolutionListField, 'String', s);
+        end
+        
+        function s = getInternalSolutionList(obj)
+            s = get(obj.epochGroupCard.internalSolutionListField, 'String');
+        end
+        
+        function setInternalSolutionList(obj, s)
+            set(obj.epochGroupCard.internalSolutionListField, 'String', s);
+        end
+        
+        function o = getOtherList(obj)
+            o = get(obj.epochGroupCard.otherListField, 'String');
+        end
+        
+        function setOtherList(obj, o)
+            set(obj.epochGroupCard.otherListField, 'String', o);
         end
         
     end
