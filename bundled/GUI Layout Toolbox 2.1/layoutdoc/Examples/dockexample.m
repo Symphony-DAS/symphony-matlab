@@ -39,8 +39,8 @@ set( panel{3}, 'DockFcn', {@nDock, 3} );
 %-------------------------------------------------------------------------%
     function nDock( eventSource, eventData, whichpanel ) %#ok<INUSL>
         % Set the flag
-        panel{whichpanel}.IsDocked = ~panel{whichpanel}.IsDocked;
-        if panel{whichpanel}.IsDocked
+        panel{whichpanel}.Docked = ~panel{whichpanel}.Docked;
+        if panel{whichpanel}.Docked
             % Put it back into the layout
             newfig = get( panel{whichpanel}, 'Parent' );
             set( panel{whichpanel}, 'Parent', box );

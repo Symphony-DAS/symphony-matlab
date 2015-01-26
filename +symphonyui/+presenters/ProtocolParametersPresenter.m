@@ -22,8 +22,7 @@ classdef ProtocolParametersPresenter < symphonyui.Presenter
         
         function setProtocol(obj, protocol)
             obj.view.clearParameters();
-            obj.view.addParameter('Param1:');
-            obj.view.addParameter('Param2:');
+            obj.view.addParameter('Display name', protocol.displayName);
         end
         
     end

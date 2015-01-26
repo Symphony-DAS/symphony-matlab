@@ -7,7 +7,7 @@ classdef ProtocolParametersView < symphonyui.View
     end
     
     properties (Access = private)
-        parametersLayout
+        parametersTable
         presetDropDown
         applyButton
         revertButton
@@ -24,24 +24,29 @@ classdef ProtocolParametersView < symphonyui.View
             import symphonyui.utilities.ui.*;
             
             set(obj.figureHandle, 'Name', 'Protocol Parameters');
-            set(obj.figureHandle, 'Position', screenCenter(326, 326));
+            set(obj.figureHandle, 'Position', screenCenter(300, 326));
             
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
             
-            obj.parametersLayout = uiextras.VBox( ...
+            parametersLayout = uiextras.VBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
+            
+            obj.parametersTable = uitable( ...
+                'Parent', parametersLayout, ...
+                'ColumnName', {'Parameter', 'Value'}, ...
+                'ColumnWidth', {130, 130}, ...
+                'RowName', [], ...
+                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
             
             % Apply/Revert controls.
             layout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
-            createLabel(layout, 'Preset:');
-            obj.presetDropDown = createDropDownMenu(layout, {'', 'Default', 'Preset1'});
-            set(obj.presetDropDown, 'Callback', @(h,d)notify(obj, 'SelectedPreset'));
             uiextras.Empty('Parent', layout);
             obj.applyButton = uicontrol( ...
                 'Parent', layout, ...
@@ -53,7 +58,7 @@ classdef ProtocolParametersView < symphonyui.View
                 'Style', 'pushbutton', ...
                 'String', 'Revert', ...
                 'Callback', @(h,d)notify(obj, 'Revert'));
-            set(layout, 'Sizes', [42 75 -1 75 75]);
+            set(layout, 'Sizes', [-1 75 75]);
             
             set(mainLayout, 'Sizes', [-1 25]);
             
@@ -64,16 +69,14 @@ classdef ProtocolParametersView < symphonyui.View
             end
         end
         
-        function addParameter(obj, name)
-            symphonyui.utilities.ui.createLabeledTextField(obj.parametersLayout, name, [-1 -2]);
-            
-            sizes = get(obj.parametersLayout, 'Sizes');
-            sizes(end) = 25;
-            set(obj.parametersLayout, 'Sizes', sizes);
+        function addParameter(obj, name, value)
+            data = get(obj.parametersTable, 'Data');
+            data = [data; {name, value}];
+            set(obj.parametersTable, 'Data', data);
         end
         
         function clearParameters(obj)
-            delete(get(obj.parametersLayout, 'Children'));
+            set(obj.parametersTable, 'Data', []);
         end
         
         function p = getPreset(obj)
