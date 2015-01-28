@@ -7,7 +7,6 @@ classdef MainView < symphonyui.View
         BeginEpochGroup
         EndEpochGroup
         SelectedProtocol
-        ProtocolParameters
         Run
         Pause
         Stop
@@ -22,11 +21,11 @@ classdef MainView < symphonyui.View
     properties (Access = private)
         fileMenu
         experimentMenu
-        acquisitionMenu
+        protocolMenu
         toolsMenu
         helpMenu
         protocolDropDown
-        protocolParametersButton
+        protocolParametersGrid
         runButton
         pauseButton
         stopButton
@@ -41,7 +40,7 @@ classdef MainView < symphonyui.View
             import symphonyui.utilities.ui.*;
             
             set(obj.figureHandle, 'Name', 'Symphony');
-            set(obj.figureHandle, 'Position', screenCenter(300, 134));
+            set(obj.figureHandle, 'Position', screenCenter(280, 350));
             
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
@@ -73,24 +72,22 @@ classdef MainView < symphonyui.View
             obj.experimentMenu.viewNotes = uimenu(obj.experimentMenu.root, ...
                 'Label', 'View Notes');
             
-            % Acquisition menu.
-            obj.acquisitionMenu.root = uimenu(obj.figureHandle, ...
-                'Label', 'Acquisition');
-            obj.acquisitionMenu.run = uimenu(obj.acquisitionMenu.root, ...
+            % Protocol menu.
+            obj.protocolMenu.root = uimenu(obj.figureHandle, ...
+                'Label', 'Protocol');
+            obj.protocolMenu.presets = uimenu(obj.protocolMenu.root, ...
+                'Label', 'Presets');
+            obj.protocolMenu.run = uimenu(obj.protocolMenu.root, ...
                 'Label', 'Run', ...
                 'Accelerator', 'r', ...
+                'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'Run'));
-            obj.acquisitionMenu.pause = uimenu(obj.acquisitionMenu.root, ...
+            obj.protocolMenu.pause = uimenu(obj.protocolMenu.root, ...
                 'Label', 'Pause', ...
                 'Callback', @(h,d)notify(obj, 'Pause'));
-            obj.acquisitionMenu.stop = uimenu(obj.acquisitionMenu.root, ...
+            obj.protocolMenu.stop = uimenu(obj.protocolMenu.root, ...
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
-            obj.acquisitionMenu.protocolParameters = uimenu(obj.acquisitionMenu.root, ...
-                'Label', 'Protocol Parameters...', ...
-                'Accelerator', 'e', ...
-                'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'ProtocolParameters'));
             
             % Tools menu.
             obj.toolsMenu.root = uimenu(obj.figureHandle, ...
@@ -132,27 +129,17 @@ classdef MainView < symphonyui.View
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
-                'Spacing', 3);
+                'Spacing', 7);
             
-            % Protocol controls.
-            layout = uiextras.HBox( ...
-                'Parent', mainLayout, ...
-                'Spacing', 3);
-            obj.protocolDropDown = createDropDownMenu(layout, {''});
-            set(obj.protocolDropDown, ...
-                'TooltipString', 'Protocol', ...
-                'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
-            obj.protocolParametersButton = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'pushbutton', ...
-                'String', ['<html><img src="' [iconsUrl 'list.png'] '"/></html>'], ...
-                'TooltipString', 'Protocol Parameters...', ...
-                'Callback', @(h,d)notify(obj, 'ProtocolParameters'));
-            set(layout, 'Sizes', [-1 30]);
+            obj.protocolDropDown = createDropDownMenu(mainLayout, {''});
+            set(obj.protocolDropDown, 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
             
-            % Run/Pause/Stop controls.
+            obj.protocolParametersGrid = PropertyGrid(mainLayout);
+            
+            controlsLayout = uiextras.VBox( ...
+                'Parent', mainLayout);
             layout = uiextras.HBox( ...
-                'Parent', mainLayout, ...
+                'Parent', controlsLayout, ...
                 'Spacing', 1);
             obj.runButton = uicontrol( ...
                 'Parent', layout, ...        
@@ -173,11 +160,8 @@ classdef MainView < symphonyui.View
                 'TooltipString', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
             
-            set(mainLayout, 'Sizes', [25 -1]);
-            
             layout = uiextras.HBox( ...
-                'Parent', mainLayout, ...
-                'BackgroundColor', 'r');
+                'Parent', controlsLayout);
             obj.saveCheckbox = uicontrol( ...
                 'Parent', layout, ...
                 'Style', 'checkbox', ...
@@ -185,8 +169,10 @@ classdef MainView < symphonyui.View
             obj.statusText = createLabel(layout, 'Stopped');
             set(obj.statusText, 'HorizontalAlignment', 'right');
             set(layout, 'Sizes', [60 -1]);
+            set(controlsLayout, 'Sizes', [-1 25]);
             
-            set(mainLayout, 'Sizes', [25 -1 25]);
+            
+            set(mainLayout, 'Sizes', [25 -1 75]);
         end
         
         function enableNewExperiment(obj, tf)
@@ -225,30 +211,6 @@ classdef MainView < symphonyui.View
             set(obj.protocolDropDown, 'Enable', symphonyui.utilities.onOff(tf));
         end
         
-        function enableProtocolParameters(obj, tf)
-            enable = symphonyui.utilities.onOff(tf);
-            set(obj.acquisitionMenu.protocolParameters, 'Enable', enable);
-            set(obj.protocolParametersButton, 'Enable', enable);
-        end
-        
-        function enableRun(obj, tf)
-            enable = symphonyui.utilities.onOff(tf);
-            set(obj.acquisitionMenu.run, 'Enable', enable);
-            set(obj.runButton, 'Enable', enable);
-        end
-        
-        function enablePause(obj, tf)
-            enable = symphonyui.utilities.onOff(tf);
-            set(obj.acquisitionMenu.pause, 'Enable', enable);
-            set(obj.pauseButton, 'Enable', enable);
-        end
-        
-        function enableStop(obj, tf)
-            enable = symphonyui.utilities.onOff(tf);
-            set(obj.acquisitionMenu.stop, 'Enable', enable);
-            set(obj.stopButton, 'Enable', enable);
-        end
-        
         function p = getProtocol(obj)
             p = symphonyui.utilities.ui.getSelectedValue(obj.protocolDropDown);
         end
@@ -259,6 +221,33 @@ classdef MainView < symphonyui.View
         
         function setProtocolList(obj, p)
             symphonyui.utilities.ui.setStringList(obj.protocolDropDown, p);
+        end
+        
+        function enableProtocolParameters(obj, tf)
+            set(obj.protocolParametersGrid, 'Enable', tf);
+        end
+        
+        function setProtocolParameters(obj, parameters)
+            properties = symphonyui.utilities.parametersToFields(parameters);
+            set(obj.protocolParametersGrid, 'Properties', properties);
+        end
+        
+        function enableRun(obj, tf)
+            enable = symphonyui.utilities.onOff(tf);
+            set(obj.protocolMenu.run, 'Enable', enable);
+            set(obj.runButton, 'Enable', enable);
+        end
+        
+        function enablePause(obj, tf)
+            enable = symphonyui.utilities.onOff(tf);
+            set(obj.protocolMenu.pause, 'Enable', enable);
+            set(obj.pauseButton, 'Enable', enable);
+        end
+        
+        function enableStop(obj, tf)
+            enable = symphonyui.utilities.onOff(tf);
+            set(obj.protocolMenu.stop, 'Enable', enable);
+            set(obj.stopButton, 'Enable', enable);
         end
         
         function enableShouldSave(obj, tf)

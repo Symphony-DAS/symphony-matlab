@@ -2,7 +2,6 @@ classdef MainPresenter < symphonyui.Presenter
     
     properties (Access = private)
         appData
-        parametersPresenter
     end
     
     methods
@@ -27,7 +26,6 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(view, 'BeginEpochGroup', @obj.onSelectedBeginEpochGroup);
             obj.addListener(view, 'EndEpochGroup', @obj.onSelectedEndEpochGroup);
             obj.addListener(view, 'SelectedProtocol', @obj.onSelectedProtocol);
-            obj.addListener(view, 'ProtocolParameters', @obj.onSelectedProtocolParameters);
             obj.addListener(view, 'Run', @obj.onSelectedRun);
             obj.addListener(view, 'Pause', @obj.onSelectedPause);
             obj.addListener(view, 'Stop', @obj.onSelectedStop);
@@ -125,35 +123,13 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onSetProtocol(obj, ~, ~)
             hasProtocol = ~isempty(obj.appData.protocol);
-            
             obj.view.enableProtocolParameters(hasProtocol);
             obj.view.setProtocol(obj.appData.getProtocolName);
-            
-            if ~isempty(obj.parametersPresenter)
-                if hasProtocol
-                    obj.parametersPresenter.setProtocol(obj.appData.protocol);
-                else
-                    obj.parametersPresenter.view.close();
-                end
-            end
+            obj.view.setProtocolParameters(struct2cell(obj.appData.protocol.parameters));
         end
         
         function onSetProtocolList(obj, ~, ~)
             obj.view.setProtocolList(obj.appData.getProtocolList);
-        end
-        
-        function onSelectedProtocolParameters(obj, ~, ~)
-            if isempty(obj.parametersPresenter)
-                v = symphonyui.views.ProtocolParametersView(obj.view);
-                obj.parametersPresenter = symphonyui.presenters.ProtocolParametersPresenter(v);
-                obj.addListener(obj.parametersPresenter.view, 'Closing', @obj.onProtocolPresenterClosing);                
-                obj.parametersPresenter.setProtocol(obj.appData.protocol);
-            end
-            obj.parametersPresenter.view.show();
-        end
-        
-        function onProtocolPresenterClosing(obj, ~, ~)
-            obj.parametersPresenter = [];
         end
         
         function onSelectedRun(obj, ~, ~)
@@ -172,6 +148,8 @@ classdef MainPresenter < symphonyui.Presenter
         function onSetControllerState(obj, ~, ~)
             import symphonyui.models.*;
             
+            enableSelectProtocol = false;
+            enableProtocolParameters = false;
             enableRun = false;
             enablePause = false;
             enableStop = false;
@@ -181,8 +159,12 @@ classdef MainPresenter < symphonyui.Presenter
             
             switch obj.appData.controller.state
                 case ControllerState.NOT_READY
+                    enableSelectProtocol = true;
+                    enableProtocolParameters = true;
                     status = 'Not Ready';
                 case ControllerState.STOPPED
+                    enableSelectProtocol = true;
+                    enableProtocolParameters = true;
                     enableRun = true;
                     enableShouldSave = true;
                     enableStatus = true;
@@ -207,6 +189,8 @@ classdef MainPresenter < symphonyui.Presenter
                     status = 'Running';
             end
             
+            obj.view.enableSelectProtocol(enableSelectProtocol && ~isempty(obj.appData.protocol));
+            obj.view.enableProtocolParameters(enableProtocolParameters && ~isempty(obj.appData.protocol));
             obj.view.enableRun(enableRun);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
