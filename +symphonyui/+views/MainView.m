@@ -7,6 +7,7 @@ classdef MainView < symphonyui.View
         BeginEpochGroup
         EndEpochGroup
         SelectedProtocol
+        ChangedProtocolParameter
         Run
         Pause
         Stop
@@ -25,7 +26,7 @@ classdef MainView < symphonyui.View
         toolsMenu
         helpMenu
         protocolDropDown
-        protocolParametersGrid
+        protocolParameterGrid
         runButton
         pauseButton
         stopButton
@@ -134,7 +135,8 @@ classdef MainView < symphonyui.View
             obj.protocolDropDown = createDropDownMenu(mainLayout, {''});
             set(obj.protocolDropDown, 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
             
-            obj.protocolParametersGrid = PropertyGrid(mainLayout);
+            obj.protocolParameterGrid = PropertyGrid(mainLayout);
+            addlistener(obj.protocolParameterGrid, 'ChangedProperty', @(h,d)notify(obj, 'ChangedProtocolParameter'));
             
             controlsLayout = uiextras.VBox( ...
                 'Parent', mainLayout);
@@ -224,12 +226,22 @@ classdef MainView < symphonyui.View
         end
         
         function enableProtocolParameters(obj, tf)
-            set(obj.protocolParametersGrid, 'Enable', tf);
+            set(obj.protocolParameterGrid, 'Enable', tf);
+        end
+        
+        function p = getProtocolParameters(obj)
+            properties = get(obj.protocolParameterGrid, 'Properties');
+            p = symphonyui.utilities.fieldsToParameters(properties);
         end
         
         function setProtocolParameters(obj, parameters)
             properties = symphonyui.utilities.parametersToFields(parameters);
-            set(obj.protocolParametersGrid, 'Properties', properties);
+            set(obj.protocolParameterGrid, 'Properties', properties);
+        end
+        
+        function updateProtocolParameters(obj, parameters)
+            properties = symphonyui.utilities.parametersToFields(parameters);
+            obj.protocolParameterGrid.UpdateProperties(properties);
         end
         
         function enableRun(obj, tf)

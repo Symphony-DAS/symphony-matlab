@@ -1,7 +1,13 @@
 function fields = parametersToFields(parameters)
+    % TODO: Convert type.
+
     if isempty(parameters)
         fields = PropertyGridField.empty(1,0);
         return;
+    end
+    
+    if ~iscell(parameters)
+        parameters = {parameters};
     end
     
     fields = [];

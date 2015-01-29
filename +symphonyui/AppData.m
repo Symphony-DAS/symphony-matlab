@@ -13,13 +13,10 @@ classdef AppData < handle
         preferences
         controller
         rig
+        rigList
         protocol
+        protocolList
         experiment
-    end
-    
-    properties (Access = private)
-        rigMap
-        protocolMap
     end
     
     methods
@@ -41,41 +38,37 @@ classdef AppData < handle
             obj.onSetProtocolSearchPaths();
         end
         
+        function tf = hasRig(obj)
+            tf = ~isempty(obj.rig);
+        end
+        
         function r = get.rig(obj)
             r = obj.controller.rig;
         end
         
-        function setRig(obj, rigName)
-            className = obj.rigMap(rigName);
+        function setRig(obj, index)
+            className = obj.rigList{index};
             constructor = str2func(className);
             obj.controller.setRig(constructor());
         end
         
-        function r = getRigList(obj)
-            r = obj.rigMap.keys;
+        function tf = hasProtocol(obj)
+            tf = ~isempty(obj.protocol);
         end
         
-        function n = getProtocolName(obj)
-            if isempty(obj.protocol)
-                n = '';
-            else
-                n = symphonyui.utilities.classProperty(class(obj.protocol), 'displayName');
-            end
-        end
-        
-        function setProtocol(obj, protocolName)
-            className = obj.protocolMap(protocolName);
+        function setProtocol(obj, index)
+            className = obj.protocolList{index};
             constructor = str2func(className);
             obj.protocol = constructor();
             notify(obj, 'SetProtocol');
         end
         
-        function p = getProtocolList(obj)
-            p = obj.protocolMap.keys;
+        function tf = hasExperiment(obj)
+            tf = ~isempty(obj.experiment);
         end
         
-        function setExperiment(obj, e)
-            obj.experiment = e;
+        function setExperiment(obj, experiment)
+            obj.experiment = experiment;
             notify(obj, 'SetExperiment');
         end
         
@@ -93,29 +86,13 @@ classdef AppData < handle
         
         function onSetRigSearchPaths(obj, ~, ~)
             import symphonyui.utilities.*;
-            
-            obj.rigMap = containers.Map();
-            
-            list = search(obj.preferences.rigSearchPaths, 'symphonyui.models.Rig');
-            for i = 1:length(list)
-                displayName = classProperty(list{i}, 'displayName');
-                obj.rigMap(displayName) = list{i};
-            end
-            
+            obj.rigList = search(obj.preferences.rigSearchPaths, 'symphonyui.models.Rig');
             notify(obj, 'SetRigList');
         end
         
         function onSetProtocolSearchPaths(obj, ~, ~)
             import symphonyui.utilities.*;
-            
-            obj.protocolMap = containers.Map();
-            
-            list = search(obj.preferences.protocolSearchPaths, 'symphonyui.models.Protocol');
-            for i = 1:length(list)
-                displayName = classProperty(list{i}, 'displayName');
-                obj.protocolMap(displayName) = list{i};
-            end
-            
+            obj.protocolList = search(obj.preferences.protocolSearchPaths, 'symphonyui.models.Protocol');
             notify(obj, 'SetProtocolList');
         end
         

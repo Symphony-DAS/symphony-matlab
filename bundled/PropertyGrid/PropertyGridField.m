@@ -142,6 +142,7 @@ classdef PropertyGridField < hgsetget
             end
             self = [];  % not found
         end
+        
     end
     methods (Access = private)
         function WireHierarchy(selfarray, descendants)

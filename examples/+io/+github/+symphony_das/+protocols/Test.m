@@ -5,6 +5,12 @@ classdef Test < symphonyui.models.Protocol
     end
     
     properties
+        % This is pretime
+        preTime
+        
+        %% Helllo
+        
+        stimTime % This is stimTime
         string = 'Test Stringzz'
         integer = 12
         cellArray = {'one', 'two', 'three'}
@@ -22,9 +28,9 @@ classdef Test < symphonyui.models.Protocol
         
         function p = parameters(obj)
             p = parameters@symphonyui.models.Protocol(obj);
-            p.string.description = 'banana';
-            p.string.displayName = 'hello world';
-            p.string.category = 'wow';
+            p.string.displayName = ['dname ' num2str(obj.integer)];
+            p.string.description = ['descr ' num2str(obj.integer)];
+            %p.string.category = ['categ ' num2str(obj.integer)];
         end
         
     end

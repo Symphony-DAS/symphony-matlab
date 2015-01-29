@@ -10,6 +10,7 @@ classdef Parameter < handle
         description
         readOnly = false
         dependent = false
+        valid = true
     end
     
     methods

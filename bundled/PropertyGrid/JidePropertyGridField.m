@@ -13,7 +13,13 @@ classdef JidePropertyGridField < handle
         PropertyData;
     end
     properties (Dependent)
+        Name;
+        Type;
         Value;
+        Category;
+        DisplayName;
+        Description;
+        ReadOnly;
     end
     properties (Access = private)
         % Children the property field might have.
@@ -37,13 +43,15 @@ classdef JidePropertyGridField < handle
         % May register editor contexts with the global CellEditorManager.
             validateattributes(self, {'JidePropertyGridField'}, {'scalar'});
         
-            self.PropertyData = data;
             field = com.jidesoft.grid.DefaultProperty();
-            field.setName(data.Name);  % JIDE automatically uses a hierarchical naming scheme
-            field.setCategory(data.Category);
-            field.setDisplayName(data.DisplayName);
-            field.setDescription(data.Description);
-            field.setEditable(~data.ReadOnly);
+            self.Control = field;
+            self.PropertyData = data;
+            
+            self.Name = data.Name;
+            self.Category = data.Category;
+            self.DisplayName = data.DisplayName;
+            self.Description = data.Description;
+            self.ReadOnly = data.ReadOnly;
             switch data.Type.Shape
                 case 'scalar'
                     switch data.Type.PrimitiveType
@@ -88,7 +96,7 @@ classdef JidePropertyGridField < handle
                 otherwise
                     error('PropertyGrid:ArgumentTypeMismatch', 'Data shape %s is not supported.', data.Type.Shape);
             end
-            self.Control = field;
+            
             self.Value = data.Value;
             
             for k = 1 : numel(data.Children)
@@ -102,6 +110,14 @@ classdef JidePropertyGridField < handle
             if ~isempty(self.Context)
                 com.jidesoft.grid.CellEditorManager.unregisterEditor(self.ContextType, self.Context);
             end
+        end
+        
+        function n = get.Name(self)
+            n = self.Control.getName();
+        end
+        
+        function set.Name(self, n)
+            self.Control.setName(n);
         end
         
         function value = get.Value(self)
@@ -118,6 +134,38 @@ classdef JidePropertyGridField < handle
         % Sets the Java value of a property based on the native value.
             javavalue = self.PropertyData.Type.ConvertToJava(value);
             self.Control.setValue(javavalue);
+        end
+        
+        function c = get.Category(self)
+            c = self.Control.getCategory();
+        end
+        
+        function set.Category(self, c)
+            self.Control.setCategory(c);
+        end
+        
+        function n = get.DisplayName(self)
+            n = self.Control.getDisplayName();
+        end
+        
+        function set.DisplayName(self, n)
+            self.Control.setDisplayName(n);
+        end
+        
+        function d = get.Description(self)
+            d = self.Control.getDescription();
+        end
+        
+        function set.Description(self, d)
+            self.Control.setDescription(d);
+        end
+        
+        function tf = get.ReadOnly(self)
+            tf = ~self.Control.setEditable();
+        end
+        
+        function set.ReadOnly(self, tf)
+            self.Control.setEditable(~tf);
         end
 
         function tf = CanAccept(self, value)

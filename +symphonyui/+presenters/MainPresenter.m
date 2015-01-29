@@ -26,6 +26,7 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(view, 'BeginEpochGroup', @obj.onSelectedBeginEpochGroup);
             obj.addListener(view, 'EndEpochGroup', @obj.onSelectedEndEpochGroup);
             obj.addListener(view, 'SelectedProtocol', @obj.onSelectedProtocol);
+            obj.addListener(view, 'ChangedProtocolParameter', @obj.onChangedProtocolParameter);
             obj.addListener(view, 'Run', @obj.onSelectedRun);
             obj.addListener(view, 'Pause', @obj.onSelectedPause);
             obj.addListener(view, 'Stop', @obj.onSelectedStop);
@@ -74,7 +75,7 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSetExperiment(obj, ~, ~)
-            hasExperiment = ~isempty(obj.appData.experiment);
+            hasExperiment = obj.appData.hasExperiment;
             
             obj.view.enableNewExperiment(~hasExperiment);
             obj.view.enableCloseExperiment(hasExperiment);
@@ -117,19 +118,32 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedProtocol(obj, ~, ~)
-            p = obj.view.getProtocol();
-            obj.appData.setProtocol(p);
+            list = obj.appData.protocolList;
+            protocol = obj.view.getProtocol();
+            index = ismember(list, protocol);
+            obj.appData.setProtocol(index);
         end
         
         function onSetProtocol(obj, ~, ~)
-            hasProtocol = ~isempty(obj.appData.protocol);
-            obj.view.enableProtocolParameters(hasProtocol);
-            obj.view.setProtocol(obj.appData.getProtocolName);
-            obj.view.setProtocolParameters(struct2cell(obj.appData.protocol.parameters));
+            obj.view.enableProtocolParameters(obj.appData.hasProtocol);
+            obj.view.setProtocol(class(obj.appData.protocol));
+            
+            parameters = struct2cell(obj.appData.protocol.parameters);
+            obj.view.setProtocolParameters(parameters);
+        end
+        
+        function onChangedProtocolParameter(obj, ~, ~)
+            protocol = obj.appData.protocol;
+            parameters = obj.view.getProtocolParameters();
+            for i = 1:numel(parameters)
+                p = parameters{i};
+                protocol.(p.name) = p.value;
+            end
+            obj.view.updateProtocolParameters(struct2cell(protocol.parameters));
         end
         
         function onSetProtocolList(obj, ~, ~)
-            obj.view.setProtocolList(obj.appData.getProtocolList);
+            obj.view.setProtocolList(obj.appData.protocolList);
         end
         
         function onSelectedRun(obj, ~, ~)
@@ -200,17 +214,18 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedSetRig(obj, ~, ~)
-            list = obj.appData.getRigList();
+            list = obj.appData.rigList();
             view = symphonyui.views.SetRigView(obj.view);
             p = symphonyui.presenters.SetRigPresenter(list, view);
             result = p.view.showDialog();
             if result
-                obj.appData.setRig(p.rig);
+                index = ismember(list, p.rig);
+                obj.appData.setRig(index);
             end
         end
         
         function onSetRig(obj, ~, ~)
-            hasRig = ~isempty(obj.appData.rig);
+            hasRig = obj.appData.hasRig;
             
             obj.view.enableViewRig(hasRig);
             obj.view.enableNewExperiment(hasRig);

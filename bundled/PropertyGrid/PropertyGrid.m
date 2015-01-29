@@ -39,6 +39,9 @@
 
 % Copyright 2010 Levente Hunyadi
 classdef PropertyGrid < UIControl
+    events
+        ChangedProperty
+    end
     properties (Dependent)
         % The handle graphics control that wraps the property grid.
         Control;
@@ -146,6 +149,26 @@ classdef PropertyGrid < UIControl
 
             % wire property change event hook
             set(model, 'PropertyChangeCallback', @PropertyGrid.OnPropertyChange);
+        end
+        
+        function UpdateProperties(self, properties)
+            validateattributes(properties, {'PropertyGridField'}, {'vector'});
+            
+            for i = 1:numel(properties)
+                new = properties(i);
+                old = self.Fields.FindByName(new.Name);
+                
+                old.Name = new.Name;
+                %old.Type = new.Type;
+                old.Value = new.Value;
+                old.Category = new.Category;
+                old.DisplayName = new.DisplayName;
+                old.Description = new.Description;
+                old.ReadOnly = new.ReadOnly;
+                %old.Dependent = new.Dependent;
+            end
+            
+            self.Model.refresh();
         end
         
         function item = get.Item(self)
@@ -272,6 +295,7 @@ classdef PropertyGrid < UIControl
                     end
                     field.PropertyData.Value = value;  % persist changes in property value
                     self.UpdateDependentProperties(field);
+                    notify(self, 'ChangedProperty');
                 catch me
                     field.Value = field.PropertyData.Value;  % revert changes
                     self.Table.repaint();
