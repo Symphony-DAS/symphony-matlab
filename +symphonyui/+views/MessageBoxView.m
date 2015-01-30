@@ -1,35 +1,34 @@
-classdef AboutSymphonyView < symphonyui.View
+classdef MessageBoxView < symphonyui.View
     
     events
         Ok
     end
     
     properties (Access = private)
-        aboutText
+        messageText
         okButton
     end
     
     methods
         
-        function obj = AboutSymphonyView(parent)
+        function obj = MessageBoxView(parent)
             obj = obj@symphonyui.View(parent);
         end
         
         function createUI(obj)
             import symphonyui.utilities.*;
             
-            set(obj.figureHandle, 'Name', 'About Symphony');
-            set(obj.figureHandle, 'Position', screenCenter(236, 104));
+            set(obj.figureHandle, 'Position', screenCenter(270, 120));
             
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
             
-            obj.aboutText = uicontrol( ...
+            obj.messageText = uicontrol( ...
                 'Parent', mainLayout, ...
                 'Style', 'text', ...
-                'String', 'Symphony Data Acquisition System', ...
+                'String', '', ...
                 'HorizontalAlignment', 'center');
             
             % Ok control.
@@ -46,8 +45,12 @@ classdef AboutSymphonyView < symphonyui.View
             set(mainLayout, 'Sizes', [-1 25]);
         end
         
-        function setAboutText(obj, t)
-            set(obj.aboutText, 'String', t);
+        function setTitle(obj, t)
+            set(obj.figureHandle, 'Name', t);
+        end
+        
+        function setMessage(obj, m)
+            set(obj.messageText, 'String', m);
         end
         
     end

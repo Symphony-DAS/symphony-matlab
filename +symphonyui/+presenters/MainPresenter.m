@@ -2,6 +2,7 @@ classdef MainPresenter < symphonyui.Presenter
     
     properties (Access = private)
         appData
+        protocolMap
     end
     
     methods
@@ -37,15 +38,12 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(view, 'AboutSymphony', @obj.onSelectedAboutSymphony);
             obj.addListener(view, 'Exit', @(h,d)view.close());
             
-            view.enableNewExperiment(false);
+            view.enableNewExperiment(true);
             view.enableCloseExperiment(false);
             view.enableBeginEpochGroup(false);
             view.enableEndEpochGroup(false);
             view.enableAddNote(false);
             view.enableViewNotes(false);
-            view.enableViewRig(false);
-            view.enableSelectProtocol(false);
-            view.enableProtocolParameters(false);
             view.enableRun(false);
             view.enablePause(false);
             view.enableStop(false);
@@ -118,15 +116,22 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedProtocol(obj, ~, ~)
-            list = obj.appData.protocolList;
             protocol = obj.view.getProtocol();
-            index = ismember(list, protocol);
-            obj.appData.setProtocol(index);
+            className = obj.protocolMap(protocol);
+            index = ismember(obj.appData.protocolList, className);
+            try
+                obj.appData.setProtocol(index);
+            catch x
+                symphonyui.presenters.MessageBoxPresenter.showException(x);
+                obj.onSetProtocol();
+            end
         end
         
         function onSetProtocol(obj, ~, ~)
-            obj.view.enableProtocolParameters(obj.appData.hasProtocol);
-            obj.view.setProtocol(class(obj.appData.protocol));
+            protocol = obj.appData.protocol;
+            index = obj.protocolMap.right_find(class(protocol));
+            key = obj.protocolMap.right_at(index);
+            obj.view.setProtocol(key);
             
             parameters = struct2cell(obj.appData.protocol.parameters);
             obj.view.setProtocolParameters(parameters);
@@ -143,7 +148,8 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSetProtocolList(obj, ~, ~)
-            obj.view.setProtocolList(obj.appData.protocolList);
+            obj.protocolMap = displayNameMap(obj.appData.protocolList);
+            obj.view.setProtocolList(obj.protocolMap.keys);
         end
         
         function onSelectedRun(obj, ~, ~)
@@ -214,26 +220,23 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedSetRig(obj, ~, ~)
-            list = obj.appData.rigList();
+            rigMap = displayNameMap(obj.appData.rigList);
             view = symphonyui.views.SetRigView(obj.view);
-            p = symphonyui.presenters.SetRigPresenter(list, view);
+            p = symphonyui.presenters.SetRigPresenter(rigMap.keys, view);
             result = p.view.showDialog();
             if result
-                index = ismember(list, p.rig);
-                obj.appData.setRig(index);
+                index = ismember(obj.appData.rigList, rigMap(p.rig));
+                try
+                    obj.appData.setRig(index);
+                catch x
+                    symphonyui.presenters.MessageBoxPresenter.showException(x);
+                    obj.onSetRig();
+                end
             end
         end
         
         function onSetRig(obj, ~, ~)
-            hasRig = obj.appData.hasRig;
-            
-            obj.view.enableViewRig(hasRig);
-            obj.view.enableNewExperiment(hasRig);
-            obj.view.enableSelectProtocol(hasRig);
-            
-            if hasRig
-                obj.onSelectedProtocol();
-            end
+            obj.onSelectedProtocol();
         end
         
         function onSelectedPreferences(obj, ~, ~)
@@ -252,7 +255,11 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedAboutSymphony(obj, ~, ~)
-            p = symphonyui.presenters.AboutSymphonyPresenter('2.0.0-preview');
+            message = { ...
+                'Symphony Data Acquisition System', ...
+                'Version 2.0.0-preview', ...
+                sprintf('%c 2015 Symphony-DAS', 169)};
+            p = symphonyui.presenters.MessageBoxPresenter(message, 'About Symphony');
             p.view.showDialog();
         end
         
@@ -267,5 +274,21 @@ classdef MainPresenter < symphonyui.Presenter
         
     end
     
+end
+
+function map = displayNameMap(list)
+    map = Map2();
+    for i = 1:numel(list);
+        className = list{i};
+        displayName = symphonyui.utilities.classProperty(className, 'displayName');
+        if isKey(map, displayName)
+            value = map(displayName);
+            map.remove(displayName);
+            map([displayName ' (' value ')']) = value;
+            
+            displayName = [displayName ' (' className ')'];
+        end
+        map(displayName) = className;
+    end
 end
 

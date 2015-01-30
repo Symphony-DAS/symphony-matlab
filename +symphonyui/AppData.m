@@ -38,10 +38,6 @@ classdef AppData < handle
             obj.onSetProtocolSearchPaths();
         end
         
-        function tf = hasRig(obj)
-            tf = ~isempty(obj.rig);
-        end
-        
         function r = get.rig(obj)
             r = obj.controller.rig;
         end
@@ -50,10 +46,6 @@ classdef AppData < handle
             className = obj.rigList{index};
             constructor = str2func(className);
             obj.controller.setRig(constructor());
-        end
-        
-        function tf = hasProtocol(obj)
-            tf = ~isempty(obj.protocol);
         end
         
         function setProtocol(obj, index)
@@ -87,12 +79,16 @@ classdef AppData < handle
         function onSetRigSearchPaths(obj, ~, ~)
             import symphonyui.utilities.*;
             obj.rigList = search(obj.preferences.rigSearchPaths, 'symphonyui.models.Rig');
+            obj.rigList = ['symphonyui.models.NullRig' obj.rigList];
+            obj.setRig(1);
             notify(obj, 'SetRigList');
         end
         
         function onSetProtocolSearchPaths(obj, ~, ~)
             import symphonyui.utilities.*;
             obj.protocolList = search(obj.preferences.protocolSearchPaths, 'symphonyui.models.Protocol');
+            obj.protocolList = ['symphonyui.models.NullProtocol' obj.protocolList];
+            obj.setProtocol(1);
             notify(obj, 'SetProtocolList');
         end
         

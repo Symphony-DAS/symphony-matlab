@@ -8,10 +8,14 @@ classdef Controller < handle
     methods
         
         function obj = Controller()
-            obj.state = symphonyui.models.ControllerState.NOT_READY;
+            obj.state = symphonyui.models.ControllerState.STOPPED;
         end
         
         function setRig(obj, rig)
+            if obj.state ~= symphonyui.models.ControllerState.STOPPED
+                error('Cannot set rig until the controller is stopped');
+            end
+            
             obj.rig = rig;
             obj.state = symphonyui.models.ControllerState.STOPPED;
         end
