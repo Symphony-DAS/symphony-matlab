@@ -15,18 +15,18 @@ classdef MessageBoxPresenter < symphonyui.Presenter
             obj.view.setMessage(message);
         end
         
+        function setSize(obj, w, h)
+            obj.view.position = symphonyui.utilities.screenCenter(w, h);
+        end
+        
     end
     
     methods (Static)
         
         function obj = showException(x)
-            import symphonyui.presenters.*;
-            obj = MessageBoxPresenter.showError(getReport(x, 'basic', 'hyperlinks', 'off'));
-        end
-        
-        function obj = showError(msg)
-            import symphonyui.presenters.*;
-            obj = MessageBoxPresenter(msg, 'Error');
+            report = getReport(x, 'basic', 'hyperlinks', 'off');
+            obj = symphonyui.presenters.MessageBoxPresenter(report, 'Error');
+            obj.setSize(450, 100);
             obj.view.showDialog();
         end
         

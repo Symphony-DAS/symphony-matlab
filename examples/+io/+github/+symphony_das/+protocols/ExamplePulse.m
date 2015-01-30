@@ -16,6 +16,7 @@ classdef ExamplePulse < symphonyui.models.Protocol
     end
     
     methods
+        
     end
     
 end

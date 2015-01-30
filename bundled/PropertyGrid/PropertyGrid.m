@@ -100,7 +100,7 @@ classdef PropertyGrid < UIControl
             pixelpos = getpixelposition(panel);
             [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], panel); %#ok<ASGLU>
             set(container, 'Units', 'normalized');
-            set(self.Table, 'KeyPressedCallback', @PropertyGrid.OnKeyPressed);
+            set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
         end
         
         function ctrl = get.Control(self)
@@ -148,7 +148,7 @@ classdef PropertyGrid < UIControl
             self.Pane.setShowDescription(description);
 
             % wire property change event hook
-            set(model, 'PropertyChangeCallback', @PropertyGrid.OnPropertyChange);
+            set(model, 'PropertyChangeCallback', @self.OnPropertyChange);
         end
         
         function UpdateProperties(self, properties)
@@ -319,7 +319,9 @@ classdef PropertyGrid < UIControl
             h = findobjuser(@(userdata) userdata.(member) == obj, '__PropertyGrid__');
             self = get(h, 'UserData');
         end
-
+    end
+    
+    methods (Access = private)  % methods (Access = private, Static) for MatLab 2010a and up
         function name = GetSelectedProperty(obj)
         % The name of the currently selected property (if any).
         % Like JIDE, this function also uses a hierarchical naming scheme
@@ -328,22 +330,20 @@ classdef PropertyGrid < UIControl
         % Output arguments:
         % name:
         %    a selected property in dot notation
-            selectedfield = obj.getSelectedProperty();
+            selectedfield = obj.Table.getSelectedProperty();
             if isempty(selectedfield)
                 name = [];
             else
                 name = char(selectedfield.getFullName());
             end
         end
-    end
-    methods (Static)  % methods (Access = private, Static) for MatLab 2010a and up
-        function OnKeyPressed(obj, event)
+        
+        function OnKeyPressed(self, ~, event)
         % Fired when a key is pressed when the property grid has the focus.
             key = char(event.getKeyText(event.getKeyCode()));
             switch key
                 case 'F1'
-                    name = PropertyGrid.GetSelectedProperty(obj);
-                    self = PropertyGrid.FindPropertyGrid(obj, 'Table');
+                    name = self.GetSelectedProperty();
                     if ~isempty(name) && ~isempty(self.BoundItem)  % help
                         nameparts = strsplit(name, '.');
                         if numel(nameparts) > 1
@@ -354,21 +354,19 @@ classdef PropertyGrid < UIControl
                         helpdialog([class(helpobject) '.' nameparts{end}]);
                     end
                 case 'F2'
-                    name = PropertyGrid.GetSelectedProperty(obj);
+                    name = self.GetSelectedProperty();
                     if ~isempty(name)  % edit property value
-                        self = PropertyGrid.FindPropertyGrid(obj, 'Table');
                         self.EditMatrix(name);
                     end
             end
         end
         
-        function OnPropertyChange(obj, event) %#ok<INUSL>
+        function OnPropertyChange(self, ~, event)
         % Fired when a property value in a property grid has changed.
         % This function is declared static because object methods cannot be
         % directly used with the @ operator. Even though the anonymous
         % function construct @(obj,evt) self.OnPropertyChange(obj,evt);
         % could be feasible, it leads to a memory leak.
-            self = PropertyGrid.FindPropertyGrid(obj, 'Model');
             name = get(event, 'PropertyName');  % JIDE automatically uses a hierarchical naming scheme
             self.UpdateField(name);
 
