@@ -1,6 +1,6 @@
 classdef AppPreferencesPresenter < symphonyui.Presenter
     
-    properties (SetAccess = private)
+    properties (Access = private)
         preferences
     end
     
@@ -62,6 +62,7 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
         
         function onSelectedOk(obj, ~, ~)     
             import symphonyui.utilities.*;
+            drawnow();
             
             function out = parse(in)
                 if ~isempty(in) && in(1) == '@'
@@ -85,7 +86,7 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
             externalSolutionList = strToCell(obj.view.getExternalSolutionList());
             internalSolutionList = strToCell(obj.view.getInternalSolutionList());
             otherList = strToCell(obj.view.getOtherList());
-            
+                        
             main = obj.preferences;
             experiment = obj.preferences.experimentPreferences;
             epochGroup = obj.preferences.epochGroupPreferences;

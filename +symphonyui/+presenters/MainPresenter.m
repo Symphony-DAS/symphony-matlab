@@ -150,6 +150,9 @@ classdef MainPresenter < symphonyui.Presenter
         function onSetProtocolList(obj, ~, ~)
             obj.protocolMap = displayNameMap(obj.appData.protocolList);
             obj.view.setProtocolList(obj.protocolMap.keys);
+            try %#ok<TRYNC>
+                obj.appData.setProtocol(2);
+            end
         end
         
         function onSelectedRun(obj, ~, ~)
@@ -178,10 +181,6 @@ classdef MainPresenter < symphonyui.Presenter
             status = 'Unknown';
             
             switch obj.appData.controller.state
-                case ControllerState.NOT_READY
-                    enableSelectProtocol = true;
-                    enableProtocolParameters = true;
-                    status = 'Not Ready';
                 case ControllerState.STOPPED
                     enableSelectProtocol = true;
                     enableProtocolParameters = true;
@@ -220,19 +219,11 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedSetRig(obj, ~, ~)
+            controller = obj.appData.controller;
             rigMap = displayNameMap(obj.appData.rigList);
             view = symphonyui.views.SetRigView(obj.view);
-            p = symphonyui.presenters.SetRigPresenter(rigMap.keys, view);
-            result = p.view.showDialog();
-            if result
-                index = ismember(obj.appData.rigList, rigMap(p.rig));
-                try
-                    obj.appData.setRig(index);
-                catch x
-                    symphonyui.presenters.MessageBoxPresenter.showException(x);
-                    obj.onSetRig();
-                end
-            end
+            p = symphonyui.presenters.SetRigPresenter(controller, rigMap, view);
+            p.view.showDialog();
         end
         
         function onSetRig(obj, ~, ~)

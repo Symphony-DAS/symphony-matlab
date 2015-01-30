@@ -1,6 +1,6 @@
 classdef NewEpochGroupPresenter < symphonyui.Presenter
     
-    properties (SetAccess = private)
+    properties (Access = private)
         experiment
     end
     
@@ -118,6 +118,8 @@ classdef NewEpochGroupPresenter < symphonyui.Presenter
         end
         
         function onSelectedBegin(obj, ~, ~)
+            drawnow();
+            
             label = obj.view.getLabel();
             recording = obj.view.getRecording();
             keywords = obj.view.getKeywords();

@@ -49,6 +49,8 @@ classdef NewExperimentPresenter < symphonyui.Presenter
         end
         
         function onSelectedOpen(obj, ~, ~)
+            drawnow();
+            
             name = obj.view.getName();            
             location = obj.view.getLocation();
             purpose = obj.view.getPurpose();

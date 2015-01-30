@@ -1,8 +1,5 @@
 classdef MessageBoxPresenter < symphonyui.Presenter
-    
-    properties
-    end
-    
+
     methods
         
         function obj = MessageBoxPresenter(message, title, view)
@@ -12,14 +9,10 @@ classdef MessageBoxPresenter < symphonyui.Presenter
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.addListener(view, 'Ok', @obj.onSelectedOk);
+            obj.addListener(view, 'Ok', @(h,d)obj.view.close());
             
             obj.view.setTitle(title);
             obj.view.setMessage(message);
-        end
-        
-        function onSelectedOk(obj, ~, ~)
-            obj.view.close();
         end
         
     end
