@@ -16,6 +16,7 @@ classdef Test < symphonyui.models.Protocol
         cellArray = {'one', 'two', 'three'}
         logical = true
         matrix = [1 2 3 4 5];
+        twodMatrix = [1 2 3; 4 5 6];
         unsigned = uint8(5);
     end
     

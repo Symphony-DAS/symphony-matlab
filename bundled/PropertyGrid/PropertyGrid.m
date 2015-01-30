@@ -112,7 +112,7 @@ classdef PropertyGrid < UIControl
             properties = self.Fields.GetProperties();
         end
         
-        function self = set.Properties(self, properties)
+        function set.Properties(self, properties)
         % Explicitly sets properties displayed in the grid.
         % Setting this property clears any object bindings.
             validateattributes(properties, {'PropertyGridField'}, {'vector'});
@@ -159,13 +159,12 @@ classdef PropertyGrid < UIControl
                 old = self.Fields.FindByName(new.Name);
                 
                 old.Name = new.Name;
-                %old.Type = new.Type;
-                old.Value = new.Value;
                 old.Category = new.Category;
                 old.DisplayName = new.DisplayName;
                 old.Description = new.Description;
                 old.ReadOnly = new.ReadOnly;
-                %old.Dependent = new.Dependent;
+                old.Type = new.Type;
+                old.Value = new.Value;
             end
             
             self.Model.refresh();
@@ -176,7 +175,7 @@ classdef PropertyGrid < UIControl
             item = self.BoundItem;
         end
         
-        function self = set.Item(self, item)
+        function set.Item(self, item)
         % Binds an object to the property grid.
         % Any changes made in the property grid are automatically reflected
         % in the bound object. Only handle objects (i.e. those that derive
@@ -202,7 +201,7 @@ classdef PropertyGrid < UIControl
             tf = self.Table.getEnabled();
         end
         
-        function self = set.Enable(self, tf)
+        function set.Enable(self, tf)
             self.Table.setEnabled(tf);
         end
         

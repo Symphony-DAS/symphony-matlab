@@ -52,51 +52,7 @@ classdef JidePropertyGridField < handle
             self.DisplayName = data.DisplayName;
             self.Description = data.Description;
             self.ReadOnly = data.ReadOnly;
-            switch data.Type.Shape
-                case 'scalar'
-                    switch data.Type.PrimitiveType
-                        case {'denserealdouble','sparserealdouble'}  % add a double-precision floating point property
-                            matlabtype = 'double';  % MatLab type that is marshalled to Java
-                        case {'denserealsingle','sparserealsingle'}  % add a single-precision floating point property
-                            matlabtype = 'single';
-                        case {'int8','uint8','int16'}
-                            matlabtype = 'int16';
-                        case {'uint16','int32'}  % add an integer property
-                            matlabtype = 'int32';
-                        case {'uint32','int64'}
-                            matlabtype = 'int64';
-                        case 'logical'  % add a logical property
-                            matlabtype = 'logical';
-                            field.setEditorContext(com.jidesoft.grid.BooleanCheckBoxCellEditor.CONTEXT);
-                        case {'densecomplexdouble','sparsecomplexdouble','densecomplexsingle','sparsecomplexsingle'}
-                            matlabtype = [];
-                            field.setType(javaclass('char',1));  % edit as string and convert with eval
-                        otherwise
-                            matlabtype = [];
-                            field.setEditable(false);
-                            %error('PropertyGrid:ArgumentTypeMismatch', 'Scalar %s is not supported.', data.Type.PrimitiveType);
-                    end
-                    if ~isempty(matlabtype)
-                        javatype = javaclass(matlabtype);
-                        field.setType(javatype);
-                        if ~isempty(data.Type.Domain)
-                            if iscell(data.Type.Domain)  % explicit enumeration of domain elements
-                                self.AddComboBoxEditor(field, javatype, data.Type.Domain);
-                            elseif isnumeric(data.Type.Domain) && isinteger(data.Type)  % domain expressed as interval
-                                self.AddSpinnerEditor(field, javatype, min(data.Type.Domain), max(data.Type.Domain));
-                            end
-                        end
-                    end
-                case {'row','column'}
-                    InitializeVector(self, field);
-                case 'matrix'
-                    InitializeMatrix(self, field);
-                case 'empty'
-                    field.setEditable(false);
-                otherwise
-                    error('PropertyGrid:ArgumentTypeMismatch', 'Data shape %s is not supported.', data.Type.Shape);
-            end
-            
+            self.Type = data.Type;
             self.Value = data.Value;
             
             for k = 1 : numel(data.Children)
@@ -118,6 +74,57 @@ classdef JidePropertyGridField < handle
         
         function set.Name(self, n)
             self.Control.setName(n);
+        end
+        
+        function t = get.Type(self)
+            t = self.Control.getType();
+        end
+        
+        function set.Type(self, type)
+            switch type.Shape
+                case 'scalar'
+                    switch type.PrimitiveType
+                        case {'denserealdouble','sparserealdouble'}  % add a double-precision floating point property
+                            matlabtype = 'double';  % MatLab type that is marshalled to Java
+                        case {'denserealsingle','sparserealsingle'}  % add a single-precision floating point property
+                            matlabtype = 'single';
+                        case {'int8','uint8','int16'}
+                            matlabtype = 'int16';
+                        case {'uint16','int32'}  % add an integer property
+                            matlabtype = 'int32';
+                        case {'uint32','int64'}
+                            matlabtype = 'int64';
+                        case 'logical'  % add a logical property
+                            matlabtype = 'logical';
+                            self.Control.setEditorContext(com.jidesoft.grid.BooleanCheckBoxCellEditor.CONTEXT);
+                        case {'densecomplexdouble','sparsecomplexdouble','densecomplexsingle','sparsecomplexsingle'}
+                            matlabtype = [];
+                            self.Control.setType(javaclass('char',1));  % edit as string and convert with eval
+                        otherwise
+                            matlabtype = [];
+                            self.Control.setEditable(false);
+                            %error('PropertyGrid:ArgumentTypeMismatch', 'Scalar %s is not supported.', data.Type.PrimitiveType);
+                    end
+                    if ~isempty(matlabtype)
+                        javatype = javaclass(matlabtype);
+                        self.Control.setType(javatype);
+                        if ~isempty(type.Domain)
+                            if iscell(type.Domain)  % explicit enumeration of domain elements
+                                self.AddComboBoxEditor(self.Control, javatype, type.Domain);
+                            elseif isnumeric(type.Domain) && isinteger(type)  % domain expressed as interval
+                                self.AddSpinnerEditor(self.Control, javatype, min(type.Domain), max(type.Domain));
+                            end
+                        end
+                    end
+                case {'row','column'}
+                    InitializeVector(self, self.Control);
+                case 'matrix'
+                    InitializeMatrix(self, self.Control);
+                case 'empty'
+                    self.Control.setEditable(false);
+                otherwise
+                    error('PropertyGrid:ArgumentTypeMismatch', 'Data shape %s is not supported.', data.Type.Shape);
+            end
         end
         
         function value = get.Value(self)
