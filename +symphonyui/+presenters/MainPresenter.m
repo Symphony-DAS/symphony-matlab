@@ -133,8 +133,9 @@ classdef MainPresenter < symphonyui.Presenter
             key = obj.protocolMap.right_at(index);
             obj.view.setProtocol(key);
             
-            parameters = struct2cell(obj.appData.protocol.parameters);
-            obj.view.setProtocolParameters(parameters);
+            parameters = obj.appData.protocol.parameters;
+            parameters = rmfield(parameters, 'displayName');
+            obj.view.setProtocolParameters(struct2cell(parameters));
         end
         
         function onChangedProtocolParameter(obj, ~, ~)
@@ -142,7 +143,13 @@ classdef MainPresenter < symphonyui.Presenter
             parameters = obj.view.getProtocolParameters();
             for i = 1:numel(parameters)
                 p = parameters{i};
-                protocol.(p.name) = p.value;
+                if ~p.readOnly
+                    try
+                        protocol.(p.name) = p.value;
+                    catch x
+                        symphonyui.presenters.MessageBoxPresenter.showException(x);
+                    end
+                end
             end
             obj.view.updateProtocolParameters(struct2cell(protocol.parameters));
         end

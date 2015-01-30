@@ -1,4 +1,4 @@
-classdef Parameter < handle
+classdef Parameter < hgsetget
     
     properties
         name
@@ -15,9 +15,13 @@ classdef Parameter < handle
     
     methods
         
-        function obj = Parameter(name, value)
+        function obj = Parameter(name, value, varargin)
             obj.name = name;
             obj.value = value;
+            
+            if nargin > 2
+                obj.set(varargin{:});
+            end
         end
         
     end

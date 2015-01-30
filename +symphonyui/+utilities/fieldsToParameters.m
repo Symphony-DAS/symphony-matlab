@@ -1,6 +1,7 @@
 function parameters = fieldsToParameters(fields)
-    % TODO: Convert type.
-
+    % TODO: Parse description into description and units.
+    import symphonyui.models.*;
+    
     parameters = {};    
     if isempty(fields)
         return;
@@ -8,13 +9,13 @@ function parameters = fieldsToParameters(fields)
     
     for i = 1:numel(fields)
         f = fields(i);
-        p = symphonyui.models.Parameter(f.Name, f.Value);
-        
-        p.category = f.Category;
-        p.displayName = f.DisplayName;
-        p.description = f.Description;
-        p.readOnly = f.ReadOnly;
-        p.dependent = f.Dependent;
+        p = symphonyui.models.Parameter(f.Name, f.Value, ...
+            'type', ParameterType(f.Type.PrimitiveType, f.Type.Shape, f.Type.Domain), ...
+            'category', f.Category, ...
+            'displayName', f.DisplayName, ...
+            'description', f.Description, ...
+            'readOnly', f.ReadOnly, ...
+            'dependent', f.Dependent);
         parameters{end + 1} = p;
     end
 end

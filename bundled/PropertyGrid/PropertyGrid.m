@@ -157,6 +157,9 @@ classdef PropertyGrid < UIControl
             for i = 1:numel(properties)
                 new = properties(i);
                 old = self.Fields.FindByName(new.Name);
+                if isempty(old)
+                    continue;
+                end
                 
                 old.Name = new.Name;
                 old.Category = new.Category;

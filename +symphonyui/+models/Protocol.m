@@ -10,11 +10,13 @@ classdef Protocol < handle
         end
         
         function p = parameters(obj)
+            import symphonyui.models.*;
+            
             p = struct();
             clazz = metaclass(obj);
             for i = 1:numel(clazz.Properties)
                 property = clazz.Properties{i};
-                if property.Abstract || property.Constant || property.Hidden || ~strcmp(property.GetAccess, 'public')
+                if property.Abstract || property.Hidden || ~strcmp(property.GetAccess, 'public')
                     continue;
                 end
                 name = property.Name;
@@ -22,6 +24,11 @@ classdef Protocol < handle
                     value = obj.(name);
                 catch
                     continue;
+                end
+                type = [];
+                if iscellstr(value)
+                    type = ParameterType('char', 'row', value);
+                    value = value{1};
                 end
                 comment = helptext([clazz.Name '.' name]);
                 if ~isempty(comment)
@@ -37,15 +44,16 @@ classdef Protocol < handle
                     description = [];
                     units = [];
                 end
-                readOnly = ~strcmp(property.SetAccess, 'public') || property.Dependent && isempty(property.SetMethod);
+                readOnly = property.Constant || ~strcmp(property.SetAccess, 'public') || property.Dependent && isempty(property.SetMethod);
                 dependent = property.Dependent;
                 
-                parameter = symphonyui.models.Parameter(name, obj.(name));
-                parameter.value = value;
-                parameter.units = units;
-                parameter.description = description;
-                parameter.readOnly = readOnly;
-                parameter.dependent = dependent;
+                parameter = Parameter(name, obj.(name), ...
+                    'type', type, ...
+                    'value', value, ...
+                    'units', units, ...
+                    'description', description, ...
+                    'readOnly', readOnly, ...
+                    'dependent', dependent);
                 p.(name) = parameter;
             end
         end

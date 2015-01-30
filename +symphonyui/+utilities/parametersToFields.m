@@ -1,6 +1,4 @@
 function fields = parametersToFields(parameters)
-    % TODO: Convert type.
-
     if isempty(parameters)
         fields = PropertyGridField.empty(1,0);
         return;
@@ -22,6 +20,10 @@ function fields = parametersToFields(parameters)
             'Description', description, ...
             'ReadOnly', p.readOnly, ...
             'Dependent', p.dependent);
+        if ~isempty(p.type)
+            type = PropertyType(p.type.primitiveType, p.type.shape, p.type.domain);
+            set(f, 'Type', type);
+        end
         if ~isempty(p.category)
             set(f, 'Category', p.category);
         end
