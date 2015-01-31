@@ -1,22 +1,21 @@
 classdef AppData < handle
     
     events
-        SetRig
-        SetRigList
-        SetProtocol
-        SetProtocolList
         SetExperiment
-        SetControllerState
+        SetRigList
+        SetRig
+        SetProtocolList
+        SetProtocol
     end
     
     properties (SetAccess = private)
         preferences
         controller
-        rig
-        rigList
-        protocol
-        protocolList
         experiment
+        rigList
+        rig
+        protocolList
+        protocol
     end
     
     methods
@@ -31,27 +30,27 @@ classdef AppData < handle
             
             addlistener(preferences, 'rigSearchPaths', 'PostSet', @obj.onSetRigSearchPaths);
             addlistener(preferences, 'protocolSearchPaths', 'PostSet', @obj.onSetProtocolSearchPaths);
-            addlistener(controller, 'rig', 'PostSet', @(h,d)notify(obj, 'SetRig'));
-            addlistener(controller, 'state', 'PostSet', @(h,d)notify(obj, 'SetControllerState'));
             
             obj.onSetRigSearchPaths();
             obj.onSetProtocolSearchPaths();
         end
         
-        function r = get.rig(obj)
-            r = obj.controller.rig;
-        end
-        
         function setRig(obj, index)
             className = obj.rigList{index};
             constructor = str2func(className);
-            obj.controller.setRig(constructor());
+            r = constructor();
+            obj.protocol.rig = r;
+            obj.rig = r;
+            notify(obj, 'SetRig');
         end
         
         function setProtocol(obj, index)
             className = obj.protocolList{index};
             constructor = str2func(className);
-            obj.protocol = constructor();
+            p = constructor();
+            p.rig = obj.rig;
+            obj.controller.setProtocol(p);
+            obj.protocol = p;
             notify(obj, 'SetProtocol');
         end
         
@@ -80,7 +79,11 @@ classdef AppData < handle
             import symphonyui.utilities.*;
             obj.rigList = search(obj.preferences.rigSearchPaths, 'symphonyui.models.Rig');
             obj.rigList = ['symphonyui.models.NullRig' obj.rigList];
-            obj.setRig(1);
+            try
+                obj.setRig(2);
+            catch
+                obj.setRig(1);
+            end
             notify(obj, 'SetRigList');
         end
         
@@ -88,7 +91,11 @@ classdef AppData < handle
             import symphonyui.utilities.*;
             obj.protocolList = search(obj.preferences.protocolSearchPaths, 'symphonyui.models.Protocol');
             obj.protocolList = ['symphonyui.models.NullProtocol' obj.protocolList];
-            obj.setProtocol(1);
+            try
+                obj.setProtocol(2);
+            catch
+                obj.setProtocol(1);
+            end
             notify(obj, 'SetProtocolList');
         end
         

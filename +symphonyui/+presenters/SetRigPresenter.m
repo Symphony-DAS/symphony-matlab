@@ -1,30 +1,30 @@
 classdef SetRigPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        controller
+        appData
         rigMap
     end
     
     methods
         
-        function obj = SetRigPresenter(controller, rigMap, view)
+        function obj = SetRigPresenter(appData, view)
             if nargin < 2
                 view = symphonyui.views.SetRigView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.controller = controller;
-            obj.rigMap = rigMap;
+            obj.appData = appData;
             
-            obj.addListener(controller, 'rig', 'PostSet', @obj.onSetRig);
+            obj.addListener(appData, 'SetRigList', @obj.onSetRigList);
+            obj.addListener(appData, 'SetRig', @obj.onSetRig);
             
             obj.addListener(view, 'Ok', @obj.onSelectedOk);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
             
             view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            view.setRigList(rigMap.keys);
             
+            obj.onSetRigList();
             obj.onSetRig();
         end
         
@@ -40,8 +40,13 @@ classdef SetRigPresenter < symphonyui.Presenter
             end
         end
         
+        function onSetRigList(obj, ~, ~)
+            obj.rigMap = symphonyui.utilities.displayNameMap(obj.appData.rigList);
+            obj.view.setRigList(obj.rigMap.keys);
+        end
+        
         function onSetRig(obj, ~, ~)
-            rig = obj.controller.rig;
+            rig = obj.appData.rig;
             index = obj.rigMap.right_find(class(rig));
             key = obj.rigMap.right_at(index);
             obj.view.setRig(key);
@@ -52,9 +57,13 @@ classdef SetRigPresenter < symphonyui.Presenter
             
             rig = obj.view.getRig();
             className = obj.rigMap(rig);
-            constructor = str2func(className);
-            
-            obj.controller.setRig(constructor());
+            index = ismember(obj.appData.rigList, className);
+            try
+                obj.appData.setRig(index);
+            catch x
+                symphonyui.presenters.MessageBoxPresenter.showException(x);
+                obj.onSetRig();
+            end
             
             obj.view.result = true;
         end

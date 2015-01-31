@@ -2,7 +2,10 @@ classdef Controller < handle
     
     properties (SetObservable, SetAccess = private)
         state
-        rig
+    end
+    
+    properties (SetAccess = private)
+        protocol
     end
     
     methods
@@ -11,26 +14,21 @@ classdef Controller < handle
             obj.state = symphonyui.models.ControllerState.STOPPED;
         end
         
-        function setRig(obj, rig)
+        function setProtocol(obj, p)
             if obj.state ~= symphonyui.models.ControllerState.STOPPED
-                error('Cannot set rig until the controller is stopped');
+                error('Controller must be stopped to set protocol');
             end
-            
-            obj.rig = rig;
-            obj.state = symphonyui.models.ControllerState.STOPPED;
-        end
-        
-        function enqueueProtocol(obj, protocol)
-            error('Not implemented');
-        end
-        
-        function runProtocol(obj, protocol)
-            disp('Run Protocol');
-            obj.state = symphonyui.models.ControllerState.RUNNING;
+            obj.protocol = p;
         end
         
         function run(obj)
-            error('Not implemented');
+            [valid, msg] = obj.isValid();
+            if ~valid
+                error(msg);
+            end
+            
+            disp('Run');
+            obj.state = symphonyui.models.ControllerState.RUNNING;
         end
         
         function pause(obj)
@@ -47,8 +45,14 @@ classdef Controller < handle
             obj.state = symphonyui.models.ControllerState.STOPPED;
         end
         
-        function validateProtocol(obj, protocol)
+        function [tf, msg] = isValid(obj)
+            if isempty(obj.protocol)
+                tf = false;
+                msg = 'Controller has no protocol';
+                return;
+            end
             
+            [tf, msg] = obj.protocol.isValid;
         end
         
     end

@@ -164,13 +164,13 @@ classdef MainView < symphonyui.View
             
             layout = uiextras.HBox( ...
                 'Parent', controlsLayout);
+            obj.statusText = createLabel(layout, 'Status');
             obj.saveCheckbox = uicontrol( ...
                 'Parent', layout, ...
                 'Style', 'checkbox', ...
-                'String', 'Save');
-            obj.statusText = createLabel(layout, 'Stopped');
-            set(obj.statusText, 'HorizontalAlignment', 'right');
-            set(layout, 'Sizes', [60 -1]);
+                'String', 'Save', ...
+                'HorizontalAlignment', 'right');
+            set(layout, 'Sizes', [-1 44]);
             set(controlsLayout, 'Sizes', [-1 25]);
             
             

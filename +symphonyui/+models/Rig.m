@@ -14,6 +14,11 @@ classdef Rig < handle
             
         end
         
+        function [tf, msg] = isValid(obj)
+            tf = true;
+            msg = [];
+        end
+        
     end
     
     methods (Abstract)

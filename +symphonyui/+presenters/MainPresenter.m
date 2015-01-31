@@ -16,11 +16,11 @@ classdef MainPresenter < symphonyui.Presenter
             %view.loadPosition();
             
             obj.appData = symphonyui.AppData(preferences);
-            obj.addListener(obj.appData, 'SetRig', @obj.onSetRig);
             obj.addListener(obj.appData, 'SetExperiment', @obj.onSetExperiment);
-            obj.addListener(obj.appData, 'SetProtocol', @obj.onSetProtocol);
+            obj.addListener(obj.appData, 'SetRig', @obj.onSetRig);
             obj.addListener(obj.appData, 'SetProtocolList', @obj.onSetProtocolList);
-            obj.addListener(obj.appData, 'SetControllerState', @obj.onSetControllerState);
+            obj.addListener(obj.appData, 'SetProtocol', @obj.onSetProtocol);
+            obj.addListener(obj.appData.controller, 'state', 'PostSet', @obj.onSetControllerState);
             
             obj.addListener(view, 'NewExperiment', @obj.onSelectedNewExperiment);
             obj.addListener(view, 'CloseExperiment', @obj.onSelectedCloseExperiment);
@@ -48,9 +48,10 @@ classdef MainPresenter < symphonyui.Presenter
             view.enablePause(false);
             view.enableStop(false);
             view.enableShouldSave(false);
-            view.enableStatus(false);
             
             obj.onSetProtocolList();
+            obj.onSetProtocol();
+            obj.onSetControllerState();
             obj.onSelectedSetRig();
         end
         
@@ -115,6 +116,11 @@ classdef MainPresenter < symphonyui.Presenter
             disp('Selected View Notes');
         end
         
+        function onSetProtocolList(obj, ~, ~)
+            obj.protocolMap = symphonyui.utilities.displayNameMap(obj.appData.protocolList);
+            obj.view.setProtocolList(obj.protocolMap.keys);
+        end
+        
         function onSelectedProtocol(obj, ~, ~)
             protocol = obj.view.getProtocol();
             className = obj.protocolMap(protocol);
@@ -136,6 +142,8 @@ classdef MainPresenter < symphonyui.Presenter
             parameters = obj.appData.protocol.parameters;
             parameters = rmfield(parameters, 'displayName');
             obj.view.setProtocolParameters(struct2cell(parameters));
+            
+            obj.onSetControllerState();
         end
         
         function onChangedProtocolParameter(obj, ~, ~)
@@ -143,28 +151,20 @@ classdef MainPresenter < symphonyui.Presenter
             parameters = obj.view.getProtocolParameters();
             for i = 1:numel(parameters)
                 p = parameters{i};
-                if ~p.readOnly
-                    try
-                        protocol.(p.name) = p.value;
-                    catch x
-                        symphonyui.presenters.MessageBoxPresenter.showException(x);
-                    end
+                if p.readOnly
+                    continue;
+                end
+                try
+                    protocol.(p.name) = p.value;
+                catch x
+                    symphonyui.presenters.MessageBoxPresenter.showException(x);
                 end
             end
             obj.view.updateProtocolParameters(struct2cell(protocol.parameters));
         end
         
-        function onSetProtocolList(obj, ~, ~)
-            obj.protocolMap = displayNameMap(obj.appData.protocolList);
-            obj.view.setProtocolList(obj.protocolMap.keys);
-            try %#ok<TRYNC>
-                obj.appData.setProtocol(2);
-            end
-        end
-        
         function onSelectedRun(obj, ~, ~)
-            p = obj.appData.protocol;
-            obj.appData.controller.runProtocol(p);
+            obj.appData.controller.run();
         end
         
         function onSelectedPause(obj, ~, ~)
@@ -184,57 +184,56 @@ classdef MainPresenter < symphonyui.Presenter
             enablePause = false;
             enableStop = false;
             enableShouldSave = false;
-            enableStatus = false;
-            status = 'Unknown';
             
-            switch obj.appData.controller.state
-                case ControllerState.STOPPED
-                    enableSelectProtocol = true;
-                    enableProtocolParameters = true;
-                    enableRun = true;
-                    enableShouldSave = true;
-                    enableStatus = true;
-                    status = 'Stopped';
-                case ControllerState.STOPPING
-                    enableStatus = true;
-                    status = 'Stopping';
-                case ControllerState.PAUSED
-                    enableRun = true;
-                    enableStop = true;
-                    enableShouldSave = true;
-                    enableStatus = true;
-                    status = 'Paused';
-                case ControllerState.PAUSING
-                    enableStop = true;
-                    enableStatus = true;
-                    status = 'Pausing';
-                case ControllerState.RUNNING
-                    enablePause = true;
-                    enableStop = true;
-                    enableStatus = true;
-                    status = 'Running';
+            [valid, msg] = obj.appData.controller.isValid();
+            if ~valid
+                enableSelectProtocol = true;
+                enableProtocolParameters = true;
+                status = msg;
+            else
+                switch obj.appData.controller.state
+                    case ControllerState.STOPPED
+                        enableSelectProtocol = true;
+                        enableProtocolParameters = true;
+                        enableRun = true;
+                        enableShouldSave = true;
+                        status = 'Stopped';
+                    case ControllerState.STOPPING
+                        status = 'Stopping';
+                    case ControllerState.PAUSED
+                        enableRun = true;
+                        enableStop = true;
+                        enableShouldSave = true;
+                        status = 'Paused';
+                    case ControllerState.PAUSING
+                        enableStop = true;
+                        status = 'Pausing';
+                    case ControllerState.RUNNING
+                        enablePause = true;
+                        enableStop = true;
+                        status = 'Running';
+                    otherwise
+                        status = 'Unknown state'; 
+                end
             end
             
-            obj.view.enableSelectProtocol(enableSelectProtocol && ~isempty(obj.appData.protocol));
-            obj.view.enableProtocolParameters(enableProtocolParameters && ~isempty(obj.appData.protocol));
+            obj.view.enableSelectProtocol(enableSelectProtocol);
+            obj.view.enableProtocolParameters(enableProtocolParameters);
             obj.view.enableRun(enableRun);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
             obj.view.enableShouldSave(enableShouldSave && ~isempty(obj.appData.experiment));
-            obj.view.enableStatus(enableStatus);
             obj.view.setStatus(status);
         end
         
         function onSelectedSetRig(obj, ~, ~)
-            controller = obj.appData.controller;
-            rigMap = displayNameMap(obj.appData.rigList);
             view = symphonyui.views.SetRigView(obj.view);
-            p = symphonyui.presenters.SetRigPresenter(controller, rigMap, view);
+            p = symphonyui.presenters.SetRigPresenter(obj.appData, view);
             p.view.showDialog();
         end
         
         function onSetRig(obj, ~, ~)
-            obj.onSelectedProtocol();
+            obj.onSetControllerState();
         end
         
         function onSelectedPreferences(obj, ~, ~)
@@ -272,21 +271,5 @@ classdef MainPresenter < symphonyui.Presenter
         
     end
     
-end
-
-function map = displayNameMap(list)
-    map = Map2();
-    for i = 1:numel(list);
-        className = list{i};
-        displayName = symphonyui.utilities.classProperty(className, 'displayName');
-        if isKey(map, displayName)
-            value = map(displayName);
-            map.remove(displayName);
-            map([displayName ' (' value ')']) = value;
-            
-            displayName = [displayName ' (' className ')'];
-        end
-        map(displayName) = className;
-    end
 end
 

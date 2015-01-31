@@ -8,9 +8,9 @@ classdef Parameter < hgsetget
         category
         displayName
         description
-        readOnly = false
-        dependent = false
-        valid = true
+        isReadOnly = false
+        isDependent = false
+        isValid = true
     end
     
     methods
