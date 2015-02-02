@@ -6,7 +6,7 @@ classdef NullRig < symphonyui.models.Rig
     
     methods
         
-        function createDevices(obj) %#ok<MANU>
+        function setup(obj) %#ok<MANU>
             
         end
         

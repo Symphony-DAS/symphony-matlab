@@ -1,6 +1,6 @@
 classdef AppPreferences < handle
     
-    properties (SetObservable)
+    properties (SetObservable, AbortSet)
         rigSearchPaths
         protocolSearchPaths
     end

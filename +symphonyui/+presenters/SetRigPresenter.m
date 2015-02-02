@@ -55,14 +55,24 @@ classdef SetRigPresenter < symphonyui.Presenter
         function onSelectedOk(obj, ~, ~)
             drawnow();
             
+            obj.appData.rig.close();
+            
             rig = obj.view.getRig();
             className = obj.rigMap(rig);
-            index = ismember(obj.appData.rigList, className);
+            index = obj.appData.getRigIndex(className);
             try
                 obj.appData.setRig(index);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 obj.onSetRig();
+                return;
+            end
+            
+            try
+                obj.appData.rig.initialize();
+            catch x
+                symphonyui.presenters.MessageBoxPresenter.showException(x);
+                return;
             end
             
             obj.view.result = true;

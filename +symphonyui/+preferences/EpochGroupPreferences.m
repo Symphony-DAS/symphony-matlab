@@ -1,6 +1,6 @@
 classdef EpochGroupPreferences < handle
     
-    properties (SetObservable)
+    properties (SetObservable, AbortSet)
         labelList
         recordingList
         defaultKeywords

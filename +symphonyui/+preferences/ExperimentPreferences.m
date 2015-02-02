@@ -1,6 +1,6 @@
 classdef ExperimentPreferences < handle
     
-    properties (SetObservable)
+    properties (SetObservable, AbortSet)
         defaultName
         defaultPurpose
         defaultLocation

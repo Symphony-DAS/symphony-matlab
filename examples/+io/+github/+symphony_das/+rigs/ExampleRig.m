@@ -6,7 +6,7 @@ classdef ExampleRig < symphonyui.models.Rig
     
     methods
         
-        function createDevices(obj)
+        function setup(obj)
             
         end
         

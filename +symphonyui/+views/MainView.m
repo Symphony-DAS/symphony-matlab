@@ -102,7 +102,7 @@ classdef MainView < symphonyui.View
             obj.toolsMenu.viewRig = uimenu(obj.toolsMenu.root, ...
                 'Label', 'View Rig', ...
                 'Callback', @(h,d)notify(obj, 'ViewRig'));
-            obj.toolsMenu.options = uimenu(obj.toolsMenu.root, ...
+            obj.toolsMenu.preferences = uimenu(obj.toolsMenu.root, ...
                 'Label', 'Preferences...', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'Preferences'));
@@ -209,6 +209,10 @@ classdef MainView < symphonyui.View
             set(obj.toolsMenu.viewRig, 'Enable', symphonyui.utilities.onOff(tf));
         end
         
+        function enablePreferences(obj, tf)
+            set(obj.toolsMenu.preferences, 'Enable', symphonyui.utilities.onOff(tf));
+        end
+        
         function enableSelectProtocol(obj, tf)
             set(obj.protocolDropDown, 'Enable', symphonyui.utilities.onOff(tf));
         end
@@ -242,6 +246,10 @@ classdef MainView < symphonyui.View
         function updateProtocolParameters(obj, parameters)
             properties = symphonyui.utilities.parametersToFields(parameters);
             obj.protocolParameterGrid.UpdateProperties(properties);
+        end
+        
+        function enableProtocolPresets(obj, tf)
+            set(obj.protocolMenu.presets, 'Enable', symphonyui.utilities.onOff(tf));
         end
         
         function enableRun(obj, tf)

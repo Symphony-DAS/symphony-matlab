@@ -12,6 +12,7 @@ classdef Test < symphonyui.models.Protocol
         
         stimTime % This is stimTime
         string = 'Test Stringzz'
+        string2 = 'This should be the rig name'
         integer = 12
         cellArray = {'one', 'two', 'three'}
         logical = true
@@ -31,6 +32,8 @@ classdef Test < symphonyui.models.Protocol
             p = parameters@symphonyui.models.Protocol(obj);
             p.string.displayName = ['dname ' num2str(obj.integer)];
             p.string.description = ['descr ' num2str(obj.integer)];
+            p.string2.value = obj.rig.displayName;
+            p.integer.isValid = obj.integer < 100;
             %p.string.category = ['categ ' num2str(obj.integer)];
         end
         

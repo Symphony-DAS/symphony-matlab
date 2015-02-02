@@ -4,25 +4,14 @@ classdef Controller < handle
         state
     end
     
-    properties (SetAccess = private)
-        protocol
-    end
-    
     methods
         
         function obj = Controller()
             obj.state = symphonyui.models.ControllerState.STOPPED;
         end
         
-        function setProtocol(obj, p)
-            if obj.state ~= symphonyui.models.ControllerState.STOPPED
-                error('Controller must be stopped to set protocol');
-            end
-            obj.protocol = p;
-        end
-        
-        function run(obj)
-            [valid, msg] = obj.isValid();
+        function runProtocol(obj, protocol)
+            [valid, msg] = obj.validateProtocol(protocol);
             if ~valid
                 error(msg);
             end
@@ -45,14 +34,8 @@ classdef Controller < handle
             obj.state = symphonyui.models.ControllerState.STOPPED;
         end
         
-        function [tf, msg] = isValid(obj)
-            if isempty(obj.protocol)
-                tf = false;
-                msg = 'Controller has no protocol';
-                return;
-            end
-            
-            [tf, msg] = obj.protocol.isValid;
+        function [tf, msg] = validateProtocol(obj, protocol)
+            [tf, msg] = protocol.isValid;
         end
         
     end

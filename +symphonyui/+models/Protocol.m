@@ -65,7 +65,7 @@ classdef Protocol < handle
         function [tf, msg] = isValid(obj)
             if isempty(obj.rig)
                 tf = false;
-                msg = 'Protocol rig is not set';
+                msg = 'Rig is not set';
                 return;
             end
             
@@ -73,7 +73,7 @@ classdef Protocol < handle
             for i = 1:numel(parameters)
                 if ~parameters{i}.isValid
                     tf = false;
-                    msg = 'One or more parameters is not valid';
+                    msg = [parameters{i}.displayName ' is not valid'];
                     return;
                 end
             end
