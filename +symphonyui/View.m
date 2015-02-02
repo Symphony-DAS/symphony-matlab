@@ -10,7 +10,7 @@ classdef View < handle
         parentListener
     end
     
-    properties (Access = protected)
+    properties (SetAccess = private)
         figureHandle
     end
     

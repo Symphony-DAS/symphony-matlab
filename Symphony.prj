@@ -1,51 +1,142 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration target="target.mlapps" target-name="Package App" name="Symphony" location="C:\Users\Client Admin\Documents\src\symphony-matlab2" file="C:\Users\Client Admin\Documents\src\symphony-matlab2\Symphony.prj" build-checksum="1375306233">
+  <configuration build-checksum="3012129214" file="C:\Users\Client Admin\Documents\src\symphony-matlab2\Symphony.prj" location="C:\Users\Client Admin\Documents\src\symphony-matlab2" name="Symphony" target="target.mlapps" target-name="Package App">
     <param.appname>Symphony</param.appname>
     <param.authnamewatermark />
     <param.email />
-    <param.company />
+    <param.company>Symphony-DAS</param.company>
     <param.icon />
     <param.icons />
-    <param.summary />
-    <param.description />
+    <param.summary>Symphony Data Acquisition System</param.summary>
+    <param.description>Symphony is a data acquisition system focused on electrophysiology experiments.</param.description>
     <param.screenshot />
     <param.version>2.0.0</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
     <param.products.id>
-      <item>-1</item>
+      <item>'1'</item>
     </param.products.id>
     <param.products.version>
-      <item>8.2</item>
+      <item>8.4</item>
     </param.products.version>
     <param.platforms />
     <param.output>${PROJECT_ROOT}\Symphony.mlappinstall</param.output>
-    <param.guid>cd11f16f-535a-4e09-a498-340bec26c695</param.guid>
+    <param.guid>468b1360-a179-4548-a3a7-fd02ba2b86a8</param.guid>
     <unset>
       <param.authnamewatermark />
       <param.email />
-      <param.company />
       <param.icon />
       <param.icons />
-      <param.summary />
-      <param.description />
       <param.screenshot />
       <param.platforms />
     </unset>
     <fileset.main>
       <file>${PROJECT_ROOT}\main.m</file>
     </fileset.main>
-    <fileset.depfun />
-    <fileset.resources />
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\+symphonyui\+models\Controller.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+models\ControllerState.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+models\EpochGroup.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+models\Experiment.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+models\Parameter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+models\ParameterType.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+preferences\AppPreferences.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+preferences\EpochGroupPreferences.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+preferences\ExperimentPreferences.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\AppPreferencesPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\MainPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\MessageBoxPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\NewEpochGroupPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\NewExperimentPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\SetRigPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\createDropDownMenu.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\createLabel.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\createLabeledDropDownMenu.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\createLabeledTextField.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\getSelectedValue.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\setSelectedValue.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\setStringList.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\cellToStr.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\classProperty.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\displayNameMap.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\fieldsToParameters.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\onOff.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\packageName.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\parametersToFields.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\screenCenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\search.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+utilities\strToCell.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\AppPreferencesView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\MainView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\MessageBoxView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\NewEpochGroupView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\NewExperimentView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\SetRigView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\AppData.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\Presenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\View.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uiextras\Empty.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uiextras\HBox.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uiextras\VBox.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\+mixin\Container.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\ancestors.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\AncestryObserver.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\Box.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\calcPixelSizes.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\CardPanel.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\ChildEvent.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\ChildObserver.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\Container.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\Empty.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\HBox.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\Image.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\loadIcon.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\LocationObserver.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\Node.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\Panel.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\pvchk.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\SelectionEvent.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\TabPanel.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\VBox.m</file>
+      <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\layout\+uix\VisibilityObserver.m</file>
+      <file>${PROJECT_ROOT}\bundled\Map2\Map2.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\arrayfilter.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\constructor.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\findobjuser.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\getclassfield.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\getdependentproperties.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\helpdialog.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\helptext.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\javaArrayList.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\javaclass.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\javaStringArray.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\JidePropertyGridField.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\MatrixEditor.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\nestedassign.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\nestedfetch.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\objectEDT.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\PropertyGrid.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\PropertyGridField.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\PropertyType.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\strsetmatch.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\UIControl.m</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\var2str.m</file>
+      <file>${PROJECT_ROOT}\resources\icons\license.html</file>
+      <file>${PROJECT_ROOT}\resources\icons\list.png</file>
+      <file>${PROJECT_ROOT}\resources\icons\pause.png</file>
+      <file>${PROJECT_ROOT}\resources\icons\play.png</file>
+      <file>${PROJECT_ROOT}\resources\icons\stop.png</file>
+    </fileset.depfun>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}\resources</file>
+    </fileset.resources>
     <fileset.package />
     <build-deliverables>
-      <file name="Symphony.mlappinstall" location="C:\Users\Client Admin\Documents\src\symphony-matlab2" optional="false">C:\Users\Client Admin\Documents\src\symphony-matlab2\Symphony.mlappinstall</file>
+      <file location="C:\Users\Client Admin\Documents\src\symphony-matlab2" name="Symphony.mlappinstall" optional="false">C:\Users\Client Admin\Documents\src\symphony-matlab2\Symphony.mlappinstall</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files (x86)\MATLAB\R2013b</root>
+      <root>C:\Program Files\MATLAB\R2014b</root>
       <toolboxes />
     </matlab>
     <platform>
@@ -58,11 +149,10 @@
       <linux>false</linux>
       <solaris>false</solaris>
       <osver>6.1</osver>
-      <os32>true</os32>
-      <os64>false</os64>
-      <arch>win32</arch>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
       <matlab>true</matlab>
     </platform>
   </configuration>
 </deployment-project>
-
