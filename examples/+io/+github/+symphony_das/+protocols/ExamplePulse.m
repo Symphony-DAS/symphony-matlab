@@ -22,10 +22,9 @@ classdef ExamplePulse < symphonyui.models.Protocol
             
             p = parameters@symphonyui.models.Protocol(obj);
             
-            p.amp.type = ParameterType('char', 'row', {'ab','cd','ef'});
+            p.amp.type = ParameterType('char', 'row', {'Amplifier_Ch1', 'Amplifier_Ch2'});
             p.preTime.type.domain = [0 100];
             p.numberOfAverages.type.domain = [0 100];
-            p.interpulseInterval.type.domain = {0 1 2};
         end
         
     end

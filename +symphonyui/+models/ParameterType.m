@@ -6,6 +6,10 @@ classdef ParameterType < handle
         domain
     end
     
+    properties (Access = private)
+        propertyType
+    end
+    
     methods
         
         function obj = ParameterType(type, shape, domain)
@@ -13,9 +17,51 @@ classdef ParameterType < handle
                 domain = [];
             end
             
-            obj.primitiveType = type;
-            obj.shape = shape;
-            obj.domain = domain;
+            try
+                obj.propertyType = PropertyType(type, shape, domain);
+            catch x
+                throw(x);
+            end
+        end
+        
+    end
+    
+    methods
+        
+        function p = get.primitiveType(obj)
+            p = obj.propertyType.PrimitiveType;
+        end
+        
+        function set.primitiveType(obj, p)
+            try
+                obj.propertyType.PrimitiveType = p; %#ok<MCSUP>
+            catch
+                throw(x);
+            end
+        end
+        
+        function s = get.shape(obj)
+            s = obj.propertyType.Shape;
+        end
+        
+        function set.shape(obj, s)
+            try
+                obj.propertyType.Shape = s; %#ok<MCSUP>
+            catch x
+                throw(x);
+            end
+        end
+        
+        function d = get.domain(obj)
+            d = obj.propertyType.Domain;
+        end
+        
+        function set.domain(obj, d)
+            try
+                obj.propertyType.Domain = d; %#ok<MCSUP>
+            catch x
+                throw(x);
+            end
         end
         
     end
@@ -23,53 +69,19 @@ classdef ParameterType < handle
     methods (Static)
         
         function obj = autoDiscover(value)
-            import symphonyui.models.*;
-            obj = ParameterType(ParameterType.autoDiscoverType(value), ParameterType.autoDiscoverShape(value));
-        end
-        
-        function type = autoDiscoverType(value)
-            clazz = class(value);
-            switch clazz
-                case {'logical','char','int8','uint8','int16','uint16','int32','uint32','int64','uint64'}
-                    type = clazz;
-                case {'single','double'}
-                    if issparse(value)
-                        sparsity = 'sparse';
-                    else
-                        sparsity = 'dense';
-                    end
-                    if isreal(value)
-                        complexity = 'real';
-                    else
-                        complexity = 'complex';
-                    end
-                    type = [ sparsity complexity clazz ];
-                case 'cell'
-                    if iscellstr(value)
-                        type = 'cellstr';
-                    else
-                        error('Cell arrays other than cell array of strings are not supported.');
-                    end
-                otherwise
-                    error('Argument type "%s" is not supported.', class(value));
+            try
+                t = PropertyType.AutoDiscoverType(value);
+            catch x
+                throw(x);
             end
-        end
-        
-        function shape = autoDiscoverShape(value)
-            if ~ismatrix(value)
-                error('Dimensions higher than 2 are not supported.');
+            
+            try
+                s = PropertyType.AutoDiscoverShape(value);
+            catch x
+                throw(x);
             end
-            if size(value,1) == 1 && size(value,2) == 1
-                shape = 'scalar';
-            elseif size(value,1) == 1
-                shape = 'row';
-            elseif size(value,2) == 1
-                shape = 'column';
-            elseif size(value,1) == 0 && size(value,2) == 0
-                shape = 'empty';  % no dimensions
-            else
-                shape = 'matrix';
-            end
+            
+            obj = symphonyui.models.ParameterType(t, s);
         end
         
     end

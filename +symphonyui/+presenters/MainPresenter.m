@@ -142,6 +142,7 @@ classdef MainPresenter < symphonyui.Presenter
                 obj.appData.setProtocol(index);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
+                warning(getReport(x));
                 obj.onSetProtocol();
                 return;
             end
@@ -155,17 +156,15 @@ classdef MainPresenter < symphonyui.Presenter
             
             try
                 parameters = obj.appData.protocol.parameters;
+                parameters = rmfield(parameters, 'displayName');
+                obj.view.setProtocolParameters(struct2cell(parameters));
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
+                warning(getReport(x));
                 obj.appData.setProtocol(1);
-                % FIXME: setProtocol should trigger onSetProtocol to run again but nested events are not working.
-                % Calling onSetProtocol manually for now.
                 obj.onSetProtocol();
                 return;
             end
-                
-            parameters = rmfield(parameters, 'displayName');
-            obj.view.setProtocolParameters(struct2cell(parameters));
             
             obj.validate();
         end
@@ -182,16 +181,18 @@ classdef MainPresenter < symphonyui.Presenter
                     protocol.(p.name) = p.value;
                 catch x
                     symphonyui.presenters.MessageBoxPresenter.showException(x);
+                    warning(getReport(x));
                 end
             end
             try
                 parameters = obj.appData.protocol.parameters;
+                obj.view.updateProtocolParameters(struct2cell(parameters));
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
+                warning(getReport(x));
                 obj.appData.setProtocol(1);
                 return;
             end
-            obj.view.updateProtocolParameters(struct2cell(parameters));
             
             obj.validate();
         end
