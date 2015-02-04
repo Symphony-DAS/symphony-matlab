@@ -6,9 +6,7 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
     
     methods
         
-        function obj = AppPreferencesPresenter(preferences, view)
-            import symphonyui.utilities.*;
-            
+        function obj = AppPreferencesPresenter(preferences, view)            
             if nargin < 2
                 view = symphonyui.views.AppPreferencesView([]);
             end
@@ -20,27 +18,37 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
             obj.addListener(view, 'SelectedCard', @obj.onSelectedCard);
             obj.addListener(view, 'Ok', @obj.onSelectedOk);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function onViewShown(obj, ~, ~)
+            import symphonyui.utilities.*;
             
-            main = preferences;
-            experiment = preferences.experimentPreferences;
-            epochGroup = preferences.epochGroupPreferences;
+            onViewShown@symphonyui.Presenter(obj);
             
-            view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            view.setRigSearchPaths(cellToStr(main.rigSearchPaths));
-            view.setProtocolSearchPaths(cellToStr(main.protocolSearchPaths));
-            view.setDefaultName(char(experiment.defaultName));
-            view.setDefaultPurpose(char(experiment.defaultPurpose));
-            view.setDefaultLocation(char(experiment.defaultLocation));
-            view.setSpeciesList(cellToStr(experiment.speciesList));
-            view.setPhenotypeList(cellToStr(experiment.phenotypeList));
-            view.setGenotypeList(cellToStr(experiment.genotypeList));
-            view.setPreparationList(cellToStr(experiment.preparationList));
-            view.setLabelList(cellToStr(epochGroup.labelList));
-            view.setRecordingList(cellToStr(epochGroup.recordingList));
-            view.setDefaultKeywords(cellToStr(epochGroup.defaultKeywords));
-            view.setExternalSolutionList(cellToStr(epochGroup.availableExternalSolutionList));
-            view.setInternalSolutionList(cellToStr(epochGroup.availableInternalSolutionList));
-            view.setOtherList(cellToStr(epochGroup.availableOtherList));
+            main = obj.preferences;
+            experiment = obj.preferences.experimentPreferences;
+            epochGroup = obj.preferences.epochGroupPreferences;
+            
+            obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
+            obj.view.setRigSearchPaths(cellToStr(main.rigSearchPaths));
+            obj.view.setProtocolSearchPaths(cellToStr(main.protocolSearchPaths));
+            obj.view.setDefaultName(char(experiment.defaultName));
+            obj.view.setDefaultPurpose(char(experiment.defaultPurpose));
+            obj.view.setDefaultLocation(char(experiment.defaultLocation));
+            obj.view.setSpeciesList(cellToStr(experiment.speciesList));
+            obj.view.setPhenotypeList(cellToStr(experiment.phenotypeList));
+            obj.view.setGenotypeList(cellToStr(experiment.genotypeList));
+            obj.view.setPreparationList(cellToStr(experiment.preparationList));
+            obj.view.setLabelList(cellToStr(epochGroup.labelList));
+            obj.view.setRecordingList(cellToStr(epochGroup.recordingList));
+            obj.view.setDefaultKeywords(cellToStr(epochGroup.defaultKeywords));
+            obj.view.setExternalSolutionList(cellToStr(epochGroup.availableExternalSolutionList));
+            obj.view.setInternalSolutionList(cellToStr(epochGroup.availableInternalSolutionList));
+            obj.view.setOtherList(cellToStr(epochGroup.availableOtherList));
         end
         
     end

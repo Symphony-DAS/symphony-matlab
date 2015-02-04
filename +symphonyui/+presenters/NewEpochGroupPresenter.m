@@ -2,6 +2,7 @@ classdef NewEpochGroupPresenter < symphonyui.Presenter
     
     properties (Access = private)
         experiment
+        preferences
     end
     
     methods
@@ -18,6 +19,7 @@ classdef NewEpochGroupPresenter < symphonyui.Presenter
             obj = obj@symphonyui.Presenter(view);
             
             obj.experiment = experiment;
+            obj.preferences = preferences;
             
             obj.addListener(view, 'AddExternalSolution', @obj.onSelectedAddExternalSolution);
             obj.addListener(view, 'RemoveExternalSolution', @obj.onSelectedRemoveExternalSolution);
@@ -27,13 +29,21 @@ classdef NewEpochGroupPresenter < symphonyui.Presenter
             obj.addListener(view, 'RemoveOther', @obj.onSelectedRemoveOther);
             obj.addListener(view, 'Begin', @obj.onSelectedBegin);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function onViewShown(obj, ~, ~)            
+            onViewShown@symphonyui.Presenter(obj);
             
-            view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            view.setLabelList(preferences.labelList);
-            view.setRecordingList(preferences.recordingList);
-            view.setAvailableExternalSolutionList(preferences.availableExternalSolutionList);
-            view.setAvailableInternalSolutionList(preferences.availableInternalSolutionList);
-            view.setAvailableOtherList(preferences.availableOtherList);
+            obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
+            obj.view.setLabelList(obj.preferences.labelList);
+            obj.view.setRecordingList(obj.preferences.recordingList);
+            obj.view.setAvailableExternalSolutionList(obj.preferences.availableExternalSolutionList);
+            obj.view.setAvailableInternalSolutionList(obj.preferences.availableInternalSolutionList);
+            obj.view.setAvailableOtherList(obj.preferences.availableOtherList);
         end
         
     end

@@ -21,8 +21,16 @@ classdef SetRigPresenter < symphonyui.Presenter
             
             obj.addListener(view, 'Ok', @obj.onSelectedOk);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function onViewShown(obj, ~, ~)            
+            onViewShown@symphonyui.Presenter(obj);
             
-            view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
+            obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
             
             obj.onSetRigList();
             obj.onSetRig();

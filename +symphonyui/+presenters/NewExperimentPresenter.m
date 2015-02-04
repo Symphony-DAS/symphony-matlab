@@ -2,31 +2,40 @@ classdef NewExperimentPresenter < symphonyui.Presenter
     
     properties (SetAccess = private)
         experiment
+        preferences
     end
     
     methods
         
         function obj = NewExperimentPresenter(preferences, view)
-            import symphonyui.utilities.*;
-            
             if nargin < 2
                 view = symphonyui.views.NewExperimentView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
+            obj.preferences = preferences;
+            
             obj.addListener(view, 'BrowseLocation', @obj.onSelectedBrowseLocation);
             obj.addListener(view, 'Open', @obj.onSelectedOpen);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function onViewShown(obj, ~, ~)            
+            onViewShown@symphonyui.Presenter(obj);
             
-            view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            view.setName(preferences.defaultName());
-            view.setPurpose(preferences.defaultPurpose());
-            view.setLocation(preferences.defaultLocation());
-            view.setSpeciesList(preferences.speciesList());
-            view.setPhenotypeList(preferences.phenotypeList());
-            view.setGenotypeList(preferences.genotypeList());
-            view.setPreparationList(preferences.preparationList());
+            obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
+            obj.view.setName(obj.preferences.defaultName());
+            obj.view.setPurpose(obj.preferences.defaultPurpose());
+            obj.view.setLocation(obj.preferences.defaultLocation());
+            obj.view.setSpeciesList(obj.preferences.speciesList());
+            obj.view.setPhenotypeList(obj.preferences.phenotypeList());
+            obj.view.setGenotypeList(obj.preferences.genotypeList());
+            obj.view.setPreparationList(obj.preferences.preparationList());
         end
         
     end

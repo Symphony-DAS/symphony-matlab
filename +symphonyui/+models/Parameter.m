@@ -38,6 +38,14 @@ classdef Parameter < hgsetget
             v = obj.value;
         end
         
+        function n = get.displayName(obj)
+            if isempty(obj.displayName)
+                n = obj.name;
+            else
+                n = obj.displayName;
+            end
+        end
+        
     end
     
 end
