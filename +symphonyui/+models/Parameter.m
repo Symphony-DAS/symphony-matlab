@@ -2,8 +2,8 @@ classdef Parameter < hgsetget
     
     properties
         name
-        type
         value
+        type
         units
         category
         displayName
@@ -24,12 +24,18 @@ classdef Parameter < hgsetget
             end
         end
         
-        function n = get.displayName(obj)
-            if isempty(obj.displayName)
-                n = obj.name;
-            else
-                n = obj.displayName;
+        function v = get.value(obj)
+            if isempty(obj.value) && ~isempty(obj.type) && ~isempty(obj.type.domain)
+                domain = obj.type.domain;
+                if iscell(domain)
+                    v = domain{1};
+                else
+                    v = domain(1);
+                end
+                return;                
             end
+            
+            v = obj.value;
         end
         
     end

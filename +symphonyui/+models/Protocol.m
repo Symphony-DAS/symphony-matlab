@@ -1,39 +1,50 @@
 classdef Protocol < handle
     
     properties (Constant, Abstract)
-        displayName
+        displayName     % A descriptive name for this protocol.
     end
     
     properties (Hidden)
-        rig
+        rig         
     end
     
     methods
         
-        function obj = Protocol()
+        function set.rig(obj, r)
+            if ~isempty(obj.rig)
+                error('Rig is already set');
+            end
+            obj.rig = r;
         end
         
         function p = parameters(obj)
+            % Returns a struct of this protocols parameters. 
+            % See also symphonyui.models.Parameter.
             import symphonyui.models.*;
             
             p = struct();
+            
+            % Create a parameter from each protocol property.
             clazz = metaclass(obj);
             for i = 1:numel(clazz.Properties)
                 property = clazz.Properties{i};
+                
+                % Do not include abstract, hidden, or private properties.
                 if property.Abstract || property.Hidden || ~strcmp(property.GetAccess, 'public')
                     continue;
                 end
+                
                 name = property.Name;
-                try
-                    value = obj.(name);
-                catch
-                    continue;
+                value = obj.(name);
+                
+                % Use the property default value to try to determine the parameter type.
+                defaultValue = [];
+                if property.HasDefault
+                    defaultValue = property.DefaultValue;
                 end
-                type = [];
-                if iscellstr(value)
-                    type = ParameterType('char', 'row', value);
-                    value = value{1};
-                end
+                type = ParameterType.autoDiscover(defaultValue);
+                
+                % Parse the property comment to determine the parameter description and units.
                 comment = helptext([clazz.Name '.' name]);
                 if ~isempty(comment)
                     [~, comment] = strtok(comment{1}, '-');
@@ -48,12 +59,13 @@ classdef Protocol < handle
                     description = [];
                     units = [];
                 end
+                
                 isReadOnly = property.Constant || ~strcmp(property.SetAccess, 'public') || property.Dependent && isempty(property.SetMethod);
                 isDependent = property.Dependent;
                 
-                parameter = Parameter(name, obj.(name), ...
+                % Create and add the parameter to the struct.
+                parameter = Parameter(name, value, ...
                     'type', type, ...
-                    'value', value, ...
                     'units', units, ...
                     'description', description, ...
                     'isReadOnly', isReadOnly, ...
@@ -63,6 +75,7 @@ classdef Protocol < handle
         end
         
         function [tf, msg] = isValid(obj)
+            % Returns true if this protocol is fully configured to run.
             if isempty(obj.rig)
                 tf = false;
                 msg = 'Rig is not set';

@@ -94,7 +94,9 @@ classdef PropertyGrid < UIControl
             % create JIDE property pane
             self.Table = handle(objectEDT('com.jidesoft.grid.PropertyTable'), 'CallbackProperties');  % property grid (without table model)
             self.Pane = objectEDT('com.jidesoft.grid.PropertyPane', self.Table);  % property pane (with icons at top and help panel at bottom)
-
+            self.Pane.setShowToolBar(false);
+            self.Pane.setShowDescription(false);
+            
             % control = jcontrol(parent, pane, 'Position', [0 0 1 1]);
             panel = self.Container;
             pixelpos = getpixelposition(panel);

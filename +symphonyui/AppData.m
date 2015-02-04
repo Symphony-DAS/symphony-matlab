@@ -46,6 +46,10 @@ classdef AppData < handle
         
         function i = getRigIndex(obj, rig)
             if nargin < 2
+                if isempty(obj.rig)
+                    i = [];
+                    return;
+                end
                 rig = class(obj.rig);
             end
             i = ismember(obj.rigList, rig);
@@ -53,19 +57,23 @@ classdef AppData < handle
         end
         
         function setRig(obj, index)
-            if index == obj.getRigIndex()
+            if isempty(index)
                 return;
             end
             
             className = obj.rigList{index};
             constructor = str2func(className);
             obj.rig = constructor();
-            obj.protocol.rig = obj.rig;
+            obj.setProtocol(obj.getProtocolIndex());
             notify(obj, 'SetRig');
         end
         
         function i = getProtocolIndex(obj, protocol)
             if nargin < 2
+                if isempty(obj.protocol)
+                    i = [];
+                    return;
+                end
                 protocol = class(obj.protocol);
             end
             i = ismember(obj.protocolList, protocol);
@@ -73,7 +81,7 @@ classdef AppData < handle
         end
         
         function setProtocol(obj, index)
-            if index == obj.getProtocolIndex()
+            if isempty(index)
                 return;
             end
             

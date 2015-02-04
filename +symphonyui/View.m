@@ -12,9 +12,11 @@ classdef View < handle
     
     properties (SetAccess = private)
         figureHandle
+        isShown
     end
     
-    events
+    events (NotifyAccess = private)
+        Shown
         Closing
     end
     
@@ -37,6 +39,7 @@ classdef View < handle
                 'Visible', 'off', ...
                 'DockControls', 'off', ...
                 'CloseRequestFcn', @(h,d)obj.close());
+            obj.isShown = false;
             
             if ispc
                 set(obj.figureHandle, 'DefaultUicontrolFontName', 'Segoe UI');
@@ -50,12 +53,27 @@ classdef View < handle
         end
         
         function show(obj)
+            if ~isvalid(obj.figureHandle)
+                error('View has been closed');
+            end
+            if obj.isShown
+                error('View is already shown');
+            end
+            figure(obj.figureHandle);
+            obj.isShown = true;
+            notify(obj, 'Shown');
+        end
+        
+        function activate(obj)
+            if ~obj.isShown
+                error('View must be shown before it can be activated');
+            end
             figure(obj.figureHandle);
         end
         
         function result = showDialog(obj)
             set(obj.figureHandle, 'WindowStyle', 'modal');
-            figure(obj.figureHandle);
+            obj.show();
             uiwait(obj.figureHandle);
             result = obj.result;
         end

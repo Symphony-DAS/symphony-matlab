@@ -13,7 +13,6 @@ classdef MainPresenter < symphonyui.Presenter
             end
             
             obj = obj@symphonyui.Presenter(view);
-            %view.loadPosition();
             
             obj.appData = symphonyui.AppData(preferences);
             obj.addListener(obj.appData, 'SetExperiment', @obj.onSetExperiment);
@@ -36,22 +35,36 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(view, 'UserGroup', @obj.onSelectedUserGroup);
             obj.addListener(view, 'AboutSymphony', @obj.onSelectedAboutSymphony);
             obj.addListener(view, 'Exit', @(h,d)view.close());
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function onViewShown(obj, ~, ~)
+            onViewShown@symphonyui.Presenter(obj);
+            %view.loadPosition();
             
-            view.enableNewExperiment(true);
-            view.enableCloseExperiment(false);
-            view.enableBeginEpochGroup(false);
-            view.enableEndEpochGroup(false);
-            view.enableAddNote(false);
-            view.enableViewNotes(false);
-            view.enableRun(false);
-            view.enablePause(false);
-            view.enableStop(false);
-            view.enableShouldSave(false);
+            obj.view.enableNewExperiment(true);
+            obj.view.enableCloseExperiment(false);
+            obj.view.enableBeginEpochGroup(false);
+            obj.view.enableEndEpochGroup(false);
+            obj.view.enableAddNote(false);
+            obj.view.enableViewNotes(false);
+            obj.view.enableRun(false);
+            obj.view.enablePause(false);
+            obj.view.enableStop(false);
+            obj.view.enableShouldSave(false);
             
             obj.onSetProtocolList();
             obj.onSetProtocol();
             obj.onSelectedSetRig();
             obj.validate();
+        end
+        
+        function onViewClosing(obj, ~, ~)
+            onViewClosing@symphonyui.Presenter(obj);
+            obj.view.savePosition();
         end
         
     end
@@ -130,6 +143,7 @@ classdef MainPresenter < symphonyui.Presenter
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 obj.onSetProtocol();
+                return;
             end
         end
         
@@ -139,7 +153,17 @@ classdef MainPresenter < symphonyui.Presenter
             key = obj.protocolMap.right_at(index);
             obj.view.setProtocol(key);
             
-            parameters = obj.appData.protocol.parameters;
+            try
+                parameters = obj.appData.protocol.parameters;
+            catch x
+                symphonyui.presenters.MessageBoxPresenter.showException(x);
+                obj.appData.setProtocol(1);
+                % FIXME: setProtocol should trigger onSetProtocol to run again but nested events are not working.
+                % Calling onSetProtocol manually for now.
+                obj.onSetProtocol();
+                return;
+            end
+                
             parameters = rmfield(parameters, 'displayName');
             obj.view.setProtocolParameters(struct2cell(parameters));
             
@@ -160,7 +184,14 @@ classdef MainPresenter < symphonyui.Presenter
                     symphonyui.presenters.MessageBoxPresenter.showException(x);
                 end
             end
-            obj.view.updateProtocolParameters(struct2cell(protocol.parameters));
+            try
+                parameters = obj.appData.protocol.parameters;
+            catch x
+                symphonyui.presenters.MessageBoxPresenter.showException(x);
+                obj.appData.setProtocol(1);
+                return;
+            end
+            obj.view.updateProtocolParameters(struct2cell(parameters));
             
             obj.validate();
         end
@@ -286,15 +317,6 @@ classdef MainPresenter < symphonyui.Presenter
                 sprintf('%c 2015 Symphony-DAS', 169)};
             p = symphonyui.presenters.MessageBoxPresenter(message, 'About Symphony');
             p.view.showDialog();
-        end
-        
-    end
-    
-    methods (Access = protected)
-        
-        function onViewClosing(obj, ~, ~)
-            onViewClosing@symphonyui.Presenter(obj);
-            obj.view.savePosition();
         end
         
     end

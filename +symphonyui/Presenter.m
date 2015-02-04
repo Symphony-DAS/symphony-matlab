@@ -12,6 +12,7 @@ classdef Presenter < handle
         
         function obj = Presenter(view)
             obj.view = view;
+            obj.addListener(view, 'Shown', @obj.onViewShown);
             obj.addListener(view, 'Closing', @obj.onViewClosing);
         end
         
@@ -35,6 +36,10 @@ classdef Presenter < handle
                 delete(obj.listeners{1});
                 obj.listeners(1) = [];
             end
+        end
+        
+        function onViewShown(obj, ~, ~)
+            
         end
         
         function onViewClosing(obj, ~, ~)

@@ -17,6 +17,7 @@ classdef Controller < handle
             end
             
             disp('Run');
+            disp(protocol);
             obj.state = symphonyui.models.ControllerState.RUNNING;
         end
         
