@@ -79,12 +79,6 @@ classdef PropertyGrid < UIControl
                 parent = figure;
             end
             
-            self.Container = uipanel(parent, ...
-                'Units', 'normalized', ...
-                'Position', [0 0 1 1], ...
-                'Tag', '__PropertyGrid__', ...
-                'UserData', self);
-
             path = fileparts(mfilename('fullpath'));
             if ~any(ismember(javaclasspath, path))
                 javaaddpath(path);
@@ -102,11 +96,10 @@ classdef PropertyGrid < UIControl
             self.Pane.setShowToolBar(false);
             self.Pane.setShowDescription(false);
             
-            % control = jcontrol(parent, pane, 'Position', [0 0 1 1]);
-            panel = self.Container;
-            pixelpos = getpixelposition(panel);
-            [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], panel); %#ok<ASGLU>
+            pixelpos = getpixelposition(parent);
+            [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], parent); %#ok<ASGLU>
             set(container, 'Units', 'normalized');
+            self.Container = container;
             %set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
         end
         
