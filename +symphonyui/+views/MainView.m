@@ -184,6 +184,11 @@ classdef MainView < symphonyui.View
             set(mainLayout, 'Sizes', [25 -1 75]);
         end
         
+        function close(obj)
+            close@symphonyui.View(obj);
+            obj.protocolParameterGrid.Close();
+        end
+        
         function enableNewExperiment(obj, tf)
             set(obj.fileMenu.newExperiment, 'Enable', symphonyui.utilities.onOff(tf));
         end

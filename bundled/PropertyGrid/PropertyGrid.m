@@ -100,7 +100,15 @@ classdef PropertyGrid < UIControl
             [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], parent); %#ok<ASGLU>
             set(container, 'Units', 'normalized');
             self.Container = container;
-            %set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
+            
+            set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
+        end
+        
+        function Close(self)
+            set(self.Table, 'KeyPressedCallback', []);
+            if ~isempty(self.Model)
+                set(self.Model, 'PropertyChangeCallback', []);  % clear callback
+            end
         end
         
         function ctrl = get.Control(self)
@@ -152,7 +160,7 @@ classdef PropertyGrid < UIControl
             self.Pane.setShowDescription(description);
 
             % wire property change event hook
-            %set(model, 'PropertyChangeCallback', @self.OnPropertyChange);
+            set(model, 'PropertyChangeCallback', @self.OnPropertyChange);
         end
         
         function UpdateProperties(self, properties)
