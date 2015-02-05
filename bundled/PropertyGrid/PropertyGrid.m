@@ -85,6 +85,11 @@ classdef PropertyGrid < UIControl
                 'Tag', '__PropertyGrid__', ...
                 'UserData', self);
 
+            path = fileparts(mfilename('fullpath'));
+            if ~any(ismember(javaclasspath, path))
+                javaaddpath(path);
+            end
+            
             % initialize JIDE
             com.mathworks.mwswing.MJUtilities.initJIDE;
             com.jidesoft.grid.CellEditorManager.registerEditor(javaclass('cellstr',1), com.jidesoft.grid.StringArrayCellEditor);
@@ -102,7 +107,7 @@ classdef PropertyGrid < UIControl
             pixelpos = getpixelposition(panel);
             [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], panel); %#ok<ASGLU>
             set(container, 'Units', 'normalized');
-            set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
+            %set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
         end
         
         function ctrl = get.Control(self)
@@ -134,23 +139,27 @@ classdef PropertyGrid < UIControl
 
             % create JIDE table model
             list = self.Fields.GetTableModel();
-            model = handle(com.jidesoft.grid.PropertyTableModel(list), 'CallbackProperties');
+            model = handle(StylePropertyTableModel(list), 'CallbackProperties');
+            style = com.jidesoft.grid.CellStyle();
+            style.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            model.setCellStyle(style);
             model.setMiscCategoryName('Miscellaneous');  % caption for uncategorized properties
+            if toolbar
+                model.setOrder(0);
+            else
+                model.setOrder(2);
+            end
+            model.refresh();
             model.expandAll();
             self.Model = model;
 
             % set JIDE table model to property table
             self.Table.setModel(model);
             self.Pane.setShowToolBar(toolbar);
-            if toolbar
-                self.Pane.setOrder(0);
-            else
-                self.Pane.setOrder(2);
-            end
             self.Pane.setShowDescription(description);
 
             % wire property change event hook
-            set(model, 'PropertyChangeCallback', @self.OnPropertyChange);
+            %set(model, 'PropertyChangeCallback', @self.OnPropertyChange);
         end
         
         function UpdateProperties(self, properties)

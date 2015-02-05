@@ -36,13 +36,7 @@ classdef Protocol < handle
                 
                 name = property.Name;
                 value = obj.(name);
-                
-                % Use the property default value to try to determine the parameter type.
-                defaultValue = [];
-                if property.HasDefault
-                    defaultValue = property.DefaultValue;
-                end
-                type = ParameterType.autoDiscover(defaultValue);
+                type = ParameterType.autoDiscover(value);
                 
                 % Parse the property comment to determine the parameter description and units.
                 comment = helptext([clazz.Name '.' name]);
@@ -75,7 +69,7 @@ classdef Protocol < handle
         end
         
         function [tf, msg] = isValid(obj)
-            % Returns true if this protocol is fully configured to run.
+            % Returns true if this protocol is fully configured and ready to run.
             if isempty(obj.rig)
                 tf = false;
                 msg = 'Rig is not set';

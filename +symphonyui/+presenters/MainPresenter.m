@@ -137,6 +137,9 @@ classdef MainPresenter < symphonyui.Presenter
             protocol = obj.view.getProtocol();
             className = obj.protocolMap(protocol);
             index = find(ismember(obj.appData.protocolList, className), 1);
+            if index == obj.appData.getProtocolIndex()
+                return;
+            end
             
             try
                 obj.appData.setProtocol(index);
