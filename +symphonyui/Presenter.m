@@ -38,7 +38,7 @@ classdef Presenter < handle
             end
         end
         
-        function onViewShown(obj, ~, ~)
+        function onViewShown(obj, ~, ~) %#ok<INUSD>
             
         end
         

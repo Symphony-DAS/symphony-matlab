@@ -1,20 +1,19 @@
 classdef NewExperimentPresenter < symphonyui.Presenter
     
     properties (SetAccess = private)
-        experiment
-        preferences
+        appData
     end
     
     methods
         
-        function obj = NewExperimentPresenter(preferences, view)
+        function obj = NewExperimentPresenter(appData, view)
             if nargin < 2
                 view = symphonyui.views.NewExperimentView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.preferences = preferences;
+            obj.appData = appData;
             
             obj.addListener(view, 'BrowseLocation', @obj.onSelectedBrowseLocation);
             obj.addListener(view, 'Open', @obj.onSelectedOpen);
@@ -28,14 +27,15 @@ classdef NewExperimentPresenter < symphonyui.Presenter
         function onViewShown(obj, ~, ~)            
             onViewShown@symphonyui.Presenter(obj);
             
+            preferences = obj.appData.experimentPreferences;
             obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            obj.view.setName(obj.preferences.defaultName());
-            obj.view.setPurpose(obj.preferences.defaultPurpose());
-            obj.view.setLocation(obj.preferences.defaultLocation());
-            obj.view.setSpeciesList(obj.preferences.speciesList());
-            obj.view.setPhenotypeList(obj.preferences.phenotypeList());
-            obj.view.setGenotypeList(obj.preferences.genotypeList());
-            obj.view.setPreparationList(obj.preferences.preparationList());
+            obj.view.setName(preferences.defaultName());
+            obj.view.setPurpose(preferences.defaultPurpose());
+            obj.view.setLocation(preferences.defaultLocation());
+            obj.view.setSpeciesList(preferences.speciesList());
+            obj.view.setPhenotypeList(preferences.phenotypeList());
+            obj.view.setGenotypeList(preferences.genotypeList());
+            obj.view.setPreparationList(preferences.preparationList());
         end
         
     end
@@ -67,8 +67,10 @@ classdef NewExperimentPresenter < symphonyui.Presenter
             
             path = fullfile(location, name);
             
-            obj.experiment = symphonyui.models.Experiment(path, purpose, source);
-            obj.experiment.open();
+            experiment = symphonyui.models.Experiment(path, purpose, source);
+            experiment.open();
+            
+            obj.appData.setExperiment(experiment);
             
             obj.view.result = true;
         end

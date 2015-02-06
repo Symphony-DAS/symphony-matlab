@@ -32,6 +32,10 @@ classdef Experiment < handle
             disp(['Add Note: ' note]);
         end
         
+        function tf = hasEpochGroup(obj)
+            tf = ~isempty(obj.epochGroup);
+        end
+        
         function beginEpochGroup(obj, label, source, keywords, attributes)
             disp(['Begin Epoch Group: ' label]);
             obj.epochGroup = symphonyui.models.EpochGroup(label, source, keywords, attributes);

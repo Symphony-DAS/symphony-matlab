@@ -21,6 +21,10 @@ classdef AppData < handle
     methods
         
         function obj = AppData(preferences, controller)
+            if nargin < 1
+                preferences = symphonyui.preferences.AppPreferences();
+                preferences.setToDefaults();
+            end
             if nargin < 2
                 controller = symphonyui.models.Controller();
             end

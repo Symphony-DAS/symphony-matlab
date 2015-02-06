@@ -1,7 +1,10 @@
 import symphonyui.*;
 
-pref = preferences.AppPreferences();
-pref.setToDefaults();
+appData = AppData();
 
-p = presenters.MainPresenter(pref);
-p.view.show();
+setRig = presenters.SetRigPresenter(appData);
+result = setRig.view.showDialog();
+if result
+    main = presenters.MainPresenter(appData);
+    main.view.show();
+end

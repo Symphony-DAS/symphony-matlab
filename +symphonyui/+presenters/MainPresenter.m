@@ -7,18 +7,19 @@ classdef MainPresenter < symphonyui.Presenter
     
     methods
         
-        function obj = MainPresenter(preferences, view)            
+        function obj = MainPresenter(appData, view)            
             if nargin < 2
                 view = symphonyui.views.MainView();
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.appData = symphonyui.AppData(preferences);
-            obj.addListener(obj.appData, 'SetExperiment', @obj.onSetExperiment);
-            obj.addListener(obj.appData, 'SetProtocolList', @obj.onSetProtocolList);
-            obj.addListener(obj.appData, 'SetProtocol', @obj.onSetProtocol);
-            obj.addListener(obj.appData.controller, 'state', 'PostSet', @obj.onSetControllerState);
+            obj.appData = appData;
+            
+            obj.addListener(appData, 'SetExperiment', @obj.onSetExperiment);
+            obj.addListener(appData, 'SetProtocolList', @obj.onSetProtocolList);
+            obj.addListener(appData, 'SetProtocol', @obj.onSetProtocol);
+            obj.addListener(appData.controller, 'state', 'PostSet', @obj.onSetControllerState);
             
             obj.addListener(view, 'NewExperiment', @obj.onSelectedNewExperiment);
             obj.addListener(view, 'CloseExperiment', @obj.onSelectedCloseExperiment);
@@ -45,20 +46,9 @@ classdef MainPresenter < symphonyui.Presenter
             onViewShown@symphonyui.Presenter(obj);
             %view.loadPosition();
             
-            obj.view.enableNewExperiment(true);
-            obj.view.enableCloseExperiment(false);
-            obj.view.enableBeginEpochGroup(false);
-            obj.view.enableEndEpochGroup(false);
-            obj.view.enableAddNote(false);
-            obj.view.enableViewNotes(false);
-            obj.view.enableRun(false);
-            obj.view.enablePause(false);
-            obj.view.enableStop(false);
-            obj.view.enableShouldSave(false);
-            
+            obj.onSetExperiment();
             obj.onSetProtocolList();
             obj.onSetProtocol();
-            obj.onSelectedSetRig();
             obj.validate();
         end
         
@@ -73,11 +63,8 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onSelectedNewExperiment(obj, ~, ~)
             view = symphonyui.views.NewExperimentView(obj.view);
-            p = symphonyui.presenters.NewExperimentPresenter(obj.appData.experimentPreferences, view);
-            result = p.view.showDialog();
-            if result
-                obj.appData.setExperiment(p.experiment);
-            end
+            p = symphonyui.presenters.NewExperimentPresenter(obj.appData, view);
+            p.view.showDialog();
         end
         
         function onSelectedCloseExperiment(obj, ~, ~)
@@ -87,10 +74,12 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onSetExperiment(obj, ~, ~)
             hasExperiment = obj.appData.hasExperiment;
+            hasEpochGroup = hasExperiment && obj.appData.experiment.hasEpochGroup();
             
             obj.view.enableNewExperiment(~hasExperiment);
             obj.view.enableCloseExperiment(hasExperiment);
             obj.view.enableBeginEpochGroup(hasExperiment);
+            obj.view.enableEndEpochGroup(hasEpochGroup);
             obj.view.enableAddNote(hasExperiment);
             obj.view.enableViewNotes(hasExperiment);
             obj.view.enableSetRig(~hasExperiment);

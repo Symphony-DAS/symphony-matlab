@@ -52,7 +52,7 @@ classdef PropertyGrid < UIControl
         Enable;
     end
     properties (Access = private)
-        % A uipanel that wraps the property grid.
+        % A matlab.ui.container.internal.JavaWrapper.
         Container;
         % A com.jidesoft.grid.PropertyPane instance.
         % Encapsulates a property table and decorates it with icons to
