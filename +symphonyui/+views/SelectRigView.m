@@ -1,4 +1,4 @@
-classdef SetRigView < symphonyui.View
+classdef SelectRigView < symphonyui.View
     
     events
         Ok
@@ -13,7 +13,7 @@ classdef SetRigView < symphonyui.View
     
     methods
         
-        function obj = SetRigView(parent)
+        function obj = SelectRigView(parent)
             obj = obj@symphonyui.View(parent);
         end
         
@@ -21,7 +21,7 @@ classdef SetRigView < symphonyui.View
             import symphonyui.utilities.*;
             import symphonyui.utilities.ui.*;
             
-            set(obj.figureHandle, 'Name', 'Set Rig');
+            set(obj.figureHandle, 'Name', 'Select Rig');
             set(obj.figureHandle, 'Position', screenCenter(250, 79));
             
             mainLayout = uiextras.VBox( ...

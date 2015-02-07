@@ -1,23 +1,23 @@
-classdef SetRigPresenter < symphonyui.Presenter
+classdef SelectRigPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        appData
+        manager
         rigMap
     end
     
     methods
         
-        function obj = SetRigPresenter(appData, view)
+        function obj = SelectRigPresenter(manager, view)
             if nargin < 2
-                view = symphonyui.views.SetRigView([]);
+                view = symphonyui.views.SelectRigView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.appData = appData;
+            obj.manager = manager;
             
-            obj.addListener(appData, 'SetRigList', @obj.onSetRigList);
-            obj.addListener(appData, 'SetRig', @obj.onSetRig);
+            obj.addListener(manager, 'SetRigList', @obj.onSetRigList);
+            obj.addListener(manager, 'SelectedRig', @obj.onManagerSelectedRig);
             
             obj.addListener(view, 'Ok', @obj.onSelectedOk);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
@@ -33,7 +33,7 @@ classdef SetRigPresenter < symphonyui.Presenter
             obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
             
             obj.onSetRigList();
-            obj.onSetRig();
+            obj.onManagerSelectedRig();
         end
         
     end
@@ -49,12 +49,12 @@ classdef SetRigPresenter < symphonyui.Presenter
         end
         
         function onSetRigList(obj, ~, ~)
-            obj.rigMap = symphonyui.utilities.displayNameMap(obj.appData.rigList);
+            obj.rigMap = symphonyui.utilities.displayNameMap(obj.manager.rigList);
             obj.view.setRigList(obj.rigMap.keys);
         end
         
-        function onSetRig(obj, ~, ~)
-            rig = obj.appData.rig;
+        function onManagerSelectedRig(obj, ~, ~)
+            rig = obj.manager.rig;
             index = obj.rigMap.right_find(class(rig));
             key = obj.rigMap.right_at(index);
             obj.view.setRig(key);
@@ -63,19 +63,15 @@ classdef SetRigPresenter < symphonyui.Presenter
         function onSelectedOk(obj, ~, ~)
             drawnow();
             
-            obj.appData.rig.close();
-            
-            rig = obj.view.getRig();
-            className = obj.rigMap(rig);
-            index = obj.appData.getRigIndex(className);
+            key = obj.view.getRig();
+            className = obj.rigMap(key);
+            index = obj.manager.getRigIndex(className);
             
             try
-                obj.appData.setRig(index);
-                obj.appData.rig.initialize();
+                obj.manager.selectRig(index);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));
-                obj.appData.setRig(1);
                 return;
             end
             

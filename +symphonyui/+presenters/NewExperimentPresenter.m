@@ -1,19 +1,19 @@
 classdef NewExperimentPresenter < symphonyui.Presenter
     
     properties (SetAccess = private)
-        appData
+        manager
     end
     
     methods
         
-        function obj = NewExperimentPresenter(appData, view)
+        function obj = NewExperimentPresenter(manager, view)
             if nargin < 2
                 view = symphonyui.views.NewExperimentView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.appData = appData;
+            obj.manager = manager;
             
             obj.addListener(view, 'BrowseLocation', @obj.onSelectedBrowseLocation);
             obj.addListener(view, 'Open', @obj.onSelectedOpen);
@@ -27,7 +27,7 @@ classdef NewExperimentPresenter < symphonyui.Presenter
         function onViewShown(obj, ~, ~)            
             onViewShown@symphonyui.Presenter(obj);
             
-            preferences = obj.appData.experimentPreferences;
+            preferences = obj.manager.preferences.experimentPreferences;
             obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
             obj.view.setName(preferences.defaultName());
             obj.view.setPurpose(preferences.defaultPurpose());
@@ -64,13 +64,15 @@ classdef NewExperimentPresenter < symphonyui.Presenter
             location = obj.view.getLocation();
             purpose = obj.view.getPurpose();
             source = [];
-            
             path = fullfile(location, name);
             
-            experiment = symphonyui.models.Experiment(path, purpose, source);
-            experiment.open();
-            
-            obj.appData.setExperiment(experiment);
+            try
+                obj.manager.openExperiment(path, purpose, source);
+            catch x
+                symphonyui.presenters.MessageBoxPresenter.showException(x);
+                warning(getReport(x));
+                return;
+            end
             
             obj.view.result = true;
         end

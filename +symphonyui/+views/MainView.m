@@ -11,7 +11,7 @@ classdef MainView < symphonyui.View
         Run
         Pause
         Stop
-        SetRig
+        SelectRig
         ViewRig
         Preferences
         Documentation
@@ -102,10 +102,10 @@ classdef MainView < symphonyui.View
                 'Label', 'Tools');
             obj.toolsMenu.modulesMenu.root = uimenu(obj.toolsMenu.root, ...
                 'Label', 'Modules');
-            obj.toolsMenu.setRig = uimenu(obj.toolsMenu.root, ...
-                'Label', 'Set Rig...', ...
+            obj.toolsMenu.selectRig = uimenu(obj.toolsMenu.root, ...
+                'Label', 'Select Rig...', ...
                 'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'SetRig'));
+                'Callback', @(h,d)notify(obj, 'SelectRig'));
             obj.toolsMenu.viewRig = uimenu(obj.toolsMenu.root, ...
                 'Label', 'View Rig', ...
                 'Callback', @(h,d)notify(obj, 'ViewRig'));
@@ -213,8 +213,8 @@ classdef MainView < symphonyui.View
             set(obj.experimentMenu.viewNotes, 'Enable', symphonyui.utilities.onOff(tf));
         end
         
-        function enableSetRig(obj, tf)
-            set(obj.toolsMenu.setRig, 'Enable', symphonyui.utilities.onOff(tf));
+        function enableSelectRig(obj, tf)
+            set(obj.toolsMenu.selectRig, 'Enable', symphonyui.utilities.onOff(tf));
         end
         
         function enableViewRig(obj, tf)

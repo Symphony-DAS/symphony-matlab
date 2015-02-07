@@ -1,10 +1,5 @@
 classdef Experiment < handle
     
-    events
-        BeganEpochGroup
-        EndedEpochGroup
-    end
-    
     properties
         path
         purpose
@@ -39,13 +34,11 @@ classdef Experiment < handle
         function beginEpochGroup(obj, label, source, keywords, attributes)
             disp(['Begin Epoch Group: ' label]);
             obj.epochGroup = symphonyui.models.EpochGroup(label, source, keywords, attributes);
-            notify(obj, 'BeganEpochGroup');
         end
         
         function endEpochGroup(obj)
             disp(['End Epoch Group: ' obj.epochGroup.label]);
             obj.epochGroup = obj.epochGroup.parent;
-            notify(obj, 'EndedEpochGroup');
         end
         
     end

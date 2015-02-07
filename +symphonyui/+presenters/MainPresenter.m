@@ -1,36 +1,39 @@
 classdef MainPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        appData
+        manager
         protocolMap
     end
     
     methods
         
-        function obj = MainPresenter(appData, view)            
+        function obj = MainPresenter(manager, view)            
             if nargin < 2
                 view = symphonyui.views.MainView();
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.appData = appData;
+            obj.manager = manager;
             
-            obj.addListener(appData, 'SetExperiment', @obj.onSetExperiment);
-            obj.addListener(appData, 'SetProtocolList', @obj.onSetProtocolList);
-            obj.addListener(appData, 'SetProtocol', @obj.onSetProtocol);
-            obj.addListener(appData.controller, 'state', 'PostSet', @obj.onSetControllerState);
+            obj.addListener(manager, 'OpenedExperiment', @obj.onOpenedExperiment);
+            obj.addListener(manager, 'ClosedExperiment', @obj.onClosedExperiment);
+            obj.addListener(manager, 'BeganEpochGroup', @obj.onBeganEpochGroup);
+            obj.addListener(manager, 'EndedEpochGroup', @obj.onEndedEpochGroup);
+            obj.addListener(manager, 'SetProtocolList', @obj.onSetProtocolList);
+            obj.addListener(manager, 'SelectedProtocol', @obj.onManagerSelectedProtocol);
+            obj.addListener(manager, 'StateChange', @obj.onManagerStateChange);
             
             obj.addListener(view, 'NewExperiment', @obj.onSelectedNewExperiment);
             obj.addListener(view, 'CloseExperiment', @obj.onSelectedCloseExperiment);
             obj.addListener(view, 'BeginEpochGroup', @obj.onSelectedBeginEpochGroup);
             obj.addListener(view, 'EndEpochGroup', @obj.onSelectedEndEpochGroup);
-            obj.addListener(view, 'SelectedProtocol', @obj.onSelectedProtocol);
+            obj.addListener(view, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(view, 'ChangedProtocolParameter', @obj.onChangedProtocolParameter);
             obj.addListener(view, 'Run', @obj.onSelectedRun);
             obj.addListener(view, 'Pause', @obj.onSelectedPause);
             obj.addListener(view, 'Stop', @obj.onSelectedStop);
-            obj.addListener(view, 'SetRig', @obj.onSelectedSetRig);
+            obj.addListener(view, 'SelectRig', @obj.onSelectedSelectRig);
             obj.addListener(view, 'Preferences', @obj.onSelectedPreferences);
             obj.addListener(view, 'Documentation', @obj.onSelectedDocumentation);
             obj.addListener(view, 'UserGroup', @obj.onSelectedUserGroup);
@@ -46,10 +49,9 @@ classdef MainPresenter < symphonyui.Presenter
             onViewShown@symphonyui.Presenter(obj);
             %view.loadPosition();
             
-            obj.onSetExperiment();
             obj.onSetProtocolList();
-            obj.onSetProtocol();
-            obj.validate();
+            obj.onManagerSelectedProtocol();
+            obj.updateViewState();
         end
         
         function onViewClosing(obj, ~, ~)
@@ -63,35 +65,27 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onSelectedNewExperiment(obj, ~, ~)
             view = symphonyui.views.NewExperimentView(obj.view);
-            p = symphonyui.presenters.NewExperimentPresenter(obj.appData, view);
+            p = symphonyui.presenters.NewExperimentPresenter(obj.manager, view);
             p.view.showDialog();
         end
         
-        function onSelectedCloseExperiment(obj, ~, ~)
-            obj.appData.experiment.close();
-            obj.appData.setExperiment([]);
+        function onOpenedExperiment(obj, ~, ~)
+            obj.updateViewState();
+            obj.view.setShouldSave(true);
         end
         
-        function onSetExperiment(obj, ~, ~)
-            hasExperiment = obj.appData.hasExperiment;
-            hasEpochGroup = hasExperiment && obj.appData.experiment.hasEpochGroup();
-            
-            obj.view.enableNewExperiment(~hasExperiment);
-            obj.view.enableCloseExperiment(hasExperiment);
-            obj.view.enableBeginEpochGroup(hasExperiment);
-            obj.view.enableEndEpochGroup(hasEpochGroup);
-            obj.view.enableAddNote(hasExperiment);
-            obj.view.enableViewNotes(hasExperiment);
-            obj.view.enableSetRig(~hasExperiment);
-            obj.view.enableShouldSave(hasExperiment);
-            obj.view.setShouldSave(hasExperiment);
+        function onSelectedCloseExperiment(obj, ~, ~)
+            obj.manager.closeExperiment();
+        end
+        
+        function onClosedExperiment(obj, ~, ~)
+            obj.updateViewState();
+            obj.view.setShouldSave(false);
         end
         
         function onSelectedBeginEpochGroup(obj, ~, ~)
-            experiment = obj.appData.experiment;
-            preferences = obj.appData.epochGroupPreferences;
             view = symphonyui.views.NewEpochGroupView(obj.view);
-            p = symphonyui.presenters.NewEpochGroupPresenter(experiment, preferences, view);
+            p = symphonyui.presenters.NewEpochGroupPresenter(obj.manager, view);
             p.view.showDialog();
         end
         
@@ -100,13 +94,11 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedEndEpochGroup(obj, ~, ~)
-            obj.appData.experiment.endEpochGroup();
+            obj.manager.endEpochGroup();
         end
         
         function onEndedEpochGroup(obj, ~, ~)
-            if isempty(obj.appData.experiment.epochGroup)
-                obj.view.enableEndEpochGroup(false);
-            end
+            obj.view.enableEndEpochGroup(obj.manager.hasEpochGroup);
         end
         
         function onSelectedAddNote(obj, ~, ~)
@@ -118,126 +110,116 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSetProtocolList(obj, ~, ~)
-            obj.protocolMap = symphonyui.utilities.displayNameMap(obj.appData.protocolList);
+            obj.protocolMap = symphonyui.utilities.displayNameMap(obj.manager.protocolList);
             obj.view.setProtocolList(obj.protocolMap.keys);
         end
         
-        function onSelectedProtocol(obj, ~, ~)
-            protocol = obj.view.getProtocol();
-            className = obj.protocolMap(protocol);
-            index = find(ismember(obj.appData.protocolList, className), 1);
-            if index == obj.appData.getProtocolIndex()
-                return;
-            end
+        function onViewSelectedProtocol(obj, ~, ~)
+            key = obj.view.getProtocol();
+            className = obj.protocolMap(key);
+            index = obj.manager.getProtocolIndex(className);
             
             try
-                obj.appData.setProtocol(index);
+                obj.manager.selectProtocol(index);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));
-                obj.onSetProtocol();
                 return;
             end
         end
         
-        function onSetProtocol(obj, ~, ~)
-            protocol = obj.appData.protocol;
+        function onManagerSelectedProtocol(obj, ~, ~)
+            protocol = obj.manager.protocol;
             index = obj.protocolMap.right_find(class(protocol));
             key = obj.protocolMap.right_at(index);
             obj.view.setProtocol(key);
             
             try
-                parameters = obj.appData.protocol.parameters;
+                parameters = protocol.parameters;
                 parameters = rmfield(parameters, 'displayName');
                 obj.view.setProtocolParameters(struct2cell(parameters));
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));
-                obj.appData.setProtocol(1);
-                obj.onSetProtocol();
                 return;
             end
             
-            obj.validate();
+            obj.updateViewState();
         end
         
         function onChangedProtocolParameter(obj, ~, ~)
-            protocol = obj.appData.protocol;
+            protocol = obj.manager.protocol;
             parameters = obj.view.getProtocolParameters();
             for i = 1:numel(parameters)
                 p = parameters{i};
                 if p.isReadOnly
                     continue;
                 end
-                try
-                    protocol.(p.name) = p.value;
-                catch x
-                    symphonyui.presenters.MessageBoxPresenter.showException(x);
-                    warning(getReport(x));
-                end
+                protocol.(p.name) = p.value;
             end
+            
             try
-                parameters = obj.appData.protocol.parameters;
+                parameters = protocol.parameters;
+                parameters = rmfield(parameters, 'displayName');
                 obj.view.updateProtocolParameters(struct2cell(parameters));
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));
-                obj.appData.setProtocol(1);
                 return;
             end
             
-            obj.validate();
+            obj.updateViewState();
         end
         
         function onSelectedRun(obj, ~, ~)
-            obj.appData.controller.runProtocol(obj.appData.protocol);
+            obj.manager.run();
         end
         
         function onSelectedPause(obj, ~, ~)
-            obj.appData.controller.pause();
+            obj.manager.pause();
         end
         
         function onSelectedStop(obj, ~, ~)
-            obj.appData.controller.stop();
+            obj.manager.stop();
         end
         
-        function onSetControllerState(obj, ~, ~)
+        function onManagerStateChange(obj, ~, ~)
+            obj.updateViewState();
+        end
+        
+        function updateViewState(obj)
             import symphonyui.models.*;
             
-            enableNewExperiment = false;
-            enableCloseExperiment = false;
-            enableBeginEpochGroup = false;
-            enableEndEpochGroup = false;
-            enableSetRig = false;
-            enablePreferences = false;
-            enableSelectProtocol = false;
-            enableProtocolParameters = false;
-            enableProtocolPresets = false;
+            hasExperiment = obj.manager.hasExperiment;
+            hasEpochGroup = obj.manager.hasEpochGroup;
+            isStopped = obj.manager.controller.state == ControllerState.STOPPED;
+            
+            enableNewExperiment = ~hasExperiment && isStopped;
+            enableCloseExperiment = hasExperiment && isStopped;
+            enableBeginEpochGroup = hasExperiment && isStopped;
+            enableEndEpochGroup = hasEpochGroup && isStopped;
+            enableAddNote = hasExperiment;
+            enableViewNotes = hasExperiment;
+            enableSelectRig = ~hasExperiment && isStopped;
+            enablePreferences = ~hasExperiment && isStopped;
+            enableSelectProtocol = isStopped;
+            enableProtocolParameters = isStopped;
+            enableProtocolPresets = isStopped;
+            enableShouldSave = hasExperiment && isStopped;
             enableRun = false;
             enablePause = false;
             enableStop = false;
-            enableShouldSave = false;
+            status = 'Unknown';
             
-            switch obj.appData.controller.state
+            switch obj.manager.controller.state
                 case ControllerState.STOPPED
-                    enableNewExperiment = true;
-                    enableCloseExperiment = true;
-                    enableBeginEpochGroup = true;
-                    enableEndEpochGroup = true;
-                    enableSetRig = true;
-                    enablePreferences = true;
-                    enableSelectProtocol = true;
-                    enableProtocolParameters = true;
-                    enableProtocolPresets = true;
                     enableRun = true;
-                    enableShouldSave = true;
                     status = 'Stopped';
                 case ControllerState.STOPPING
                     status = 'Stopping';
                 case ControllerState.PAUSED
                     enableRun = true;
                     enableStop = true;
-                    enableShouldSave = true;
                     status = 'Paused';
                 case ControllerState.PAUSING
                     enableStop = true;
@@ -246,50 +228,42 @@ classdef MainPresenter < symphonyui.Presenter
                     enablePause = true;
                     enableStop = true;
                     status = 'Running';
-                otherwise
-                    status = 'Unknown state'; 
             end
             
-            obj.view.enableNewExperiment(enableNewExperiment && isempty(obj.appData.experiment));
-            obj.view.enableCloseExperiment(enableCloseExperiment && ~isempty(obj.appData.experiment));
-            obj.view.enableBeginEpochGroup(enableBeginEpochGroup && ~isempty(obj.appData.experiment));
-            obj.view.enableEndEpochGroup(enableEndEpochGroup && ~isempty(obj.appData.experiment) && ~isempty(obj.appData.experiment.epochGroup));
-            obj.view.enableSetRig(enableSetRig && isempty(obj.appData.experiment));
+            [valid, msg] = obj.manager.validate();
+            if ~valid
+                enableRun = false;
+                enableStop = false;
+                enableShouldSave = false;
+                status = msg;
+            end
+            
+            obj.view.enableNewExperiment(enableNewExperiment);
+            obj.view.enableCloseExperiment(enableCloseExperiment);
+            obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
+            obj.view.enableEndEpochGroup(enableEndEpochGroup);
+            obj.view.enableAddNote(enableAddNote);
+            obj.view.enableViewNotes(enableViewNotes);
+            obj.view.enableSelectRig(enableSelectRig);
             obj.view.enablePreferences(enablePreferences);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolParameters(enableProtocolParameters);
             obj.view.enableProtocolPresets(enableProtocolPresets);
+            obj.view.enableShouldSave(enableShouldSave);
             obj.view.enableRun(enableRun);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
-            obj.view.enableShouldSave(enableShouldSave && ~isempty(obj.appData.experiment));
             obj.view.setStatus(status);
         end
         
-        function validate(obj)
-            [valid, msg] = obj.appData.controller.validateProtocol(obj.appData.protocol);
-            if ~valid
-                obj.view.enableRun(false);
-                obj.view.enablePause(false);
-                obj.view.enableStop(false);
-                obj.view.enableShouldSave(false);
-                obj.view.setStatus(msg);
-            else
-                obj.onSetControllerState();
-            end
-        end
-        
-        function onSelectedSetRig(obj, ~, ~)
-            view = symphonyui.views.SetRigView(obj.view);
-            p = symphonyui.presenters.SetRigPresenter(obj.appData, view);
-            result = p.view.showDialog();
-            if result
-                obj.onChangedProtocolParameter();
-            end
+        function onSelectedSelectRig(obj, ~, ~)
+            view = symphonyui.views.SelectRigView(obj.view);
+            p = symphonyui.presenters.SelectRigPresenter(obj.manager, view);
+            p.view.showDialog();
         end
         
         function onSelectedPreferences(obj, ~, ~)
-            preferences = obj.appData.preferences;
+            preferences = obj.manager.preferences;
             view = symphonyui.views.AppPreferencesView(obj.view);
             p = symphonyui.presenters.AppPreferencesPresenter(preferences, view);
             p.view.showDialog();

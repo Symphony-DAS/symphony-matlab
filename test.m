@@ -1,10 +1,14 @@
 import symphonyui.*;
 
-appData = AppData();
+manager = AppManager();
 
-setRig = presenters.SetRigPresenter(appData);
-result = setRig.view.showDialog();
+rigPresenter = presenters.SelectRigPresenter(manager);
+result = rigPresenter.view.showDialog();
 if result
-    main = presenters.MainPresenter(appData);
-    main.view.show();
+    try %#ok<TRYNC>
+        manager.selectProtocol(2);
+    end
+    
+    mainPresenter = presenters.MainPresenter(manager);
+    mainPresenter.view.show();
 end
