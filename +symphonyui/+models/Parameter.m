@@ -46,6 +46,25 @@ classdef Parameter < hgsetget
             end
         end
         
+        function obj = findByName(array, name)
+            for i = 1:numel(array)
+                obj = array(i);
+                if strcmp(obj.name, name)
+                    return;
+                end
+            end
+            obj = [];
+        end
+        
+        function i = findIndexByName(array, name)
+            for i = 1:numel(array)
+                if strcmp(array(i).name, name)
+                    return;
+                end
+            end
+            i = [];
+        end
+        
     end
     
 end

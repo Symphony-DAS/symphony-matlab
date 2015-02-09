@@ -7,8 +7,7 @@ function map = displayNameMap(list)
             value = map(displayName);
             map.remove(displayName);
             map([displayName ' (' value ')']) = value;
-            
-            displayName = [displayName ' (' className ')'];
+            displayName = [displayName ' (' className ')']; %#ok<AGROW>
         end
         map(displayName) = className;
     end

@@ -2,7 +2,7 @@ function parameters = fieldsToParameters(fields)
     % TODO: Parse description into description and units.
     import symphonyui.models.*;
     
-    parameters = {};    
+    parameters = Parameter.empty(0, 1);    
     if isempty(fields)
         return;
     end
@@ -16,7 +16,7 @@ function parameters = fieldsToParameters(fields)
             'description', f.Description, ...
             'isReadOnly', f.ReadOnly, ...
             'isDependent', f.Dependent);
-        parameters{end + 1} = p;
+        parameters(end + 1) = p;
     end
 end
 

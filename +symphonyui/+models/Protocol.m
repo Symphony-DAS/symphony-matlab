@@ -5,7 +5,7 @@ classdef Protocol < handle
     end
     
     properties (Hidden)
-        rig         
+        rig
     end
     
     methods
@@ -17,16 +17,18 @@ classdef Protocol < handle
             obj.rig = r;
         end
         
-        function p = parameters(obj)
-            % Returns a struct of this protocols parameters. 
+        function p = getParameters(obj)
+            % Returns a vector of protocol parameters.
             % See also symphonyui.models.Parameter.
             import symphonyui.models.*;
             
-            p = struct();
+            clazz = metaclass(obj);
+            properties = clazz.Properties;
+            
+            p = symphonyui.models.Parameter.empty(0, 1);
             
             % Create a parameter from each protocol property.
-            clazz = metaclass(obj);
-            for i = 1:numel(clazz.Properties)
+            for i = 1:numel(properties)
                 property = clazz.Properties{i};
                 
                 % Do not include abstract, hidden, or private properties.
@@ -64,7 +66,7 @@ classdef Protocol < handle
                     'description', description, ...
                     'isReadOnly', isReadOnly, ...
                     'isDependent', isDependent);
-                p.(name) = parameter;
+                p(end + 1) = parameter;
             end
         end
         
@@ -76,11 +78,11 @@ classdef Protocol < handle
                 return;
             end
             
-            parameters = struct2cell(obj.parameters());
+            parameters = obj.getParameters();
             for i = 1:numel(parameters)
-                if ~parameters{i}.isValid
+                if ~parameters(i).isValid
                     tf = false;
-                    msg = [parameters{i}.displayName ' is not valid'];
+                    msg = [parameters(i).displayName ' is not valid'];
                     return;
                 end
             end

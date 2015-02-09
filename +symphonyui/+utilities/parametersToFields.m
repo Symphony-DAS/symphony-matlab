@@ -1,16 +1,11 @@
 function fields = parametersToFields(parameters)
+    fields = PropertyGridField.empty(0, 1);
     if isempty(parameters)
-        fields = PropertyGridField.empty(1,0);
         return;
     end
     
-    if ~iscell(parameters)
-        parameters = {parameters};
-    end
-    
-    fields = [];
     for i = 1:numel(parameters)
-        p = parameters{i};
+        p = parameters(i);
         
         description = p.description;
         if ~isempty(p.units)
@@ -28,7 +23,7 @@ function fields = parametersToFields(parameters)
         if ~isempty(p.category)
             set(f, 'Category', p.category);
         end
-        fields = [fields f];
+        fields(end + 1) = f;
     end
 end
 

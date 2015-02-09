@@ -30,15 +30,17 @@ classdef Test < symphonyui.models.Protocol
     
     methods
         
-        function p = parameters(obj)
+        function p = getParameters(obj)
             import symphonyui.models.*;
             
-            p = parameters@symphonyui.models.Protocol(obj);
-            p.string.displayName = ['dname ' num2str(obj.integer)];
-            p.string.description = ['descr ' num2str(obj.integer)];
-            p.string2.value = obj.rig.displayName;
-            p.integer.isValid = obj.integer < 100;
-            p.logicalArray.type = ParameterType('logical', 'row', {'A','B','C'});
+            p = getParameters@symphonyui.models.Protocol(obj);
+            
+            p.findByName('string').displayName = ['dname ' num2str(obj.integer)];
+%             p.string.displayName = ['dname ' num2str(obj.integer)];
+%             p.string.description = ['descr ' num2str(obj.integer)];
+%             p.string2.value = obj.rig.displayName;
+%             p.integer.isValid = obj.integer < 100;
+%             p.logicalArray.type = ParameterType('logical', 'row', {'A','B','C'});
             %p.string.category = ['categ ' num2str(obj.integer)];
         end
         
