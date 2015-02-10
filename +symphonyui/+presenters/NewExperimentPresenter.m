@@ -1,19 +1,23 @@
 classdef NewExperimentPresenter < symphonyui.Presenter
     
-    properties (SetAccess = private)
-        manager
+    properties (Access = private)
+        controller
+    end
+    
+    properties (Access = private)
+        preferences = symphonyui.app.Preferences.getDefault();
     end
     
     methods
         
-        function obj = NewExperimentPresenter(manager, view)
+        function obj = NewExperimentPresenter(controller, view)
             if nargin < 2
                 view = symphonyui.views.NewExperimentView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.manager = manager;
+            obj.controller = controller;
             
             obj.addListener(view, 'BrowseLocation', @obj.onSelectedBrowseLocation);
             obj.addListener(view, 'Open', @obj.onSelectedOpen);
@@ -27,15 +31,15 @@ classdef NewExperimentPresenter < symphonyui.Presenter
         function onViewShown(obj, ~, ~)            
             onViewShown@symphonyui.Presenter(obj);
             
-            preferences = obj.manager.preferences.experimentPreferences;
+            pref = obj.preferences.experimentPreferences;
             obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            obj.view.setName(preferences.defaultName());
-            obj.view.setPurpose(preferences.defaultPurpose());
-            obj.view.setLocation(preferences.defaultLocation());
-            obj.view.setSpeciesList(preferences.speciesList());
-            obj.view.setPhenotypeList(preferences.phenotypeList());
-            obj.view.setGenotypeList(preferences.genotypeList());
-            obj.view.setPreparationList(preferences.preparationList());
+            obj.view.setName(pref.defaultName());
+            obj.view.setPurpose(pref.defaultPurpose());
+            obj.view.setLocation(pref.defaultLocation());
+            obj.view.setSpeciesList(pref.speciesList());
+            obj.view.setPhenotypeList(pref.phenotypeList());
+            obj.view.setGenotypeList(pref.genotypeList());
+            obj.view.setPreparationList(pref.preparationList());
         end
         
     end
@@ -67,7 +71,7 @@ classdef NewExperimentPresenter < symphonyui.Presenter
             path = fullfile(location, name);
             
             try
-                obj.manager.openExperiment(path, purpose, source);
+                obj.controller.openExperiment(path, purpose, source);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));

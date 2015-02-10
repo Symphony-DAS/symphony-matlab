@@ -18,8 +18,8 @@ classdef SelectRigView < symphonyui.View
         end
         
         function createUI(obj)
-            import symphonyui.utilities.*;
-            import symphonyui.utilities.ui.*;
+            import symphonyui.util.*;
+            import symphonyui.util.ui.*;
             
             set(obj.figureHandle, 'Name', 'Select Rig');
             set(obj.figureHandle, 'Position', screenCenter(250, 79));
@@ -62,19 +62,19 @@ classdef SelectRigView < symphonyui.View
         end
         
         function r = getRig(obj)
-            r = symphonyui.utilities.ui.getSelectedValue(obj.rigDropDown);
+            r = symphonyui.util.ui.getSelectedValue(obj.rigDropDown);
         end
         
         function setRig(obj, r)
-            symphonyui.utilities.ui.setSelectedValue(obj.rigDropDown, r);
+            symphonyui.util.ui.setSelectedValue(obj.rigDropDown, r);
         end
         
         function setRigList(obj, r)
-            symphonyui.utilities.ui.setStringList(obj.rigDropDown, r);
+            symphonyui.util.ui.setStringList(obj.rigDropDown, r);
         end
         
         function enableOk(obj, tf)
-            set(obj.okButton, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.okButton, 'Enable', symphonyui.util.onOff(tf));
         end
         
     end

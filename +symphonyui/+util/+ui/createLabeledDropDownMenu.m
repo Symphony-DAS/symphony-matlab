@@ -1,5 +1,5 @@
 function [c, layout] = createLabeledDropDownMenu(parent, label, sizes)
-    import symphonyui.utilities.ui.*;
+    import symphonyui.util.ui.*;
     layout = uiextras.HBox( ...
         'Parent', parent, ...
         'Spacing', 7);

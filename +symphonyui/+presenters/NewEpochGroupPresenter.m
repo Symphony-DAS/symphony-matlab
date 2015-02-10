@@ -1,19 +1,23 @@
 classdef NewEpochGroupPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        manager
+        controller
+    end
+    
+    properties (Access = private)
+        preferences = symphonyui.app.Preferences.getDefault();
     end
     
     methods
         
-        function obj = NewEpochGroupPresenter(manager, view)
+        function obj = NewEpochGroupPresenter(controller, view)
             if nargin < 2
                 view = symphonyui.views.NewEpochGroupView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.manager = manager;
+            obj.controller = controller;
             
             obj.addListener(view, 'AddExternalSolution', @obj.onSelectedAddExternalSolution);
             obj.addListener(view, 'RemoveExternalSolution', @obj.onSelectedRemoveExternalSolution);
@@ -32,13 +36,13 @@ classdef NewEpochGroupPresenter < symphonyui.Presenter
         function onViewShown(obj, ~, ~)            
             onViewShown@symphonyui.Presenter(obj);
             
-            preferences = obj.manager.preferences.epochGroupPreferences;
+            pref = obj.preferences.epochGroupPreferences;
             obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            obj.view.setLabelList(preferences.labelList);
-            obj.view.setRecordingList(preferences.recordingList);
-            obj.view.setAvailableExternalSolutionList(preferences.availableExternalSolutionList);
-            obj.view.setAvailableInternalSolutionList(preferences.availableInternalSolutionList);
-            obj.view.setAvailableOtherList(preferences.availableOtherList);
+            obj.view.setLabelList(pref.labelList);
+            obj.view.setRecordingList(pref.recordingList);
+            obj.view.setAvailableExternalSolutionList(pref.availableExternalSolutionList);
+            obj.view.setAvailableInternalSolutionList(pref.availableInternalSolutionList);
+            obj.view.setAvailableOtherList(pref.availableOtherList);
         end
         
     end
@@ -133,7 +137,7 @@ classdef NewEpochGroupPresenter < symphonyui.Presenter
             attributes = [];
             
             try
-                obj.manager.beginEpochGroup(label, source, keywords, attributes);
+                obj.controller.beginEpochGroup(label, source, keywords, attributes);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));

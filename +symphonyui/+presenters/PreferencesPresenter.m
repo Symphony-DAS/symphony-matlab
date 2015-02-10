@@ -1,4 +1,4 @@
-classdef AppPreferencesPresenter < symphonyui.Presenter
+classdef PreferencesPresenter < symphonyui.Presenter
     
     properties (Access = private)
         preferences
@@ -6,7 +6,7 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
     
     methods
         
-        function obj = AppPreferencesPresenter(preferences, view)            
+        function obj = PreferencesPresenter(preferences, view)            
             if nargin < 2
                 view = symphonyui.views.AppPreferencesView([]);
             end
@@ -25,17 +25,18 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
     methods (Access = protected)
         
         function onViewShown(obj, ~, ~)
-            import symphonyui.utilities.*;
+            import symphonyui.util.*;
             
             onViewShown@symphonyui.Presenter(obj);
             
-            main = obj.preferences;
+            rig = obj.preferences.rigPreferences;
+            protocol = obj.preferences.protocolPreferences;
             experiment = obj.preferences.experimentPreferences;
             epochGroup = obj.preferences.epochGroupPreferences;
             
             obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            obj.view.setRigSearchPaths(cellToStr(main.rigSearchPaths));
-            obj.view.setProtocolSearchPaths(cellToStr(main.protocolSearchPaths));
+            obj.view.setRigSearchPaths(cellToStr(rig.searchPaths));
+            obj.view.setProtocolSearchPaths(cellToStr(protocol.searchPaths));
             obj.view.setDefaultName(char(experiment.defaultName));
             obj.view.setDefaultPurpose(char(experiment.defaultPurpose));
             obj.view.setDefaultLocation(char(experiment.defaultLocation));
@@ -69,7 +70,7 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
         end
         
         function onSelectedOk(obj, ~, ~)     
-            import symphonyui.utilities.*;
+            import symphonyui.util.*;
             drawnow();
             
             function out = parse(in)
@@ -95,12 +96,13 @@ classdef AppPreferencesPresenter < symphonyui.Presenter
             internalSolutionList = strToCell(obj.view.getInternalSolutionList());
             otherList = strToCell(obj.view.getOtherList());
                         
-            main = obj.preferences;
+            rig = obj.preferences.rigPreferences;
+            protocol = obj.preferences.protocolPreferences;
             experiment = obj.preferences.experimentPreferences;
             epochGroup = obj.preferences.epochGroupPreferences;
             
-            main.rigSearchPaths = rigSearchPaths;
-            main.protocolSearchPaths = protocolSearchPaths;
+            rig.searchPaths = rigSearchPaths;
+            protocol.searchPaths = protocolSearchPaths;
             experiment.defaultName = name;
             experiment.defaultPurpose = purpose;
             experiment.defaultLocation = location;

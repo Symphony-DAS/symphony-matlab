@@ -37,8 +37,8 @@ classdef MainView < symphonyui.View
     methods
         
         function createUI(obj)
-            import symphonyui.utilities.*;
-            import symphonyui.utilities.ui.*;
+            import symphonyui.util.*;
+            import symphonyui.util.ui.*;
             
             set(obj.figureHandle, 'Name', 'Symphony');
             set(obj.figureHandle, 'Position', screenCenter(280, 350));
@@ -78,11 +78,8 @@ classdef MainView < symphonyui.View
                 'Label', 'Protocol');
             obj.protocolMenu.presetsMenu.root = uimenu(obj.protocolMenu.root, ...
                 'Label', 'Presets');
-            obj.protocolMenu.presetsMenu.default = uimenu(obj.protocolMenu.presetsMenu.root, ...
-                'Label', 'Default');
             obj.protocolMenu.presetsMenu.save = uimenu(obj.protocolMenu.presetsMenu.root, ...
-                'Label', 'Save...', ...
-                'Separator', 'on');
+                'Label', 'Save...');
             obj.protocolMenu.presetsMenu.export = uimenu(obj.protocolMenu.presetsMenu.root, ...
                 'Label', 'Export...');
             obj.protocolMenu.run = uimenu(obj.protocolMenu.root, ...
@@ -96,6 +93,10 @@ classdef MainView < symphonyui.View
             obj.protocolMenu.stop = uimenu(obj.protocolMenu.root, ...
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
+            obj.protocolMenu.presetsMenu.default = uimenu(obj.protocolMenu.presetsMenu.root, ...
+                'Label', 'Default', ...
+                'Separator', 'on');
+            obj.protocolMenu.presetsMenu.presets = [];
             
             % Tools menu.
             obj.toolsMenu.root = uimenu(obj.figureHandle, ...
@@ -190,55 +191,55 @@ classdef MainView < symphonyui.View
         end
         
         function enableNewExperiment(obj, tf)
-            set(obj.fileMenu.newExperiment, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.fileMenu.newExperiment, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableCloseExperiment(obj, tf)
-            set(obj.fileMenu.closeExperiment, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.fileMenu.closeExperiment, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableBeginEpochGroup(obj, tf)
-            set(obj.experimentMenu.beginEpochGroup, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.experimentMenu.beginEpochGroup, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableEndEpochGroup(obj, tf)
-            set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableAddNote(obj, tf)
-            set(obj.experimentMenu.addNote, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.experimentMenu.addNote, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableViewNotes(obj, tf)
-            set(obj.experimentMenu.viewNotes, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.experimentMenu.viewNotes, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableSelectRig(obj, tf)
-            set(obj.toolsMenu.selectRig, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.toolsMenu.selectRig, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableViewRig(obj, tf)
-            set(obj.toolsMenu.viewRig, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.toolsMenu.viewRig, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enablePreferences(obj, tf)
-            set(obj.toolsMenu.preferences, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.toolsMenu.preferences, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableSelectProtocol(obj, tf)
-            set(obj.protocolDropDown, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.protocolDropDown, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function p = getProtocol(obj)
-            p = symphonyui.utilities.ui.getSelectedValue(obj.protocolDropDown);
+            p = symphonyui.util.ui.getSelectedValue(obj.protocolDropDown);
         end
         
         function setProtocol(obj, p)
-            symphonyui.utilities.ui.setSelectedValue(obj.protocolDropDown, p);
+            symphonyui.util.ui.setSelectedValue(obj.protocolDropDown, p);
         end
         
         function setProtocolList(obj, p)
-            symphonyui.utilities.ui.setStringList(obj.protocolDropDown, p);
+            symphonyui.util.ui.setStringList(obj.protocolDropDown, p);
         end
         
         function enableProtocolParameters(obj, tf)
@@ -247,43 +248,52 @@ classdef MainView < symphonyui.View
         
         function p = getProtocolParameters(obj)
             properties = get(obj.protocolParameterGrid, 'Properties');
-            p = symphonyui.utilities.fieldsToParameters(properties);
+            p = symphonyui.util.fieldsToParameters(properties);
         end
         
         function setProtocolParameters(obj, parameters)
-            properties = symphonyui.utilities.parametersToFields(parameters);
+            properties = symphonyui.util.parametersToFields(parameters);
             set(obj.protocolParameterGrid, 'Properties', properties);
         end
         
         function updateProtocolParameters(obj, parameters)
-            properties = symphonyui.utilities.parametersToFields(parameters);
+            properties = symphonyui.util.parametersToFields(parameters);
             obj.protocolParameterGrid.UpdateProperties(properties);
         end
         
         function enableProtocolPresets(obj, tf)
-            set(obj.protocolMenu.presetsMenu.root, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.protocolMenu.presetsMenu.root, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function addProtocolPreset(obj, p)
+            obj.protocolMenu.presetsMenu.presets(end + 1) = uimenu(obj.protocolMenu.presetsMenu.root, 'Label', p);
+        end
+        
+        function clearProtocolPresets(obj)
+            delete(obj.protocolMenu.presetsMenu.presets);
+            obj.protocolMenu.presetsMenu.presets = [];
         end
         
         function enableRun(obj, tf)
-            enable = symphonyui.utilities.onOff(tf);
+            enable = symphonyui.util.onOff(tf);
             set(obj.protocolMenu.run, 'Enable', enable);
             set(obj.runButton, 'Enable', enable);
         end
         
         function enablePause(obj, tf)
-            enable = symphonyui.utilities.onOff(tf);
+            enable = symphonyui.util.onOff(tf);
             set(obj.protocolMenu.pause, 'Enable', enable);
             set(obj.pauseButton, 'Enable', enable);
         end
         
         function enableStop(obj, tf)
-            enable = symphonyui.utilities.onOff(tf);
+            enable = symphonyui.util.onOff(tf);
             set(obj.protocolMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
         end
         
         function enableShouldSave(obj, tf)
-            set(obj.saveCheckbox, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.saveCheckbox, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function tf = getShouldSave(obj)
@@ -295,7 +305,7 @@ classdef MainView < symphonyui.View
         end
         
         function enableStatus(obj, tf)
-            set(obj.statusText, 'Enable', symphonyui.utilities.onOff(tf));
+            set(obj.statusText, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function setStatus(obj, s)

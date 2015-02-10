@@ -1,4 +1,4 @@
-classdef AppPreferencesView < symphonyui.View
+classdef PreferencesView < symphonyui.View
     
     events
         SelectedCard
@@ -18,13 +18,13 @@ classdef AppPreferencesView < symphonyui.View
     
     methods
         
-        function obj = AppPreferencesView(parent)
+        function obj = PreferencesView(parent)
             obj = obj@symphonyui.View(parent);
         end
         
         function createUI(obj)
-            import symphonyui.utilities.*;
-            import symphonyui.utilities.ui.*;
+            import symphonyui.util.*;
+            import symphonyui.util.ui.*;
             
             set(obj.figureHandle, 'Name', 'Preferences');
             set(obj.figureHandle, 'Position', screenCenter(467, 356));
@@ -140,14 +140,14 @@ classdef AppPreferencesView < symphonyui.View
         end
         
         function c = getCard(obj)
-            c = symphonyui.utilities.ui.getSelectedValue(obj.cardList);
+            c = symphonyui.util.ui.getSelectedValue(obj.cardList);
         end
         
         function setCard(obj, c)
             list = get(obj.cardList, 'String');
             selection = find(strcmp(list, c));
             set(obj.cardPanel, 'Selection', selection);
-            symphonyui.utilities.ui.setSelectedValue(obj.cardList, c);
+            symphonyui.util.ui.setSelectedValue(obj.cardList, c);
         end
         
         function p = getRigSearchPaths(obj)

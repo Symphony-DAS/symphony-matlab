@@ -1,5 +1,5 @@
 function [classNames, exceptions] = search(paths, superclass)
-    import symphonyui.utilities.*;
+    import symphonyui.util.*;
     
     if ~iscell(paths)
         paths = {paths};

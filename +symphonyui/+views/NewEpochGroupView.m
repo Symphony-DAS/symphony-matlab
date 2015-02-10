@@ -29,8 +29,8 @@ classdef NewEpochGroupView < symphonyui.View
         end
         
         function createUI(obj)
-            import symphonyui.utilities.*;
-            import symphonyui.utilities.ui.*;
+            import symphonyui.util.*;
+            import symphonyui.util.ui.*;
             
             set(obj.figureHandle, 'Name', 'Begin Epoch Group');
             set(obj.figureHandle, 'Position', screenCenter(420, 320));
@@ -93,19 +93,19 @@ classdef NewEpochGroupView < symphonyui.View
         end
         
         function setLabelList(obj, l)
-            symphonyui.utilities.ui.setStringList(obj.labelDropDown, l);
+            symphonyui.util.ui.setStringList(obj.labelDropDown, l);
         end
         
         function l = getLabel(obj)
-            l = symphonyui.utilities.ui.getSelectedValue(obj.labelDropDown);
+            l = symphonyui.util.ui.getSelectedValue(obj.labelDropDown);
         end
         
         function setRecordingList(obj, r)
-            symphonyui.utilities.ui.setStringList(obj.recordingDropDown, r);
+            symphonyui.util.ui.setStringList(obj.recordingDropDown, r);
         end
         
         function r = getRecording(obj)
-            r = symphonyui.utilities.ui.getSelectedValue(obj.recordingDropDown);
+            r = symphonyui.util.ui.getSelectedValue(obj.recordingDropDown);
         end
         
         function w = getKeywords(obj)
@@ -113,11 +113,11 @@ classdef NewEpochGroupView < symphonyui.View
         end
         
         function setAvailableExternalSolutionList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.externalSolutionTab.availableList, s);
+            symphonyui.util.ui.setStringList(obj.externalSolutionTab.availableList, s);
         end
         
         function s = getAvailableExternalSolution(obj)
-            s = symphonyui.utilities.ui.getSelectedValue(obj.externalSolutionTab.availableList);
+            s = symphonyui.util.ui.getSelectedValue(obj.externalSolutionTab.availableList);
         end
         
         function s = getAddedExternalSolutionList(obj)
@@ -125,19 +125,19 @@ classdef NewEpochGroupView < symphonyui.View
         end
         
         function setAddedExternalSolutionList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.externalSolutionTab.addedList, s);
+            symphonyui.util.ui.setStringList(obj.externalSolutionTab.addedList, s);
         end
         
         function s = getAddedExternalSolution(obj)
-            s = symphonyui.utilities.ui.getSelectedValue(obj.externalSolutionTab.addedList);
+            s = symphonyui.util.ui.getSelectedValue(obj.externalSolutionTab.addedList);
         end
         
         function setAvailableInternalSolutionList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.internalSolutionTab.availableList, s);
+            symphonyui.util.ui.setStringList(obj.internalSolutionTab.availableList, s);
         end
         
         function s = getAvailableInternalSolution(obj)
-            s = symphonyui.utilities.ui.getSelectedValue(obj.internalSolutionTab.availableList);
+            s = symphonyui.util.ui.getSelectedValue(obj.internalSolutionTab.availableList);
         end
         
         function s = getAddedInternalSolutionList(obj)
@@ -145,19 +145,19 @@ classdef NewEpochGroupView < symphonyui.View
         end
         
         function setAddedInternalSolutionList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.internalSolutionTab.addedList, s);
+            symphonyui.util.ui.setStringList(obj.internalSolutionTab.addedList, s);
         end
         
         function s = getAddedInternalSolution(obj)
-            s = symphonyui.utilities.ui.getSelectedValue(obj.internalSolutionTab.addedList);
+            s = symphonyui.util.ui.getSelectedValue(obj.internalSolutionTab.addedList);
         end
         
         function setAvailableOtherList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.otherTab.availableList, s);
+            symphonyui.util.ui.setStringList(obj.otherTab.availableList, s);
         end
         
         function s = getAvailableOther(obj)
-            s = symphonyui.utilities.ui.getSelectedValue(obj.otherTab.availableList);
+            s = symphonyui.util.ui.getSelectedValue(obj.otherTab.availableList);
         end
         
         function s = getAddedOtherList(obj)
@@ -165,11 +165,11 @@ classdef NewEpochGroupView < symphonyui.View
         end
         
         function setAddedOtherList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.otherTab.addedList, s);
+            symphonyui.util.ui.setStringList(obj.otherTab.addedList, s);
         end
         
         function s = getAddedOther(obj)
-            s = symphonyui.utilities.ui.getSelectedValue(obj.otherTab.addedList);
+            s = symphonyui.util.ui.getSelectedValue(obj.otherTab.addedList);
         end
         
     end

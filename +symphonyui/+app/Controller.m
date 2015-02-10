@@ -1,4 +1,4 @@
-classdef AppManager < handle
+classdef Controller < handle
     
     events
         OpenedExperiment
@@ -6,36 +6,38 @@ classdef AppManager < handle
         BeganEpochGroup
         EndedEpochGroup
         SetRigList
-        SetProtocolList
         SelectedRig
+        SetProtocolList
         SelectedProtocol
-        StateChange
     end
     
     properties (SetAccess = private)
-        preferences
         experiment
         rigList
-        protocolList
         rig
+        protocolList
         protocol
-        controller
+    end
+    
+    properties (SetObservable, SetAccess = private)
+        state = symphonyui.models.ControllerState.STOPPED
+    end
+    
+    properties (Access = private)
+        rigPreferences
+        protocolPreferences
     end
     
     methods
         
-        function obj = AppManager(preferences)
-            if nargin < 1
-                preferences = symphonyui.preferences.AppPreferences();
-                preferences.setToDefaults();
-            end
+        function obj = Controller()
+            preferences = symphonyui.app.Preferences.getDefault();
             
-            obj.preferences = preferences;
-            addlistener(preferences, 'rigSearchPaths', 'PostSet', @obj.onSetRigSearchPaths);
-            addlistener(preferences, 'protocolSearchPaths', 'PostSet', @obj.onSetProtocolSearchPaths);
+            obj.rigPreferences = preferences.rigPreferences;
+            obj.protocolPreferences = preferences.protocolPreferences;
             
-            obj.controller = symphonyui.models.Controller();
-            addlistener(obj.controller, 'state', 'PostSet', @(h,d)notify(obj, 'StateChange'));
+            addlistener(obj.rigPreferences, 'searchPaths', 'PostSet', @obj.onSetRigSearchPaths);
+            addlistener(obj.protocolPreferences, 'searchPaths', 'PostSet', @obj.onSetProtocolSearchPaths);
             
             obj.onSetProtocolSearchPaths();
             obj.onSetRigSearchPaths();
@@ -45,10 +47,9 @@ classdef AppManager < handle
             if obj.hasExperiment
                 error('An experiment is already open');
             end
-            
-            e = symphonyui.models.Experiment(path, purpose, source);
-            e.open();
-            obj.experiment = e;
+            exp = symphonyui.models.Experiment(path, purpose, source);
+            exp.open();
+            obj.experiment = exp;
             notify(obj, 'OpenedExperiment');
         end
         
@@ -56,7 +57,6 @@ classdef AppManager < handle
             if ~obj.hasExperiment
                 error('No experiment open');
             end
-            
             obj.experiment.close();
             obj.experiment = [];
             notify(obj, 'ClosedExperiment');
@@ -70,7 +70,6 @@ classdef AppManager < handle
             if ~obj.hasExperiment
                 error('No experiment');
             end
-            
             obj.experiment.beginEpochGroup(label, source, keywords, attributes);
             notify(obj, 'BeganEpochGroup');
         end
@@ -79,7 +78,6 @@ classdef AppManager < handle
             if ~obj.hasEpochGroup
                 error('No epoch group');
             end
-            
             obj.experiment.endEpochGroup();
             notify(obj, 'EndedEpochGroup');
         end
@@ -127,23 +125,20 @@ classdef AppManager < handle
         end
         
         function run(obj)
-            obj.controller.runProtocol(obj.protocol);
+            disp('Run');
+            disp(obj.protocol);
         end
         
         function pause(obj)
-            obj.controller.pause();
+            disp('Pause');
         end
         
         function stop(obj)
-            obj.controller.stop();
+            disp('Stop');
         end
         
-        function s = state(obj)
-            s = obj.controller.state;
-        end
-        
-        function [valid, msg] = validate(obj)
-            [valid, msg] = obj.controller.validateProtocol(obj.protocol);
+        function [tf, msg] = validate(obj)
+            [tf, msg] = obj.protocol.isValid;
         end
         
     end
@@ -151,17 +146,17 @@ classdef AppManager < handle
     methods (Access = private)
         
         function onSetRigSearchPaths(obj, ~, ~)
-            import symphonyui.utilities.*;
-            obj.rigList = search(obj.preferences.rigSearchPaths, 'symphonyui.models.Rig');
-            obj.rigList = ['symphonyui.models.NullRig' obj.rigList];
+            import symphonyui.util.search;
+            list = search(obj.rigPreferences.searchPaths, 'symphonyui.models.Rig');
+            obj.rigList = ['symphonyui.models.NullRig' list];
             notify(obj, 'SetRigList');
             obj.selectRig(1);
         end
         
         function onSetProtocolSearchPaths(obj, ~, ~)
-            import symphonyui.utilities.*;
-            obj.protocolList = search(obj.preferences.protocolSearchPaths, 'symphonyui.models.Protocol');
-            obj.protocolList = ['symphonyui.models.NullProtocol' obj.protocolList];
+            import symphonyui.util.search;
+            list = search(obj.protocolPreferences.searchPaths, 'symphonyui.models.Protocol');
+            obj.protocolList = ['symphonyui.models.NullProtocol' list];
             notify(obj, 'SetProtocolList');
             obj.selectProtocol(1);
         end

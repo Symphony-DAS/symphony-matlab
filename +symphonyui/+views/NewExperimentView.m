@@ -26,8 +26,8 @@ classdef NewExperimentView < symphonyui.View
         end
         
         function createUI(obj)
-            import symphonyui.utilities.*;
-            import symphonyui.utilities.ui.*;
+            import symphonyui.util.*;
+            import symphonyui.util.ui.*;
             
             set(obj.figureHandle, 'Name', 'New Experiment');
             set(obj.figureHandle, 'Position', screenCenter(330, 357));
@@ -132,23 +132,23 @@ classdef NewExperimentView < symphonyui.View
         end
         
         function s = getSpecies(obj)
-            s = symphonyui.utilities.ui.getSelectedValue(obj.speciesDropDown);
+            s = symphonyui.util.ui.getSelectedValue(obj.speciesDropDown);
         end
         
         function setSpeciesList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.speciesDropDown, s);
+            symphonyui.util.ui.setStringList(obj.speciesDropDown, s);
         end
         
         function setPhenotypeList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.phenotypeDropDown, s);
+            symphonyui.util.ui.setStringList(obj.phenotypeDropDown, s);
         end
         
         function setGenotypeList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.genotypeDropDown, s);
+            symphonyui.util.ui.setStringList(obj.genotypeDropDown, s);
         end
         
         function setPreparationList(obj, s)
-            symphonyui.utilities.ui.setStringList(obj.preparationDropDown, s);
+            symphonyui.util.ui.setStringList(obj.preparationDropDown, s);
         end
         
     end
