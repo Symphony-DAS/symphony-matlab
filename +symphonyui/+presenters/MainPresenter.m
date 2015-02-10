@@ -60,6 +60,7 @@ classdef MainPresenter < symphonyui.Presenter
         function onViewClosing(obj, ~, ~)
             onViewClosing@symphonyui.Presenter(obj);
             obj.view.savePosition();
+            delete(obj.controller);            
         end
         
     end

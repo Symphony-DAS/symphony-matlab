@@ -1,4 +1,4 @@
-classdef Controller < handle
+classdef Controller < symphonyui.mixin.Observer
     
     events
         OpenedExperiment
@@ -24,20 +24,17 @@ classdef Controller < handle
     end
     
     properties (Access = private)
-        rigPreferences
-        protocolPreferences
+        preferences = symphonyui.app.Preferences.getDefault();
     end
     
     methods
         
         function obj = Controller()
-            preferences = symphonyui.app.Preferences.getDefault();
+            rigPref = obj.preferences.rigPreferences;
+            obj.addListener(rigPref, 'searchPaths', 'PostSet', @obj.onSetRigSearchPaths);
             
-            obj.rigPreferences = preferences.rigPreferences;
-            obj.protocolPreferences = preferences.protocolPreferences;
-            
-            addlistener(obj.rigPreferences, 'searchPaths', 'PostSet', @obj.onSetRigSearchPaths);
-            addlistener(obj.protocolPreferences, 'searchPaths', 'PostSet', @obj.onSetProtocolSearchPaths);
+            protocolPref = obj.preferences.protocolPreferences;
+            obj.addListener(protocolPref, 'searchPaths', 'PostSet', @obj.onSetProtocolSearchPaths);
             
             obj.onSetProtocolSearchPaths();
             obj.onSetRigSearchPaths();
@@ -147,7 +144,8 @@ classdef Controller < handle
         
         function onSetRigSearchPaths(obj, ~, ~)
             import symphonyui.util.search;
-            list = search(obj.rigPreferences.searchPaths, 'symphonyui.models.Rig');
+            pref = obj.preferences.rigPreferences;
+            list = search(pref.searchPaths, 'symphonyui.models.Rig');
             obj.rigList = ['symphonyui.models.NullRig' list];
             notify(obj, 'SetRigList');
             obj.selectRig(1);
@@ -155,7 +153,8 @@ classdef Controller < handle
         
         function onSetProtocolSearchPaths(obj, ~, ~)
             import symphonyui.util.search;
-            list = search(obj.protocolPreferences.searchPaths, 'symphonyui.models.Protocol');
+            pref = obj.preferences.protocolPreferences;
+            list = search(pref.searchPaths, 'symphonyui.models.Protocol');
             obj.protocolList = ['symphonyui.models.NullProtocol' list];
             notify(obj, 'SetProtocolList');
             obj.selectProtocol(1);

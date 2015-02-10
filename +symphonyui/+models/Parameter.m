@@ -1,4 +1,4 @@
-classdef Parameter < hgsetget
+classdef Parameter < matlab.mixin.SetGet
     
     properties
         name
