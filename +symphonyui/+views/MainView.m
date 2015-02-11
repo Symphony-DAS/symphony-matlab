@@ -7,7 +7,7 @@ classdef MainView < symphonyui.View
         BeginEpochGroup
         EndEpochGroup
         SelectedProtocol
-        ChangedProtocolParameter
+        ChangedProtocolParameters
         Run
         Pause
         Stop
@@ -144,7 +144,7 @@ classdef MainView < symphonyui.View
             set(obj.protocolDropDown, 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
             
             obj.protocolParameterGrid = PropertyGrid(mainLayout);
-            addlistener(obj.protocolParameterGrid, 'ChangedProperty', @(h,d)notify(obj, 'ChangedProtocolParameter'));
+            addlistener(obj.protocolParameterGrid, 'ChangedProperty', @(h,d)notify(obj, 'ChangedProtocolParameters'));
             
             controlsLayout = uiextras.VBox( ...
                 'Parent', mainLayout);

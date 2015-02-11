@@ -25,8 +25,9 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(appController, 'BeganEpochGroup', @obj.onBeganEpochGroup);
             obj.addListener(appController, 'EndedEpochGroup', @obj.onEndedEpochGroup);
             obj.addListener(appController, 'InitializedRig', @obj.onInitializedRig);
-            obj.addListener(appController, 'SetProtocolList', @obj.onSetProtocolList);
+            obj.addListener(appController, 'ChangedProtocolList', @obj.onChangedProtocolList);
             obj.addListener(appController, 'SelectedProtocol', @obj.onControllerSelectedProtocol);
+            obj.addListener(appController, 'ChangedProtocolParameters', @obj.onControllerChangedProtocolParameters);
             obj.addListener(appController, 'ChangedState', @obj.onControllerChangedState);
             
             obj.addListener(view, 'NewExperiment', @obj.onSelectedNewExperiment);
@@ -34,7 +35,7 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(view, 'BeginEpochGroup', @obj.onSelectedBeginEpochGroup);
             obj.addListener(view, 'EndEpochGroup', @obj.onSelectedEndEpochGroup);
             obj.addListener(view, 'SelectedProtocol', @obj.onViewSelectedProtocol);
-            obj.addListener(view, 'ChangedProtocolParameter', @obj.onChangedProtocolParameter);
+            obj.addListener(view, 'ChangedProtocolParameters', @obj.onViewChangedProtocolParameters);
             obj.addListener(view, 'Run', @obj.onSelectedRun);
             obj.addListener(view, 'Pause', @obj.onSelectedPause);
             obj.addListener(view, 'Stop', @obj.onSelectedStop);
@@ -54,7 +55,7 @@ classdef MainPresenter < symphonyui.Presenter
             onViewShown@symphonyui.Presenter(obj);
             %view.loadPosition();
             
-            obj.onSetProtocolList();
+            obj.onChangedProtocolList();
             obj.onControllerSelectedProtocol();
             obj.updateViewState();
         end
@@ -117,7 +118,7 @@ classdef MainPresenter < symphonyui.Presenter
             disp('Selected View Notes');
         end
         
-        function onSetProtocolList(obj, ~, ~)
+        function onChangedProtocolList(obj, ~, ~)
             obj.protocolMap = symphonyui.util.displayNameMap(obj.appController.protocolList);
             obj.view.setProtocolList(obj.protocolMap.keys);
         end
@@ -137,13 +138,12 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onControllerSelectedProtocol(obj, ~, ~)
-            protocol = obj.appController.protocol;
-            index = obj.protocolMap.right_find(class(protocol));
+            index = obj.appController.getProtocolIndex();
             key = obj.protocolMap.right_at(index);
             obj.view.setProtocol(key);
             
             try
-                parameters = protocol.getParameters();
+                parameters = obj.appController.getProtocolParameters();
                 parameters(parameters.findIndexByName('displayName')) = [];
                 obj.view.setProtocolParameters(parameters);
             catch x
@@ -153,24 +153,18 @@ classdef MainPresenter < symphonyui.Presenter
             end
             
             obj.view.clearProtocolPresets();
-            obj.view.addProtocolPreset(protocol.displayName);
             
             obj.updateViewState();
         end
         
-        function onChangedProtocolParameter(obj, ~, ~)
-            protocol = obj.appController.protocol;
+        function onViewChangedProtocolParameters(obj, ~, ~)
             parameters = obj.view.getProtocolParameters();
-            for i = 1:numel(parameters)
-                p = parameters(i);
-                if p.isReadOnly
-                    continue;
-                end
-                protocol.(p.name) = p.value;
-            end
-            
+            obj.appController.setProtocolParameters(parameters);
+        end
+        
+        function onControllerChangedProtocolParameters(obj, ~, ~)
             try
-                parameters = protocol.getParameters();
+                parameters = obj.appController.getProtocolParameters();
                 parameters(parameters.findIndexByName('displayName')) = [];
                 obj.view.updateProtocolParameters(parameters);
             catch x

@@ -16,7 +16,7 @@ classdef SelectRigPresenter < symphonyui.Presenter
             
             obj.appController = appController;
             
-            obj.addListener(appController, 'SetRigList', @obj.onChangedRigList);
+            obj.addListener(appController, 'ChangedRigList', @obj.onChangedRigList);
             obj.addListener(appController, 'SelectedRig', @obj.onControllerSelectedRig);
             
             obj.addListener(view, 'Ok', @obj.onSelectedOk);
@@ -54,8 +54,7 @@ classdef SelectRigPresenter < symphonyui.Presenter
         end
         
         function onControllerSelectedRig(obj, ~, ~)
-            rig = obj.appController.rig;
-            index = obj.rigMap.right_find(class(rig));
+            index = obj.appController.getRigIndex();
             key = obj.rigMap.right_at(index);
             obj.view.setRig(key);
         end

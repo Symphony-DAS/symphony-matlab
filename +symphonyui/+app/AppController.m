@@ -5,25 +5,27 @@ classdef AppController < symphonyui.mixin.Observer
         ClosedExperiment
         BeganEpochGroup
         EndedEpochGroup
-        SetRigList
+        ChangedRigList
         SelectedRig
         InitializedRig
-        SetProtocolList
+        ChangedProtocolList
         SelectedProtocol
+        ChangedProtocolParameters
         ChangedState
     end
     
     properties (SetAccess = private)
-        experiment
-        rigList
-        rig
-        protocolList
-        protocol
         state
+        rigList
+        protocolList
     end
     
     properties (Access = private)
         controller
+        experiment
+        rig
+        protocol
+        presets = symphonyui.app.Presets();
         preferences = symphonyui.app.Preferences.getDefault();
     end
     
@@ -91,6 +93,9 @@ classdef AppController < symphonyui.mixin.Observer
         end
         
         function i = getRigIndex(obj, className)
+            if nargin < 2
+                className = class(obj.rig);
+            end
             i = find(ismember(obj.rigList, className));
         end
         
@@ -111,6 +116,9 @@ classdef AppController < symphonyui.mixin.Observer
         end
         
         function i = getProtocolIndex(obj, className)
+            if nargin < 2
+                className = class(obj.protocol);
+            end
             i = find(ismember(obj.protocolList, className), 1);
         end
         
@@ -130,6 +138,25 @@ classdef AppController < symphonyui.mixin.Observer
             obj.protocol = constructor();
             obj.protocol.rig = obj.rig;
             notify(obj, 'SelectedProtocol');
+        end
+        
+        function p = getProtocolParameters(obj)
+            p = obj.protocol.getParameters();
+        end
+        
+        function setProtocolParameters(obj, parameters)
+            for i = 1:numel(parameters)
+                p = parameters(i);
+                if p.isReadOnly
+                    continue;
+                end
+                obj.protocol.(p.name) = p.value;
+            end
+            notify(obj, 'ChangedProtocolParameters');
+        end
+        
+        function p = getAllPresets(obj, className)
+            p = obj.presets.getAllPresets(className);
         end
         
         function run(obj)
@@ -165,7 +192,7 @@ classdef AppController < symphonyui.mixin.Observer
             pref = obj.preferences.rigPreferences;
             list = search(pref.searchPaths, 'symphonyui.models.Rig');
             obj.rigList = ['symphonyui.models.NullRig' list];
-            notify(obj, 'SetRigList');
+            notify(obj, 'ChangedRigList');
             
             % Try to default to a non-null rig.
             try
@@ -180,7 +207,7 @@ classdef AppController < symphonyui.mixin.Observer
             pref = obj.preferences.protocolPreferences;
             list = search(pref.searchPaths, 'symphonyui.models.Protocol');
             obj.protocolList = ['symphonyui.models.NullProtocol' list];
-            notify(obj, 'SetProtocolList');
+            notify(obj, 'ChangedProtocolList');
             
             % Try to default to a non-null protocol.
             try
