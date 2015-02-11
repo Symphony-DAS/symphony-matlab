@@ -12,7 +12,7 @@ classdef BeginEpochGroupPresenter < symphonyui.Presenter
         
         function obj = BeginEpochGroupPresenter(appController, view)
             if nargin < 2
-                view = symphonyui.views.NewEpochGroupView([]);
+                view = symphonyui.views.BeginEpochGroupView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);

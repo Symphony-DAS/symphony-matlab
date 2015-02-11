@@ -100,7 +100,9 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedEndEpochGroup(obj, ~, ~)
-            obj.appController.endEpochGroup();
+            view = symphonyui.views.EndEpochGroupView(obj.view);
+            p = symphonyui.presenters.EndEpochGroupPresenter(obj.appController, view);
+            p.view.showDialog();
         end
         
         function onEndedEpochGroup(obj, ~, ~)
