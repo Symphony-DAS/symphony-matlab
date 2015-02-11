@@ -1,10 +1,12 @@
 function fig = main()
     import symphonyui.*;
+
+    controller = app.Controller();
+    rigPresenter = presenters.SelectRigPresenter(controller);
+    rigPresenter.view.showDialog();
     
-    pref = preferences.AppPreferences();
-    pref.setToDefaults();
+    mainPresenter = presenters.MainPresenter(controller);
+    mainPresenter.view.show();
     
-    p = presenters.MainPresenter(pref);
-    p.view.show();
-    fig = p.view.figureHandle;
+    fig = mainPresenter.view.getFigureHandle();
 end

@@ -1,18 +1,20 @@
-classdef View < handle
+classdef View < symphonyui.mixin.Observer
     
     properties
         position
         result
     end
     
-    properties (Access = private)
-        parent
-        parentListener
+    properties (SetAccess = private)
+        isShown
     end
     
-    properties (SetAccess = private)
+    properties (Access = protected)
         figureHandle
-        isShown
+    end
+    
+    properties (Access = private)
+        parent
     end
     
     events (NotifyAccess = private)
@@ -28,7 +30,7 @@ classdef View < handle
             end
             obj.parent = parent;
             if ~isempty(parent)
-                obj.parentListener = addlistener(parent, 'Closing', @(h,d)obj.close);
+                obj.addListener(parent, 'Closing', @(h,d)obj.close);
             end
             
             obj.figureHandle = figure( ...
@@ -85,8 +87,8 @@ classdef View < handle
         
         function close(obj)
             notify(obj, 'Closing');
-            delete(obj.parentListener);
             delete(obj.figureHandle);
+            obj.removeAllListeners();
         end
         
         function tf = isClosed(obj)
@@ -119,6 +121,10 @@ classdef View < handle
         
         function clearUI(obj)
             clf(obj.figureHandle);
+        end
+        
+        function f = getFigureHandle(obj)
+            f = obj.figureHandle;
         end
         
     end
