@@ -1,7 +1,7 @@
 classdef NewEpochGroupPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        controller
+        appController
     end
     
     properties (Access = private)
@@ -10,14 +10,14 @@ classdef NewEpochGroupPresenter < symphonyui.Presenter
     
     methods
         
-        function obj = NewEpochGroupPresenter(controller, view)
+        function obj = NewEpochGroupPresenter(appController, view)
             if nargin < 2
                 view = symphonyui.views.NewEpochGroupView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.controller = controller;
+            obj.appController = appController;
             
             obj.addListener(view, 'AddExternalSolution', @obj.onSelectedAddExternalSolution);
             obj.addListener(view, 'RemoveExternalSolution', @obj.onSelectedRemoveExternalSolution);
@@ -137,7 +137,7 @@ classdef NewEpochGroupPresenter < symphonyui.Presenter
             attributes = [];
             
             try
-                obj.controller.beginEpochGroup(label, source, keywords, attributes);
+                obj.appController.beginEpochGroup(label, source, keywords, attributes);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));

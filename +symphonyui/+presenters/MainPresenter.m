@@ -1,7 +1,7 @@
 classdef MainPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        controller
+        appController
         protocolMap
     end
     
@@ -11,22 +11,23 @@ classdef MainPresenter < symphonyui.Presenter
     
     methods
         
-        function obj = MainPresenter(controller, view)            
+        function obj = MainPresenter(appController, view)            
             if nargin < 2
                 view = symphonyui.views.MainView();
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.controller = controller;
+            obj.appController = appController;
             
-            obj.addListener(controller, 'OpenedExperiment', @obj.onOpenedExperiment);
-            obj.addListener(controller, 'ClosedExperiment', @obj.onClosedExperiment);
-            obj.addListener(controller, 'BeganEpochGroup', @obj.onBeganEpochGroup);
-            obj.addListener(controller, 'EndedEpochGroup', @obj.onEndedEpochGroup);
-            obj.addListener(controller, 'InitializedRig', @obj.onInitializedRig);
-            obj.addListener(controller, 'SetProtocolList', @obj.onSetProtocolList);
-            obj.addListener(controller, 'SelectedProtocol', @obj.onControllerSelectedProtocol);
+            obj.addListener(appController, 'OpenedExperiment', @obj.onOpenedExperiment);
+            obj.addListener(appController, 'ClosedExperiment', @obj.onClosedExperiment);
+            obj.addListener(appController, 'BeganEpochGroup', @obj.onBeganEpochGroup);
+            obj.addListener(appController, 'EndedEpochGroup', @obj.onEndedEpochGroup);
+            obj.addListener(appController, 'InitializedRig', @obj.onInitializedRig);
+            obj.addListener(appController, 'SetProtocolList', @obj.onSetProtocolList);
+            obj.addListener(appController, 'SelectedProtocol', @obj.onControllerSelectedProtocol);
+            obj.addListener(appController, 'ChangedState', @obj.onControllerChangedState);
             
             obj.addListener(view, 'NewExperiment', @obj.onSelectedNewExperiment);
             obj.addListener(view, 'CloseExperiment', @obj.onSelectedCloseExperiment);
@@ -61,7 +62,7 @@ classdef MainPresenter < symphonyui.Presenter
         function onViewClosing(obj, ~, ~)
             onViewClosing@symphonyui.Presenter(obj);
             obj.view.savePosition();
-            delete(obj.controller);            
+            delete(obj.appController);            
         end
         
     end
@@ -70,7 +71,7 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onSelectedNewExperiment(obj, ~, ~)
             view = symphonyui.views.NewExperimentView(obj.view);
-            p = symphonyui.presenters.NewExperimentPresenter(obj.controller, view);
+            p = symphonyui.presenters.NewExperimentPresenter(obj.appController, view);
             p.view.showDialog();
         end
         
@@ -80,7 +81,7 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedCloseExperiment(obj, ~, ~)
-            obj.controller.closeExperiment();
+            obj.appController.closeExperiment();
         end
         
         function onClosedExperiment(obj, ~, ~)
@@ -90,7 +91,7 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onSelectedBeginEpochGroup(obj, ~, ~)
             view = symphonyui.views.NewEpochGroupView(obj.view);
-            p = symphonyui.presenters.NewEpochGroupPresenter(obj.controller, view);
+            p = symphonyui.presenters.NewEpochGroupPresenter(obj.appController, view);
             p.view.showDialog();
         end
         
@@ -99,11 +100,11 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedEndEpochGroup(obj, ~, ~)
-            obj.controller.endEpochGroup();
+            obj.appController.endEpochGroup();
         end
         
         function onEndedEpochGroup(obj, ~, ~)
-            obj.view.enableEndEpochGroup(obj.controller.hasEpochGroup);
+            obj.view.enableEndEpochGroup(obj.appController.hasEpochGroup);
         end
         
         function onSelectedAddNote(obj, ~, ~)
@@ -115,17 +116,17 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSetProtocolList(obj, ~, ~)
-            obj.protocolMap = symphonyui.util.displayNameMap(obj.controller.protocolList);
+            obj.protocolMap = symphonyui.util.displayNameMap(obj.appController.protocolList);
             obj.view.setProtocolList(obj.protocolMap.keys);
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
             key = obj.view.getProtocol();
             className = obj.protocolMap(key);
-            index = obj.controller.getProtocolIndex(className);
+            index = obj.appController.getProtocolIndex(className);
             
             try
-                obj.controller.selectProtocol(index);
+                obj.appController.selectProtocol(index);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));
@@ -134,7 +135,7 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onControllerSelectedProtocol(obj, ~, ~)
-            protocol = obj.controller.protocol;
+            protocol = obj.appController.protocol;
             index = obj.protocolMap.right_find(class(protocol));
             key = obj.protocolMap.right_at(index);
             obj.view.setProtocol(key);
@@ -156,7 +157,7 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onChangedProtocolParameter(obj, ~, ~)
-            protocol = obj.controller.protocol;
+            protocol = obj.appController.protocol;
             parameters = obj.view.getProtocolParameters();
             for i = 1:numel(parameters)
                 p = parameters(i);
@@ -180,27 +181,27 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedRun(obj, ~, ~)
-            obj.controller.run();
+            obj.appController.run();
         end
         
         function onSelectedPause(obj, ~, ~)
-            obj.controller.pause();
+            obj.appController.pause();
         end
         
         function onSelectedStop(obj, ~, ~)
-            obj.controller.stop();
+            obj.appController.stop();
         end
         
-        function onManagerStateChange(obj, ~, ~)
+        function onControllerChangedState(obj, ~, ~)
             obj.updateViewState();
         end
         
         function updateViewState(obj)
             import symphonyui.models.*;
             
-            hasExperiment = obj.controller.hasExperiment;
-            hasEpochGroup = obj.controller.hasEpochGroup;
-            isStopped = obj.controller.state == ControllerState.STOPPED;
+            hasExperiment = obj.appController.hasExperiment;
+            hasEpochGroup = obj.appController.hasEpochGroup;
+            isStopped = obj.appController.state == ControllerState.STOPPED;
             
             enableNewExperiment = ~hasExperiment && isStopped;
             enableCloseExperiment = hasExperiment && isStopped;
@@ -219,7 +220,7 @@ classdef MainPresenter < symphonyui.Presenter
             enableStop = false;
             status = 'Unknown';
             
-            switch obj.controller.state
+            switch obj.appController.state
                 case ControllerState.STOPPED
                     enableRun = true;
                     status = 'Stopped';
@@ -238,7 +239,7 @@ classdef MainPresenter < symphonyui.Presenter
                     status = 'Running';
             end
             
-            [valid, msg] = obj.controller.validate();
+            [valid, msg] = obj.appController.validate();
             if ~valid
                 enableRun = false;
                 enableStop = false;
@@ -266,7 +267,7 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onSelectedSelectRig(obj, ~, ~)
             view = symphonyui.views.SelectRigView(obj.view);
-            p = symphonyui.presenters.SelectRigPresenter(obj.controller, view);
+            p = symphonyui.presenters.SelectRigPresenter(obj.appController, view);
             p.view.showDialog();
         end
         

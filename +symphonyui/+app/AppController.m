@@ -1,4 +1,4 @@
-classdef Controller < symphonyui.mixin.Observer
+classdef AppController < symphonyui.mixin.Observer
     
     events
         OpenedExperiment
@@ -10,6 +10,7 @@ classdef Controller < symphonyui.mixin.Observer
         InitializedRig
         SetProtocolList
         SelectedProtocol
+        ChangedState
     end
     
     properties (SetAccess = private)
@@ -18,19 +19,24 @@ classdef Controller < symphonyui.mixin.Observer
         rig
         protocolList
         protocol
-    end
-    
-    properties (SetObservable, SetAccess = private)
-        state = symphonyui.models.ControllerState.STOPPED
+        state
     end
     
     properties (Access = private)
+        controller
         preferences = symphonyui.app.Preferences.getDefault();
     end
     
     methods
         
-        function obj = Controller()
+        function obj = AppController(controller)
+            if nargin < 1
+                controller = symphonyui.models.Controller();
+            end
+            
+            obj.controller = controller;
+            obj.addListener(controller, 'state', 'PostSet', @obj.onSetControllerState);
+            
             rigPref = obj.preferences.rigPreferences;
             obj.addListener(rigPref, 'searchPaths', 'PostSet', @obj.onSetRigSearchPaths);
             
@@ -127,25 +133,32 @@ classdef Controller < symphonyui.mixin.Observer
         end
         
         function run(obj)
-            disp('Run');
-            disp(obj.protocol);
+            obj.controller.runProtocol(obj.protocol);
         end
         
         function pause(obj)
-            disp('Pause');
+            obj.controller.pause();
         end
         
         function stop(obj)
-            disp('Stop');
+            obj.controller.stop();
         end
         
         function [tf, msg] = validate(obj)
             [tf, msg] = obj.protocol.isValid;
         end
         
+        function s = get.state(obj)
+            s = obj.controller.state;
+        end
+        
     end
     
     methods (Access = private)
+        
+        function onSetControllerState(obj, ~, ~)
+            notify(obj, 'ChangedState');
+        end
         
         function onSetRigSearchPaths(obj, ~, ~)
             import symphonyui.util.search;
