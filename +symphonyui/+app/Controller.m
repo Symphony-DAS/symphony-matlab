@@ -7,6 +7,7 @@ classdef Controller < symphonyui.mixin.Observer
         EndedEpochGroup
         SetRigList
         SelectedRig
+        InitializedRig
         SetProtocolList
         SelectedProtocol
     end
@@ -94,9 +95,13 @@ classdef Controller < symphonyui.mixin.Observer
             className = obj.rigList{index};
             constructor = str2func(className);
             obj.rig = constructor();
-            obj.rig.initialize();
             obj.reloadProtocol();
             notify(obj, 'SelectedRig');
+        end
+        
+        function initializeRig(obj)
+            obj.rig.initialize();
+            notify(obj, 'InitializedRig');
         end
         
         function i = getProtocolIndex(obj, className)
@@ -148,7 +153,13 @@ classdef Controller < symphonyui.mixin.Observer
             list = search(pref.searchPaths, 'symphonyui.models.Rig');
             obj.rigList = ['symphonyui.models.NullRig' list];
             notify(obj, 'SetRigList');
-            obj.selectRig(1);
+            
+            % Try to default to a non-null rig.
+            try
+                obj.selectRig(2);
+            catch
+                obj.selectRig(1);
+            end
         end
         
         function onSetProtocolSearchPaths(obj, ~, ~)
@@ -157,7 +168,13 @@ classdef Controller < symphonyui.mixin.Observer
             list = search(pref.searchPaths, 'symphonyui.models.Protocol');
             obj.protocolList = ['symphonyui.models.NullProtocol' list];
             notify(obj, 'SetProtocolList');
-            obj.selectProtocol(1);
+            
+            % Try to default to a non-null protocol.
+            try
+                obj.selectProtocol(2);
+            catch
+                obj.selectProtocol(1);
+            end
         end
         
     end

@@ -24,6 +24,7 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(controller, 'ClosedExperiment', @obj.onClosedExperiment);
             obj.addListener(controller, 'BeganEpochGroup', @obj.onBeganEpochGroup);
             obj.addListener(controller, 'EndedEpochGroup', @obj.onEndedEpochGroup);
+            obj.addListener(controller, 'InitializedRig', @obj.onInitializedRig);
             obj.addListener(controller, 'SetProtocolList', @obj.onSetProtocolList);
             obj.addListener(controller, 'SelectedProtocol', @obj.onControllerSelectedProtocol);
             
@@ -267,6 +268,10 @@ classdef MainPresenter < symphonyui.Presenter
             view = symphonyui.views.SelectRigView(obj.view);
             p = symphonyui.presenters.SelectRigPresenter(obj.controller, view);
             p.view.showDialog();
+        end
+        
+        function onInitializedRig(obj, ~, ~)
+            obj.updateViewState();
         end
         
         function onSelectedPreferences(obj, ~, ~)

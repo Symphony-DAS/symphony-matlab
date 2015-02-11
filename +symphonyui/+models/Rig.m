@@ -19,6 +19,9 @@ classdef Rig < handle
         end
         
         function initialize(obj)
+            if obj.isInitialized
+                return;
+            end
             obj.setup();
             obj.isInitialized = true;
         end

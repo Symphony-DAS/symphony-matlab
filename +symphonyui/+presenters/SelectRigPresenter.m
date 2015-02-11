@@ -69,6 +69,7 @@ classdef SelectRigPresenter < symphonyui.Presenter
             
             try
                 obj.controller.selectRig(index);
+                obj.controller.initializeRig();
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));

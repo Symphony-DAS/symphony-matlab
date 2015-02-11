@@ -17,7 +17,7 @@ classdef MessageBoxPresenter < symphonyui.Presenter
             obj.message = message;
             obj.title = title;
             
-            obj.addListener(view, 'Ok', @(h,d)obj.views.close());
+            obj.addListener(view, 'Ok', @(h,d)obj.view.close());
         end
         
     end
@@ -27,8 +27,8 @@ classdef MessageBoxPresenter < symphonyui.Presenter
         function onViewShown(obj, ~, ~)            
             onViewShown@symphonyui.Presenter(obj);
             
-            obj.views.setTitle(obj.title);
-            obj.views.setMessage(obj.message);
+            obj.view.setTitle(obj.title);
+            obj.view.setMessage(obj.message);
         end
         
     end
@@ -37,8 +37,8 @@ classdef MessageBoxPresenter < symphonyui.Presenter
         
         function obj = showException(x)
             obj = symphonyui.presenters.MessageBoxPresenter(x.message, 'Error');
-            obj.views.position = symphonyui.util.screenCenter(450, 85);
-            obj.views.showDialog();
+            obj.view.position = symphonyui.util.screenCenter(450, 85);
+            obj.view.showDialog();
         end
         
     end
