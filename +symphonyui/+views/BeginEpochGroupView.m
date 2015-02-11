@@ -1,4 +1,4 @@
-classdef NewEpochGroupView < symphonyui.View
+classdef BeginEpochGroupView < symphonyui.View
     
     events
         AddExternalSolution
@@ -24,7 +24,7 @@ classdef NewEpochGroupView < symphonyui.View
     
     methods
         
-        function obj = NewEpochGroupView(parent)
+        function obj = BeginEpochGroupView(parent)
             obj = obj@symphonyui.View(parent);
         end
         

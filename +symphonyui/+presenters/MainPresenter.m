@@ -90,8 +90,8 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onSelectedBeginEpochGroup(obj, ~, ~)
-            view = symphonyui.views.NewEpochGroupView(obj.view);
-            p = symphonyui.presenters.NewEpochGroupPresenter(obj.appController, view);
+            view = symphonyui.views.BeginEpochGroupView(obj.view);
+            p = symphonyui.presenters.BeginEpochGroupPresenter(obj.appController, view);
             p.view.showDialog();
         end
         

@@ -1,4 +1,4 @@
-classdef NewEpochGroupPresenter < symphonyui.Presenter
+classdef BeginEpochGroupPresenter < symphonyui.Presenter
     
     properties (Access = private)
         appController
@@ -10,7 +10,7 @@ classdef NewEpochGroupPresenter < symphonyui.Presenter
     
     methods
         
-        function obj = NewEpochGroupPresenter(appController, view)
+        function obj = BeginEpochGroupPresenter(appController, view)
             if nargin < 2
                 view = symphonyui.views.NewEpochGroupView([]);
             end
