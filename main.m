@@ -1,7 +1,7 @@
 function fig = main()
     import symphonyui.*;
 
-    controller = app.AppController();
+    controller = app.Controller();
     rigPresenter = presenters.SelectRigPresenter(controller);
     rigPresenter.view.showDialog();
     

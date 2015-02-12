@@ -1,7 +1,7 @@
 classdef EndEpochGroupPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        appController
+        controller
     end
     
     properties (Access = private)
@@ -10,14 +10,14 @@ classdef EndEpochGroupPresenter < symphonyui.Presenter
     
     methods
         
-        function obj = EndEpochGroupPresenter(appController, view)
+        function obj = EndEpochGroupPresenter(controller, view)
             if nargin < 2
                 view = symphonyui.views.EndEpochGroupView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.appController = appController;
+            obj.controller = controller;
             
             obj.addListener(view, 'End', @obj.onSelectedEnd);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
@@ -48,7 +48,7 @@ classdef EndEpochGroupPresenter < symphonyui.Presenter
             drawnow();
             
             try
-                obj.appController.endEpochGroup();
+                obj.controller.endEpochGroup();
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));

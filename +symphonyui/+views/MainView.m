@@ -8,6 +8,7 @@ classdef MainView < symphonyui.View
         EndEpochGroup
         SelectedProtocol
         ChangedProtocolParameters
+        Record
         Run
         Pause
         Stop
@@ -27,10 +28,10 @@ classdef MainView < symphonyui.View
         helpMenu
         protocolDropDown
         protocolParameterGrid
+        recordButton
         runButton
         pauseButton
         stopButton
-        saveCheckbox
         statusText
     end
     
@@ -82,10 +83,14 @@ classdef MainView < symphonyui.View
                 'Label', 'Save...');
             obj.protocolMenu.presetsMenu.export = uimenu(obj.protocolMenu.presetsMenu.root, ...
                 'Label', 'Export...');
-            obj.protocolMenu.run = uimenu(obj.protocolMenu.root, ...
-                'Label', 'Run', ...
+            obj.protocolMenu.record = uimenu(obj.protocolMenu.root, ...
+                'Label', 'Record', ...
                 'Accelerator', 'r', ...
                 'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'Record'));
+            obj.protocolMenu.run = uimenu(obj.protocolMenu.root, ...
+                'Label', 'Run', ...
+                'Accelerator', 'v', ...
                 'Callback', @(h,d)notify(obj, 'Run'));
             obj.protocolMenu.pause = uimenu(obj.protocolMenu.root, ...
                 'Label', 'Pause', ...
@@ -151,6 +156,12 @@ classdef MainView < symphonyui.View
             layout = uiextras.HBox( ...
                 'Parent', controlsLayout, ...
                 'Spacing', 1);
+            obj.recordButton = uicontrol( ...
+                'Parent', layout, ...        
+                'Style', 'pushbutton', ...
+                'String', ['<html><img src="' [iconsUrl 'record.png'] '"/></html>'], ...
+                'TooltipString', 'Record', ...
+                'Callback', @(h,d)notify(obj, 'Record'));
             obj.runButton = uicontrol( ...
                 'Parent', layout, ...        
                 'Style', 'pushbutton', ...
@@ -173,16 +184,10 @@ classdef MainView < symphonyui.View
             layout = uiextras.HBox( ...
                 'Parent', controlsLayout);
             obj.statusText = createLabel(layout, 'Status');
-            obj.saveCheckbox = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'checkbox', ...
-                'String', 'Save', ...
-                'HorizontalAlignment', 'right');
-            set(layout, 'Sizes', [-1 44]);
+            
             set(controlsLayout, 'Sizes', [-1 25]);
             
-            
-            set(mainLayout, 'Sizes', [25 -1 75]);
+            set(mainLayout, 'Sizes', [25 -1 71]);
         end
         
         function close(obj)
@@ -274,6 +279,12 @@ classdef MainView < symphonyui.View
             obj.protocolMenu.presetsMenu.presets = [];
         end
         
+        function enableRecord(obj, tf)
+            enable = symphonyui.util.onOff(tf);
+            set(obj.protocolMenu.record, 'Enable', enable);
+            set(obj.recordButton, 'Enable', enable);
+        end
+        
         function enableRun(obj, tf)
             enable = symphonyui.util.onOff(tf);
             set(obj.protocolMenu.run, 'Enable', enable);
@@ -290,22 +301,6 @@ classdef MainView < symphonyui.View
             enable = symphonyui.util.onOff(tf);
             set(obj.protocolMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
-        end
-        
-        function enableShouldSave(obj, tf)
-            set(obj.saveCheckbox, 'Enable', symphonyui.util.onOff(tf));
-        end
-        
-        function tf = getShouldSave(obj)
-            tf = get(obj.saveCheckbox, 'Value');
-        end
-        
-        function setShouldSave(obj, tf)
-            set(obj.saveCheckbox, 'Value', tf);
-        end
-        
-        function enableStatus(obj, tf)
-            set(obj.statusText, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function setStatus(obj, s)

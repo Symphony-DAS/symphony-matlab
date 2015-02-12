@@ -1,4 +1,4 @@
-classdef AppController < symphonyui.mixin.Observer
+classdef Controller < symphonyui.mixin.Observer
     
     events
         OpenedExperiment
@@ -21,7 +21,7 @@ classdef AppController < symphonyui.mixin.Observer
     end
     
     properties (Access = private)
-        controller
+        acquirer
         experiment
         rig
         protocol
@@ -31,13 +31,13 @@ classdef AppController < symphonyui.mixin.Observer
     
     methods
         
-        function obj = AppController(controller)
+        function obj = Controller(acquirer)
             if nargin < 1
-                controller = symphonyui.models.Controller();
+                acquirer = symphonyui.models.Acquirer();
             end
             
-            obj.controller = controller;
-            obj.addListener(controller, 'state', 'PostSet', @obj.onSetControllerState);
+            obj.acquirer = acquirer;
+            obj.addListener(acquirer, 'state', 'PostSet', @obj.onSetControllerState);
             
             rigPref = obj.preferences.rigPreferences;
             obj.addListener(rigPref, 'searchPaths', 'PostSet', @obj.onSetRigSearchPaths);
@@ -155,20 +155,24 @@ classdef AppController < symphonyui.mixin.Observer
             notify(obj, 'ChangedProtocolParameters');
         end
         
-        function p = getAllPresets(obj, className)
-            p = obj.presets.getAllPresets(className);
+        function p = getAllProtocolPresets(obj)
+            p = obj.presets.getAllPresets(class(obj.protocol));
+        end
+        
+        function record(obj)
+            obj.acquirer.recordProtocol(obj.protocol, obj.experiment);
         end
         
         function run(obj)
-            obj.controller.runProtocol(obj.protocol);
+            obj.acquirer.runProtocol(obj.protocol);
         end
         
         function pause(obj)
-            obj.controller.pause();
+            obj.acquirer.pause();
         end
         
         function stop(obj)
-            obj.controller.stop();
+            obj.acquirer.stop();
         end
         
         function [tf, msg] = validate(obj)
@@ -176,7 +180,7 @@ classdef AppController < symphonyui.mixin.Observer
         end
         
         function s = get.state(obj)
-            s = obj.controller.state;
+            s = obj.acquirer.state;
         end
         
     end

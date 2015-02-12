@@ -1,7 +1,7 @@
 classdef NewExperimentPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        appController
+        controller
     end
     
     properties (Access = private)
@@ -10,14 +10,14 @@ classdef NewExperimentPresenter < symphonyui.Presenter
     
     methods
         
-        function obj = NewExperimentPresenter(appController, view)
+        function obj = NewExperimentPresenter(controller, view)
             if nargin < 2
                 view = symphonyui.views.NewExperimentView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.appController = appController;
+            obj.controller = controller;
             
             obj.addListener(view, 'BrowseLocation', @obj.onSelectedBrowseLocation);
             obj.addListener(view, 'Open', @obj.onSelectedOpen);
@@ -71,7 +71,7 @@ classdef NewExperimentPresenter < symphonyui.Presenter
             path = fullfile(location, name);
             
             try
-                obj.appController.openExperiment(path, purpose, source);
+                obj.controller.openExperiment(path, purpose, source);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));

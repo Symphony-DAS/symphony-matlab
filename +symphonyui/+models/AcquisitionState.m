@@ -1,4 +1,4 @@
-classdef ControllerState
+classdef AcquisitionState
     
     enumeration
         STOPPED
@@ -6,6 +6,7 @@ classdef ControllerState
         PAUSED
         PAUSING
         RUNNING
+        RECORDING
     end
     
 end

@@ -1,23 +1,23 @@
 classdef SelectRigPresenter < symphonyui.Presenter
     
     properties (Access = private)
-        appController
+        controller
         rigMap
     end
     
     methods
         
-        function obj = SelectRigPresenter(appController, view)
+        function obj = SelectRigPresenter(controller, view)
             if nargin < 2
                 view = symphonyui.views.SelectRigView([]);
             end
             
             obj = obj@symphonyui.Presenter(view);
             
-            obj.appController = appController;
+            obj.controller = controller;
             
-            obj.addListener(appController, 'ChangedRigList', @obj.onChangedRigList);
-            obj.addListener(appController, 'SelectedRig', @obj.onControllerSelectedRig);
+            obj.addListener(controller, 'ChangedRigList', @obj.onChangedRigList);
+            obj.addListener(controller, 'SelectedRig', @obj.onControllerSelectedRig);
             
             obj.addListener(view, 'Ok', @obj.onSelectedOk);
             obj.addListener(view, 'Cancel', @(h,d)obj.view.close);
@@ -49,12 +49,12 @@ classdef SelectRigPresenter < symphonyui.Presenter
         end
         
         function onChangedRigList(obj, ~, ~)
-            obj.rigMap = symphonyui.util.displayNameMap(obj.appController.rigList);
+            obj.rigMap = symphonyui.util.displayNameMap(obj.controller.rigList);
             obj.view.setRigList(obj.rigMap.keys);
         end
         
         function onControllerSelectedRig(obj, ~, ~)
-            index = obj.appController.getRigIndex();
+            index = obj.controller.getRigIndex();
             key = obj.rigMap.right_at(index);
             obj.view.setRig(key);
         end
@@ -64,11 +64,11 @@ classdef SelectRigPresenter < symphonyui.Presenter
             
             key = obj.view.getRig();
             className = obj.rigMap(key);
-            index = obj.appController.getRigIndex(className);
+            index = obj.controller.getRigIndex(className);
             
             try
-                obj.appController.selectRig(index);
-                obj.appController.initializeRig();
+                obj.controller.selectRig(index);
+                obj.controller.initializeRig();
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));
