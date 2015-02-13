@@ -1,14 +1,18 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="2527377309" file="C:\Users\Client Admin\Documents\src\symphony-matlab2\Symphony.prj" location="C:\Users\Client Admin\Documents\src\symphony-matlab2" name="Symphony" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="3739282634" file="C:\Users\Client Admin\Documents\src\symphony-matlab2\Symphony.prj" location="C:\Users\Client Admin\Documents\src\symphony-matlab2" name="Symphony" target="target.mlapps" target-name="Package App">
     <param.appname>Symphony</param.appname>
     <param.authnamewatermark />
     <param.email />
     <param.company>Symphony-DAS</param.company>
-    <param.icon />
-    <param.icons />
+    <param.icon>${PROJECT_ROOT}\Symphony_resources\icon_24.png</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}\Symphony_resources\icon_48.png</file>
+      <file>${PROJECT_ROOT}\Symphony_resources\icon_24.png</file>
+      <file>${PROJECT_ROOT}\Symphony_resources\icon_16.png</file>
+    </param.icons>
     <param.summary>Symphony Data Acquisition System</param.summary>
     <param.description>Symphony is a data acquisition system focused on electrophysiology experiments.</param.description>
-    <param.screenshot />
+    <param.screenshot>${PROJECT_ROOT}\resources\screenshot.png</param.screenshot>
     <param.version>2.0.0</param.version>
     <param.products.name>
       <item>MATLAB</item>
@@ -24,21 +28,23 @@
     </param.products.version>
     <param.platforms />
     <param.output>${PROJECT_ROOT}\Symphony.mlappinstall</param.output>
-    <param.guid>468b1360-a179-4548-a3a7-fd02ba2b86a8</param.guid>
+    <param.guid>3df298b6-9924-414f-b681-68196fce23cf</param.guid>
     <unset>
       <param.authnamewatermark />
       <param.email />
-      <param.icon />
-      <param.icons />
-      <param.screenshot />
       <param.platforms />
     </unset>
     <fileset.main>
       <file>${PROJECT_ROOT}\main.m</file>
     </fileset.main>
     <fileset.depfun>
-      <file>${PROJECT_ROOT}\+symphonyui\+models\Controller.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+models\ControllerState.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+app\App.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+app\Controller.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+app\Preferences.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+app\Presets.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+mixin\Observer.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+models\Acquirer.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+models\AcquisitionState.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+models\Device.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+models\Epoch.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+models\EpochGroup.m</file>
@@ -48,43 +54,46 @@
       <file>${PROJECT_ROOT}\+symphonyui\+models\NullRig.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+models\Parameter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+models\ParameterType.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+models\Preset.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+models\Protocol.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+models\Rig.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+preferences\AppPreferences.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+preferences\EpochGroupPreferences.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+preferences\ExperimentPreferences.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+presenters\AppPreferencesPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+preferences\ProtocolPreferences.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+preferences\RigPreferences.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\BeginEpochGroupPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\EndEpochGroupPresenter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+presenters\MainPresenter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+presenters\MessageBoxPresenter.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+presenters\NewEpochGroupPresenter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+presenters\NewExperimentPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\PreferencesPresenter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+presenters\ProtocolPreviewPresenter.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+presenters\SetRigPresenter.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\createDropDownMenu.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\createLabel.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\createLabeledDropDownMenu.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\createLabeledTextField.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\getSelectedValue.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\setSelectedValue.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\+ui\setStringList.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\cellToStr.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\classProperty.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\displayNameMap.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\fieldsToParameters.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\onOff.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\packageName.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\parametersToFields.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\screenCenter.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\search.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+utilities\strToCell.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+views\AppPreferencesView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\SelectRigPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\+ui\createDropDownMenu.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\+ui\createLabel.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\+ui\createLabeledDropDownMenu.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\+ui\createLabeledTextField.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\+ui\getSelectedValue.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\+ui\setSelectedValue.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\+ui\setStringList.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\cellToStr.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\classProperty.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\displayNameMap.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\fieldsToParameters.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\onOff.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\packageName.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\parametersToFields.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\screenCenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\search.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\strToCell.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\BeginEpochGroupView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\EndEpochGroupView.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+views\MainView.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+views\MessageBoxView.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+views\NewEpochGroupView.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+views\NewExperimentView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\PreferencesView.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+views\ProtocolPreviewView.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+views\SetRigView.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\AppData.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\SelectRigView.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\Presenter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\View.m</file>
       <file>${PROJECT_ROOT}\bundled\GUI Layout Toolbox 2.1\glt.png</file>
@@ -403,6 +412,8 @@
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\strjoin.m.off</file>
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\strsetmatch.m</file>
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\strsplit.m.off</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\StylePropertyTableModel.class</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\StylePropertyTableModel.java</file>
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\UIControl.m</file>
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\var2str.m</file>
       <file>${PROJECT_ROOT}\examples\+io\+github\+symphony_das\+protocols\ExamplePulse.m</file>
@@ -410,11 +421,12 @@
       <file>${PROJECT_ROOT}\examples\+io\+github\+symphony_das\+protocols\ExampleSealAndLeak.m</file>
       <file>${PROJECT_ROOT}\examples\+io\+github\+symphony_das\+protocols\Test.m</file>
       <file>${PROJECT_ROOT}\examples\+io\+github\+symphony_das\+rigs\ExampleRig.m</file>
-      <file>${PROJECT_ROOT}\resources\icons\license.html</file>
-      <file>${PROJECT_ROOT}\resources\icons\list.png</file>
+      <file>${PROJECT_ROOT}\resources\icons\license.txt</file>
       <file>${PROJECT_ROOT}\resources\icons\pause.png</file>
       <file>${PROJECT_ROOT}\resources\icons\play.png</file>
+      <file>${PROJECT_ROOT}\resources\icons\record.png</file>
       <file>${PROJECT_ROOT}\resources\icons\stop.png</file>
+      <file>${PROJECT_ROOT}\resources\screenshot.png</file>
     </fileset.depfun>
     <fileset.resources>
       <file>${PROJECT_ROOT}\+symphonyui</file>
