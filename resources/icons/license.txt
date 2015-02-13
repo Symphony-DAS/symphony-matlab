@@ -1,0 +1,4 @@
+The Humanity Icon Theme is licensed under the GPL v2.
+
+Parts of the work are based on the Tango icons, which are released under the
+public domain.

@@ -187,7 +187,7 @@ classdef MainView < symphonyui.View
             
             set(controlsLayout, 'Sizes', [-1 25]);
             
-            set(mainLayout, 'Sizes', [25 -1 71]);
+            set(mainLayout, 'Sizes', [25 -1 65]);
         end
         
         function close(obj)
