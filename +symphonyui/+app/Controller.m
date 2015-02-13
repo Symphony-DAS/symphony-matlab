@@ -163,8 +163,8 @@ classdef Controller < symphonyui.mixin.Observer
             obj.acquirer.recordProtocol(obj.protocol, obj.experiment);
         end
         
-        function run(obj)
-            obj.acquirer.runProtocol(obj.protocol);
+        function preview(obj)
+            obj.acquirer.previewProtocol(obj.protocol);
         end
         
         function pause(obj)

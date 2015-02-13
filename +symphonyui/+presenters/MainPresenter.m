@@ -37,7 +37,7 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(view, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(view, 'ChangedProtocolParameters', @obj.onViewChangedProtocolParameters);
             obj.addListener(view, 'Record', @obj.onSelectedRecord);
-            obj.addListener(view, 'Run', @obj.onSelectedRun);
+            obj.addListener(view, 'Preview', @obj.onSelectedPreview);
             obj.addListener(view, 'Pause', @obj.onSelectedPause);
             obj.addListener(view, 'Stop', @obj.onSelectedStop);
             obj.addListener(view, 'SelectRig', @obj.onSelectedSelectRig);
@@ -179,8 +179,8 @@ classdef MainPresenter < symphonyui.Presenter
             obj.controller.record();
         end
         
-        function onSelectedRun(obj, ~, ~)
-            obj.controller.run();
+        function onSelectedPreview(obj, ~, ~)
+            obj.controller.preview();
         end
         
         function onSelectedPause(obj, ~, ~)
@@ -214,7 +214,7 @@ classdef MainPresenter < symphonyui.Presenter
             enableProtocolParameters = isStopped;
             enableProtocolPresets = isStopped;
             enableRecord = false;
-            enableRun = false;
+            enablePreview = false;
             enablePause = false;
             enableStop = false;
             status = 'Unknown';
@@ -222,32 +222,32 @@ classdef MainPresenter < symphonyui.Presenter
             switch obj.controller.state
                 case AcquisitionState.STOPPED
                     enableRecord = hasExperiment;
-                    enableRun = true;
+                    enablePreview = true;
                     status = 'Stopped';
                 case AcquisitionState.STOPPING
-                    status = 'Stopping';
+                    status = 'Stopping...';
                 case AcquisitionState.PAUSED
                     enableRecord = hasExperiment;
-                    enableRun = true;
+                    enablePreview = true;
                     enableStop = true;
                     status = 'Paused';
                 case AcquisitionState.PAUSING
                     enableStop = true;
-                    status = 'Pausing';
-                case AcquisitionState.RUNNING
+                    status = 'Pausing...';
+                case AcquisitionState.PREVIEWING
                     enablePause = true;
                     enableStop = true;
-                    status = 'Running';
+                    status = 'Previewing...';
                 case AcquisitionState.RECORDING
                     enablePause = true;
                     enableStop = true;
-                    status = 'Recording';
+                    status = 'Recording...';
             end
             
             [valid, msg] = obj.controller.validate();
             if ~valid
                 enableRecord = false;
-                enableRun = false;
+                enablePreview = false;
                 enablePause = false;
                 enableStop = false;
                 status = msg;
@@ -265,7 +265,7 @@ classdef MainPresenter < symphonyui.Presenter
             obj.view.enableProtocolParameters(enableProtocolParameters);
             obj.view.enableProtocolPresets(enableProtocolPresets);
             obj.view.enableRecord(enableRecord);
-            obj.view.enableRun(enableRun);
+            obj.view.enablePreview(enablePreview);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
             obj.view.setStatus(status);

@@ -16,10 +16,10 @@ classdef Acquirer < handle
             obj.state = symphonyui.models.AcquisitionState.RECORDING;
         end
         
-        function runProtocol(obj, protocol)
-            disp('Run');
+        function previewProtocol(obj, protocol)
+            disp('Preview');
             disp(protocol);
-            obj.state = symphonyui.models.AcquisitionState.RUNNING;
+            obj.state = symphonyui.models.AcquisitionState.PREVIEWING;
         end
         
         function pause(obj)

@@ -5,7 +5,7 @@ classdef AcquisitionState
         STOPPING
         PAUSED
         PAUSING
-        RUNNING
+        PREVIEWING
         RECORDING
     end
     
