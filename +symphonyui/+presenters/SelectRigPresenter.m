@@ -16,7 +16,7 @@ classdef SelectRigPresenter < symphonyui.Presenter
             
             obj.controller = controller;
             
-            obj.addListener(controller, 'ChangedRigList', @obj.onChangedRigList);
+            obj.addListener(controller, 'ChangedRigClassNames', @obj.onChangedRigClassNames);
             obj.addListener(controller, 'SelectedRig', @obj.onControllerSelectedRig);
             
             obj.addListener(view, 'Ok', @obj.onSelectedOk);
@@ -32,7 +32,7 @@ classdef SelectRigPresenter < symphonyui.Presenter
             
             obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
             
-            obj.onChangedRigList();
+            obj.onChangedRigClassNames();
             obj.onControllerSelectedRig();
         end
         
@@ -48,13 +48,28 @@ classdef SelectRigPresenter < symphonyui.Presenter
             end
         end
         
-        function onChangedRigList(obj, ~, ~)
-            obj.rigMap = symphonyui.util.displayNameMap(obj.controller.rigList);
+        function onChangedRigClassNames(obj, ~, ~)
+            % Create a set of display names for all available rigs.
+            names = obj.controller.getRigClassNames;
+            map = Map2();
+            for i = 1:numel(names);
+                className = names{i};
+                displayName = symphonyui.util.classProperty(className, 'displayName');
+                if isKey(map, displayName)
+                    value = map(displayName);
+                    map.remove(displayName);
+                    map([displayName ' (' value ')']) = value;
+                    displayName = [displayName ' (' className ')']; %#ok<AGROW>
+                end
+                map(displayName) = className;
+            end
+            
+            obj.rigMap = map;
             obj.view.setRigList(obj.rigMap.keys);
         end
         
         function onControllerSelectedRig(obj, ~, ~)
-            index = obj.controller.getRigIndex();
+            index = obj.rigMap.right_find(class(obj.controller.rig));
             key = obj.rigMap.right_at(index);
             obj.view.setRig(key);
         end
@@ -62,13 +77,11 @@ classdef SelectRigPresenter < symphonyui.Presenter
         function onSelectedOk(obj, ~, ~)
             drawnow();
             
-            key = obj.view.getRig();
-            className = obj.rigMap(key);
-            index = obj.controller.getRigIndex(className);
+            className = obj.rigMap(obj.view.getRig());
             
             try
-                obj.controller.selectRig(index);
-                obj.controller.initializeRig();
+                obj.controller.selectRigByClassName(className);
+                obj.controller.rig.initialize();
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));

@@ -5,45 +5,38 @@ classdef Controller < symphonyui.mixin.Observer
         ClosedExperiment
         BeganEpochGroup
         EndedEpochGroup
-        ChangedRigList
+        ChangedRigClassNames
+        ChangedProtocolClassNames
         SelectedRig
-        InitializedRig
-        ChangedProtocolList
         SelectedProtocol
-        ChangedProtocolParameters
         ChangedState
     end
     
     properties (SetAccess = private)
+        experiment
+        rig
+        protocol
         state
-        rigList
-        protocolList
     end
     
     properties (Access = private)
         acquirer
-        experiment
-        rig
-        protocol
-        presets = symphonyui.app.Presets();
-        preferences = symphonyui.app.Preferences.getDefault();
+        rigDiscoverer
+        protocolDiscoverer
     end
     
     methods
         
-        function obj = Controller(acquirer)
-            if nargin < 1
-                acquirer = symphonyui.models.Acquirer();
-            end
+        function obj = Controller()
+            import symphonyui.*;
             
-            obj.acquirer = acquirer;
-            obj.addListener(acquirer, 'state', 'PostSet', @obj.onSetControllerState);
+            obj.acquirer = models.Acquirer();
+            obj.rigDiscoverer = app.Discoverer('symphonyui.models.Rig');
+            obj.protocolDiscoverer = app.Discoverer('symphonyui.models.Protocol');
             
-            rigPref = obj.preferences.rigPreferences;
-            obj.addListener(rigPref, 'searchPaths', 'PostSet', @obj.onSetRigSearchPaths);
-            
-            protocolPref = obj.preferences.protocolPreferences;
-            obj.addListener(protocolPref, 'searchPaths', 'PostSet', @obj.onSetProtocolSearchPaths);
+            obj.addListener(obj.acquirer, 'state', 'PostSet', @(h,d)notify(obj, 'ChangedState'));
+            obj.addListener(app.Settings.general, 'rigSearchPaths', 'PostSet', @obj.onSetRigSearchPaths);
+            obj.addListener(app.Settings.general, 'protocolSearchPaths', 'PostSet', @obj.onSetProtocolSearchPaths);
             
             obj.onSetProtocolSearchPaths();
             obj.onSetRigSearchPaths();
@@ -92,45 +85,46 @@ classdef Controller < symphonyui.mixin.Observer
             tf = obj.hasExperiment && ~isempty(obj.experiment.epochGroup);
         end
         
-        function i = getRigIndex(obj, className)
-            if nargin < 2
-                className = class(obj.rig);
-            end
-            i = find(ismember(obj.rigList, className));
+        function n = getRigClassNames(obj)
+            % Always include a NullRig so something is guaranteed to be selectable. 
+            n = ['symphonyui.models.NullRig' obj.rigDiscoverer.classNames];
         end
         
         function selectRig(obj, index)
-            if index == obj.getRigIndex(class(obj.rig))
-                return;
-            end
-            className = obj.rigList{index};
+            className = obj.getRigClassNames{index};
             constructor = str2func(className);
             obj.rig = constructor();
             obj.reloadProtocol();
             notify(obj, 'SelectedRig');
         end
         
-        function initializeRig(obj)
-            obj.rig.initialize();
-            notify(obj, 'InitializedRig');
+        function selectRigByClassName(obj, className)
+            index = ismember(obj.getRigClassNames, className);
+            if ~any(index)
+                error(['''' className ''' is not a member of the rig class names']);
+            end
+            obj.selectRig(index);
         end
         
-        function i = getProtocolIndex(obj, className)
-            if nargin < 2
-                className = class(obj.protocol);
-            end
-            i = find(ismember(obj.protocolList, className), 1);
+        function n = getProtocolClassNames(obj)
+            % Always include a NullProtocol so something is guaranteed to be selectable. 
+            n = ['symphonyui.models.NullRig' obj.protocolDiscoverer.classNames];
         end
         
         function selectProtocol(obj, index)
-            if index == obj.getProtocolIndex(class(obj.protocol))
-                return;
-            end
-            className = obj.protocolList{index};
+            className = obj.getProtocolClassNames{index};
             constructor = str2func(className);
             obj.protocol = constructor();
             obj.protocol.rig = obj.rig;
             notify(obj, 'SelectedProtocol');
+        end
+        
+        function selectProtocolByClassName(obj, className)
+            index = ismember(obj.getProtocolClassNames, className);
+            if ~any(index)
+                error(['''' className ''' is not a member of the protocol class names']);
+            end
+            obj.selectProtocol(index);
         end
         
         function reloadProtocol(obj)
@@ -138,25 +132,6 @@ classdef Controller < symphonyui.mixin.Observer
             obj.protocol = constructor();
             obj.protocol.rig = obj.rig;
             notify(obj, 'SelectedProtocol');
-        end
-        
-        function p = getProtocolParameters(obj)
-            p = obj.protocol.getParameters();
-        end
-        
-        function setProtocolParameters(obj, parameters)
-            for i = 1:numel(parameters)
-                p = parameters(i);
-                if p.isReadOnly
-                    continue;
-                end
-                obj.protocol.(p.name) = p.value;
-            end
-            notify(obj, 'ChangedProtocolParameters');
-        end
-        
-        function p = getAllProtocolPresets(obj)
-            p = obj.presets.getAllPresets(class(obj.protocol));
         end
         
         function record(obj)
@@ -175,28 +150,23 @@ classdef Controller < symphonyui.mixin.Observer
             obj.acquirer.stop();
         end
         
-        function [tf, msg] = validate(obj)
-            [tf, msg] = obj.protocol.isValid;
-        end
-        
         function s = get.state(obj)
             s = obj.acquirer.state;
+        end
+        
+        function [tf, msg] = validate(obj)
+            [tf, msg] = obj.protocol.isValid;
         end
         
     end
     
     methods (Access = private)
         
-        function onSetControllerState(obj, ~, ~)
-            notify(obj, 'ChangedState');
-        end
-        
         function onSetRigSearchPaths(obj, ~, ~)
-            import symphonyui.util.search;
-            pref = obj.preferences.rigPreferences;
-            list = search(pref.searchPaths, 'symphonyui.models.Rig');
-            obj.rigList = ['symphonyui.models.NullRig' list];
-            notify(obj, 'ChangedRigList');
+            paths = symphonyui.util.strToCell(symphonyui.app.Settings.general.rigSearchPaths);
+            obj.rigDiscoverer.setPaths(paths);
+            obj.rigDiscoverer.discover();
+            notify(obj, 'ChangedRigClassNames');
             
             % Try to default to a non-null rig.
             try
@@ -207,11 +177,10 @@ classdef Controller < symphonyui.mixin.Observer
         end
         
         function onSetProtocolSearchPaths(obj, ~, ~)
-            import symphonyui.util.search;
-            pref = obj.preferences.protocolPreferences;
-            list = search(pref.searchPaths, 'symphonyui.models.Protocol');
-            obj.protocolList = ['symphonyui.models.NullProtocol' list];
-            notify(obj, 'ChangedProtocolList');
+            paths = symphonyui.util.strToCell(symphonyui.app.Settings.general.protocolSearchPaths);
+            obj.protocolDiscoverer.setPaths(paths);
+            obj.protocolDiscoverer.discover();
+            notify(obj, 'ChangedProtocolClassNames');
             
             % Try to default to a non-null protocol.
             try

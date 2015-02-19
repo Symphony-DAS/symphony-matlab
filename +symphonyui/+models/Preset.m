@@ -1,25 +1,30 @@
 classdef Preset < handle
     
-    properties
+    properties (SetAccess = private)
         displayName
+        className
         valueMap
+        id
     end
     
     methods
         
-        function obj = Preset(displayName, valueMap)
+        function obj = Preset(displayName, className, valueMap)
             obj.displayName = displayName;
+            obj.className = className;
             obj.valueMap = valueMap;
+            obj.id = char(java.util.UUID.randomUUID);
         end
         
-        function apply(obj, protocol)
-            parameters = protocol.getParameters();
+        function apply(obj, object)
+            if strcmp(class(object), obj.className)
+                error(['This preset is for objects of class ''' obj.className '''']);
+            end
+            
             keys = obj.valueMap.keys;
             for i = 1:numel(keys)
-                p = parameters.findByName(keys{i});
-                if ~isempty(p) && ~p.isReadOnly
-                    protocol.(p.name) = obj.valueMap(p.name);
-                end
+                k = keys{i};
+                object.(k) = obj.valueMap(k);
             end
         end
         
@@ -27,14 +32,20 @@ classdef Preset < handle
     
     methods (Static)
         
-        function obj = fromProtocol(displayName, protocol)
+        function obj = fromObject(displayName, object)
             map = containers.Map();
-            parameters = protocol.getParameters();
-            for i = 1:numel(parameters)
-                p = parameters(i);
-                map(p.name) = p.value;
+            
+            clazz = metaclass(object);
+            properties = clazz.Properties;
+            for i = 1:numel(properties)
+                p = properties{i};
+                if p.Constant || p.Abstract || p.Hidden || ~strcmp(p.GetAccess, 'public')
+                    continue;
+                end
+                map(p.name) = object.(p.name);
             end
-            obj = symphonyui.models.Preset(displayName, map);
+            
+            obj = symphonyui.models.Preset(displayName, class(object), map);
         end
         
     end

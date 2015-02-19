@@ -8,13 +8,9 @@ classdef NewExperimentView < symphonyui.View
     
     properties (Access = private)
         nameField
-        purposeField
         locationField
         browseLocationButton
-        speciesDropDown
-        phenotypeDropDown
-        genotypeDropDown
-        preparationDropDown
+        purposeField
         openButton
         cancelButton
     end
@@ -30,10 +26,9 @@ classdef NewExperimentView < symphonyui.View
             import symphonyui.util.ui.*;
             
             set(obj.figureHandle, 'Name', 'New Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(330, 357));
+            set(obj.figureHandle, 'Position', screenCenter(330, 147));
             
             labelSize = 58;
-            panelLabelSize = 72;
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
@@ -53,33 +48,7 @@ classdef NewExperimentView < symphonyui.View
                 'Callback', @(h,d)notify(obj, 'BrowseLocation'));
             set(l, 'Sizes', [labelSize -1 30]);
             
-            animalPanel = uix.Panel( ...
-                'Parent', parametersLayout, ...
-                'Title', 'Animal', ...
-                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
-                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
-            animalLayout = uiextras.VBox( ...
-                'Parent', animalPanel, ...
-                'Padding', 11, ...
-                'Spacing', 7);
-            obj.speciesDropDown = createLabeledDropDownMenu(animalLayout, 'Species:', [panelLabelSize -1]);
-            obj.phenotypeDropDown = createLabeledDropDownMenu(animalLayout, 'Phenotype:', [panelLabelSize -1]);
-            obj.genotypeDropDown = createLabeledDropDownMenu(animalLayout, 'Genotype:', [panelLabelSize -1]);
-            set(animalLayout, 'Sizes', [25 25 25]);
-            
-            tissuePanel = uix.Panel( ...
-                'Parent', parametersLayout, ...
-                'Title', 'Tissue', ...
-                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
-                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
-            tissueLayout = uiextras.VBox( ...
-                'Parent', tissuePanel, ...
-                'Padding', 11, ...
-                'Spacing', 7);
-            obj.preparationDropDown = createLabeledDropDownMenu(tissueLayout, 'Preparation:', [panelLabelSize -1]);
-            set(tissueLayout, 'Sizes', [25]);
-            
-            set(parametersLayout, 'Sizes', [25 25 25 132 68]);
+            set(parametersLayout, 'Sizes', [25 25 25]);
             
             % Open/Cancel controls.
             controlsLayout = uiextras.HBox( ...
@@ -115,14 +84,6 @@ classdef NewExperimentView < symphonyui.View
             set(obj.nameField, 'String', n);
         end
         
-        function l = getLocation(obj)
-            l = get(obj.locationField, 'String');
-        end
-        
-        function setLocation(obj, l)
-            set(obj.locationField, 'String', l);
-        end
-        
         function p = getPurpose(obj)
             p = get(obj.purposeField, 'String');
         end
@@ -131,24 +92,12 @@ classdef NewExperimentView < symphonyui.View
             set(obj.purposeField, 'String', p);
         end
         
-        function s = getSpecies(obj)
-            s = symphonyui.util.ui.getSelectedValue(obj.speciesDropDown);
+        function l = getLocation(obj)
+            l = get(obj.locationField, 'String');
         end
         
-        function setSpeciesList(obj, s)
-            symphonyui.util.ui.setStringList(obj.speciesDropDown, s);
-        end
-        
-        function setPhenotypeList(obj, s)
-            symphonyui.util.ui.setStringList(obj.phenotypeDropDown, s);
-        end
-        
-        function setGenotypeList(obj, s)
-            symphonyui.util.ui.setStringList(obj.genotypeDropDown, s);
-        end
-        
-        function setPreparationList(obj, s)
-            symphonyui.util.ui.setStringList(obj.preparationDropDown, s);
+        function setLocation(obj, l)
+            set(obj.locationField, 'String', l);
         end
         
     end

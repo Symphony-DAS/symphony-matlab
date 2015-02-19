@@ -4,10 +4,6 @@ classdef NewExperimentPresenter < symphonyui.Presenter
         controller
     end
     
-    properties (Access = private)
-        preferences = symphonyui.app.Preferences.getDefault();
-    end
-    
     methods
         
         function obj = NewExperimentPresenter(controller, view)
@@ -28,18 +24,17 @@ classdef NewExperimentPresenter < symphonyui.Presenter
     
     methods (Access = protected)
         
-        function onViewShown(obj, ~, ~)            
+        function onViewShown(obj, ~, ~)
+            import symphonyui.app.Settings;
+            
             onViewShown@symphonyui.Presenter(obj);
             
-            pref = obj.preferences.experimentPreferences;
+            exp = Settings.experiment;
+            
             obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            obj.view.setName(pref.defaultName());
-            obj.view.setPurpose(pref.defaultPurpose());
-            obj.view.setLocation(pref.defaultLocation());
-            obj.view.setSpeciesList(pref.speciesList());
-            obj.view.setPhenotypeList(pref.phenotypeList());
-            obj.view.setGenotypeList(pref.genotypeList());
-            obj.view.setPreparationList(pref.preparationList());
+            obj.view.setName(Settings.parse(exp.defaultName));
+            obj.view.setPurpose(Settings.parse(exp.defaultPurpose));
+            obj.view.setLocation(Settings.parse(exp.defaultLocation));
         end
         
     end

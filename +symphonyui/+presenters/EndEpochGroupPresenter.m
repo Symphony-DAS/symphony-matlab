@@ -4,10 +4,6 @@ classdef EndEpochGroupPresenter < symphonyui.Presenter
         controller
     end
     
-    properties (Access = private)
-        preferences = symphonyui.app.Preferences.getDefault();
-    end
-    
     methods
         
         function obj = EndEpochGroupPresenter(controller, view)

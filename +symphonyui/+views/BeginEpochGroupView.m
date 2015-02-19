@@ -112,6 +112,10 @@ classdef BeginEpochGroupView < symphonyui.View
             w = get(obj.keywordsField, 'String');
         end
         
+        function setKeywords(obj, w)
+            set(obj.keywordsField, 'String', w);
+        end
+        
         function setAvailableExternalSolutionList(obj, s)
             symphonyui.util.ui.setStringList(obj.externalSolutionTab.availableList, s);
         end

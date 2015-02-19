@@ -4,10 +4,6 @@ classdef BeginEpochGroupPresenter < symphonyui.Presenter
         controller
     end
     
-    properties (Access = private)
-        preferences = symphonyui.app.Preferences.getDefault();
-    end
-    
     methods
         
         function obj = BeginEpochGroupPresenter(controller, view)
@@ -33,16 +29,16 @@ classdef BeginEpochGroupPresenter < symphonyui.Presenter
     
     methods (Access = protected)
         
-        function onViewShown(obj, ~, ~)            
+        function onViewShown(obj, ~, ~)
+            import symphonyui.app.Settings;
+            
             onViewShown@symphonyui.Presenter(obj);
             
-            pref = obj.preferences.epochGroupPreferences;
+            grp = symphonyui.app.Settings.epochGroup;
+            
             obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
-            obj.view.setLabelList(pref.labelList);
-            obj.view.setRecordingList(pref.recordingList);
-            obj.view.setAvailableExternalSolutionList(pref.availableExternalSolutionList);
-            obj.view.setAvailableInternalSolutionList(pref.availableInternalSolutionList);
-            obj.view.setAvailableOtherList(pref.availableOtherList);
+            obj.view.setLabelList(Settings.parseToCell(grp.labelList));
+            obj.view.setKeywords(Settings.parse(grp.defaultKeywords));
         end
         
     end

@@ -1,4 +1,4 @@
-classdef PreferencesView < symphonyui.View
+classdef SettingsView < symphonyui.View
     
     events
         SelectedCard
@@ -10,15 +10,15 @@ classdef PreferencesView < symphonyui.View
         cardList
         cardPanel
         generalCard
-        experimentCard
-        epochGroupCard
+        experimentsCard
+        epochGroupsCard
         okButton
         cancelButton
     end
     
     methods
         
-        function obj = PreferencesView(parent)
+        function obj = SettingsView(parent)
             obj = obj@symphonyui.View(parent);
         end
         
@@ -26,7 +26,7 @@ classdef PreferencesView < symphonyui.View
             import symphonyui.util.*;
             import symphonyui.util.ui.*;
             
-            set(obj.figureHandle, 'Name', 'Preferences');
+            set(obj.figureHandle, 'Name', 'Settings');
             set(obj.figureHandle, 'Position', screenCenter(467, 356));
             
             mainLayout = uiextras.VBox( ...
@@ -41,7 +41,7 @@ classdef PreferencesView < symphonyui.View
             obj.cardList = uicontrol( ...
                 'Parent', preferencesLayout, ...
                 'Style', 'list', ...
-                'String', {'General', 'Experiment', 'Epoch Group'}, ...
+                'String', {'General', 'Experiments', 'Epoch Groups', 'Sources'}, ...
                 'Callback', @(h,d)notify(obj, 'SelectedCard'));
             
             obj.cardPanel = uix.CardPanel( ...
@@ -54,60 +54,36 @@ classdef PreferencesView < symphonyui.View
                 'Spacing', 7);
             obj.generalCard.rigSearchPathsField = createLabeledTextField(generalLayout, 'Rig search paths:', [generalLabelSize -1]);
             obj.generalCard.protocolSearchPathsField = createLabeledTextField(generalLayout, 'Protocol search paths:', [generalLabelSize -1]);
-            
             set(generalLayout, 'Sizes', [25 25]);
             
-            % Experiment card.
-            experimentLabelSize = 100;
-            experimentPanelLabelSize = 87;
-            experimentLayout = uiextras.VBox( ...
+            % Experiments card.
+            experimentsLabelSize = 100;
+            experimentsLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
-            obj.experimentCard.defaultNameField = createLabeledTextField(experimentLayout, 'Default name:', [experimentLabelSize -1]);
-            obj.experimentCard.defaultPurposeField = createLabeledTextField(experimentLayout, 'Default purpose:', [experimentLabelSize -1]);
-            obj.experimentCard.defaultLocationField = createLabeledTextField(experimentLayout, 'Default location:', [experimentLabelSize -1]);
-            
-            animalPanel = uix.Panel( ...
-                'Parent', experimentLayout, ...
-                'Title', 'Animal', ...
-                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
-                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
-            animalLayout = uiextras.VBox( ...
-                'Parent', animalPanel, ...
-                'Padding', 11, ...
-                'Spacing', 7);
-            obj.experimentCard.speciesListField = createLabeledTextField(animalLayout, 'Species list:', [experimentPanelLabelSize -1]);
-            obj.experimentCard.phenotypeListField = createLabeledTextField(animalLayout, 'Phenotype list:', [experimentPanelLabelSize -1]);
-            obj.experimentCard.genotypeListField = createLabeledTextField(animalLayout, 'Genotype list:', [experimentPanelLabelSize -1]);
-            set(animalLayout, 'Sizes', [25 25 25]);
-            
-            tissuePanel = uix.Panel( ...
-                'Parent', experimentLayout, ...
-                'Title', 'Tissue', ...
-                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
-                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
-            tissueLayout = uiextras.VBox( ...
-                'Parent', tissuePanel, ...
-                'Padding', 11, ...
-                'Spacing', 7);
-            obj.experimentCard.preparationListField = createLabeledTextField(tissueLayout, 'Preparation list:', [experimentPanelLabelSize -1]);
-            set(tissueLayout, 'Sizes', [25]);
-            
-            set(experimentLayout, 'Sizes', [25 25 25 132 68]);
+            obj.experimentsCard.defaultNameField = createLabeledTextField(experimentsLayout, 'Default name:', [experimentsLabelSize -1]);
+            obj.experimentsCard.defaultPurposeField = createLabeledTextField(experimentsLayout, 'Default purpose:', [experimentsLabelSize -1]);
+            obj.experimentsCard.defaultLocationField = createLabeledTextField(experimentsLayout, 'Default location:', [experimentsLabelSize -1]);
+            set(experimentsLayout, 'Sizes', [25 25 25]);
             
             % Epoch group card.
-            epochGroupLabelSize = 115;
-            epochGroupLayout = uiextras.VBox( ...
+            epochGroupsLabelSize = 115;
+            epochGroupsLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
-            obj.epochGroupCard.labelListField = createLabeledTextField(epochGroupLayout, 'Label list:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.recordingListField = createLabeledTextField(epochGroupLayout, 'Recording list:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.defaultKeywordsField = createLabeledTextField(epochGroupLayout, 'Default keywords:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.externalSolutionListField = createLabeledTextField(epochGroupLayout, 'External solution list:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.internalSolutionListField = createLabeledTextField(epochGroupLayout, 'Internal solution list:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.otherListField = createLabeledTextField(epochGroupLayout, 'Other list:', [epochGroupLabelSize -1]);
+            obj.epochGroupsCard.labelListField = createLabeledTextField(epochGroupsLayout, 'Label list:', [epochGroupsLabelSize -1]);
+            obj.epochGroupsCard.recordingListField = createLabeledTextField(epochGroupsLayout, 'Recording list:', [epochGroupsLabelSize -1]);
+            obj.epochGroupsCard.defaultKeywordsField = createLabeledTextField(epochGroupsLayout, 'Default keywords:', [epochGroupsLabelSize -1]);
+            obj.epochGroupsCard.externalSolutionListField = createLabeledTextField(epochGroupsLayout, 'External solution list:', [epochGroupsLabelSize -1]);
+            obj.epochGroupsCard.internalSolutionListField = createLabeledTextField(epochGroupsLayout, 'Internal solution list:', [epochGroupsLabelSize -1]);
+            obj.epochGroupsCard.otherListField = createLabeledTextField(epochGroupsLayout, 'Other list:', [epochGroupsLabelSize -1]);
+            set(epochGroupsLayout, 'Sizes', [25 25 25 25 25 25]);
             
-            set(epochGroupLayout, 'Sizes', [25 25 25 25 25 25]);
+            % Sources card.
+            sourcesLabelSize = 100;
+            sourcesLayout = uiextras.VBox( ...
+                'Parent', obj.cardPanel, ...
+                'Spacing', 7);
             
             set(obj.cardPanel, 'Selection', 1);
             
@@ -167,107 +143,107 @@ classdef PreferencesView < symphonyui.View
         end
         
         function n = getDefaultName(obj)
-            n = get(obj.experimentCard.defaultNameField, 'String');
+            n = get(obj.experimentsCard.defaultNameField, 'String');
         end
         
         function setDefaultName(obj, n)
-            set(obj.experimentCard.defaultNameField, 'String', n);
+            set(obj.experimentsCard.defaultNameField, 'String', n);
         end
         
         function p = getDefaultPurpose(obj)
-            p = get(obj.experimentCard.defaultPurposeField, 'String');
+            p = get(obj.experimentsCard.defaultPurposeField, 'String');
         end
         
         function setDefaultPurpose(obj, p)
-            set(obj.experimentCard.defaultPurposeField, 'String', p);
+            set(obj.experimentsCard.defaultPurposeField, 'String', p);
         end
         
         function l = getDefaultLocation(obj)
-            l = get(obj.experimentCard.defaultLocationField, 'String');
+            l = get(obj.experimentsCard.defaultLocationField, 'String');
         end
         
         function setDefaultLocation(obj, l)
-            set(obj.experimentCard.defaultLocationField, 'String', l);
+            set(obj.experimentsCard.defaultLocationField, 'String', l);
         end
         
         function s = getSpeciesList(obj)
-            s = get(obj.experimentCard.speciesListField, 'String');
+            s = get(obj.experimentsCard.speciesListField, 'String');
         end
         
         function setSpeciesList(obj, s)
-            set(obj.experimentCard.speciesListField, 'String', s);
+            set(obj.experimentsCard.speciesListField, 'String', s);
         end
         
         function p = getPhenotypeList(obj)
-            p = get(obj.experimentCard.phenotypeListField, 'String');
+            p = get(obj.experimentsCard.phenotypeListField, 'String');
         end
         
         function setPhenotypeList(obj, p)
-            set(obj.experimentCard.phenotypeListField, 'String', p);
+            set(obj.experimentsCard.phenotypeListField, 'String', p);
         end
         
         function g = getGenotypeList(obj)
-            g = get(obj.experimentCard.genotypeListField, 'String');
+            g = get(obj.experimentsCard.genotypeListField, 'String');
         end
         
         function setGenotypeList(obj, g)
-            set(obj.experimentCard.genotypeListField, 'String', g);
+            set(obj.experimentsCard.genotypeListField, 'String', g);
         end
         
         function p = getPreparationList(obj)
-            p = get(obj.experimentCard.preparationListField, 'String');
+            p = get(obj.experimentsCard.preparationListField, 'String');
         end
         
         function setPreparationList(obj, p)
-            set(obj.experimentCard.preparationListField, 'String', p);
+            set(obj.experimentsCard.preparationListField, 'String', p);
         end
         
         function l = getLabelList(obj)
-            l = get(obj.epochGroupCard.labelListField, 'String');
+            l = get(obj.epochGroupsCard.labelListField, 'String');
         end
         
         function setLabelList(obj, s)
-            set(obj.epochGroupCard.labelListField, 'String', s);
+            set(obj.epochGroupsCard.labelListField, 'String', s);
         end
         
         function r = getRecordingList(obj)
-            r = get(obj.epochGroupCard.recordingListField, 'String');
+            r = get(obj.epochGroupsCard.recordingListField, 'String');
         end
         
         function setRecordingList(obj, r)
-            set(obj.epochGroupCard.recordingListField, 'String', r);
+            set(obj.epochGroupsCard.recordingListField, 'String', r);
         end
         
         function k = getDefaultKeywords(obj)
-            k = get(obj.epochGroupCard.defaultKeywordsField, 'String');
+            k = get(obj.epochGroupsCard.defaultKeywordsField, 'String');
         end
         
         function setDefaultKeywords(obj, k)
-            set(obj.epochGroupCard.defaultKeywordsField, 'String', k);
+            set(obj.epochGroupsCard.defaultKeywordsField, 'String', k);
         end
         
         function s = getExternalSolutionList(obj)
-            s = get(obj.epochGroupCard.externalSolutionListField, 'String');
+            s = get(obj.epochGroupsCard.externalSolutionListField, 'String');
         end
         
         function setExternalSolutionList(obj, s)
-            set(obj.epochGroupCard.externalSolutionListField, 'String', s);
+            set(obj.epochGroupsCard.externalSolutionListField, 'String', s);
         end
         
         function s = getInternalSolutionList(obj)
-            s = get(obj.epochGroupCard.internalSolutionListField, 'String');
+            s = get(obj.epochGroupsCard.internalSolutionListField, 'String');
         end
         
         function setInternalSolutionList(obj, s)
-            set(obj.epochGroupCard.internalSolutionListField, 'String', s);
+            set(obj.epochGroupsCard.internalSolutionListField, 'String', s);
         end
         
         function o = getOtherList(obj)
-            o = get(obj.epochGroupCard.otherListField, 'String');
+            o = get(obj.epochGroupsCard.otherListField, 'String');
         end
         
         function setOtherList(obj, o)
-            set(obj.epochGroupCard.otherListField, 'String', o);
+            set(obj.epochGroupsCard.otherListField, 'String', o);
         end
         
     end

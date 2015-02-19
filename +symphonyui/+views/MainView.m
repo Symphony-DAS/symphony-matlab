@@ -14,7 +14,7 @@ classdef MainView < symphonyui.View
         Stop
         SelectRig
         ViewRig
-        Preferences
+        Settings
         Documentation
         UserGroup
         AboutSymphony
@@ -115,10 +115,10 @@ classdef MainView < symphonyui.View
             obj.toolsMenu.viewRig = uimenu(obj.toolsMenu.root, ...
                 'Label', 'View Rig', ...
                 'Callback', @(h,d)notify(obj, 'ViewRig'));
-            obj.toolsMenu.preferences = uimenu(obj.toolsMenu.root, ...
-                'Label', 'Preferences...', ...
+            obj.toolsMenu.settings = uimenu(obj.toolsMenu.root, ...
+                'Label', 'Settings...', ...
                 'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'Preferences'));
+                'Callback', @(h,d)notify(obj, 'Settings'));
             
             % Help menu.
             obj.helpMenu.root = uimenu(obj.figureHandle, ...
@@ -227,8 +227,8 @@ classdef MainView < symphonyui.View
             set(obj.toolsMenu.viewRig, 'Enable', symphonyui.util.onOff(tf));
         end
         
-        function enablePreferences(obj, tf)
-            set(obj.toolsMenu.preferences, 'Enable', symphonyui.util.onOff(tf));
+        function enableSettings(obj, tf)
+            set(obj.toolsMenu.settings, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableSelectProtocol(obj, tf)
@@ -253,16 +253,16 @@ classdef MainView < symphonyui.View
         
         function p = getProtocolParameters(obj)
             properties = get(obj.protocolParameterGrid, 'Properties');
-            p = symphonyui.util.fieldsToParameters(properties);
+            p = fieldsToParameters(properties);
         end
         
         function setProtocolParameters(obj, parameters)
-            properties = symphonyui.util.parametersToFields(parameters);
+            properties = parametersToFields(parameters);
             set(obj.protocolParameterGrid, 'Properties', properties);
         end
         
         function updateProtocolParameters(obj, parameters)
-            properties = symphonyui.util.parametersToFields(parameters);
+            properties = parametersToFields(parameters);
             obj.protocolParameterGrid.UpdateProperties(properties);
         end
         
@@ -311,3 +311,53 @@ classdef MainView < symphonyui.View
     
 end
 
+function fields = parametersToFields(parameters)
+    fields = PropertyGridField.empty(0, 1);
+    if isempty(parameters)
+        return;
+    end
+    
+    for i = 1:numel(parameters)
+        p = parameters(i);
+        
+        description = p.description;
+        if ~isempty(p.units)
+            description = [description ' (' p.units ')']; %#ok<AGROW>
+        end
+
+        f = PropertyGridField(p.name, p.value, ...
+            'DisplayName', p.displayName, ...
+            'Description', description, ...
+            'ReadOnly', p.isReadOnly, ...
+            'Dependent', p.isDependent);
+        if ~isempty(p.type)
+            set(f, 'Type', PropertyType(p.type.primitiveType, p.type.shape, p.type.domain));
+        end
+        if ~isempty(p.category)
+            set(f, 'Category', p.category);
+        end
+        fields(end + 1) = f; %#ok<AGROW>
+    end
+end
+
+function parameters = fieldsToParameters(fields)
+    % TODO: Parse description into description and units.
+    import symphonyui.models.*;
+    
+    parameters = Parameter.empty(0, 1);    
+    if isempty(fields)
+        return;
+    end
+    
+    for i = 1:numel(fields)
+        f = fields(i);
+        p = symphonyui.models.Parameter(f.Name, f.Value, ...
+            'type', ParameterType(f.Type.PrimitiveType, f.Type.Shape, f.Type.Domain), ...
+            'category', f.Category, ...
+            'displayName', f.DisplayName, ...
+            'description', f.Description, ...
+            'isReadOnly', f.ReadOnly, ...
+            'isDependent', f.Dependent);
+        parameters(end + 1) = p;
+    end
+end

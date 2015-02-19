@@ -5,10 +5,6 @@ classdef MainPresenter < symphonyui.Presenter
         protocolMap
     end
     
-    properties (Access = private)
-        preferences = symphonyui.app.Preferences.getDefault();
-    end
-    
     methods
         
         function obj = MainPresenter(controller, view)            
@@ -24,10 +20,8 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(controller, 'ClosedExperiment', @obj.onClosedExperiment);
             obj.addListener(controller, 'BeganEpochGroup', @obj.onBeganEpochGroup);
             obj.addListener(controller, 'EndedEpochGroup', @obj.onEndedEpochGroup);
-            obj.addListener(controller, 'InitializedRig', @obj.onInitializedRig);
-            obj.addListener(controller, 'ChangedProtocolList', @obj.onChangedProtocolList);
+            obj.addListener(controller, 'ChangedProtocolClassNames', @obj.onChangedProtocolClassNames);
             obj.addListener(controller, 'SelectedProtocol', @obj.onControllerSelectedProtocol);
-            obj.addListener(controller, 'ChangedProtocolParameters', @obj.onControllerChangedProtocolParameters);
             obj.addListener(controller, 'ChangedState', @obj.onControllerChangedState);
             
             obj.addListener(view, 'NewExperiment', @obj.onSelectedNewExperiment);
@@ -41,7 +35,7 @@ classdef MainPresenter < symphonyui.Presenter
             obj.addListener(view, 'Pause', @obj.onSelectedPause);
             obj.addListener(view, 'Stop', @obj.onSelectedStop);
             obj.addListener(view, 'SelectRig', @obj.onSelectedSelectRig);
-            obj.addListener(view, 'Preferences', @obj.onSelectedPreferences);
+            obj.addListener(view, 'Settings', @obj.onSelectedSettings);
             obj.addListener(view, 'Documentation', @obj.onSelectedDocumentation);
             obj.addListener(view, 'UserGroup', @obj.onSelectedUserGroup);
             obj.addListener(view, 'AboutSymphony', @obj.onSelectedAboutSymphony);
@@ -56,7 +50,7 @@ classdef MainPresenter < symphonyui.Presenter
             onViewShown@symphonyui.Presenter(obj);
             %view.loadPosition();
             
-            obj.onChangedProtocolList();
+            obj.onChangedProtocolClassNames();
             obj.onControllerSelectedProtocol();
             obj.updateViewState();
         end
@@ -117,18 +111,32 @@ classdef MainPresenter < symphonyui.Presenter
             disp('Selected View Notes');
         end
         
-        function onChangedProtocolList(obj, ~, ~)
-            obj.protocolMap = symphonyui.util.displayNameMap(obj.controller.protocolList);
+        function onChangedProtocolClassNames(obj, ~, ~)
+            % Create a set of display names for all available protocols.
+            names = obj.controller.getProtocolClassNames();
+            map = Map2();
+            for i = 1:numel(names);
+                className = names{i};
+                displayName = symphonyui.util.classProperty(className, 'displayName');
+                if isKey(map, displayName)
+                    value = map(displayName);
+                    map.remove(displayName);
+                    map([displayName ' (' value ')']) = value;
+                    displayName = [displayName ' (' className ')']; %#ok<AGROW>
+                end
+                map(displayName) = className;
+            end
+            
+            obj.protocolMap = map;
             obj.view.setProtocolList(obj.protocolMap.keys);
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
             key = obj.view.getProtocol();
             className = obj.protocolMap(key);
-            index = obj.controller.getProtocolIndex(className);
             
             try
-                obj.controller.selectProtocol(index);
+                obj.controller.selectProtocolByClassName(className);
             catch x
                 symphonyui.presenters.MessageBoxPresenter.showException(x);
                 warning(getReport(x));
@@ -137,12 +145,13 @@ classdef MainPresenter < symphonyui.Presenter
         end
         
         function onControllerSelectedProtocol(obj, ~, ~)
-            index = obj.controller.getProtocolIndex();
+            index = obj.protocolMap.right_find(class(obj.controller.protocol));
             key = obj.protocolMap.right_at(index);
             obj.view.setProtocol(key);
             
+            protocol = obj.controller.protocol;
             try
-                parameters = obj.controller.getProtocolParameters();
+                parameters = protocol.getParameters();
                 parameters(parameters.findIndexByName('displayName')) = [];
                 obj.view.setProtocolParameters(parameters);
             catch x
@@ -158,12 +167,20 @@ classdef MainPresenter < symphonyui.Presenter
         
         function onViewChangedProtocolParameters(obj, ~, ~)
             parameters = obj.view.getProtocolParameters();
-            obj.controller.setProtocolParameters(parameters);
+            protocol = obj.controller.protocol;
+            for i = 1:numel(parameters)
+                p = parameters(i);
+                if p.isReadOnly
+                    continue;
+                end
+                protocol.(p.name) = p.value;
+            end
         end
         
         function onControllerChangedProtocolParameters(obj, ~, ~)
+            protocol = obj.controller.protocol;
             try
-                parameters = obj.controller.getProtocolParameters();
+                parameters = protocol.getParameters();
                 parameters(parameters.findIndexByName('displayName')) = [];
                 obj.view.updateProtocolParameters(parameters);
             catch x
@@ -209,7 +226,7 @@ classdef MainPresenter < symphonyui.Presenter
             enableAddNote = hasExperiment;
             enableViewNotes = hasExperiment;
             enableSelectRig = ~hasExperiment && isStopped;
-            enablePreferences = ~hasExperiment && isStopped;
+            enableSettings = ~hasExperiment && isStopped;
             enableSelectProtocol = isStopped;
             enableProtocolParameters = isStopped;
             enableProtocolPresets = isStopped;
@@ -260,7 +277,7 @@ classdef MainPresenter < symphonyui.Presenter
             obj.view.enableAddNote(enableAddNote);
             obj.view.enableViewNotes(enableViewNotes);
             obj.view.enableSelectRig(enableSelectRig);
-            obj.view.enablePreferences(enablePreferences);
+            obj.view.enableSettings(enableSettings);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolParameters(enableProtocolParameters);
             obj.view.enableProtocolPresets(enableProtocolPresets);
@@ -281,9 +298,9 @@ classdef MainPresenter < symphonyui.Presenter
             obj.updateViewState();
         end
         
-        function onSelectedPreferences(obj, ~, ~)
-            view = symphonyui.views.PreferencesView(obj.view);
-            p = symphonyui.presenters.PreferencesPresenter(obj.preferences, view);
+        function onSelectedSettings(obj, ~, ~)
+            view = symphonyui.views.SettingsView(obj.view);
+            p = symphonyui.presenters.SettingsPresenter(view);
             p.view.showDialog();
         end
         
