@@ -1,3 +1,5 @@
+% App facade.
+
 classdef Controller < symphonyui.mixin.Observer
     
     events
