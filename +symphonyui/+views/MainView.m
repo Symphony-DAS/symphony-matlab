@@ -23,7 +23,7 @@ classdef MainView < symphonyui.View
     properties (Access = private)
         fileMenu
         experimentMenu
-        protocolMenu
+        acquireMenu
         toolsMenu
         helpMenu
         protocolDropDown
@@ -74,34 +74,23 @@ classdef MainView < symphonyui.View
             obj.experimentMenu.viewNotes = uimenu(obj.experimentMenu.root, ...
                 'Label', 'View Notes');
             
-            % Protocol menu.
-            obj.protocolMenu.root = uimenu(obj.figureHandle, ...
-                'Label', 'Protocol');
-            obj.protocolMenu.presetsMenu.root = uimenu(obj.protocolMenu.root, ...
-                'Label', 'Presets');
-            obj.protocolMenu.presetsMenu.save = uimenu(obj.protocolMenu.presetsMenu.root, ...
-                'Label', 'Save...');
-            obj.protocolMenu.presetsMenu.export = uimenu(obj.protocolMenu.presetsMenu.root, ...
-                'Label', 'Export...');
-            obj.protocolMenu.record = uimenu(obj.protocolMenu.root, ...
+            % Acquire menu.
+            obj.acquireMenu.root = uimenu(obj.figureHandle, ...
+                'Label', 'Acquire');
+            obj.acquireMenu.record = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Record', ...
                 'Accelerator', 'r', ...
-                'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'Record'));
-            obj.protocolMenu.preview = uimenu(obj.protocolMenu.root, ...
+            obj.acquireMenu.preview = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Preview', ...
                 'Accelerator', 'v', ...
                 'Callback', @(h,d)notify(obj, 'Preview'));
-            obj.protocolMenu.pause = uimenu(obj.protocolMenu.root, ...
+            obj.acquireMenu.pause = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Pause', ...
                 'Callback', @(h,d)notify(obj, 'Pause'));
-            obj.protocolMenu.stop = uimenu(obj.protocolMenu.root, ...
+            obj.acquireMenu.stop = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
-            obj.protocolMenu.presetsMenu.default = uimenu(obj.protocolMenu.presetsMenu.root, ...
-                'Label', 'Default', ...
-                'Separator', 'on');
-            obj.protocolMenu.presetsMenu.presets = [];
             
             % Tools menu.
             obj.toolsMenu.root = uimenu(obj.figureHandle, ...
@@ -266,40 +255,27 @@ classdef MainView < symphonyui.View
             obj.protocolParameterGrid.UpdateProperties(properties);
         end
         
-        function enableProtocolPresets(obj, tf)
-            set(obj.protocolMenu.presetsMenu.root, 'Enable', symphonyui.util.onOff(tf));
-        end
-        
-        function addProtocolPreset(obj, p)
-            obj.protocolMenu.presetsMenu.presets(end + 1) = uimenu(obj.protocolMenu.presetsMenu.root, 'Label', p);
-        end
-        
-        function clearProtocolPresets(obj)
-            delete(obj.protocolMenu.presetsMenu.presets);
-            obj.protocolMenu.presetsMenu.presets = [];
-        end
-        
         function enableRecord(obj, tf)
             enable = symphonyui.util.onOff(tf);
-            set(obj.protocolMenu.record, 'Enable', enable);
+            set(obj.acquireMenu.record, 'Enable', enable);
             set(obj.recordButton, 'Enable', enable);
         end
         
         function enablePreview(obj, tf)
             enable = symphonyui.util.onOff(tf);
-            set(obj.protocolMenu.preview, 'Enable', enable);
+            set(obj.acquireMenu.preview, 'Enable', enable);
             set(obj.previewButton, 'Enable', enable);
         end
         
         function enablePause(obj, tf)
             enable = symphonyui.util.onOff(tf);
-            set(obj.protocolMenu.pause, 'Enable', enable);
+            set(obj.acquireMenu.pause, 'Enable', enable);
             set(obj.pauseButton, 'Enable', enable);
         end
         
         function enableStop(obj, tf)
             enable = symphonyui.util.onOff(tf);
-            set(obj.protocolMenu.stop, 'Enable', enable);
+            set(obj.acquireMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
         end
         

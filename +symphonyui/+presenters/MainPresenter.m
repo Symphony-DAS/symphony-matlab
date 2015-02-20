@@ -160,8 +160,6 @@ classdef MainPresenter < symphonyui.Presenter
                 return;
             end
             
-            obj.view.clearProtocolPresets();
-            
             obj.updateViewState();
         end
         
@@ -229,7 +227,6 @@ classdef MainPresenter < symphonyui.Presenter
             enableSettings = ~hasExperiment && isStopped;
             enableSelectProtocol = isStopped;
             enableProtocolParameters = isStopped;
-            enableProtocolPresets = isStopped;
             enableRecord = false;
             enablePreview = false;
             enablePause = false;
@@ -280,7 +277,6 @@ classdef MainPresenter < symphonyui.Presenter
             obj.view.enableSettings(enableSettings);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolParameters(enableProtocolParameters);
-            obj.view.enableProtocolPresets(enableProtocolPresets);
             obj.view.enableRecord(enableRecord);
             obj.view.enablePreview(enablePreview);
             obj.view.enablePause(enablePause);
