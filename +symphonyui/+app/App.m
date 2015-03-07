@@ -1,13 +1,24 @@
-classdef App
+classdef App < handle
     
-    methods (Static)
+    properties (Constant)
+        displayName = 'Symphony'
+        version = '2.0.0-preview'
+        rootPath = fullfile(mfilename('fullpath'), '..', '..', '..')
+        documentationUrl = 'https://github.com/Symphony-DAS/Symphony/wiki'
+        userGroupUrl = 'https://groups.google.com/forum/#!forum/symphony-das'
+    end
+    
+    properties (SetAccess = private)
+        config
+    end
+    
+    methods
         
-        function p = rootPath()
-            p = fullfile(fileparts(mfilename('fullpath')), '..', '..');
-        end
-        
-        function v = version()
-            v = '2.0.0-preview';
+        function obj = App(config)
+            if nargin < 1
+                config = symphonyui.app.Config();
+            end
+            obj.config = config;
         end
         
     end

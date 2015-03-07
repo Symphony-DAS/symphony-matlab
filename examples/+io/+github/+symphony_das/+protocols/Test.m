@@ -1,7 +1,8 @@
-classdef Test < symphonyui.models.Protocol
+classdef Test < symphonyui.domain.Protocol
     
     properties (Constant)
         displayName = 'Test'
+        version = 1
     end
     
     properties

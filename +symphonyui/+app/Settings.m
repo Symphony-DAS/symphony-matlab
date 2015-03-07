@@ -1,51 +1,35 @@
 classdef Settings < handle
     
-    methods (Static)
+    properties (Constant)
         
-        function s = parse(settingValue)
-            s = symphonyui.app.Settings.parseToString(settingValue);
-        end
+        GENERAL_RIG_SEARCH_PATH = 'GENERAL_RIG_SEARCH_PATH'
         
-        function s = parseToString(settingValue)
-            s = settingValue;
-            if strncmp(s, '@', 1)
-                try %#ok<TRYNC>
-                    func = str2func(s);
-                    s = char(func());
-                end
-            end
-        end
+        GENERAL_PROTOCOL_SEARCH_PATH = 'GENERAL_PROTOCOL_SEARCH_PATH'
         
-        function c = parseToCell(settingValue)
-            s = symphonyui.app.Settings.parseToString(settingValue);
-            c = symphonyui.util.strToCell(s);
-        end
+        EXPERIMENT_DEFAULT_NAME = 'EXPERIMENT_DEFAULT_NAME'
         
-        function s = general()
-            persistent localObj;
-            if isempty(localObj) || ~isvalid(localObj)
-                localObj = symphonyui.settings.GeneralSettings();
-            end
-            s = localObj;
-        end
-        
-        function s = experiment()
-            persistent localObj;
-            if isempty(localObj) || ~isvalid(localObj)
-                localObj = symphonyui.settings.ExperimentSettings();
-            end
-            s = localObj;          
-        end
-        
-        function s = epochGroup()
-            persistent localObj;
-            if isempty(localObj) || ~isvalid(localObj)
-                localObj = symphonyui.settings.EpochGroupSettings();
-            end
-            s = localObj;
-        end
+        EXPERIMENT_DEFAULT_LOCATION = 'EXPERIMENT_DEFAULT_LOCATION'
         
     end
     
+    methods (Static)
+        
+        function d = getDefault(setting)
+            import symphonyui.app.Settings;
+            
+            switch setting
+                case Settings.GENERAL_RIG_SEARCH_PATH
+                    d = {fullfile(symphonyui.app.App.rootPath, 'examples', '+io', '+github', '+symphony_das', '+rigs')};
+                case Settings.GENERAL_PROTOCOL_SEARCH_PATH
+                    d = {fullfile(symphonyui.app.App.rootPath, 'examples', '+io', '+github', '+symphony_das', '+protocols')};
+                case Settings.EXPERIMENT_DEFAULT_NAME
+                    d = @()datestr(now, 'yyyy-mm-dd');
+                case Settings.EXPERIMENT_DEFAULT_LOCATION
+                    d = @()pwd();
+                otherwise
+                    error(['No default for setting ' setting]);
+            end
+        end
+    end
+    
 end
-
