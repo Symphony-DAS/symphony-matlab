@@ -14,7 +14,7 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             obj = obj@symphonyui.ui.Presenter(app, view);            
             obj.addListener(view, 'BrowseLocation', @obj.onViewSelectedBrowseLocation);
             obj.addListener(view, 'Open', @obj.onViewSelectedOpen);
-            obj.addListener(view, 'Cancel', @obj.onViewSelectedClose);
+            obj.addListener(view, 'Cancel', @obj.onViewSelectedCancel);
             
             obj.mainService = mainService;
         end
@@ -26,13 +26,20 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
         function onViewShown(obj, ~, ~)
             onViewShown@symphonyui.ui.Presenter(obj);
             
+            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
+            
             config = obj.app.config;
             name = config.get(symphonyui.app.Settings.EXPERIMENT_DEFAULT_NAME);
             location = config.get(symphonyui.app.Settings.EXPERIMENT_DEFAULT_LOCATION);
             
-            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
-            obj.view.setName(name());
-            obj.view.setLocation(location());
+            try
+                obj.view.setName(name());
+                obj.view.setLocation(location());
+            catch x
+                msg = ['Unable to set view from config: ' x.message];
+                obj.log.debug(msg, x);
+                obj.view.showError(msg);
+            end
         end
         
     end

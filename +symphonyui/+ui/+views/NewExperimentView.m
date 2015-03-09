@@ -10,7 +10,6 @@ classdef NewExperimentView < symphonyui.ui.View
         nameField
         locationField
         browseLocationButton
-        purposeField
         openButton
         cancelButton
     end
@@ -26,7 +25,7 @@ classdef NewExperimentView < symphonyui.ui.View
             import symphonyui.util.ui.*;
             
             set(obj.figureHandle, 'Name', 'New Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(330, 147));
+            set(obj.figureHandle, 'Position', screenCenter(400, 115));
             
             labelSize = 58;
             mainLayout = uiextras.VBox( ...
@@ -39,7 +38,6 @@ classdef NewExperimentView < symphonyui.ui.View
                 'Spacing', 7);
             
             obj.nameField = createLabeledTextField(parametersLayout, 'Name:', [labelSize -1]);
-            obj.purposeField = createLabeledTextField(parametersLayout, 'Purpose:', [labelSize -1]);
             [obj.locationField, l] = createLabeledTextField(parametersLayout, 'Location:', [labelSize -1]);
             obj.browseLocationButton = uicontrol( ...
                 'Parent', l, ...
@@ -48,7 +46,7 @@ classdef NewExperimentView < symphonyui.ui.View
                 'Callback', @(h,d)notify(obj, 'BrowseLocation'));
             set(l, 'Sizes', [labelSize -1 30]);
             
-            set(parametersLayout, 'Sizes', [25 25 25]);
+            set(parametersLayout, 'Sizes', [25 25]);
             
             % Open/Cancel controls.
             controlsLayout = uiextras.HBox( ...
