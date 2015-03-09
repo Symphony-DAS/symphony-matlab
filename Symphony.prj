@@ -442,8 +442,8 @@
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\strjoin.m.off</file>
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\strsetmatch.m</file>
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\strsplit.m.off</file>
-      <file>${PROJECT_ROOT}\bundled\PropertyGrid\StylePropertyTableModel.class</file>
-      <file>${PROJECT_ROOT}\bundled\PropertyGrid\StylePropertyTableModel.java</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\CellStylePropertyTableModel.class</file>
+      <file>${PROJECT_ROOT}\bundled\PropertyGrid\CellStylePropertyTableModel.java</file>
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\UIControl.m</file>
       <file>${PROJECT_ROOT}\bundled\PropertyGrid\var2str.m</file>
       <file>${PROJECT_ROOT}\examples\+io\+github\+symphony_das\+protocols\ExamplePulse.m</file>

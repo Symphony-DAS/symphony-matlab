@@ -5,7 +5,7 @@ classdef ExperimentView < symphonyui.ui.View
     end
     
     properties
-        
+        nodeTree
     end
     
     methods
@@ -21,17 +21,44 @@ classdef ExperimentView < symphonyui.ui.View
             set(obj.figureHandle, 'Name', 'Experiment');
             set(obj.figureHandle, 'Position', screenCenter(467, 356));
             
-            mainLayout = uiextras.VBox( ...
+            mainLayout = uiextras.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
+            
+            masterLayout = uiextras.VBox( ...
+                'Parent', mainLayout);
+            
+            obj.nodeTree = uiextras.jTree.Tree( ...
+                'Parent', masterLayout, ...
+                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
+                'SelectionChangeFcn', @(h,d)notify(obj, 'SelectedNode'));
+            
+            iconsFolder = fullfile(symphonyui.app.App.rootPath, 'resources', 'icons');
+            
+            setIcon(obj.nodeTree.Root, fullfile(iconsFolder, 'experiment.png'));
+            obj.nodeTree.Root.Name = 'Experiment';
+            
+            node = uiextras.jTree.TreeNode( ...
+                'Name', 'Epoch Group', ...
+                'Parent', obj.nodeTree.Root);
+            node.setIcon(fullfile(iconsFolder, 'group.png'));
+            
+            node1 = uiextras.jTree.TreeNode( ...
+                'Name', 'Epoch', ...
+                'Parent', node);
+            node1.setIcon(fullfile(iconsFolder, 'epoch.png'));
+            
+            detailLayout = uiextras.VBox( ...
+                'Parent', mainLayout);
         end
         
-        function n = getNode(obj)
-            n = [];
+        function n = getSelectedNode(obj)
+            n = obj.nodeTree.SelectedNodes;
         end
         
-        function setCard(obj, c)
+        function setSelectedCard(obj, c)
             
         end
         

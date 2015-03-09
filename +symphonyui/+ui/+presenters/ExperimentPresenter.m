@@ -34,8 +34,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function onViewSelectedNode(obj, ~, ~)
-            c = obj.view.getNode();
-            obj.view.setCard(c);
+            disp('View Selected Node');
+            obj.view.getSelectedNode()
         end
         
         function onExperimentBeganEpochGroup(obj, ~, ~)

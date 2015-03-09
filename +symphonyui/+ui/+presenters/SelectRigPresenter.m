@@ -29,7 +29,7 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
             
             obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
             obj.view.setRigList(obj.mainService.getAvailableRigIds());
-            obj.view.setRig(obj.mainService.getCurrentRig().id);
+            obj.view.setSelectedRig(obj.mainService.getCurrentRig().id);
         end
         
     end
@@ -49,7 +49,7 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceSelectedRig(obj, ~, ~)
-            obj.view.setRig(obj.mainService.getCurrentRig().id);
+            obj.view.setSelectedRig(obj.mainService.getCurrentRig().id);
         end
         
         function onViewSelectedOk(obj, ~, ~)
@@ -57,7 +57,7 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
             
             try
                 obj.mainService.getCurrentRig().close();
-                obj.mainService.selectRig(obj.view.getRig());
+                obj.mainService.selectRig(obj.view.getSelectedRig());
                 obj.mainService.getCurrentRig().initialize();
             catch x
                 obj.log.debug(x.message, x);

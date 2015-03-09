@@ -115,11 +115,11 @@ classdef SettingsView < symphonyui.ui.View
             end
         end
 
-        function n = getNode(obj)
+        function n = getSelectedNode(obj)
             n = symphonyui.util.ui.getSelectedValue(obj.nodeList);
         end
 
-        function setCard(obj, c)
+        function setSelectedCard(obj, c)
             list = get(obj.nodeList, 'String');
             selection = find(strcmp(list, c));
             set(obj.cardPanel, 'Selection', selection);

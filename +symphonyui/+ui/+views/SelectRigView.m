@@ -61,11 +61,11 @@ classdef SelectRigView < symphonyui.ui.View
             end
         end
         
-        function r = getRig(obj)
+        function r = getSelectedRig(obj)
             r = symphonyui.util.ui.getSelectedValue(obj.rigDropDown);
         end
         
-        function setRig(obj, r)
+        function setSelectedRig(obj, r)
             symphonyui.util.ui.setSelectedValue(obj.rigDropDown, r);
         end
         

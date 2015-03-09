@@ -5,11 +5,11 @@ import com.jidesoft.grid.StyleModel;
 
 import java.util.List;
 
-public class StylePropertyTableModel<T extends Property> extends PropertyTableModel<T> implements StyleModel {
+public class CellStylePropertyTableModel<T extends Property> extends PropertyTableModel<T> implements StyleModel {
 
     static CellStyle cellStyle = new CellStyle();
 
-    public StylePropertyTableModel(List<T> list) {
+    public CellStylePropertyTableModel(List<T> list) {
         super(list);
     }
 

@@ -214,11 +214,11 @@ classdef MainView < symphonyui.ui.View
             set(obj.protocolDropDown, 'Enable', symphonyui.util.onOff(tf));
         end
         
-        function p = getProtocol(obj)
+        function p = getSelectedProtocol(obj)
             p = symphonyui.util.ui.getSelectedValue(obj.protocolDropDown);
         end
         
-        function setProtocol(obj, p)
+        function setSelectedProtocol(obj, p)
             symphonyui.util.ui.setSelectedValue(obj.protocolDropDown, p);
         end
         

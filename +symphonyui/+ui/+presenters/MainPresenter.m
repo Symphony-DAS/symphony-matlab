@@ -48,7 +48,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             %obj.view.loadPosition();
             obj.view.setTitle(obj.app.displayName);
             obj.view.setProtocolList(obj.mainService.getAvailableProtocolIds());
-            obj.view.setProtocol(obj.mainService.getCurrentProtocol().id);
+            obj.view.setSelectedProtocol(obj.mainService.getCurrentProtocol().id);
             
             obj.addRigListeners();
             obj.addProtocolListeners();
@@ -89,7 +89,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function addExperimentListeners(obj)
             experiment = obj.mainService.getCurrentExperiment();
-            obj.listeners.experiment.close = obj.addListener(experiment, 'Closed', @obj.onExperimentBeganEpochGroup);
+            obj.listeners.experiment.close = [];
         end
         
         function removeExperimentListeners(obj)
@@ -153,7 +153,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedProtocol(obj, ~, ~)
             try
-                obj.mainService.selectProtocol(obj.view.getProtocol());
+                obj.mainService.selectProtocol(obj.view.getSelectedProtocol());
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -164,7 +164,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onServiceSelectedProtocol(obj, ~, ~)
             obj.removeProtocolListeners();
             obj.addProtocolListeners();
-            obj.view.setProtocol(obj.mainService.getCurrentProtocol().id);
+            obj.view.setSelectedProtocol(obj.mainService.getCurrentProtocol().id);
             obj.updateViewProtocolParameters();
             obj.updateViewState();
         end

@@ -3,7 +3,7 @@
 % mimics MatLab's property inspector. Unlike the inspector, it supports
 % structures, new-style MatLab objects, both with value and handle
 % semantics.
-% 
+%
 % The property grid displays a list of (object) properties with values
 % editable in-place. Each property has an associated semantics (or type)
 % that restricts the possible values the property can take and helps
@@ -56,7 +56,7 @@ classdef PropertyGrid < UIControl
         Container;
         % A com.jidesoft.grid.PropertyPane instance.
         % Encapsulates a property table and decorates it with icons to
-        % choose sorting order, expand and collapse categories, and a 
+        % choose sorting order, expand and collapse categories, and a
         % description panel.
         Pane;
         % A com.jidesoft.grid.PropertyTable instance.
@@ -73,17 +73,17 @@ classdef PropertyGrid < UIControl
         function self = PropertyGrid(varargin)
             self = self@UIControl(varargin{:});
         end
-        
+
         function self = Instantiate(self, parent)
             if nargin < 2
                 parent = figure;
             end
-            
+
             path = fileparts(mfilename('fullpath'));
             if ~any(ismember(javaclasspath, path))
                 javaaddpath(path);
             end
-            
+
             % initialize JIDE
             com.mathworks.mwswing.MJUtilities.initJIDE;
             com.jidesoft.grid.CellEditorManager.registerEditor(javaclass('cellstr',1), com.jidesoft.grid.StringArrayCellEditor);
@@ -95,41 +95,41 @@ classdef PropertyGrid < UIControl
             self.Pane = objectEDT('com.jidesoft.grid.PropertyPane', self.Table);  % property pane (with icons at top and help panel at bottom)
             self.Pane.setShowToolBar(false);
             self.Pane.setShowDescription(false);
-            
+
             pixelpos = getpixelposition(parent);
             [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], parent); %#ok<ASGLU>
             set(container, 'Units', 'normalized');
             self.Container = container;
-            
+
             set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
         end
-        
+
         function Close(self)
             set(self.Table, 'KeyPressedCallback', []);
             if ~isempty(self.Model)
                 set(self.Model, 'PropertyChangeCallback', []);  % clear callback
             end
         end
-        
+
         function ctrl = get.Control(self)
             ctrl = self.Container;
         end
-        
+
         function properties = get.Properties(self)
         % Retrieves properties displayed in the grid.
             properties = self.Fields.GetProperties();
         end
-        
+
         function set.Properties(self, properties)
         % Explicitly sets properties displayed in the grid.
         % Setting this property clears any object bindings.
             validateattributes(properties, {'PropertyGridField'}, {'vector'});
             self.BoundItem = [];
-            
+
             if ~isempty(self.Model)
                 set(self.Model, 'PropertyChangeCallback', []);  % clear callback
             end
-            
+
             % create JIDE properties
             toolbar = properties.HasCategory();
             description = properties.HasDescription();
@@ -140,7 +140,7 @@ classdef PropertyGrid < UIControl
 
             % create JIDE table model
             list = self.Fields.GetTableModel();
-            model = handle(StylePropertyTableModel(list), 'CallbackProperties');
+            model = handle(CellStylePropertyTableModel(list), 'CallbackProperties');
             style = com.jidesoft.grid.CellStyle();
             style.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             model.setCellStyle(style);
@@ -162,17 +162,17 @@ classdef PropertyGrid < UIControl
             % wire property change event hook
             set(model, 'PropertyChangeCallback', @self.OnPropertyChange);
         end
-        
+
         function UpdateProperties(self, properties)
             validateattributes(properties, {'PropertyGridField'}, {'vector'});
-            
+
             for i = 1:numel(properties)
                 new = properties(i);
                 old = self.Fields.FindByName(new.Name);
                 if isempty(old)
                     continue;
                 end
-                
+
                 old.Name = new.Name;
                 old.Category = new.Category;
                 old.DisplayName = new.DisplayName;
@@ -181,15 +181,15 @@ classdef PropertyGrid < UIControl
                 old.Type = new.Type;
                 old.Value = new.Value;
             end
-            
+
             self.Model.refresh();
         end
-        
+
         function item = get.Item(self)
         % Retrieves the object bound to the property grid.
             item = self.BoundItem;
         end
-        
+
         function set.Item(self, item)
         % Binds an object to the property grid.
         % Any changes made in the property grid are automatically reflected
@@ -211,21 +211,21 @@ classdef PropertyGrid < UIControl
             end
             self.Bind(item, properties);
         end
-        
+
         function tf = get.Enable(self)
             tf = self.Table.getEnabled();
         end
-        
+
         function set.Enable(self, tf)
             self.Table.setEnabled(tf);
         end
-        
+
         function self = Bind(self, item, properties)
         % Binds an object to the property grid with a custom property list.
             self.Properties = properties;
             self.BoundItem = item;
         end
-        
+
         function s = GetPropertyValues(self)
         % Returns the set of property names and values in a structure.
             s = struct;
@@ -262,7 +262,7 @@ classdef PropertyGrid < UIControl
             field.Value = editor.Item;
             self.UpdateField(name);
         end
-        
+
         function UpdateDependentProperties(self, field)
         % Propagates changes triggered by dependent properties.
         %
@@ -297,7 +297,7 @@ classdef PropertyGrid < UIControl
                 end
             end
         end
-        
+
         function UpdateField(self, name)
         % Updates a property value or reverts changes if value is illegal.
             field = self.Fields.FindByName(name);
@@ -334,7 +334,7 @@ classdef PropertyGrid < UIControl
             self = get(h, 'UserData');
         end
     end
-    
+
     methods (Access = private)  % methods (Access = private, Static) for MatLab 2010a and up
         function name = GetSelectedProperty(obj)
         % The name of the currently selected property (if any).
@@ -351,7 +351,7 @@ classdef PropertyGrid < UIControl
                 name = char(selectedfield.getFullName());
             end
         end
-        
+
         function OnKeyPressed(self, ~, event)
         % Fired when a key is pressed when the property grid has the focus.
             key = char(event.getKeyText(event.getKeyCode()));
@@ -374,7 +374,7 @@ classdef PropertyGrid < UIControl
                     end
             end
         end
-        
+
         function OnPropertyChange(self, ~, event)
         % Fired when a property value in a property grid has changed.
         % This function is declared static because object methods cannot be

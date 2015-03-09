@@ -1,4 +1,11 @@
 function fig = main()
+    jpath = { ...
+        fullfile(symphonyui.app.App.rootPath, 'bundled', 'PropertyGrid'), ...
+        fullfile(symphonyui.app.App.rootPath, 'bundled', 'JavaTreeWrapper', '+uiextras', '+jTree', 'UIExtrasTree.jar')};
+    if ~any(ismember(javaclasspath, jpath))
+        javaaddpath(jpath);
+    end
+
     app = symphonyui.app.App();
 
     rigRepository = symphonyui.app.repos.RigRepository(app.config);
