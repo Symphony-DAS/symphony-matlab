@@ -83,10 +83,7 @@ classdef View < symphonyui.util.mixin.Observer
         end
         
         function showError(obj, msg)
-            view = symphonyui.ui.views.MessageBoxView(obj);
-            presenter = symphonyui.ui.presenters.MessageBoxPresenter(msg, 'Error', view);
-            presenter.view.position = symphonyui.util.screenCenter(450, 85);
-            presenter.view.showDialog();
+            obj.showMessage(msg, 'Error');
         end
         
         function showMessage(obj, msg, title)

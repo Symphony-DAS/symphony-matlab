@@ -7,7 +7,7 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
     methods
         
         function obj = NewExperimentPresenter(mainService, app, view)
-            if nargin < 2
+            if nargin < 3
                 view = symphonyui.ui.views.NewExperimentView([]);
             end
             
