@@ -12,6 +12,7 @@ classdef Experiment < handle
         name
         location
         epochGroups
+        currentEpochGroup
         notes
     end
     
@@ -20,6 +21,7 @@ classdef Experiment < handle
         function obj = Experiment(name, location)
             obj.name = name;
             obj.location = location;
+            obj.epochGroups = symphonyui.core.EpochGroup.empty(0, 1);
             obj.notes = symphonyui.core.Note.empty(0, 1);
         end
         
@@ -31,19 +33,15 @@ classdef Experiment < handle
             notify(obj, 'Closed');
         end
         
-        function tf = hasEpochGroup(obj)
-            tf = ~isempty(obj.epochGroup);
-        end
-        
-        function beginEpochGroup(obj, label, source, keywords, attributes)
+        function beginEpochGroup(obj, label)
             disp(['Begin Epoch Group: ' label]);
-            obj.epochGroup = symphonyui.core.EpochGroup(label, source, keywords, attributes);
+            obj.currentEpochGroup = symphonyui.core.EpochGroup(label);
             notify(obj, 'BeganEpochGroup');
         end
         
         function endEpochGroup(obj)
-            disp(['End Epoch Group: ' obj.epochGroup.label]);
-            obj.epochGroup = obj.epochGroup.parent;
+            disp(['End Epoch Group: ' obj.currentEpochGroup.label]);
+            obj.currentEpochGroup = obj.currentEpochGroup.parent;
             notify(obj, 'EndedEpochGroup');
         end
         

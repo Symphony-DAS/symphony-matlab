@@ -1,73 +1,69 @@
-classdef NewExperimentPresenter < symphonyui.ui.Presenter
+classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        mainService
+        experiment
     end
     
     methods
         
-        function obj = NewExperimentPresenter(mainService, app, view)
+        function obj = BeginEpochGroupPresenter(experiment, app, view)
             if nargin < 3
-                view = symphonyui.ui.views.NewExperimentView();
+                view = symphonyui.ui.views.BeginEpochGroupView();
             end
             
-            obj = obj@symphonyui.ui.Presenter(app, view);            
-            obj.addListener(view, 'BrowseLocation', @obj.onViewSelectedBrowseLocation);
-            obj.addListener(view, 'Open', @obj.onViewSelectedOpen);
+            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj.addListener(view, 'Begin', @obj.onViewSelectedBegin);
             obj.addListener(view, 'Cancel', @obj.onViewSelectedCancel);
             
-            obj.mainService = mainService;
+            obj.experiment = experiment;
         end
         
     end
     
     methods (Access = protected)
-        
+
         function onViewShown(obj, ~, ~)
             onViewShown@symphonyui.ui.Presenter(obj);
             
             obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
             
+            parent = obj.experiment.currentEpochGroup;
+            if isempty(parent)
+                obj.view.setParent([obj.experiment.name ' (Experiment)']);
+            else
+                obj.view.setParent(parent.label);
+            end
+            
             config = obj.app.config;
-            name = config.get(symphonyui.app.Settings.EXPERIMENT_DEFAULT_NAME);
-            location = config.get(symphonyui.app.Settings.EXPERIMENT_DEFAULT_LOCATION);
+            labelList = config.get(symphonyui.app.Settings.EPOCH_GROUP_LABEL_LIST);
             try
-                obj.view.setName(name());
-                obj.view.setLocation(location());
+                obj.view.setLabelList(labelList());
             catch x
                 msg = ['Unable to set view from config: ' x.message];
                 obj.log.debug(msg, x);
                 obj.view.showError(msg);
             end
         end
-        
+
     end
     
     methods (Access = private)
-        
+
         function onViewWindowKeyPress(obj, ~, data)
             if strcmp(data.Key, 'return')
-                obj.onViewSelectedOpen();
+                obj.onViewSelectedBegin();
             elseif strcmp(data.Key, 'escape')
                 obj.onViewSelectedCancel();
             end
         end
         
-        function onViewSelectedBrowseLocation(obj, ~, ~)
-            location = uigetdir(pwd, 'Experiment Location');
-            if location ~= 0
-                obj.view.setLocation(location);
-            end
-        end
-        
-        function onViewSelectedOpen(obj, ~, ~)
+        function onViewSelectedBegin(obj, ~, ~)
             obj.view.update();
             
-            name = obj.view.getName();            
-            location = obj.view.getLocation();
+            label = obj.view.getSelectedLabel();
             
             try
-                obj.mainService.openExperiment(name, location);
+                obj.experiment.beginEpochGroup(label);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -84,3 +80,4 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
     end
     
 end
+

@@ -6,7 +6,7 @@ classdef AddNoteView < symphonyui.ui.View
     end
     
     properties (Access = private)
-        noteField
+        textField
         addButton
         cancelButton
     end
@@ -29,7 +29,7 @@ classdef AddNoteView < symphonyui.ui.View
                 'Parent', mainLayout, ...
                 'Spacing', 7);
             
-            obj.noteField = uicontrol( ...
+            obj.textField = uicontrol( ...
                 'Parent', noteLayout, ...
                 'Style', 'edit', ...
                 'HorizontalAlignment', 'left');
@@ -61,7 +61,11 @@ classdef AddNoteView < symphonyui.ui.View
         end
         
         function t = getText(obj)
-            t = get(obj.noteField, 'String');
+            t = get(obj.textField, 'String');
+        end
+        
+        function requestTextFocus(obj)
+            obj.requestFocus(obj.textField);
         end
         
     end

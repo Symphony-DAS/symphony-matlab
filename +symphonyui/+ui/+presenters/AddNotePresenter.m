@@ -7,7 +7,7 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
     methods
         
         function obj = AddNotePresenter(experiment, app, view)
-            if nargin < 2
+            if nargin < 3
                 view = symphonyui.ui.views.AddNoteView();
             end
             
@@ -20,9 +20,19 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
         
     end
     
+    methods (Access = protected)
+
+        function onViewShown(obj, ~, ~)
+            onViewShown@symphonyui.ui.Presenter(obj);
+            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
+            obj.view.requestTextFocus();
+        end
+
+    end
+    
     methods (Access = private)
 
-        function onWindowKeyPress(obj, ~, data)
+        function onViewWindowKeyPress(obj, ~, data)
             if strcmp(data.Key, 'return')
                 obj.onViewSelectedAdd();
             elseif strcmp(data.Key, 'escape')

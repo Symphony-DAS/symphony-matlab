@@ -19,14 +19,14 @@ classdef SettingsPresenter < symphonyui.ui.Presenter
 
         function onViewShown(obj, ~, ~)
             onViewShown@symphonyui.ui.Presenter(obj);
-            obj.view.setWindowKeyPressFcn(@obj.onWindowKeyPress);
+            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
         end
 
     end
 
     methods (Access = private)
 
-        function onWindowKeyPress(obj, ~, data)
+        function onViewWindowKeyPress(obj, ~, data)
             if strcmp(data.Key, 'return')
                 obj.onViewSelectedOk();
             elseif strcmp(data.Key, 'escape')
@@ -38,7 +38,7 @@ classdef SettingsPresenter < symphonyui.ui.Presenter
             node = obj.view.getSelectedNode();
             list = obj.view.getCardList();
             index = find(strcmp(list, node));
-            obj.view.setSelectedCard(index);
+            obj.view.setSelectedCard(index); %#ok<FNDSB>
         end
 
         function onViewSelectedOk(obj, ~, ~)

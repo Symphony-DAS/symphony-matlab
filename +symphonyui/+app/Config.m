@@ -14,12 +14,11 @@ classdef Config < handle
             if nargin < 3
                 default = symphonyui.app.Settings.getDefault(key);
             end
-            v = getpref(obj.group, key, default);
             
-            if isa(v, 'function_handle')
-                obj.put(key, v);
-            elseif ischar(v) && ~isempty(v) && v(1) == '@'
-                v = str2func(v);
+            if ispref(obj.group, key)
+                v = getpref(obj.group, key);
+            else
+                v = default;
             end
         end
         

@@ -12,11 +12,8 @@ classdef EpochGroup < handle
     
     methods
         
-        function obj = EpochGroup(label, source, keywords, attributes)
+        function obj = EpochGroup(label)
             obj.label = label;
-            obj.source = source;
-            obj.keywords = keywords;
-            obj.attributes = attributes;
         end
         
     end

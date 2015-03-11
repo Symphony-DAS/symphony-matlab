@@ -29,7 +29,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
 
         function onViewShown(obj, ~, ~)
             onViewShown@symphonyui.ui.Presenter(obj);
-            
+            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
             obj.view.setNodeName(obj.view.getRootNodeId(), obj.experiment.name);
             obj.view.setExperimentName(obj.experiment.name);
             obj.view.setExperimentLocation(obj.experiment.location);
@@ -42,6 +42,12 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
     end
 
     methods (Access = private)
+        
+        function onViewWindowKeyPress(obj, ~, data)
+            if strcmp(data.Key, 't') && strcmp(data.Modifier, 'control')
+                obj.onViewSelectedAddNote();
+            end
+        end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
             disp('View Selected Begin Epoch Group');
@@ -60,11 +66,13 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddNote(obj, ~, ~)
-            disp('View Selected Add Note');
+            presenter = symphonyui.ui.presenters.AddNotePresenter(obj.experiment, obj.app);
+            presenter.view.setParentView(obj.view);
+            presenter.view.showDialog();
         end
         
         function onExperimentAddedNote(obj, ~, ~)
-            disp('Experiment Added Note');
+            obj.view.addNote(obj.experiment.notes(end));
         end
         
         function onViewSelectedNode(obj, ~, ~)

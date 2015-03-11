@@ -42,7 +42,7 @@ classdef View < symphonyui.util.mixin.Observer
             obj.createUi();
         end
         
-        function setParent(obj, p)
+        function setParentView(obj, p)
             if ~isempty(obj.parent)
                 error('Parent view already set');
             end
@@ -70,7 +70,13 @@ classdef View < symphonyui.util.mixin.Observer
         end
         
         function update(obj) %#ok<MANU>
-            drawnow update;
+            drawnow;
+        end
+        
+        function requestFocus(obj, control)
+            obj.activate();
+            obj.update();
+            uicontrol(control);
         end
         
         function showDialog(obj)
@@ -86,7 +92,7 @@ classdef View < symphonyui.util.mixin.Observer
         function showMessage(obj, msg, title)
             presenter = symphonyui.ui.presenters.MessageBoxPresenter(msg, title);
             presenter.view.position = symphonyui.util.screenCenter(450, 85);
-            presenter.view.setParent(obj);
+            presenter.view.setParentView(obj);
             presenter.view.showDialog();
         end
         

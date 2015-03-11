@@ -10,6 +10,8 @@ classdef Settings < handle
         
         EXPERIMENT_DEFAULT_LOCATION = 'EXPERIMENT_DEFAULT_LOCATION'
         
+        EPOCH_GROUP_LABEL_LIST = 'EPOCH_GROUP_LABEL_LIST'
+        
     end
     
     methods (Static)
@@ -26,6 +28,8 @@ classdef Settings < handle
                     d = @()datestr(now, 'yyyy-mm-dd');
                 case Settings.EXPERIMENT_DEFAULT_LOCATION
                     d = @()pwd();
+                case Settings.EPOCH_GROUP_LABEL_LIST
+                    d = {'Cell', 'Control', 'Drug', 'Wash'};
                 otherwise
                     error(['No default for setting ' setting]);
             end
