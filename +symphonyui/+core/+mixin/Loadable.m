@@ -1,4 +1,4 @@
-classdef (Abstract) Identifiable < handle
+classdef (Abstract) Loadable < handle
     
     properties (Abstract, Constant)
         displayName
@@ -12,6 +12,9 @@ classdef (Abstract) Identifiable < handle
     methods
         
         function setId(obj, id)
+            if ~isempty(obj.id)
+                error('Id is already set');
+            end
             obj.id = id;
         end
         

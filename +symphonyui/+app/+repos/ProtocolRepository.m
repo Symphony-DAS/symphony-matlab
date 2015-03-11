@@ -1,4 +1,4 @@
-classdef ProtocolRepository < symphonyui.app.repos.IdentifiableRepository & symphonyui.util.mixin.Observer
+classdef ProtocolRepository < symphonyui.app.repos.LoadableRepository & symphonyui.util.mixin.Observer
     
     properties (Access = private)
         config
@@ -7,7 +7,7 @@ classdef ProtocolRepository < symphonyui.app.repos.IdentifiableRepository & symp
     methods
         
         function obj = ProtocolRepository(config)
-            obj = obj@symphonyui.app.repos.IdentifiableRepository('symphonyui.core.Protocol');
+            obj = obj@symphonyui.app.repos.LoadableRepository('symphonyui.core.Protocol');
             obj.config = config;
             obj.addListener(config, 'Changed', @obj.onChangedConfig);
             obj.init();

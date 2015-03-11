@@ -1,4 +1,4 @@
-classdef Protocol < symphonyui.core.mixin.Identifiable
+classdef Protocol < symphonyui.core.mixin.Loadable
     
     events (NotifyAccess = private)
         ChangedParameters
