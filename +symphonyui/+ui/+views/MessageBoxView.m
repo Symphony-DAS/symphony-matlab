@@ -11,10 +11,6 @@ classdef MessageBoxView < symphonyui.ui.View
     
     methods
         
-        function obj = MessageBoxView(parent)
-            obj = obj@symphonyui.ui.View(parent);
-        end
-        
         function createUi(obj)
             import symphonyui.util.*;
             

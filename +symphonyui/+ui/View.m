@@ -10,9 +10,6 @@ classdef View < symphonyui.util.mixin.Observer
     
     properties (Access = protected)
         figureHandle
-    end
-    
-    properties (Access = private)
         parent
     end
     
@@ -23,15 +20,7 @@ classdef View < symphonyui.util.mixin.Observer
     
     methods
         
-        function obj = View(parent)            
-            if nargin < 1
-                parent = [];
-            end
-            obj.parent = parent;
-            if ~isempty(parent)
-                obj.addListener(parent, 'Closing', @(h,d)obj.close);
-            end
-            
+        function obj = View()            
             obj.figureHandle = figure( ...
                 'NumberTitle', 'off', ...
                 'MenuBar', 'none', ...
@@ -53,6 +42,14 @@ classdef View < symphonyui.util.mixin.Observer
             obj.createUi();
         end
         
+        function setParent(obj, p)
+            if ~isempty(obj.parent)
+                error('Parent view already set');
+            end
+            obj.parent = p;
+            obj.addListener(p, 'Closing', @(h,d)obj.close);
+        end
+        
         function show(obj)
             if ~isvalid(obj.figureHandle)
                 error('View has been closed');
@@ -72,7 +69,7 @@ classdef View < symphonyui.util.mixin.Observer
             figure(obj.figureHandle);
         end
         
-        function update(obj)
+        function update(obj) %#ok<MANU>
             drawnow update;
         end
         
@@ -87,9 +84,9 @@ classdef View < symphonyui.util.mixin.Observer
         end
         
         function showMessage(obj, msg, title)
-            view = symphonyui.ui.views.MessageBoxView(obj);
-            presenter = symphonyui.ui.presenters.MessageBoxPresenter(msg, title, view);
+            presenter = symphonyui.ui.presenters.MessageBoxPresenter(msg, title);
             presenter.view.position = symphonyui.util.screenCenter(450, 85);
+            presenter.view.setParent(obj);
             presenter.view.showDialog();
         end
         

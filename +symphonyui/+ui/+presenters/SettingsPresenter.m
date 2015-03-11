@@ -4,7 +4,7 @@ classdef SettingsPresenter < symphonyui.ui.Presenter
 
         function obj = SettingsPresenter(app, view)
             if nargin < 2
-                view = symphonyui.ui.views.SettingsView([]);
+                view = symphonyui.ui.views.SettingsView();
             end
 
             obj = obj@symphonyui.ui.Presenter(app, view);

@@ -1,4 +1,4 @@
-classdef ExperimentExplorerPresenter < symphonyui.ui.Presenter
+classdef ExperimentPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
         experiment
@@ -6,9 +6,9 @@ classdef ExperimentExplorerPresenter < symphonyui.ui.Presenter
     
     methods
 
-        function obj = ExperimentExplorerPresenter(experiment, app, view)
+        function obj = ExperimentPresenter(experiment, app, view)
             if nargin < 3
-                view = symphonyui.ui.views.SettingsView([]);
+                view = symphonyui.ui.views.ExperimentView();
             end
             
             obj = obj@symphonyui.ui.Presenter(app, view);

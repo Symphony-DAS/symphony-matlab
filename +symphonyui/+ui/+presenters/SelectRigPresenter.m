@@ -8,7 +8,7 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
         
         function obj = SelectRigPresenter(mainService, app, view)
             if nargin < 3
-                view = symphonyui.ui.views.SelectRigView([]);
+                view = symphonyui.ui.views.SelectRigView();
             end
             
             obj = obj@symphonyui.ui.Presenter(app, view);            

@@ -1,4 +1,4 @@
-classdef ExperimentExplorerView < symphonyui.ui.View
+classdef ExperimentView < symphonyui.ui.View
     
     events
         BeginEpochGroup
@@ -24,15 +24,11 @@ classdef ExperimentExplorerView < symphonyui.ui.View
     
     methods
         
-        function obj = ExperimentExplorerView(parent)
-            obj = obj@symphonyui.ui.View(parent);
-        end
-        
         function createUi(obj)
             import symphonyui.util.*;
             import symphonyui.util.ui.*;
             
-            set(obj.figureHandle, 'Name', 'Experiment Explorer');
+            set(obj.figureHandle, 'Name', 'Experiment');
             set(obj.figureHandle, 'Position', screenCenter(400, 400));
             
             iconsFolder = fullfile(symphonyui.app.App.rootPath, 'resources', 'icons');

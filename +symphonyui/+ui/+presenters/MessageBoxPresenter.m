@@ -9,7 +9,7 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
         
         function obj = MessageBoxPresenter(message, title, view)
             if nargin < 3
-                view = symphonyui.ui.views.MessageBoxView([]);
+                view = symphonyui.ui.views.MessageBoxView();
             end
             
             obj = obj@symphonyui.ui.Presenter([], view);

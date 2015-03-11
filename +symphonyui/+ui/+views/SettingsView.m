@@ -18,10 +18,6 @@ classdef SettingsView < symphonyui.ui.View
 
     methods
 
-        function obj = SettingsView(parent)
-            obj = obj@symphonyui.ui.View(parent);
-        end
-
         function createUi(obj)
             import symphonyui.util.*;
             import symphonyui.util.ui.*;

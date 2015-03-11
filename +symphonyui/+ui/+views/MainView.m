@@ -4,6 +4,10 @@ classdef MainView < symphonyui.ui.View
         NewExperiment
         CloseExperiment
         Exit
+        ViewExperiment
+        BeginEpochGroup
+        EndEpochGroup
+        AddNote
         SelectedProtocol
         ChangedProtocolParameters
         Record
@@ -58,16 +62,21 @@ classdef MainView < symphonyui.ui.View
             % Experiment menu.
             obj.experimentMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Experiment');
-            obj.experimentMenu.viewExperimentExplorer = uimenu(obj.experimentMenu.root, ...
-                'Label', 'View Experiment Explorer');
+            obj.experimentMenu.viewExperiment = uimenu(obj.experimentMenu.root, ...
+                'Label', 'View Experiment', ...
+                'Callback', @(h,d)notify(obj, 'ViewExperiment'));
             obj.experimentMenu.beginEpochGroup = uimenu(obj.experimentMenu.root, ...
-                'Label', 'Begin Epoch Group', ...
-                'Separator', 'on');
+                'Label', 'Begin Epoch Group...', ...
+                'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
             obj.experimentMenu.endEpochGroup = uimenu(obj.experimentMenu.root, ...
-                'Label', 'End Epoch Group');
+                'Label', 'End Epoch Group', ...
+                'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
             obj.experimentMenu.addNote = uimenu(obj.experimentMenu.root, ...
-                'Label', 'Add Note', ...
-                'Separator', 'on');
+                'Label', 'Add Note...', ...
+                'Separator', 'on', ...
+                'Accelerator', 't', ...
+                'Callback', @(h,d)notify(obj, 'AddNote'));
             
             % Acquire menu.
             obj.acquireMenu.root = uimenu(obj.figureHandle, ...
@@ -189,6 +198,22 @@ classdef MainView < symphonyui.ui.View
         
         function enableCloseExperiment(obj, tf)
             set(obj.fileMenu.closeExperiment, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function enableViewExperiment(obj, tf)
+            set(obj.experimentMenu.viewExperiment, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function enableBeginEpochGroup(obj, tf)
+            set(obj.experimentMenu.beginEpochGroup, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function enableEndEpochGroup(obj, tf)
+            set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function enableAddNote(obj, tf)
+            set(obj.experimentMenu.addNote, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableSelectRig(obj, tf)
