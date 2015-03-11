@@ -4,8 +4,6 @@ classdef MainView < symphonyui.ui.View
         NewExperiment
         CloseExperiment
         Exit
-        ViewExperiment
-        AddNote
         SelectedProtocol
         ChangedProtocolParameters
         Record
@@ -37,7 +35,7 @@ classdef MainView < symphonyui.ui.View
     
     methods
         
-        function createUI(obj)
+        function createUi(obj)
             import symphonyui.util.*;
             import symphonyui.util.ui.*;
             
@@ -60,12 +58,15 @@ classdef MainView < symphonyui.ui.View
             % Experiment menu.
             obj.experimentMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Experiment');
-            obj.experimentMenu.viewExperiment = uimenu(obj.experimentMenu.root, ...
-                'Label', 'View Experiment', ...
-                'Callback', @(h,d)notify(obj, 'ViewExperiment'));
+            obj.experimentMenu.viewExperimentExplorer = uimenu(obj.experimentMenu.root, ...
+                'Label', 'View Experiment Explorer');
+            obj.experimentMenu.beginEpochGroup = uimenu(obj.experimentMenu.root, ...
+                'Label', 'Begin Epoch Group', ...
+                'Separator', 'on');
+            obj.experimentMenu.endEpochGroup = uimenu(obj.experimentMenu.root, ...
+                'Label', 'End Epoch Group');
             obj.experimentMenu.addNote = uimenu(obj.experimentMenu.root, ...
-                'Label', 'Add Note...', ...
-                'Accelerator', 't', ...
+                'Label', 'Add Note', ...
                 'Separator', 'on');
             
             % Acquire menu.
@@ -188,14 +189,6 @@ classdef MainView < symphonyui.ui.View
         
         function enableCloseExperiment(obj, tf)
             set(obj.fileMenu.closeExperiment, 'Enable', symphonyui.util.onOff(tf));
-        end
-        
-        function enableViewExperiment(obj, tf)
-            set(obj.experimentMenu.viewExperiment, 'Enable', symphonyui.util.onOff(tf));
-        end
-        
-        function enableAddNote(obj, tf)
-            set(obj.experimentMenu.addNote, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableSelectRig(obj, tf)

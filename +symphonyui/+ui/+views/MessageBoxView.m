@@ -15,7 +15,7 @@ classdef MessageBoxView < symphonyui.ui.View
             obj = obj@symphonyui.ui.View(parent);
         end
         
-        function createUI(obj)
+        function createUi(obj)
             import symphonyui.util.*;
             
             set(obj.figureHandle, 'Position', screenCenter(270, 120));

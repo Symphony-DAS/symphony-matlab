@@ -50,7 +50,7 @@ classdef View < symphonyui.util.mixin.Observer
                 set(obj.figureHandle, 'DefaultUicontrolFontSize', 12);
             end
             
-            obj.createUI();
+            obj.createUi();
         end
         
         function show(obj)
@@ -138,7 +138,7 @@ classdef View < symphonyui.util.mixin.Observer
     end
     
     methods (Abstract)
-        createUI(obj);
+        createUi(obj);
     end
     
 end

@@ -57,11 +57,11 @@ classdef MainService < symphonyui.util.mixin.Observer
         
         %% Experiment
         
-        function openExperiment(obj, path)
+        function openExperiment(obj, name, location)
             if obj.hasCurrentExperiment
                 error('An experiment is already open');
             end
-            experiment = symphonyui.core.Experiment(path);
+            experiment = symphonyui.core.Experiment(name, location);
             experiment.open();
             obj.currentExperiment = experiment;
             notify(obj, 'OpenedExperiment');

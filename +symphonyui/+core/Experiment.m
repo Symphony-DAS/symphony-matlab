@@ -3,20 +3,24 @@ classdef Experiment < handle
     events
         Opened
         Closed
-        AddedNote
         BeganEpochGroup
         EndedEpochGroup
+        AddedNote
     end
     
     properties
-        path
-        epochGroup
+        name
+        location
+        epochGroups
+        notes
     end
     
     methods
         
-        function obj = Experiment(path)
-            obj.path = path;
+        function obj = Experiment(name, location)
+            obj.name = name;
+            obj.location = location;
+            obj.notes = symphonyui.core.Note.empty(0, 1);
         end
         
         function open(obj)
@@ -44,7 +48,7 @@ classdef Experiment < handle
         end
         
         function addNote(obj, note)
-            disp(['Add Note: ' note]);
+            obj.notes(end + 1) = note;
             notify(obj, 'AddedNote');
         end
         

@@ -2,6 +2,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
         mainService
+        experimentPresenter
         listeners
     end
     
@@ -15,8 +16,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj = obj@symphonyui.ui.Presenter(app, view);            
             obj.addListener(view, 'NewExperiment', @obj.onViewSelectedNewExperiment);
             obj.addListener(view, 'CloseExperiment', @obj.onViewSelectedCloseExperiment);
-            obj.addListener(view, 'ViewExperiment', @obj.onViewSelectedViewExperiment);
-            obj.addListener(view, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(view, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(view, 'ChangedProtocolParameters', @obj.onViewChangedProtocolParameters);
             obj.addListener(view, 'Record', @obj.onViewSelectedRecord);
@@ -74,46 +73,41 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceOpenedExperiment(obj, ~, ~)
-            obj.addExperimentListeners();
+            experiment = obj.mainService.getCurrentExperiment();
+            view = symphonyui.ui.views.ExperimentExplorerView(obj.view);
+            obj.experimentPresenter = symphonyui.ui.presenters.ExperimentExplorerPresenter(experiment, obj.app, view);
+            obj.experimentPresenter.view.show();
+            obj.addExperimentExplorerPresenterListeners();
+            
             obj.updateViewState();
         end
         
+        function addExperimentExplorerPresenterListeners(obj)
+            obj.listeners.experimentPresenter.viewClosing = obj.addListener(obj.experimentPresenter.view, 'Closing', @obj.onViewSelectedCloseExperiment);
+        end
+        
+        function removeExperimentExplorerPresenterListeners(obj)
+            fields = fieldnames(obj.listeners.experimentPresenter);
+            for i = 1:numel(fields)
+                obj.removeListener(obj.listeners.experimentPresenter.(fields{i}));
+            end
+        end
+        
         function onViewSelectedCloseExperiment(obj, ~, ~)
+            % TODO: Show quest dialog asking if user is sure.
             obj.mainService.closeExperiment();
         end
         
         function onServiceClosedExperiment(obj, ~, ~)
-            obj.removeExperimentListeners();
+            obj.removeExperimentExplorerPresenterListeners();
+            obj.experimentPresenter.view.close();
             obj.updateViewState();
-        end
-        
-        function addExperimentListeners(obj)
-            experiment = obj.mainService.getCurrentExperiment();
-            obj.listeners.experiment.close = [];
-        end
-        
-        function removeExperimentListeners(obj)
-            fields = fieldnames(obj.listeners.experiment);
-            for i = 1:numel(fields)
-                obj.removeListener(obj.listeners.experiment.(fields{i}));
-            end
-        end
-        
-        function onViewSelectedViewExperiment(obj, ~, ~)
-            experiment = obj.mainService.getCurrentExperiment();
-            view = symphonyui.ui.views.ExperimentView(obj.view);
-            presenter = symphonyui.ui.presenters.ExperimentPresenter(experiment, obj.app, view);
-            presenter.view.show();
-        end
-        
-        function onViewSelectedAddNote(obj, ~, ~)
-            disp('View Selected Add Note');
         end
         
         function onViewSelectedSelectRig(obj, ~, ~)
             view = symphonyui.ui.views.SelectRigView(obj.view);
-            p = symphonyui.ui.presenters.SelectRigPresenter(obj.mainService, obj.app, view);
-            p.view.showDialog();
+            presenter = symphonyui.ui.presenters.SelectRigPresenter(obj.mainService, obj.app, view);
+            presenter.view.showDialog();
         end
         
         function onServiceSelectedRig(obj, ~, ~)
@@ -254,8 +248,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             enableNewExperiment = ~hasExperiment && isStopped && isRigValid;
             enableCloseExperiment = hasExperiment && isStopped;
-            enableViewExperiment = hasExperiment;
-            enableAddNote = hasExperiment;
             enableSelectRig = ~hasExperiment && isStopped;
             enableSettings = ~hasExperiment && isStopped;
             enableSelectProtocol = isStopped;
@@ -302,8 +294,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             obj.view.enableNewExperiment(enableNewExperiment);
             obj.view.enableCloseExperiment(enableCloseExperiment);
-            obj.view.enableViewExperiment(enableViewExperiment);
-            obj.view.enableAddNote(enableAddNote);
             obj.view.enableSelectRig(enableSelectRig);
             obj.view.enableSettings(enableSettings);
             obj.view.enableSelectProtocol(enableSelectProtocol);

@@ -35,8 +35,10 @@ classdef SettingsPresenter < symphonyui.ui.Presenter
         end
 
         function onViewSelectedNode(obj, ~, ~)
-            c = obj.view.getSelectedNode();
-            obj.view.setSelectedCard(c);
+            node = obj.view.getSelectedNode();
+            list = obj.view.getCardList();
+            index = find(strcmp(list, node));
+            obj.view.setSelectedCard(index);
         end
 
         function onViewSelectedOk(obj, ~, ~)

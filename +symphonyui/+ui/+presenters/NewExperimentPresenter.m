@@ -66,10 +66,9 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             
             name = obj.view.getName();            
             location = obj.view.getLocation();
-            path = fullfile(location, name);
             
             try
-                obj.mainService.openExperiment(path);
+                obj.mainService.openExperiment(name, location);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

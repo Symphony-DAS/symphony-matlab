@@ -22,7 +22,7 @@ classdef SettingsView < symphonyui.ui.View
             obj = obj@symphonyui.ui.View(parent);
         end
 
-        function createUI(obj)
+        function createUi(obj)
             import symphonyui.util.*;
             import symphonyui.util.ui.*;
 
@@ -85,6 +85,7 @@ classdef SettingsView < symphonyui.ui.View
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
 
+            set(obj.cardPanel, 'UserData', get(obj.nodeList, 'String'));
             set(obj.cardPanel, 'Selection', 1);
 
             set(preferencesLayout, 'Sizes', [110 -1]);
@@ -118,11 +119,13 @@ classdef SettingsView < symphonyui.ui.View
         function n = getSelectedNode(obj)
             n = symphonyui.util.ui.getSelectedValue(obj.nodeList);
         end
+        
+        function l = getCardList(obj)
+            l = get(obj.cardPanel, 'UserData');
+        end
 
-        function setSelectedCard(obj, c)
-            list = get(obj.nodeList, 'String');
-            selection = find(strcmp(list, c));
-            set(obj.cardPanel, 'Selection', selection);
+        function setSelectedCard(obj, index)
+            set(obj.cardPanel, 'Selection', index);
         end
 
         function p = getRigSearchPaths(obj)
