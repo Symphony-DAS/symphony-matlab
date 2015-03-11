@@ -45,6 +45,10 @@ classdef Experiment < handle
             notify(obj, 'EndedEpochGroup');
         end
         
+        function tf = hasCurrentEpochGroup(obj)
+            tf = ~isempty(obj.currentEpochGroup);
+        end
+        
         function addNote(obj, note)
             obj.notes(end + 1) = note;
             notify(obj, 'AddedNote');

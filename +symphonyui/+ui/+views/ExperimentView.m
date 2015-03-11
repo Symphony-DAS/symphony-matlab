@@ -118,6 +118,10 @@ classdef ExperimentView < symphonyui.ui.View
             set(mainLayout, 'Sizes', [-1 110]);
         end
         
+        function enableEndEpochGroup(obj, tf)
+            set(obj.endEpochGroupTool, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
         function id = getRootNodeId(obj)
             id = get(obj.nodeTree.Root, 'Value');
         end

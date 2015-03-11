@@ -50,19 +50,21 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
-            disp('View Selected Begin Epoch Group');
+            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.experiment, obj.app);
+            presenter.view.setParentView(obj.view);
+            presenter.view.showDialog();
         end
         
         function onExperimentBeganEpochGroup(obj, ~, ~)
-            disp('Experiment Began Epoch Group');
+            obj.view.enableEndEpochGroup(true);
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
-            disp('View Selected End Epoch Group');
+            obj.experiment.endEpochGroup();
         end
         
         function onExperimentEndedEpochGroup(obj, ~, ~)
-            disp('Experiment Ended Epoch Group');
+            obj.view.enableEndEpochGroup(obj.experiment.hasCurrentEpochGroup());
         end
         
         function onViewSelectedAddNote(obj, ~, ~)

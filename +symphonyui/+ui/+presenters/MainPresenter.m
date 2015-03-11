@@ -53,6 +53,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.setProtocolList(obj.mainService.getAvailableProtocolIds());
             obj.view.setSelectedProtocol(obj.mainService.getCurrentProtocol().id);
             
+            if obj.mainService.hasCurrentExperiment
+                obj.addExperimentListeners();
+            end
             obj.addRigListeners();
             obj.addProtocolListeners();
             
@@ -76,7 +79,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             presenter.view.showDialog();
         end
         
-        function onServiceOpenedExperiment(obj, ~, ~)            
+        function onServiceOpenedExperiment(obj, ~, ~)   
+            obj.addExperimentListeners();
             obj.updateViewState();
         end
         
@@ -85,7 +89,21 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceClosedExperiment(obj, ~, ~)
+            obj.removeExperimentListeners();
             obj.updateViewState();
+        end
+        
+        function addExperimentListeners(obj)
+            experiment = obj.mainService.getCurrentExperiment();
+            obj.listeners.experiment.beganEpochGroup = obj.addListener(experiment, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
+            obj.listeners.experiment.endedEpochGroup = obj.addListener(experiment, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
+        end
+        
+        function removeExperimentListeners(obj)
+            fields = fieldnames(obj.listeners.experiment);
+            for i = 1:numel(fields)
+                obj.removeListener(obj.listeners.experiment.(fields{i}));
+            end
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -95,9 +113,17 @@ classdef MainPresenter < symphonyui.ui.Presenter
             presenter.view.showDialog();
         end
         
+        function onExperimentBeganEpochGroup(obj, ~, ~)
+            obj.updateViewState();
+        end
+        
         function onViewSelectedEndEpochGroup(obj, ~, ~)
             experiment = obj.mainService.getCurrentExperiment();
             experiment.endEpochGroup();
+        end
+        
+        function onExperimentEndedEpochGroup(obj, ~, ~)
+            obj.updateViewState();
         end
         
         function onViewSelectedAddNote(obj, ~, ~)
@@ -253,13 +279,14 @@ classdef MainPresenter < symphonyui.ui.Presenter
             import symphonyui.core.RigState;
             
             hasExperiment = obj.mainService.hasCurrentExperiment();
+            hasEpochGroup = hasExperiment && obj.mainService.getCurrentExperiment().hasCurrentEpochGroup();
             isRigValid = obj.mainService.getCurrentRig().isValid();
             isStopped = obj.mainService.getCurrentRig().state == RigState.STOPPED;
             
             enableNewExperiment = ~hasExperiment && isStopped && isRigValid;
             enableCloseExperiment = hasExperiment && isStopped;
             enableBeginEpochGroup = hasExperiment;
-            enableEndEpochGroup = hasExperiment;
+            enableEndEpochGroup = hasEpochGroup;
             enableAddNote = hasExperiment;
             enableViewExperiment = hasExperiment;
             enableSelectRig = ~hasExperiment && isStopped;
