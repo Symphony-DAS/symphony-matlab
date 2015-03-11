@@ -126,12 +126,15 @@ classdef ExperimentView < symphonyui.ui.View
             id = get(obj.nodeTree.Root, 'Value');
         end
         
-        function addNode(obj, parentId, name, id)
+        function addEpochGroupNode(obj, parentId, name, id)
+            parent = obj.nodeMap(parentId);
             node = uiextras.jTree.TreeNode( ...
-                'Parent', obj.nodeMap(parentId), ...
+                'Parent', parent, ...
                 'Name', name, ...
                 'Value', id);
+            node.setIcon(fullfile(symphonyui.app.App.rootPath, 'resources', 'icons', 'group.png'));
             obj.nodeMap(id) = node;
+            parent.expand();
         end
         
         function setNodeName(obj, id, name)

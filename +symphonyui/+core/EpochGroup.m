@@ -2,6 +2,7 @@ classdef EpochGroup < handle
     
     properties
         label
+        id
         source
         keywords
         attributes
@@ -12,8 +13,10 @@ classdef EpochGroup < handle
     
     methods
         
-        function obj = EpochGroup(label)
+        function obj = EpochGroup(parent, label)
+            obj.parent = parent;
             obj.label = label;
+            obj.id = char(java.util.UUID.randomUUID);
         end
         
     end

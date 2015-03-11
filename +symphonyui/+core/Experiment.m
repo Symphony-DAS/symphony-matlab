@@ -35,7 +35,7 @@ classdef Experiment < handle
         
         function beginEpochGroup(obj, label)
             disp(['Begin Epoch Group: ' label]);
-            obj.currentEpochGroup = symphonyui.core.EpochGroup(label);
+            obj.currentEpochGroup = symphonyui.core.EpochGroup(obj.currentEpochGroup, label);
             notify(obj, 'BeganEpochGroup');
         end
         

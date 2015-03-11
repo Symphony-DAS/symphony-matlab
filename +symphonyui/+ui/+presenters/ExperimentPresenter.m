@@ -56,6 +56,13 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function onExperimentBeganEpochGroup(obj, ~, ~)
+            group = obj.experiment.currentEpochGroup;
+            if isempty(group.parent)
+                parentId = obj.view.getRootNodeId();
+            else
+                parentId = group.parent.id;
+            end
+            obj.view.addEpochGroupNode(parentId, group.label, group.id);
             obj.view.enableEndEpochGroup(true);
         end
         

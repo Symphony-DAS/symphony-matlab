@@ -29,7 +29,7 @@ classdef Settings < handle
                 case Settings.EXPERIMENT_DEFAULT_LOCATION
                     d = @()pwd();
                 case Settings.EPOCH_GROUP_LABEL_LIST
-                    d = {'Cell', 'Control', 'Drug', 'Wash'};
+                    d = {'Control', 'Drug', 'Wash'};
                 otherwise
                     error(['No default for setting ' setting]);
             end
