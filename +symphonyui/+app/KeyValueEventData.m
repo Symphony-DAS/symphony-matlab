@@ -1,13 +1,15 @@
-classdef ConfigEventData < event.EventData
+classdef KeyValueEventData < event.EventData
     
     properties (SetAccess = private)
         key
+        value
     end
     
     methods
         
-        function obj = ConfigEventData(key)
+        function obj = KeyValueEventData(key, value)
             obj.key = key;
+            obj.value = value;
         end
         
     end

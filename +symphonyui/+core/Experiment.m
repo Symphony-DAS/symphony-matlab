@@ -11,6 +11,7 @@ classdef Experiment < handle
     properties
         name
         location
+        id
         epochGroups
         currentEpochGroup
         notes
@@ -21,6 +22,7 @@ classdef Experiment < handle
         function obj = Experiment(name, location)
             obj.name = name;
             obj.location = location;
+            obj.id = char(java.util.UUID.randomUUID);
             obj.epochGroups = symphonyui.core.EpochGroup.empty(0, 1);
             obj.notes = symphonyui.core.Note.empty(0, 1);
         end
@@ -35,14 +37,19 @@ classdef Experiment < handle
         
         function beginEpochGroup(obj, label)
             disp(['Begin Epoch Group: ' label]);
-            obj.currentEpochGroup = symphonyui.core.EpochGroup(obj.currentEpochGroup, label);
-            notify(obj, 'BeganEpochGroup');
+            group = symphonyui.core.EpochGroup(obj.currentEpochGroup, label);
+            if isempty(obj.currentEpochGroup)
+                obj.epochGroups(end + 1) = group;
+            end
+            obj.currentEpochGroup = group;
+            notify(obj, 'BeganEpochGroup', symphonyui.core.EpochGroupEventData(group));
         end
         
         function endEpochGroup(obj)
             disp(['End Epoch Group: ' obj.currentEpochGroup.label]);
-            obj.currentEpochGroup = obj.currentEpochGroup.parent;
-            notify(obj, 'EndedEpochGroup');
+            group = obj.currentEpochGroup;
+            obj.currentEpochGroup = group.parent;
+            notify(obj, 'EndedEpochGroup', symphonyui.core.EpochGroupEventData(group));
         end
         
         function tf = hasCurrentEpochGroup(obj)

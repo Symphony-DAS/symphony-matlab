@@ -37,7 +37,7 @@ classdef Config < handle
                 addpref(obj.group, key, value);
             end
             
-            notify(obj, 'Changed', symphonyui.app.ConfigEventData(key));
+            notify(obj, 'Changed', symphonyui.app.KeyValueEventData(key, value));
         end
         
         function clear(obj)

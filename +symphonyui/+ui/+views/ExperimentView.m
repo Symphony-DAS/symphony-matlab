@@ -7,7 +7,7 @@ classdef ExperimentView < symphonyui.ui.View
         SelectedNode
     end
     
-    properties
+    properties (Access = private)
         toolbar
         beginEpochGroupTool
         endEpochGroupTool
@@ -67,8 +67,6 @@ classdef ExperimentView < symphonyui.ui.View
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'SelectionChangeFcn', @(h,d)notify(obj, 'SelectedNode'));
-            obj.nodeTree.Root.setIcon(fullfile(iconsFolder, 'experiment.png'));
-            obj.nodeTree.Root.Value = 'ROOT';
             
             obj.cardPanel = uix.CardPanel( ...
                 'Parent', topLayout);
@@ -98,7 +96,6 @@ classdef ExperimentView < symphonyui.ui.View
             set(topLayout, 'Sizes', [110 -1]);
             
             obj.nodeMap = containers.Map();
-            obj.nodeMap(obj.nodeTree.Root.Value) = obj.nodeTree.Root;
             
             % Notes controls.
             notesLayout = uiextras.VBox( ...
@@ -122,8 +119,13 @@ classdef ExperimentView < symphonyui.ui.View
             set(obj.endEpochGroupTool, 'Enable', symphonyui.util.onOff(tf));
         end
         
-        function id = getRootNodeId(obj)
-            id = get(obj.nodeTree.Root, 'Value');
+        function setExperimentNode(obj, name, id)
+            root = obj.nodeTree.Root;
+            set(root, ...
+                'Name', name, ...
+                'Value', id);
+            root.setIcon(fullfile(symphonyui.app.App.rootPath, 'resources', 'icons', 'experiment.png'));
+            obj.nodeMap(id) = root;
         end
         
         function addEpochGroupNode(obj, parentId, name, id)
@@ -134,12 +136,36 @@ classdef ExperimentView < symphonyui.ui.View
                 'Value', id);
             node.setIcon(fullfile(symphonyui.app.App.rootPath, 'resources', 'icons', 'group.png'));
             obj.nodeMap(id) = node;
-            parent.expand();
         end
         
-        function setNodeName(obj, id, name)
+        function setEpochGroupNodeCurrent(obj, id)
             node = obj.nodeMap(id);
-            set(node, 'Name', name);
+            node.setIcon(fullfile(symphonyui.app.App.rootPath, 'resources', 'icons', 'group_current.png'));
+        end
+        
+        function setEpochGroupNodeNormal(obj, id)
+            node = obj.nodeMap(id);
+            node.setIcon(fullfile(symphonyui.app.App.rootPath, 'resources', 'icons', 'group.png'));
+        end
+        
+        function addEpochNode(obj, parentId, name, id)
+            parent = obj.nodeMap(parentId);
+            node = uiextras.jTree.TreeNode( ...
+                'Parent', parent, ...
+                'Name', name, ...
+                'Value', id);
+            node.setIcon(fullfile(symphonyui.app.App.rootPath, 'resources', 'icons', 'epoch.png'));
+            obj.nodeMap(id) = node;
+        end
+        
+        function collapseNode(obj, id)
+            node = obj.nodeMap(id);
+            node.collapse();
+        end
+        
+        function expandNode(obj, id)
+            node = obj.nodeMap(id);
+            node.expand();
         end
         
         function id = getSelectedNode(obj)

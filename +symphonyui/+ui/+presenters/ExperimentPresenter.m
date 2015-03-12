@@ -22,6 +22,16 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.addListener(experiment, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
             obj.addListener(experiment, 'AddedNote', @obj.onExperimentAddedNote);
         end
+        
+        function setExperiment(obj, experiment)
+            obj.experiment = experiment;
+            
+            obj.view.setExperimentNode(experiment.name, experiment.id);
+            groups = experiment.epochGroups;
+            for i = 1:numel(groups)
+                obj.addEpochGroupNode(groups(i));
+            end
+        end
 
     end
 
@@ -29,10 +39,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
 
         function onViewShown(obj, ~, ~)
             onViewShown@symphonyui.ui.Presenter(obj);
+            obj.setExperiment(obj.experiment);
             obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
-            obj.view.setNodeName(obj.view.getRootNodeId(), obj.experiment.name);
-            obj.view.setExperimentName(obj.experiment.name);
-            obj.view.setExperimentLocation(obj.experiment.location);
         end
         
         function onViewClosing(obj, ~, ~)
@@ -55,22 +63,39 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             presenter.view.showDialog();
         end
         
-        function onExperimentBeganEpochGroup(obj, ~, ~)
-            group = obj.experiment.currentEpochGroup;
-            if isempty(group.parent)
-                parentId = obj.view.getRootNodeId();
-            else
-                parentId = group.parent.id;
-            end
-            obj.view.addEpochGroupNode(parentId, group.label, group.id);
+        function onExperimentBeganEpochGroup(obj, ~, data)
+            group = data.epochGroup;
+            obj.addEpochGroupNode(group);
+            obj.view.expandNode(obj.getEpochGroupParentId(group));
+            obj.view.setEpochGroupNodeCurrent(group.id);
             obj.view.enableEndEpochGroup(true);
+        end
+        
+        function addEpochGroupNode(obj, group)
+            obj.view.addEpochGroupNode(obj.getEpochGroupParentId(group), group.label, group.id);
+            
+            groups = group.children;
+            for i = 1:numel(groups)
+                obj.addEpochGroupNode(groups(i));
+            end
+        end
+        
+        function id = getEpochGroupParentId(obj, group)
+            if isempty(group.parent)
+                id = obj.experiment.id;
+            else
+                id = group.parent.id;
+            end
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
             obj.experiment.endEpochGroup();
         end
         
-        function onExperimentEndedEpochGroup(obj, ~, ~)
+        function onExperimentEndedEpochGroup(obj, ~, data)
+            group = data.epochGroup;
+            obj.view.collapseNode(group.id);
+            obj.view.setEpochGroupNodeNormal(group.id);
             obj.view.enableEndEpochGroup(obj.experiment.hasCurrentEpochGroup());
         end
         
