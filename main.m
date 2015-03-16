@@ -8,10 +8,10 @@ function fig = main()
 
     app = symphonyui.app.App();
 
-    rigRepository = symphonyui.app.repos.RigRepository(app.config);
-    protocolRepository = symphonyui.app.repos.ProtocolRepository(app.config);
+    rigRepository = symphonyui.infra.RigRepository(app.config);
+    protocolRepository = symphonyui.infra.ProtocolRepository(app.config);
     
-    mainService = symphonyui.app.services.MainService(rigRepository, protocolRepository);
+    mainService = symphonyui.app.MainService(rigRepository, protocolRepository);
     
     rigPresenter = symphonyui.ui.presenters.SelectRigPresenter(mainService, app);
     rigPresenter.view.showDialog();

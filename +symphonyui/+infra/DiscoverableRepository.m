@@ -1,4 +1,4 @@
-classdef LoadableRepository < handle
+classdef DiscoverableRepository < handle
     
     events (NotifyAccess = private)
         LoadedAll
@@ -12,7 +12,7 @@ classdef LoadableRepository < handle
     
     methods
         
-        function obj = LoadableRepository(subtype)
+        function obj = DiscoverableRepository(subtype)
             obj.subtype = subtype;
         end
         
@@ -55,13 +55,13 @@ classdef LoadableRepository < handle
         
         function load(obj, className)
             constructor = str2func(className);
-            loadable = constructor();
-            id = loadable.displayName;
+            Discoverable = constructor();
+            id = Discoverable.displayName;
             if obj.objects.isKey(id)
                 id = [id ' (' className ')'];
             end
-            loadable.setId(id);
-            obj.objects(id) = loadable;
+            Discoverable.setId(id);
+            obj.objects(id) = Discoverable;
         end
         
     end

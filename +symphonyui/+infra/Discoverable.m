@@ -1,4 +1,4 @@
-classdef (Abstract) Loadable < handle
+classdef (Abstract) Discoverable < handle
     
     properties (Abstract, Constant)
         displayName

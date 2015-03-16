@@ -1,4 +1,4 @@
-classdef Rig < symphonyui.core.mixin.Loadable
+classdef Rig < symphonyui.infra.Discoverable
     
     events (NotifyAccess = private)
         Initialized

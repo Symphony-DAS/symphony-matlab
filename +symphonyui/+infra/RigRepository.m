@@ -1,4 +1,4 @@
-classdef RigRepository < symphonyui.app.repos.LoadableRepository & symphonyui.util.mixin.Observer
+classdef RigRepository < symphonyui.infra.DiscoverableRepository & symphonyui.util.mixin.Observer
     
     properties (Access = private)
         config
@@ -7,7 +7,7 @@ classdef RigRepository < symphonyui.app.repos.LoadableRepository & symphonyui.ut
     methods
         
         function obj = RigRepository(config)
-            obj = obj@symphonyui.app.repos.LoadableRepository('symphonyui.core.Rig');
+            obj = obj@symphonyui.infra.DiscoverableRepository('symphonyui.core.Rig');
             obj.config = config;
             obj.addListener(config, 'Changed', @obj.onChangedConfig);
             obj.init();

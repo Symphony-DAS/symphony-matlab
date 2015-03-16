@@ -1,4 +1,4 @@
-classdef Test < symphonyui.domain.Protocol
+classdef Test < symphonyui.core.Protocol
     
     properties (Constant)
         displayName = 'Test'
@@ -27,18 +27,6 @@ classdef Test < symphonyui.domain.Protocol
     properties (Hidden)
         hidden1 = 'I should be hidden';
         hidden2 = 'oh no';
-    end
-    
-    methods
-        
-        function p = getParameters(obj)
-            import symphonyui.models.*;
-            
-            p = getParameters@symphonyui.models.Protocol(obj);
-            
-            p.findByName('string').displayName = ['dname ' num2str(obj.integer)];
-        end
-        
     end
     
 end
