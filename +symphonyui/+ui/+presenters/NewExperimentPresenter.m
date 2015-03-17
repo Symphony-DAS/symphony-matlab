@@ -1,12 +1,12 @@
 classdef NewExperimentPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        mainService
+        acquisitionService
     end
     
     methods
         
-        function obj = NewExperimentPresenter(mainService, app, view)
+        function obj = NewExperimentPresenter(acquisitionService, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.NewExperimentView();
             end
@@ -16,7 +16,7 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             obj.addListener(view, 'Open', @obj.onViewSelectedOpen);
             obj.addListener(view, 'Cancel', @obj.onViewSelectedCancel);
             
-            obj.mainService = mainService;
+            obj.acquisitionService = acquisitionService;
         end
         
     end
@@ -29,8 +29,8 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
             
             config = obj.app.config;
-            name = config.get(symphonyui.app.Settings.EXPERIMENT_DEFAULT_NAME);
-            location = config.get(symphonyui.app.Settings.EXPERIMENT_DEFAULT_LOCATION);
+            name = config.get(symphonyui.infra.Settings.EXPERIMENT_DEFAULT_NAME);
+            location = config.get(symphonyui.infra.Settings.EXPERIMENT_DEFAULT_LOCATION);
             try
                 obj.view.setName(name());
                 obj.view.setLocation(location());
@@ -67,7 +67,7 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             location = obj.view.getLocation();
             
             try
-                obj.mainService.openExperiment(name, location);
+                obj.acquisitionService.createExperiment(name, location);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

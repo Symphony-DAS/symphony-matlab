@@ -1,12 +1,12 @@
 classdef SelectRigPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        mainService
+        acquisitionService
     end
     
     methods
         
-        function obj = SelectRigPresenter(mainService, app, view)
+        function obj = SelectRigPresenter(acquisitionService, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.SelectRigView();
             end
@@ -15,9 +15,9 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
             obj.addListener(view, 'Ok', @obj.onViewSelectedOk);
             obj.addListener(view, 'Cancel', @obj.onViewSelectedCancel);
             
-            obj.mainService = mainService;
-            obj.addListener(mainService, 'ChangedAvailableRigs', @obj.onServiceChangedAvailableRigs);
-            obj.addListener(mainService, 'SelectedRig', @obj.onServiceSelectedRig);
+            obj.acquisitionService = acquisitionService;
+            obj.addListener(acquisitionService, 'ChangedAvailableRigs', @obj.onServiceChangedAvailableRigs);
+            obj.addListener(acquisitionService, 'SelectedRig', @obj.onServiceSelectedRig);
         end
         
     end
@@ -28,8 +28,8 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
             onViewShown@symphonyui.ui.Presenter(obj);
             
             obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
-            obj.view.setRigList(obj.mainService.getAvailableRigIds());
-            obj.view.setSelectedRig(obj.mainService.getCurrentRig().id);
+            obj.view.setRigList(obj.acquisitionService.getAvailableRigIds());
+            obj.view.setSelectedRig(obj.acquisitionService.getCurrentRig().id);
         end
         
     end
@@ -45,20 +45,20 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceChangedAvailableRigs(obj, ~, ~)
-            obj.view.setRigList(obj.mainService.getAvailableRigIds());
+            obj.view.setRigList(obj.acquisitionService.getAvailableRigIds());
         end
         
         function onServiceSelectedRig(obj, ~, ~)
-            obj.view.setSelectedRig(obj.mainService.getCurrentRig().id);
+            obj.view.setSelectedRig(obj.acquisitionService.getCurrentRig().id);
         end
         
         function onViewSelectedOk(obj, ~, ~)
             obj.view.update();
             
             try
-                obj.mainService.getCurrentRig().close();
-                obj.mainService.selectRig(obj.view.getSelectedRig());
-                obj.mainService.getCurrentRig().initialize();
+                obj.acquisitionService.getCurrentRig().close();
+                obj.acquisitionService.selectRig(obj.view.getSelectedRig());
+                obj.acquisitionService.getCurrentRig().initialize();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

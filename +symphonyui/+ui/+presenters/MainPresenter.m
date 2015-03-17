@@ -1,20 +1,21 @@
 classdef MainPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        mainService
+        acquisitionService
         experimentPresenter
         listeners
     end
     
     methods
         
-        function obj = MainPresenter(mainService, app, view)            
+        function obj = MainPresenter(acquisitionService, app, view)            
             if nargin < 3
                 view = symphonyui.ui.views.MainView();
             end
             
             obj = obj@symphonyui.ui.Presenter(app, view);            
             obj.addListener(view, 'NewExperiment', @obj.onViewSelectedNewExperiment);
+            obj.addListener(view, 'OpenExperiment', @obj.onViewSelectedOpenExperiment);
             obj.addListener(view, 'CloseExperiment', @obj.onViewSelectedCloseExperiment);
             obj.addListener(view, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(view, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
@@ -33,12 +34,12 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(view, 'AboutSymphony', @obj.onViewSelectedAboutSymphony);
             obj.addListener(view, 'Exit', @obj.onViewSelectedExit);
             
-            obj.mainService = mainService;
-            obj.addListener(mainService, 'OpenedExperiment', @obj.onServiceOpenedExperiment);
-            obj.addListener(mainService, 'ClosedExperiment', @obj.onServiceClosedExperiment);
-            obj.addListener(mainService, 'SelectedRig', @obj.onServiceSelectedRig);
-            obj.addListener(mainService, 'ChangedAvailableProtocols', @obj.onServiceChangedAvailableProtocols);
-            obj.addListener(mainService, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
+            obj.acquisitionService = acquisitionService;
+            obj.addListener(acquisitionService, 'OpenedExperiment', @obj.onServiceOpenedExperiment);
+            obj.addListener(acquisitionService, 'ClosedExperiment', @obj.onServiceClosedExperiment);
+            obj.addListener(acquisitionService, 'SelectedRig', @obj.onServiceSelectedRig);
+            obj.addListener(acquisitionService, 'ChangedAvailableProtocols', @obj.onServiceChangedAvailableProtocols);
+            obj.addListener(acquisitionService, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
         end
         
     end
@@ -50,10 +51,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             %obj.view.loadPosition();
             obj.view.setTitle(obj.app.displayName);
-            obj.view.setProtocolList(obj.mainService.getAvailableProtocolIds());
-            obj.view.setSelectedProtocol(obj.mainService.getCurrentProtocol().id);
+            obj.view.setProtocolList(obj.acquisitionService.getAvailableProtocolIds());
+            obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocol().id);
             
-            if obj.mainService.hasCurrentExperiment
+            if obj.acquisitionService.hasCurrentExperiment
                 obj.addExperimentListeners();
             end
             obj.addRigListeners();
@@ -66,7 +67,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onViewClosing(obj, ~, ~)
             onViewClosing@symphonyui.ui.Presenter(obj);
             %obj.view.savePosition();
-            delete(obj.mainService);            
+            delete(obj.acquisitionService);            
         end
         
     end
@@ -74,9 +75,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function onViewSelectedNewExperiment(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.NewExperimentPresenter(obj.mainService, obj.app);
+            presenter = symphonyui.ui.presenters.NewExperimentPresenter(obj.acquisitionService, obj.app);
             presenter.view.setParentView(obj.view);
             presenter.view.showDialog();
+        end
+        
+        function onViewSelectedOpenExperiment(obj, ~, ~)
+            disp('View Selected Open Experiment');
         end
         
         function onServiceOpenedExperiment(obj, ~, ~)   
@@ -85,7 +90,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedCloseExperiment(obj, ~, ~)
-            obj.mainService.closeExperiment();
+            obj.acquisitionService.closeExperiment();
         end
         
         function onServiceClosedExperiment(obj, ~, ~)
@@ -94,7 +99,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function addExperimentListeners(obj)
-            experiment = obj.mainService.getCurrentExperiment();
+            experiment = obj.acquisitionService.getCurrentExperiment();
             obj.listeners.experiment.beganEpochGroup = obj.addListener(experiment, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
             obj.listeners.experiment.endedEpochGroup = obj.addListener(experiment, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
         end
@@ -107,7 +112,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
-            experiment = obj.mainService.getCurrentExperiment();
+            experiment = obj.acquisitionService.getCurrentExperiment();
             presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(experiment, obj.app);
             presenter.view.setParentView(obj.view);
             presenter.view.showDialog();
@@ -118,7 +123,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
-            experiment = obj.mainService.getCurrentExperiment();
+            experiment = obj.acquisitionService.getCurrentExperiment();
             experiment.endEpochGroup();
         end
         
@@ -127,21 +132,21 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddNote(obj, ~, ~)
-            experiment = obj.mainService.getCurrentExperiment();
+            experiment = obj.acquisitionService.getCurrentExperiment();
             presenter = symphonyui.ui.presenters.AddNotePresenter(experiment, obj.app);
             presenter.view.setParentView(obj.view);
             presenter.view.showDialog();
         end
         
         function onViewSelectedViewExperiment(obj, ~, ~)
-            experiment = obj.mainService.getCurrentExperiment();
+            experiment = obj.acquisitionService.getCurrentExperiment();
             presenter = symphonyui.ui.presenters.ExperimentPresenter(experiment, obj.app);
             presenter.view.setParentView(obj.view);
             presenter.view.show();
         end
         
         function onViewSelectedSelectRig(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.SelectRigPresenter(obj.mainService, obj.app);
+            presenter = symphonyui.ui.presenters.SelectRigPresenter(obj.acquisitionService, obj.app);
             presenter.view.setParentView(obj.view);
             presenter.view.showDialog();
         end
@@ -152,7 +157,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function addRigListeners(obj)
-            rig = obj.mainService.getCurrentRig();
+            rig = obj.acquisitionService.getCurrentRig();
             obj.listeners.rig.initialized = obj.addListener(rig, 'Initialized', @obj.onRigInitialized);
             obj.listeners.rig.closed = obj.addListener(rig, 'Closed', @obj.onRigClosed);
             obj.listeners.rig.changedState = obj.addListener(rig, 'state', 'PostSet', @obj.onRigSetState);
@@ -178,12 +183,12 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceChangedAvailableProtocols(obj, ~, ~)
-            obj.view.setProtocolList(obj.mainService.getAvailableProtocolIds());
+            obj.view.setProtocolList(obj.acquisitionService.getAvailableProtocolIds());
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
             try
-                obj.mainService.selectProtocol(obj.view.getSelectedProtocol());
+                obj.acquisitionService.selectProtocol(obj.view.getSelectedProtocol());
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -194,13 +199,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onServiceSelectedProtocol(obj, ~, ~)
             obj.removeProtocolListeners();
             obj.addProtocolListeners();
-            obj.view.setSelectedProtocol(obj.mainService.getCurrentProtocol().id);
+            obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocol().id);
             obj.updateViewProtocolParameters();
             obj.updateViewState();
         end
         
         function addProtocolListeners(obj)
-            protocol = obj.mainService.getCurrentProtocol();
+            protocol = obj.acquisitionService.getCurrentProtocol();
             obj.listeners.protocol.changedParameters = obj.addListener(protocol, 'ChangedParameters', @obj.onProtocolChangedParameters);
         end
         
@@ -213,7 +218,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewChangedProtocolParameters(obj, ~, ~)
             parameters = obj.view.getProtocolParameters();
-            protocol = obj.mainService.getCurrentProtocol();
+            protocol = obj.acquisitionService.getCurrentProtocol();
             protocol.setParameters(parameters);
         end
         
@@ -224,7 +229,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedRecord(obj, ~, ~)
             try
-                obj.mainService.record();
+                obj.acquisitionService.record();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -234,7 +239,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedPreview(obj, ~, ~)
             try
-                obj.mainService.preview();
+                obj.acquisitionService.preview();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -244,7 +249,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedPause(obj, ~, ~)
             try
-                obj.mainService.pause();
+                obj.acquisitionService.pause();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -254,7 +259,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedStop(obj, ~, ~)
             try
-                obj.mainService.stop();
+                obj.acquisitionService.stop();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -266,7 +271,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             if nargin < 2
                 clear = true;
             end
-            parameters = obj.mainService.getCurrentProtocol().getParameters();
+            parameters = obj.acquisitionService.getCurrentProtocol().getParameters();
             i = ~arrayfun(@(e)any(strcmp(e.name, {'displayName', 'version'})), parameters);
             if clear
                 obj.view.setProtocolParameters(parameters(i));
@@ -278,12 +283,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function updateViewState(obj)
             import symphonyui.core.RigState;
             
-            hasExperiment = obj.mainService.hasCurrentExperiment();
-            hasEpochGroup = hasExperiment && obj.mainService.getCurrentExperiment().hasCurrentEpochGroup();
-            isRigValid = obj.mainService.getCurrentRig().isValid();
-            isStopped = obj.mainService.getCurrentRig().state == RigState.STOPPED;
+            hasExperiment = obj.acquisitionService.hasCurrentExperiment();
+            hasEpochGroup = hasExperiment && obj.acquisitionService.getCurrentExperiment().hasCurrentEpochGroup();
+            isRigValid = obj.acquisitionService.getCurrentRig().isValid();
+            isStopped = obj.acquisitionService.getCurrentRig().state == RigState.STOPPED;
             
             enableNewExperiment = ~hasExperiment && isStopped && isRigValid;
+            enableOpenExperiment = enableNewExperiment;
             enableCloseExperiment = hasExperiment && isStopped;
             enableBeginEpochGroup = hasExperiment;
             enableEndEpochGroup = hasEpochGroup;
@@ -299,7 +305,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableStop = false;
             status = 'Unknown';
             
-            switch obj.mainService.getCurrentRig().state
+            switch obj.acquisitionService.getCurrentRig().state
                 case RigState.STOPPED
                     enableRecord = hasExperiment;
                     enablePreview = true;
@@ -324,7 +330,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                     status = 'Recording...';
             end
             
-            [valid, msg] = obj.mainService.validate();
+            [valid, msg] = obj.acquisitionService.validate();
             if ~valid
                 enableRecord = false;
                 enablePreview = false;
@@ -334,6 +340,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
             
             obj.view.enableNewExperiment(enableNewExperiment);
+            obj.view.enableOpenExperiment(enableOpenExperiment);
             obj.view.enableCloseExperiment(enableCloseExperiment);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);

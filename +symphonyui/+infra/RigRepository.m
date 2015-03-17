@@ -18,14 +18,14 @@ classdef RigRepository < symphonyui.infra.DiscoverableRepository & symphonyui.ut
     methods (Access = private)
         
         function onChangedConfig(obj, ~, data)
-            if ~strcmp(data.key, symphonyui.app.Settings.GENERAL_RIG_SEARCH_PATH)
+            if ~strcmp(data.key, symphonyui.infra.Settings.GENERAL_RIG_SEARCH_PATH)
                 return;
             end
             obj.init();
         end
         
         function init(obj)
-            obj.setSearchPaths(obj.config.get(symphonyui.app.Settings.GENERAL_RIG_SEARCH_PATH));
+            obj.setSearchPaths(obj.config.get(symphonyui.infra.Settings.GENERAL_RIG_SEARCH_PATH));
             obj.loadAll();
         end
         

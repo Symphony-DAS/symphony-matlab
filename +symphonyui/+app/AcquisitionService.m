@@ -1,4 +1,4 @@
-classdef MainService < symphonyui.util.mixin.Observer
+classdef AcquisitionService < symphonyui.util.mixin.Observer
     
     events (NotifyAccess = private)
         OpenedExperiment
@@ -10,6 +10,7 @@ classdef MainService < symphonyui.util.mixin.Observer
     end
     
     properties (Access = private)
+        experimentFactory
         rigRepository
         protocolRepository
     end
@@ -23,7 +24,9 @@ classdef MainService < symphonyui.util.mixin.Observer
     methods
         
         % Assumes at least one rig and protocol exist in the repos at all times (usually a null object).
-        function obj = MainService(rigRepository, protocolRepository)
+        function obj = AcquisitionService(experimentFactory, rigRepository, protocolRepository)
+            obj.experimentFactory = experimentFactory;
+            
             obj.rigRepository = rigRepository;
             obj.addListener(rigRepository, 'LoadedAll', @(h,d)notify(obj, 'ChangedAvailableRigs'));
             rigs = rigRepository.getAll();
@@ -57,12 +60,21 @@ classdef MainService < symphonyui.util.mixin.Observer
         
         %% Experiment
         
+        function createExperiment(obj, name, location)
+            if obj.hasCurrentExperiment
+                error('An experiment is already open');
+            end
+            experiment = obj.experimentFactory.create(name, location);
+            experiment.open();
+            obj.currentExperiment = experiment;
+            notify(obj, 'OpenedExperiment');
+        end
+        
         function openExperiment(obj, name, location)
             if obj.hasCurrentExperiment
                 error('An experiment is already open');
             end
-            experiment = symphonyui.core.Experiment(name, location);
-            experiment.open();
+            experiment = obj.experimentFactory.open(name, location);
             obj.currentExperiment = experiment;
             notify(obj, 'OpenedExperiment');
         end

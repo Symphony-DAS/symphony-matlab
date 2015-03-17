@@ -16,7 +16,7 @@ classdef App < handle
         
         function obj = App(config)
             if nargin < 1
-                config = symphonyui.app.Config();
+                config = symphonyui.infra.Config();
             end
             obj.config = config;
         end

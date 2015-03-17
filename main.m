@@ -7,16 +7,17 @@ function fig = main()
     end
 
     app = symphonyui.app.App();
-
+    
+    experimentFactory = symphonyui.infra.ExperimentFactory();
     rigRepository = symphonyui.infra.RigRepository(app.config);
     protocolRepository = symphonyui.infra.ProtocolRepository(app.config);
     
-    mainService = symphonyui.app.MainService(rigRepository, protocolRepository);
+    acquisitionService = symphonyui.app.AcquisitionService(experimentFactory, rigRepository, protocolRepository);
     
-    rigPresenter = symphonyui.ui.presenters.SelectRigPresenter(mainService, app);
+    rigPresenter = symphonyui.ui.presenters.SelectRigPresenter(acquisitionService, app);
     rigPresenter.view.showDialog();
     
-    mainPresenter = symphonyui.ui.presenters.MainPresenter(mainService, app);
+    mainPresenter = symphonyui.ui.presenters.MainPresenter(acquisitionService, app);
     mainPresenter.view.show();
     
     fig = mainPresenter.view.getFigureHandle();

@@ -17,7 +17,7 @@ classdef Settings < handle
     methods (Static)
         
         function d = getDefault(setting)
-            import symphonyui.app.Settings;
+            import symphonyui.infra.Settings;
             
             switch setting
                 case Settings.GENERAL_RIG_SEARCH_PATH

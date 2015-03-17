@@ -12,7 +12,7 @@ classdef Config < handle
         
         function v = get(obj, key, default)
             if nargin < 3
-                default = symphonyui.app.Settings.getDefault(key);
+                default = symphonyui.infra.Settings.getDefault(key);
             end
             
             if ispref(obj.group, key)
@@ -37,7 +37,7 @@ classdef Config < handle
                 addpref(obj.group, key, value);
             end
             
-            notify(obj, 'Changed', symphonyui.app.KeyValueEventData(key, value));
+            notify(obj, 'Changed', symphonyui.infra.KeyValueEventData(key, value));
         end
         
         function clear(obj)
