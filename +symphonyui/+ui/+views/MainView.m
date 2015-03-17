@@ -2,6 +2,7 @@ classdef MainView < symphonyui.ui.View
     
     events
         NewExperiment
+        OpenExperiment
         CloseExperiment
         Exit
         BeginEpochGroup
@@ -25,7 +26,7 @@ classdef MainView < symphonyui.ui.View
     properties (Access = private)
         fileMenu
         experimentMenu
-        acquireMenu
+        acquisitionMenu
         toolsMenu
         helpMenu
         protocolDropDown
@@ -34,6 +35,7 @@ classdef MainView < symphonyui.ui.View
         previewButton
         pauseButton
         stopButton
+        viewExperimentButton
         statusText
     end
     
@@ -51,6 +53,9 @@ classdef MainView < symphonyui.ui.View
             obj.fileMenu.newExperiment = uimenu(obj.fileMenu.root, ...
                 'Label', 'New Experiment...', ...
                 'Callback', @(h,d)notify(obj, 'NewExperiment'));
+            obj.fileMenu.openExperiment = uimenu(obj.fileMenu.root, ...
+                'Label', 'Open Experiment...', ...
+                'Callback', @(h,d)notify(obj, 'OpenExperiment'));
             obj.fileMenu.closeExperiment = uimenu(obj.fileMenu.root, ...
                 'Label', 'Close Experiment', ...
                 'Callback', @(h,d)notify(obj, 'CloseExperiment'));
@@ -78,21 +83,21 @@ classdef MainView < symphonyui.ui.View
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'ViewExperiment'));
             
-            % Acquire menu.
-            obj.acquireMenu.root = uimenu(obj.figureHandle, ...
-                'Label', 'Acquire');
-            obj.acquireMenu.record = uimenu(obj.acquireMenu.root, ...
+            % Acquisition menu.
+            obj.acquisitionMenu.root = uimenu(obj.figureHandle, ...
+                'Label', 'Acquisition');
+            obj.acquisitionMenu.record = uimenu(obj.acquisitionMenu.root, ...
                 'Label', 'Record', ...
                 'Accelerator', 'r', ...
                 'Callback', @(h,d)notify(obj, 'Record'));
-            obj.acquireMenu.preview = uimenu(obj.acquireMenu.root, ...
+            obj.acquisitionMenu.preview = uimenu(obj.acquisitionMenu.root, ...
                 'Label', 'Preview', ...
                 'Accelerator', 'v', ...
                 'Callback', @(h,d)notify(obj, 'Preview'));
-            obj.acquireMenu.pause = uimenu(obj.acquireMenu.root, ...
+            obj.acquisitionMenu.pause = uimenu(obj.acquisitionMenu.root, ...
                 'Label', 'Pause', ...
                 'Callback', @(h,d)notify(obj, 'Pause'));
-            obj.acquireMenu.stop = uimenu(obj.acquireMenu.root, ...
+            obj.acquisitionMenu.stop = uimenu(obj.acquisitionMenu.root, ...
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
             
@@ -148,58 +153,63 @@ classdef MainView < symphonyui.ui.View
                 'Parent', mainLayout);
             layout = uiextras.HBox( ...
                 'Parent', controlsLayout, ...
-                'Spacing', 1);
+                'Spacing', 0);
             obj.recordButton = uicontrol( ...
                 'Parent', layout, ...        
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'record_big.png'] '"/></html>'], ...
                 'TooltipString', 'Record', ...
                 'Callback', @(h,d)notify(obj, 'Record'));
+            try %#ok<TRYNC>
+                java(findjobj(obj.recordButton)).setFlyOverAppearance(true);
+            end
             obj.previewButton = uicontrol( ...
                 'Parent', layout, ...        
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'preview_big.png'] '"/></html>'], ...
                 'TooltipString', 'Preview', ...
                 'Callback', @(h,d)notify(obj, 'Preview'));
+            try %#ok<TRYNC>
+                java(findjobj(obj.previewButton)).setFlyOverAppearance(true);
+            end
             obj.pauseButton = uicontrol( ...
                 'Parent', layout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'pause_big.png'] '"/></html>'], ...
                 'TooltipString', 'Pause', ...
                 'Callback', @(h,d)notify(obj, 'Pause'));
+            try %#ok<TRYNC>
+                java(findjobj(obj.pauseButton)).setFlyOverAppearance(true);
+            end
             obj.stopButton = uicontrol( ...
                 'Parent', layout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'stop_big.png'] '"/></html>'], ...
                 'TooltipString', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
+            try %#ok<TRYNC>
+                java(findjobj(obj.stopButton)).setFlyOverAppearance(true);
+            end
+            uiextras.Empty('Parent', layout);
+            obj.statusText = uicontrol( ...
+                'Parent', layout, ...
+                'Style', 'edit', ...
+                'HorizontalAlignment', 'right', ...
+                'ForegroundColor', [.12 .12 .12], ...
+                'TooltipString', 'Status', ...
+                'String', 'Status');
+            try %#ok<TRYNC>
+                jEditbox = java(findjobj(obj.statusText));
+                jEditbox.setEditable(false);
+                jEditbox.setOpaque(false);
+                jEditbox.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+            end
             
-            layout = uiextras.HBox( ...
-                'Parent', controlsLayout);
-            obj.statusText = createLabel(layout, 'Status');
+            set(layout, 'Sizes', [34 34 34 34 12 -1]);
             
-            set(controlsLayout, 'Sizes', [-1 25]);
+            set(controlsLayout, 'Sizes', 34);
             
-            set(mainLayout, 'Sizes', [25 -1 65]);
-            
-            
-            obj.setupFileMenu();
-        end
-        
-        function setupFileMenu(obj, ~, ~)
-            
-            iconsFolder = fullfile(symphonyui.app.App.rootPath, 'resources', 'icons');
-            
-            drawnow();
-            jFrame = get(handle(obj.figureHandle),'JavaFrame');
-            jMenuBar = jFrame.fHG2Client.getMenuBar;
-            jFileMenu = jMenuBar.getComponent(0);
-            jFileMenu.doClick(); % open the File menu
-            jFileMenu.doClick(); % close the menu
-            drawnow;
-            pause(0.1);
-            jNewExperiment = jFileMenu.getMenuComponent(0);
-            jNewExperiment.setIcon(javax.swing.ImageIcon(fullfile(iconsFolder, 'experiment_new.png')));
+            set(mainLayout, 'Sizes', [25 -1 34]);
         end
         
         function close(obj)
@@ -213,6 +223,10 @@ classdef MainView < symphonyui.ui.View
         
         function enableNewExperiment(obj, tf)
             set(obj.fileMenu.newExperiment, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function enableOpenExperiment(obj, tf)
+            set(obj.fileMenu.openExperiment, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableCloseExperiment(obj, tf)
@@ -284,30 +298,31 @@ classdef MainView < symphonyui.ui.View
         
         function enableRecord(obj, tf)
             enable = symphonyui.util.onOff(tf);
-            set(obj.acquireMenu.record, 'Enable', enable);
+            set(obj.acquisitionMenu.record, 'Enable', enable);
             set(obj.recordButton, 'Enable', enable);
         end
         
         function enablePreview(obj, tf)
             enable = symphonyui.util.onOff(tf);
-            set(obj.acquireMenu.preview, 'Enable', enable);
+            set(obj.acquisitionMenu.preview, 'Enable', enable);
             set(obj.previewButton, 'Enable', enable);
         end
         
         function enablePause(obj, tf)
             enable = symphonyui.util.onOff(tf);
-            set(obj.acquireMenu.pause, 'Enable', enable);
+            set(obj.acquisitionMenu.pause, 'Enable', enable);
             set(obj.pauseButton, 'Enable', enable);
         end
         
         function enableStop(obj, tf)
             enable = symphonyui.util.onOff(tf);
-            set(obj.acquireMenu.stop, 'Enable', enable);
+            set(obj.acquisitionMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
         end
         
         function setStatus(obj, s)
             set(obj.statusText, 'String', s);
+            set(obj.statusText, 'TooltipString', s);
         end
         
     end

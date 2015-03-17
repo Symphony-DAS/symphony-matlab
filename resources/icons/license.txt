@@ -5,19 +5,17 @@ public domain.
 
 Icons from the Humanity icon theme:
 - pause.png
+- pause_big.png
 - preview.png
+- preview_big.png
 - record.png
+- record_big.png
 - stop.png
+- stop_big.png
 
 
 The Farm-Fresh icon set is licensed under Creative Commons Attribution 3.0
 License. http://www.fatcow.com/free-icons
 
-Icons from the Farm-Fresh icon set:
-- epoch.png
-- experiment.png
-- group.png
-- group_begin.png
-- group_end.png
-- note_add.png
+All other icons are from the Farm-Fresh icon set.
 
