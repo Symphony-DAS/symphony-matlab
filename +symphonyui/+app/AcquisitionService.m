@@ -131,7 +131,7 @@ classdef AcquisitionService < symphonyui.util.mixin.Observer
             p = obj.currentProtocol;
         end
         
-        %% Acquire
+        %% Acquisition
         
         function record(obj)
             if ~obj.hasCurrentExperiment

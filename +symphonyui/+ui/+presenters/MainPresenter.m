@@ -303,7 +303,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enablePreview = false;
             enablePause = false;
             enableStop = false;
-            status = 'Unknown';
+            enableProgressIndicator = false;
+            enableWarning = false;
+            warning = '';
+            status = '';
             
             switch obj.acquisitionService.getCurrentRig().state
                 case RigState.STOPPED
@@ -311,6 +314,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                     enablePreview = true;
                     status = 'Stopped';
                 case RigState.STOPPING
+                    enableProgressIndicator = true;
                     status = 'Stopping...';
                 case RigState.PAUSED
                     enableRecord = hasExperiment;
@@ -319,14 +323,17 @@ classdef MainPresenter < symphonyui.ui.Presenter
                     status = 'Paused';
                 case RigState.PAUSING
                     enableStop = true;
+                    enableProgressIndicator = true;
                     status = 'Pausing...';
                 case RigState.PREVIEWING
                     enablePause = true;
                     enableStop = true;
+                    enableProgressIndicator = true;
                     status = 'Previewing...';
                 case RigState.RECORDING
                     enablePause = true;
                     enableStop = true;
+                    enableProgressIndicator = true;
                     status = 'Recording...';
             end
             
@@ -336,7 +343,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 enablePreview = false;
                 enablePause = false;
                 enableStop = false;
-                status = msg;
+                enableWarning = true;
+                warning = msg;
             end
             
             obj.view.enableNewExperiment(enableNewExperiment);
@@ -354,6 +362,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enablePreview(enablePreview);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
+            obj.view.enableProgressIndicator(enableProgressIndicator);
+            obj.view.enableWarning(enableWarning);
+            obj.view.setWarning(warning);
             obj.view.setStatus(status);
         end
         

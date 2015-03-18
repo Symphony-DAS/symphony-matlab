@@ -187,6 +187,11 @@ classdef ExperimentView < symphonyui.ui.View
             jtable.scrollRectToVisible(jtable.getCellRect(jtable.getRowCount()-1, 0, true));
         end
         
+        function clearNotes(obj)
+            jtable = obj.notesTable.getTable();
+            jtable.getModel.setRowCount(0);
+        end
+        
         function setExperimentName(obj, n)
             set(obj.experimentCard.nameField, 'String', n);
         end
