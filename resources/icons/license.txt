@@ -12,6 +12,8 @@ Icons from the Humanity icon theme:
 - record_big.png
 - stop.png
 - stop_big.png
+- warning.png
+- progress_indicator.gif
 
 
 The Farm-Fresh icon set is licensed under Creative Commons Attribution 3.0

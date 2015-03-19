@@ -157,7 +157,7 @@ classdef MainView < symphonyui.ui.View
                 'HighlightColor', [160/255 160/255 160/255]);
             controlsLayout = uiextras.HBox( ...
                 'Parent', controlsPanel);
-            label = javax.swing.JLabel(['<html><img src="' [iconsUrl 'warning_big.png'] '" align="right"/></html>']);
+            label = javax.swing.JLabel(['<html><img src="' [iconsUrl 'warning.png'] '" align="right"/></html>']);
             label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             label.setVisible(false);
             obj.warningIcon = javacomponent(label, [], controlsLayout);
@@ -199,7 +199,7 @@ classdef MainView < symphonyui.ui.View
                 java(findjobj(obj.stopButton)).setFlyOverAppearance(true);
             end
             uiextras.Empty('Parent', controlsLayout);
-            label = javax.swing.JLabel(['<html><img src="' [iconsUrl 'progress_indicator_big.gif'] '"/></html>']);
+            label = javax.swing.JLabel(['<html><img src="' [iconsUrl 'progress_indicator.gif'] '"/></html>']);
             label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             label.setVisible(false);
             obj.progressIndicatorIcon = javacomponent(label, [], controlsLayout);
