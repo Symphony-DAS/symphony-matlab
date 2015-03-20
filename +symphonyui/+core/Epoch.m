@@ -1,11 +1,19 @@
 classdef Epoch < handle
     
     properties
+        id
+        label
         stimuli
         responses
+        epochGroup
     end
     
     methods
+        
+        function obj = Epoch(epochGroup, label)
+            obj.id = char(java.util.UUID.randomUUID);
+            obj.label = label;
+        end
         
         function addKeyword(obj, keyword)
             

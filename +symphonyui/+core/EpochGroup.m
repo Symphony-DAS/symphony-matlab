@@ -6,6 +6,7 @@ classdef EpochGroup < handle
         source
         keywords
         attributes
+        epochs
         
         parent
         children

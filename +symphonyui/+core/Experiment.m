@@ -5,6 +5,7 @@ classdef Experiment < handle
         Closed
         BeganEpochGroup
         EndedEpochGroup
+        RecordedEpoch
         AddedNote
     end
     
