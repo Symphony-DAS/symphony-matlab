@@ -19,6 +19,7 @@ classdef SelectRigView < symphonyui.ui.View
             
             set(obj.figureHandle, 'Name', 'Select Rig');
             set(obj.figureHandle, 'Position', screenCenter(250, 79));
+            set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...

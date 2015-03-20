@@ -10,37 +10,40 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
             if nargin < 3
                 view = symphonyui.ui.views.SelectRigView();
             end
-            
-            obj = obj@symphonyui.ui.Presenter(app, view);            
-            obj.addListener(view, 'Ok', @obj.onViewSelectedOk);
-            obj.addListener(view, 'Cancel', @obj.onViewSelectedCancel);
-            
+            obj = obj@symphonyui.ui.Presenter(app, view);
             obj.acquisitionService = acquisitionService;
-            obj.addListener(acquisitionService, 'ChangedAvailableRigs', @obj.onServiceChangedAvailableRigs);
-            obj.addListener(acquisitionService, 'SelectedRig', @obj.onServiceSelectedRig);
         end
         
     end
     
     methods (Access = protected)
         
-        function onViewShown(obj, ~, ~)            
-            onViewShown@symphonyui.ui.Presenter(obj);
-            
-            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
+        function onGoing(obj)
             obj.view.setRigList(obj.acquisitionService.getAvailableRigIds());
             obj.view.setSelectedRig(obj.acquisitionService.getCurrentRig().id);
+        end
+        
+        function onBind(obj)
+            v = obj.view;
+            obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
+            obj.addListener(v, 'Ok', @obj.onViewSelectedOk);
+            obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
+            
+            s = obj.acquisitionService;
+            obj.addListener(s, 'ChangedAvailableRigs', @obj.onServiceChangedAvailableRigs);
+            obj.addListener(s, 'SelectedRig', @obj.onServiceSelectedRig);
         end
         
     end
     
     methods (Access = private)
         
-        function onViewWindowKeyPress(obj, ~, data)
-            if strcmp(data.Key, 'return')
-                obj.onViewSelectedOK();
-            elseif strcmp(data.Key, 'escape')
-                obj.onViewSelectedCancel();
+        function onViewKeyPress(obj, ~, data)
+            switch data.key
+                case 'return'
+                    obj.onViewSelectedOk();
+                case 'escape'
+                    obj.onViewSelectedCancel();
             end
         end
         
@@ -65,11 +68,11 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
                 return;
             end
             
-            obj.view.close();
+            obj.view.hide();
         end
         
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.close();
+            obj.view.hide();
         end
         
     end

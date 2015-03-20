@@ -1,6 +1,7 @@
 classdef Note < handle
     
     properties (SetAccess = private)
+        id
         text
         date
     end
@@ -11,7 +12,7 @@ classdef Note < handle
             if nargin < 2
                 date = now;
             end
-            
+            obj.id = char(java.util.UUID.randomUUID);
             obj.text = text;
             obj.date = date;
         end

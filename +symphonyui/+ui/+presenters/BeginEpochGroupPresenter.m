@@ -10,11 +10,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             if nargin < 3
                 view = symphonyui.ui.views.BeginEpochGroupView();
             end
-            
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.addListener(view, 'Begin', @obj.onViewSelectedBegin);
-            obj.addListener(view, 'Cancel', @obj.onViewSelectedCancel);
-            
             obj.experiment = experiment;
         end
         
@@ -22,11 +18,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     
     methods (Access = protected)
 
-        function onViewShown(obj, ~, ~)
-            onViewShown@symphonyui.ui.Presenter(obj);
-            
-            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
-            
+        function onGoing(obj, ~, ~)
             parent = obj.experiment.currentEpochGroup;
             if isempty(parent)
                 obj.view.setParent([obj.experiment.name ' (Experiment)']);
@@ -44,16 +36,24 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
                 obj.view.showError(msg);
             end
         end
+        
+        function onBind(obj)
+            v = obj.view;
+            obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
+            obj.addListener(v, 'Begin', @obj.onViewSelectedBegin);
+            obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
+        end
 
     end
     
     methods (Access = private)
 
-        function onViewWindowKeyPress(obj, ~, data)
-            if strcmp(data.Key, 'return')
-                obj.onViewSelectedBegin();
-            elseif strcmp(data.Key, 'escape')
-                obj.onViewSelectedCancel();
+        function onViewKeyPress(obj, ~, data)
+            switch data.key
+                case 'return'
+                    obj.onViewSelectedBegin();
+                case 'escape'
+                    obj.onViewSelectedCancel();
             end
         end
         
@@ -70,11 +70,11 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
                 return;
             end
             
-            obj.view.close();
+            obj.view.hide();
         end
         
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.close();
+            obj.view.hide();
         end
         
     end

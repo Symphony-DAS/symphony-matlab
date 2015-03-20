@@ -10,12 +10,7 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             if nargin < 3
                 view = symphonyui.ui.views.NewExperimentView();
             end
-            
-            obj = obj@symphonyui.ui.Presenter(app, view);            
-            obj.addListener(view, 'BrowseLocation', @obj.onViewSelectedBrowseLocation);
-            obj.addListener(view, 'Open', @obj.onViewSelectedOpen);
-            obj.addListener(view, 'Cancel', @obj.onViewSelectedCancel);
-            
+            obj = obj@symphonyui.ui.Presenter(app, view);
             obj.acquisitionService = acquisitionService;
         end
         
@@ -23,11 +18,7 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
     
     methods (Access = protected)
         
-        function onViewShown(obj, ~, ~)
-            onViewShown@symphonyui.ui.Presenter(obj);
-            
-            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
-            
+        function onGoing(obj)
             config = obj.app.config;
             name = config.get(symphonyui.infra.Settings.EXPERIMENT_DEFAULT_NAME);
             location = config.get(symphonyui.infra.Settings.EXPERIMENT_DEFAULT_LOCATION);
@@ -41,15 +32,24 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             end
         end
         
+        function onBind(obj)
+            v = obj.view;
+            obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
+            obj.addListener(v, 'BrowseLocation', @obj.onViewSelectedBrowseLocation);
+            obj.addListener(v, 'Open', @obj.onViewSelectedOpen);
+            obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
+        end
+        
     end
     
     methods (Access = private)
         
-        function onViewWindowKeyPress(obj, ~, data)
-            if strcmp(data.Key, 'return')
-                obj.onViewSelectedOpen();
-            elseif strcmp(data.Key, 'escape')
-                obj.onViewSelectedCancel();
+        function onViewKeyPress(obj, ~, data)
+            switch data.key
+                case 'return'
+                    obj.onViewSelectedOpen();
+                case 'escape'
+                    obj.onViewSelectedCancel();
             end
         end
         
@@ -74,11 +74,11 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
                 return;
             end
             
-            obj.view.close();
+            obj.view.hide();
         end
         
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.close();
+            obj.view.hide();
         end
         
     end

@@ -19,6 +19,7 @@ classdef AddNoteView < symphonyui.ui.View
             
             set(obj.figureHandle, 'Name', 'Add Note');
             set(obj.figureHandle, 'Position', screenCenter(300, 79));
+            set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...

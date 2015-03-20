@@ -1,8 +1,8 @@
 classdef EpochGroup < handle
     
     properties
-        label
         id
+        label
         source
         keywords
         attributes
@@ -14,12 +14,9 @@ classdef EpochGroup < handle
     methods
         
         function obj = EpochGroup(parent, label)
-            obj.parent = parent;
-            if ~isempty(parent)
-                parent.addChild(obj);
-            end
-            obj.label = label;
             obj.id = char(java.util.UUID.randomUUID);
+            obj.parent = parent;
+            obj.label = label;
             obj.children = symphonyui.core.EpochGroup.empty(0, 1);
         end
         

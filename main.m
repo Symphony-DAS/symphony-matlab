@@ -1,4 +1,4 @@
-function fig = main()
+function main()
     jpath = { ...
         fullfile(symphonyui.app.App.rootPath, 'bundled', 'PropertyGrid'), ...
         fullfile(symphonyui.app.App.rootPath, 'bundled', 'JavaTreeWrapper', '+uiextras', '+jTree', 'UIExtrasTree.jar')};
@@ -15,10 +15,8 @@ function fig = main()
     acquisitionService = symphonyui.app.AcquisitionService(experimentFactory, rigRepository, protocolRepository);
     
     rigPresenter = symphonyui.ui.presenters.SelectRigPresenter(acquisitionService, app);
-    rigPresenter.view.showDialog();
+    rigPresenter.goWaitStop();
     
     mainPresenter = symphonyui.ui.presenters.MainPresenter(acquisitionService, app);
-    mainPresenter.view.show();
-    
-    fig = mainPresenter.view.getFigureHandle();
+    mainPresenter.go();
 end

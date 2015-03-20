@@ -22,6 +22,7 @@ classdef NewExperimentView < symphonyui.ui.View
             
             set(obj.figureHandle, 'Name', 'New Experiment');
             set(obj.figureHandle, 'Position', screenCenter(400, 115));
+            set(obj.figureHandle, 'WindowStyle', 'modal');
             
             labelSize = 58;
             mainLayout = uiextras.VBox( ...

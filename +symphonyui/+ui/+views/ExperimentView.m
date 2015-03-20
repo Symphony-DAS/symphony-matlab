@@ -20,6 +20,7 @@ classdef ExperimentView < symphonyui.ui.View
         epochCard
         notesTable
         noteField
+        noteMap
     end
     
     methods
@@ -112,6 +113,8 @@ classdef ExperimentView < symphonyui.ui.View
             obj.notesTable.getTableScrollPane.getRowHeader.setVisible(0);
             obj.notesTable.getTable.getColumnModel.getColumn(0).setMaxWidth(80);
             
+            obj.noteMap = containers.Map();
+            
             set(mainLayout, 'Sizes', [-1 110]);
         end
         
@@ -181,15 +184,11 @@ classdef ExperimentView < symphonyui.ui.View
             set(obj.cardPanel, 'Selection', index);
         end
         
-        function addNote(obj, note)
+        function addNote(obj, id, date, text)
             jtable = obj.notesTable.getTable();
-            jtable.getModel.addRow({datestr(note.date, 14), note.text});
+            jtable.getModel().addRow({datestr(date, 14), text});
             jtable.scrollRectToVisible(jtable.getCellRect(jtable.getRowCount()-1, 0, true));
-        end
-        
-        function clearNotes(obj)
-            jtable = obj.notesTable.getTable();
-            jtable.getModel.setRowCount(0);
+            obj.noteMap(id) = jtable.getModel.getRowCount() - 1;
         end
         
         function setExperimentName(obj, n)

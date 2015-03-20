@@ -10,11 +10,7 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
             if nargin < 3
                 view = symphonyui.ui.views.AddNoteView();
             end
-            
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.addListener(view, 'Add', @obj.onViewSelectedAdd);
-            obj.addListener(view, 'Cancel', @obj.onViewSelectedCancel);
-            
             obj.experiment = experiment;
         end
         
@@ -22,21 +18,26 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
     
     methods (Access = protected)
 
-        function onViewShown(obj, ~, ~)
-            onViewShown@symphonyui.ui.Presenter(obj);
-            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
+        function onGo(obj)
             obj.view.requestTextFocus();
         end
-
+        
+        function onBind(obj)
+            v = obj.view;
+            obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
+            obj.addListener(v, 'Add', @obj.onViewSelectedAdd);
+            obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
+        end
     end
     
     methods (Access = private)
 
-        function onViewWindowKeyPress(obj, ~, data)
-            if strcmp(data.Key, 'return')
-                obj.onViewSelectedAdd();
-            elseif strcmp(data.Key, 'escape')
-                obj.onViewSelectedCancel();
+        function onViewKeyPress(obj, ~, data)
+            switch data.key
+                case 'return'
+                    obj.onViewSelectedAdd();
+                case 'escape'
+                    obj.onViewSelectedCancel();
             end
         end
         
@@ -52,11 +53,11 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
                 return;
             end
             
-            obj.view.close();
+            obj.view.hide();
         end
         
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.close();
+            obj.view.hide();
         end
         
     end

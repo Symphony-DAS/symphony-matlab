@@ -11,10 +11,7 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
             if nargin < 3
                 view = symphonyui.ui.views.MessageBoxView();
             end
-            
-            obj = obj@symphonyui.ui.Presenter([], view);
-            obj.addListener(view, 'Ok', @obj.onViewSelectedOk);
-            
+            obj = obj@symphonyui.ui.Presenter([], view);            
             obj.message = message;
             obj.title = title;
         end
@@ -23,11 +20,14 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
     
     methods (Access = protected)
         
-        function onViewShown(obj, ~, ~)
-            onViewShown@symphonyui.ui.Presenter(obj);
-            
+        function onGoing(obj)
             obj.view.setTitle(obj.title);
             obj.view.setMessage(obj.message);
+        end
+        
+        function onBind(obj)
+            v = obj.view;
+            obj.addListener(v, 'Ok', @obj.onViewSelectedOk);
         end
         
     end
@@ -35,7 +35,7 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function onViewSelectedOk(obj, ~, ~)
-            obj.view.close();
+            obj.view.hide();
         end
         
     end

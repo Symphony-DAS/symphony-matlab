@@ -15,6 +15,7 @@ classdef MessageBoxView < symphonyui.ui.View
             import symphonyui.util.*;
             
             set(obj.figureHandle, 'Position', screenCenter(270, 120));
+            set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...

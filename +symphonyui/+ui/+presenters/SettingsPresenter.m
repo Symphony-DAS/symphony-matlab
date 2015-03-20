@@ -6,31 +6,31 @@ classdef SettingsPresenter < symphonyui.ui.Presenter
             if nargin < 2
                 view = symphonyui.ui.views.SettingsView();
             end
-
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.addListener(view, 'SelectedNode', @obj.onViewSelectedNode);
-            obj.addListener(view, 'Ok', @obj.onViewSelectedOk);
-            obj.addListener(view, 'Cancel', @obj.onViewSelectedCancel);
         end
 
     end
 
     methods (Access = protected)
-
-        function onViewShown(obj, ~, ~)
-            onViewShown@symphonyui.ui.Presenter(obj);
-            obj.view.setWindowKeyPressFcn(@obj.onViewWindowKeyPress);
+        
+        function onBind(obj)
+            v = obj.view;
+            obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
+            obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
+            obj.addListener(v, 'Ok', @obj.onViewSelectedOk);
+            obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
 
     end
 
     methods (Access = private)
 
-        function onViewWindowKeyPress(obj, ~, data)
-            if strcmp(data.Key, 'return')
-                obj.onViewSelectedOk();
-            elseif strcmp(data.Key, 'escape')
-                obj.onViewSelectedCancel();
+        function onViewKeyPress(obj, ~, data)
+            switch data.key
+                case 'return'
+                    obj.onViewSelectedOk();
+                case 'escape'
+                    obj.onViewSelectedCancel();
             end
         end
 
@@ -88,11 +88,11 @@ classdef SettingsPresenter < symphonyui.ui.Presenter
 %             epochGroup.availableInternalSolutionList = internalSolutionList;
 %             epochGroup.availableOtherList = otherList;
 
-            obj.view.close();
+            obj.view.hide();
         end
 
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.close();
+            obj.view.hide();
         end
 
     end

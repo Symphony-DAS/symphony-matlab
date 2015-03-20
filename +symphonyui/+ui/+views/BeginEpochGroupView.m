@@ -20,6 +20,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             
             set(obj.figureHandle, 'Name', 'Begin Epoch Group');
             set(obj.figureHandle, 'Position', screenCenter(300, 111));
+            set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
