@@ -78,7 +78,9 @@ classdef ExperimentView < symphonyui.ui.View
             experimentLabelSize = 60;
             obj.experimentCard.nameField = createLabeledTextField(experimentLayout, 'Name:', [experimentLabelSize -1]);
             obj.experimentCard.locationField = createLabeledTextField(experimentLayout, 'Location:', [experimentLabelSize -1]);
-            set(experimentLayout, 'Sizes', [25 25]);
+            obj.experimentCard.purposeField = createLabeledTextField(experimentLayout, 'Purpose:', [experimentLabelSize -1]);
+            obj.experimentCard.startTimeField = createLabeledTextField(experimentLayout, 'Start time:', [experimentLabelSize -1]);
+            set(experimentLayout, 'Sizes', [25 25 25 25]);
             
             % Epoch group card.
             epochGroupLayout = uiextras.VBox( ...
@@ -213,6 +215,22 @@ classdef ExperimentView < symphonyui.ui.View
         
         function setExperimentLocation(obj, l)
             set(obj.experimentCard.locationField, 'String', l);
+        end
+        
+        function enableExperimentPurpose(obj, tf)
+            set(obj.experimentCard.purposeField, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function setExperimentPurpose(obj, p)
+            set(obj.experimentCard.purposeField, 'String', p);
+        end
+        
+        function enableExperimentStartTime(obj, tf)
+            set(obj.experimentCard.startTimeField, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function setExperimentStartTime(obj, t)
+            set(obj.experimentCard.startTimeField, 'String', datestr(t, 14));
         end
         
         function enableEpochGroupLabel(obj, tf)

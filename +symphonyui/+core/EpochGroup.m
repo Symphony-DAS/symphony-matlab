@@ -3,6 +3,8 @@ classdef EpochGroup < handle
     properties
         id
         label
+        startTime
+        endTime
         source
         keywords
         attributes
@@ -19,6 +21,14 @@ classdef EpochGroup < handle
             obj.parent = parent;
             obj.label = label;
             obj.children = symphonyui.core.EpochGroup.empty(0, 1);
+        end
+        
+        function start(obj)
+            obj.startTime = now;
+        end
+        
+        function stop(obj)
+            obj.endTime = now;
         end
         
         function addChild(obj, group)

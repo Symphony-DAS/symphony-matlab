@@ -60,21 +60,21 @@ classdef AcquisitionService < symphonyui.util.mixin.Observer
         
         %% Experiment
         
-        function createExperiment(obj, name, location)
+        function createExperiment(obj, name, location, purpose)
             if obj.hasCurrentExperiment
                 error('An experiment is already open');
             end
-            experiment = obj.experimentFactory.create(name, location);
+            experiment = obj.experimentFactory.create(name, location, purpose);
             experiment.open();
             obj.currentExperiment = experiment;
             notify(obj, 'OpenedExperiment');
         end
         
-        function openExperiment(obj, name, location)
+        function openExperiment(obj, path)
             if obj.hasCurrentExperiment
                 error('An experiment is already open');
             end
-            experiment = obj.experimentFactory.open(name, location);
+            experiment = obj.experimentFactory.open(path);
             obj.currentExperiment = experiment;
             notify(obj, 'OpenedExperiment');
         end

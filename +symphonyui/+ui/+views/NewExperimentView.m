@@ -10,6 +10,7 @@ classdef NewExperimentView < symphonyui.ui.View
         nameField
         locationField
         browseLocationButton
+        purposeField
         openButton
         cancelButton
     end
@@ -21,7 +22,7 @@ classdef NewExperimentView < symphonyui.ui.View
             import symphonyui.util.ui.*;
             
             set(obj.figureHandle, 'Name', 'New Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(400, 115));
+            set(obj.figureHandle, 'Position', screenCenter(400, 147));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             labelSize = 58;
@@ -42,8 +43,9 @@ classdef NewExperimentView < symphonyui.ui.View
                 'String', '...', ...
                 'Callback', @(h,d)notify(obj, 'BrowseLocation'));
             set(l, 'Sizes', [labelSize -1 30]);
+            obj.purposeField = createLabeledTextField(parametersLayout, 'Purpose:', [labelSize -1]);
             
-            set(parametersLayout, 'Sizes', [25 25]);
+            set(parametersLayout, 'Sizes', [25 25 25]);
             
             % Open/Cancel controls.
             controlsLayout = uiextras.HBox( ...
@@ -79,6 +81,14 @@ classdef NewExperimentView < symphonyui.ui.View
             set(obj.nameField, 'String', n);
         end
         
+        function l = getLocation(obj)
+            l = get(obj.locationField, 'String');
+        end
+        
+        function setLocation(obj, l)
+            set(obj.locationField, 'String', l);
+        end
+        
         function p = getPurpose(obj)
             p = get(obj.purposeField, 'String');
         end
@@ -87,12 +97,8 @@ classdef NewExperimentView < symphonyui.ui.View
             set(obj.purposeField, 'String', p);
         end
         
-        function l = getLocation(obj)
-            l = get(obj.locationField, 'String');
-        end
-        
-        function setLocation(obj, l)
-            set(obj.locationField, 'String', l);
+        function requestPurposeFocus(obj)
+            obj.requestFocus(obj.purposeField);
         end
         
     end

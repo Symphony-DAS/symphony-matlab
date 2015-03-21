@@ -23,6 +23,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         function onGoing(obj)
             obj.view.enableExperimentName(false);
             obj.view.enableExperimentLocation(false);
+            obj.view.enableExperimentPurpose(false);
+            obj.view.enableExperimentStartTime(false);
             obj.view.enableEpochGroupLabel(false);
             obj.view.enableEpochLabel(false);
             
@@ -72,6 +74,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         function selectExperiment(obj)
             obj.view.setExperimentName(obj.experiment.name);
             obj.view.setExperimentLocation(obj.experiment.location);
+            obj.view.setExperimentStartTime(obj.experiment.startTime);
+            obj.view.setExperimentPurpose(obj.experiment.purpose);
             obj.view.setSelectedNode(obj.experiment.id);
             obj.view.setSelectedCard(1);
         end
