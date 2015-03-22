@@ -12,6 +12,8 @@ classdef Settings < handle
         
         EPOCH_GROUP_LABEL_LIST = 'EPOCH_GROUP_LABEL_LIST'
         
+        SOURCE_LABEL_LIST = 'SOURCE_LABEL_LIST'
+        
     end
     
     methods (Static)
@@ -30,6 +32,8 @@ classdef Settings < handle
                     d = @()pwd();
                 case Settings.EPOCH_GROUP_LABEL_LIST
                     d = {'Control', 'Drug', 'Wash'};
+                case Settings.SOURCE_LABEL_LIST
+                    d = {'Animal', 'Cortex', 'Cell'};
                 otherwise
                     error(['No default for setting ' setting]);
             end

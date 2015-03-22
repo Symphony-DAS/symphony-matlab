@@ -6,6 +6,7 @@ classdef Experiment < handle
         BeganEpochGroup
         EndedEpochGroup
         RecordedEpoch
+        AddedSource
         AddedNote
     end
     
@@ -18,6 +19,7 @@ classdef Experiment < handle
         endTime
         epochGroups
         currentEpochGroup
+        sources
         notes
     end
     
@@ -29,6 +31,7 @@ classdef Experiment < handle
             obj.location = location;
             obj.purpose = purpose;
             obj.epochGroups = symphonyui.core.EpochGroup.empty(0, 1);
+            obj.sources = symphonyui.core.Source.empty(0, 1);
             obj.notes = symphonyui.core.Note.empty(0, 1);
         end
         
@@ -74,8 +77,14 @@ classdef Experiment < handle
             tf = ~isempty(obj.currentEpochGroup);
         end
         
-        function addNote(obj, note)
-            obj.notes(end + 1) = note;
+        function addSource(obj, label)
+            source = symphonyui.core.Source(obj, label);
+            obj.sources(end + 1) = source;
+            notify(obj, 'AddedSource', symphonyui.core.SourceEventData(source));
+        end
+        
+        function addNote(obj, text)
+            obj.notes(end + 1) = symphonyui.core.Note(text, now);
             notify(obj, 'AddedNote');
         end
         

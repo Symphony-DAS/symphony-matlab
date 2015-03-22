@@ -26,7 +26,9 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.enableExperimentPurpose(false);
             obj.view.enableExperimentStartTime(false);
             obj.view.enableEpochGroupLabel(false);
+            obj.view.enableEpochGroupStartTime(false);
             obj.view.enableEpochLabel(false);
+            obj.view.enableSourceLabel(false);
             
             obj.addExperiment();
             obj.selectExperiment();
@@ -37,12 +39,14 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
+            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
             
             e = obj.experiment;
             obj.addListener(e, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
             obj.addListener(e, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
+            obj.addListener(e, 'AddedSource', @obj.onExperimentAddedSource);
             obj.addListener(e, 'AddedNote', @obj.onExperimentAddedNote);
         end
 
@@ -59,6 +63,11 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         function addExperiment(obj)
             obj.view.setExperimentNode(obj.experiment.name, obj.experiment.id);
             obj.idMap(obj.experiment.id) = obj.experiment;
+            
+            sources = obj.experiment.sources;
+            for i = 1:numel(sources)
+                obj.addSource(source(i));
+            end
             
             groups = obj.experiment.epochGroups;
             for i = 1:numel(groups)
@@ -99,12 +108,14 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             
             groups = group.children;
             for i = 1:numel(groups)
-                obj.addEpochGroupNode(groups(i));
+                obj.addEpochGroup(groups(i));
             end
         end
         
         function selectEpochGroup(obj, group)
             obj.view.setEpochGroupLabel(group.label);
+            obj.view.setEpochGroupStartTime(group.startTime);
+            obj.view.setEpochGroupSource(group.source.label);
             obj.view.setSelectedNode(group.id);
             obj.view.setSelectedCard(2);
         end
@@ -131,6 +142,33 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedCard(3);
         end
         
+        function onViewSelectedAddSource(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.experiment, obj.app);
+            presenter.goWaitStop();
+        end
+        
+        function onExperimentAddedSource(obj, ~, data)
+            source = data.source;
+            obj.addSource(source);
+            obj.selectSource(source);
+        end
+        
+        function addSource(obj, source)
+            obj.view.addSourceNode(source.parent.id, source.label, source.id);
+            obj.idMap(source.id) = source;
+            
+            sources = source.children;
+            for i = 1:numel(sources)
+                obj.addSource(sources(i));
+            end
+        end
+        
+        function selectSource(obj, source)
+            obj.view.setSourceLabel(source.label);
+            obj.view.setSelectedNode(source.id);
+            obj.view.setSelectedCard(4);
+        end
+        
         function onViewSelectedAddNote(obj, ~, ~)
             presenter = symphonyui.ui.presenters.AddNotePresenter(obj.experiment, obj.app);
             presenter.goWaitStop();
@@ -155,6 +193,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
                     obj.selectEpochGroup(item);
                 case 'symphonyui.core.Epoch'
                     obj.selectEpoch(item);
+                case 'symphonyui.core.Source'
+                    obj.selectSource(item);
             end
         end
 

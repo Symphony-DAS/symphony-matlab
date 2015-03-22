@@ -7,6 +7,7 @@ classdef MainView < symphonyui.ui.View
         Exit
         BeginEpochGroup
         EndEpochGroup
+        AddSource
         AddNote
         ViewExperiment
         SelectedProtocol
@@ -76,6 +77,10 @@ classdef MainView < symphonyui.ui.View
             obj.experimentMenu.endEpochGroup = uimenu(obj.experimentMenu.root, ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
+            obj.experimentMenu.addSource = uimenu(obj.experimentMenu.root, ...
+                'Label', 'Add Source...', ...
+                'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'AddSource'));
             obj.experimentMenu.addNote = uimenu(obj.experimentMenu.root, ...
                 'Label', 'Add Note...', ...
                 'Separator', 'on', ...
@@ -234,6 +239,10 @@ classdef MainView < symphonyui.ui.View
         
         function enableEndEpochGroup(obj, tf)
             set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function enableAddSource(obj, tf)
+            set(obj.experimentMenu.addSource, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function enableAddNote(obj, tf)

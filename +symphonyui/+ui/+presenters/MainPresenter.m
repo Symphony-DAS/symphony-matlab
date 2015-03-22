@@ -34,6 +34,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'CloseExperiment', @obj.onViewSelectedCloseExperiment);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
+            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'ViewExperiment', @obj.onViewSelectedViewExperiment);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
@@ -131,6 +132,12 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onExperimentEndedEpochGroup(obj, ~, ~)
             obj.updateViewState();
+        end
+        
+        function onViewSelectedAddSource(obj, ~, ~)
+            experiment = obj.acquisitionService.getCurrentExperiment();
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(experiment, obj.app);
+            presenter.goWaitStop();
         end
         
         function onViewSelectedAddNote(obj, ~, ~)

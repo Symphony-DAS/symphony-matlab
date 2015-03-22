@@ -1,13 +1,14 @@
-classdef SelectRigView < symphonyui.ui.View
+classdef AddSourceView < symphonyui.ui.View
     
     events
-        Ok
+        Add
         Cancel
     end
     
     properties (Access = private)
-        rigDropDown
-        okButton
+        parentField
+        labelDropDown
+        addButton
         cancelButton
     end
     
@@ -17,8 +18,8 @@ classdef SelectRigView < symphonyui.ui.View
             import symphonyui.util.*;
             import symphonyui.util.ui.*;
             
-            set(obj.figureHandle, 'Name', 'Select Rig');
-            set(obj.figureHandle, 'Position', screenCenter(250, 79));
+            set(obj.figureHandle, 'Name', 'Add Source');
+            set(obj.figureHandle, 'Position', screenCenter(300, 111));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
@@ -26,22 +27,25 @@ classdef SelectRigView < symphonyui.ui.View
                 'Padding', 11, ...
                 'Spacing', 7);
             
-            rigLayout = uiextras.VBox( ...
+            sourceLayout = uiextras.VBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
+            sourceLabelSize = 40;
+            obj.parentField = createLabeledTextField(sourceLayout, 'Parent:', [sourceLabelSize -1]);
+            set(obj.parentField, 'Enable', 'off');
+            obj.labelDropDown = createLabeledDropDownMenu(sourceLayout, 'Label:', [sourceLabelSize -1]);
+            set(sourceLayout, 'Sizes', [25 25]);
             
-            obj.rigDropDown = createLabeledDropDownMenu(rigLayout, 'Rig:', [25 -1]);
-            
-            % Ok/Cancel controls.
+            % Add/Cancel controls.
             controlsLayout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
             uiextras.Empty('Parent', controlsLayout);
-            obj.okButton = uicontrol( ...
+            obj.addButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
-                'String', 'OK', ...
-                'Callback', @(h,d)notify(obj, 'Ok'));
+                'String', 'Add', ...
+                'Callback', @(h,d)notify(obj, 'Add'));
             obj.cancelButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
@@ -51,27 +55,23 @@ classdef SelectRigView < symphonyui.ui.View
             
             set(mainLayout, 'Sizes', [-1 25]);
             
-            % Set ok button to appear as the default button.
+            % Set add button to appear as the default button.
             try %#ok<TRYNC>
                 h = handle(obj.figureHandle);
-                h.setDefaultButton(obj.okButton);
+                h.setDefaultButton(obj.addButton);
             end
         end
         
-        function r = getSelectedRig(obj)
-            r = symphonyui.util.ui.getSelectedValue(obj.rigDropDown);
+        function setParent(obj, p)
+            set(obj.parentField, 'String', p);
         end
         
-        function setSelectedRig(obj, r)
-            symphonyui.util.ui.setSelectedValue(obj.rigDropDown, r);
+        function l = getSelectedLabel(obj)
+            l = symphonyui.util.ui.getSelectedValue(obj.labelDropDown);
         end
         
-        function setRigList(obj, l)
-            symphonyui.util.ui.setStringList(obj.rigDropDown, l);
-        end
-        
-        function enableOk(obj, tf)
-            set(obj.okButton, 'Enable', symphonyui.util.onOff(tf));
+        function setLabelList(obj, l)
+            symphonyui.util.ui.setStringList(obj.labelDropDown, l);
         end
         
     end

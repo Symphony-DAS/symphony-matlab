@@ -3,6 +3,7 @@ classdef ExperimentView < symphonyui.ui.View
     events
         BeginEpochGroup
         EndEpochGroup
+        AddSource
         AddNote
         SelectedNode
     end
@@ -11,12 +12,14 @@ classdef ExperimentView < symphonyui.ui.View
         toolbar
         beginEpochGroupTool
         endEpochGroupTool
+        addSourceTool
         addNoteTool
         nodeTree
         cardPanel
         experimentCard
         epochGroupCard
         epochCard
+        sourceCard
         notesTable
         noteField
         idMap
@@ -46,6 +49,12 @@ classdef ExperimentView < symphonyui.ui.View
                 'TooltipString', 'End Epoch Group', ...
                 'ClickedCallback', @(h,d)notify(obj, 'EndEpochGroup'));
             setIconImage(obj.endEpochGroupTool, fullfile(iconsFolder, 'group_end.png'));
+            obj.addSourceTool = uipushtool( ...
+                'Parent', obj.toolbar, ...
+                'Separator', 'on', ...
+                'TooltipString', 'Add Source...', ...
+                'ClickedCallback', @(h,d)notify(obj, 'AddSource'));
+            setIconImage(obj.addSourceTool, fullfile(iconsFolder, 'source_add.png'));
             obj.addNoteTool = uipushtool( ...
                 'Parent', obj.toolbar, ...
                 'Separator', 'on', ...
@@ -80,7 +89,7 @@ classdef ExperimentView < symphonyui.ui.View
             obj.experimentCard.locationField = createLabeledTextField(experimentLayout, 'Location:', [experimentLabelSize -1]);
             obj.experimentCard.purposeField = createLabeledTextField(experimentLayout, 'Purpose:', [experimentLabelSize -1]);
             obj.experimentCard.startTimeField = createLabeledTextField(experimentLayout, 'Start time:', [experimentLabelSize -1]);
-            set(experimentLayout, 'Sizes', [25 25 25 25]);
+            set(experimentLayout, 'Sizes', [25 25 25 25]);            
             
             % Epoch group card.
             epochGroupLayout = uiextras.VBox( ...
@@ -88,7 +97,9 @@ classdef ExperimentView < symphonyui.ui.View
                 'Spacing', 7);
             epochGroupLabelSize = 60;
             obj.epochGroupCard.labelField = createLabeledTextField(epochGroupLayout, 'Label:', [epochGroupLabelSize -1]);
-            set(epochGroupLayout, 'Sizes', [25]);
+            obj.epochGroupCard.startTimeField = createLabeledTextField(epochGroupLayout, 'Start time:', [epochGroupLabelSize -1]);
+            obj.epochGroupCard.sourceField = createLabeledTextField(epochGroupLayout, 'Source:', [epochGroupLabelSize -1]);
+            set(epochGroupLayout, 'Sizes', [25 25 25]);
             
             % Epoch card.
             epochLayout = uiextras.VBox( ...
@@ -98,7 +109,15 @@ classdef ExperimentView < symphonyui.ui.View
             obj.epochCard.labelField = createLabeledTextField(epochLayout, 'Label:', [epochLabelSize -1]);
             set(epochLayout, 'Sizes', [25]);
             
-            set(obj.cardPanel, 'UserData', {'Experiment', 'Epoch Group', 'Epoch'});
+            % Source card.
+            sourceLayout = uiextras.VBox( ...
+                'Parent', obj.cardPanel, ...
+                'Spacing', 7);
+            sourceLabelSize = 60;
+            obj.sourceCard.labelField = createLabeledTextField(sourceLayout, 'Label:', [sourceLabelSize -1]);
+            set(sourceLayout, 'Sizes', [25]);
+            
+            set(obj.cardPanel, 'UserData', {'Experiment', 'Epoch Group', 'Epoch', 'Source'});
             set(obj.cardPanel, 'Selection', 1);
             
             set(topLayout, 'Sizes', [110 -1]);
@@ -165,6 +184,16 @@ classdef ExperimentView < symphonyui.ui.View
             node.setIcon(fullfile(symphonyui.app.App.rootPath, 'resources', 'icons', 'epoch.png'));
             obj.idMap(id) = node;
         end
+        
+        function addSourceNode(obj, parentId, name, id)
+            parent = obj.idMap(parentId);
+            node = uiextras.jTree.TreeNode( ...
+                'Parent', parent, ...
+                'Name', name, ...
+                'Value', id);
+            node.setIcon(fullfile(symphonyui.app.App.rootPath, 'resources', 'icons', 'source.png'));
+            obj.idMap(id) = node;
+        end        
         
         function collapseNode(obj, id)
             node = obj.idMap(id);
@@ -241,12 +270,36 @@ classdef ExperimentView < symphonyui.ui.View
             set(obj.epochGroupCard.labelField, 'String', l);
         end
         
+        function enableEpochGroupStartTime(obj, tf)
+            set(obj.epochGroupCard.startTimeField, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function setEpochGroupStartTime(obj, t)
+            set(obj.epochGroupCard.startTimeField, 'String', datestr(t, 14));
+        end
+        
+        function enableEpochGroupSource(obj, tf)
+            set(obj.epochGroupCard.sourceField, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function setEpochGroupSource(obj, s)
+            set(obj.epochGroupCard.sourceField, 'String', s);
+        end
+        
         function enableEpochLabel(obj, tf)
             set(obj.epochCard.labelField, 'Enable', symphonyui.util.onOff(tf));
         end
         
         function setEpochLabel(obj, l)
             set(obj.epochCard.labelField, 'String', l);
+        end
+        
+        function enableSourceLabel(obj, tf)
+            set(obj.sourceCard.labelField, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function setSourceLabel(obj, l)
+            set(obj.sourceCard.labelField, 'String', l);
         end
         
     end
