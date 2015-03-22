@@ -1,7 +1,6 @@
 classdef App < handle
     
     properties (Constant)
-        displayName = 'Symphony'
         version = '2.0.0-preview'
         rootPath = fullfile(mfilename('fullpath'), '..', '..', '..')
         documentationUrl = 'https://github.com/Symphony-DAS/Symphony/wiki'

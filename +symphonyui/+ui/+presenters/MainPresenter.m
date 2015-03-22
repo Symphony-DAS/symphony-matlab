@@ -21,7 +21,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
-            obj.view.setTitle(obj.app.displayName);
             obj.view.setProtocolList(obj.acquisitionService.getAvailableProtocolIds());
             obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocol().id);
             obj.updateViewProtocolParameters();
@@ -310,7 +309,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 case RigState.STOPPED
                     enableRecord = hasExperiment;
                     enablePreview = true;
-                    status = 'Stopped';
                 case RigState.STOPPING
                     enableProgressIndicator = true;
                     status = 'Stopping...';

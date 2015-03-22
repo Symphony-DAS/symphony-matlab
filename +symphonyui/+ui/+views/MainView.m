@@ -47,6 +47,7 @@ classdef MainView < symphonyui.ui.View
             import symphonyui.util.*;
             import symphonyui.util.ui.*;
             
+            set(obj.figureHandle, 'Name', 'Symphony');
             set(obj.figureHandle, 'Position', screenCenter(280, 350));
             
             % File menu.
@@ -215,10 +216,6 @@ classdef MainView < symphonyui.ui.View
             obj.protocolParameterGrid.Close();
         end
         
-        function setTitle(obj, t)
-            set(obj.figureHandle, 'Name', t);
-        end
-        
         function enableNewExperiment(obj, tf)
             set(obj.fileMenu.newExperiment, 'Enable', symphonyui.util.onOff(tf));
         end
@@ -331,6 +328,12 @@ classdef MainView < symphonyui.ui.View
         end
         
         function setStatus(obj, s)
+            if isempty(s)
+                title = 'Symphony';
+            else
+                title = sprintf('Symphony (%s)', s);
+            end
+            set(obj.figureHandle, 'Name', title);
             obj.progressIndicatorIcon.setToolTipText(s);
         end
         
