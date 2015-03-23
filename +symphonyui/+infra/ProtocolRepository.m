@@ -18,14 +18,14 @@ classdef ProtocolRepository < symphonyui.infra.DiscoverableRepository & symphony
     methods (Access = private)
         
         function onChangedConfig(obj, ~, data)
-            if ~strcmp(data.key, symphonyui.app.Settings.GENERAL_PROTOCOL_SEARCH_PATH)
+            if ~strcmp(data.key, symphonyui.app.Settings.generalProtocolSearchPath)
                 return;
             end
             obj.init();
         end
         
         function init(obj)
-            obj.setSearchPaths(obj.config.get(symphonyui.app.Settings.GENERAL_PROTOCOL_SEARCH_PATH));
+            obj.setSearchPaths(obj.config.get(symphonyui.app.Settings.generalProtocolSearchPath));
             obj.loadAll();
         end
         

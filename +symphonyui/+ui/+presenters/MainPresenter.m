@@ -296,7 +296,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             canEndEpochGroup = hasExperiment && obj.acquisitionService.getCurrentExperiment().canEndEpochGroup();
             canRecordEpochs = hasExperiment && obj.acquisitionService.getCurrentExperiment().canRecordEpochs();
             isRigValid = obj.acquisitionService.getCurrentRig().isValid();
-            isStopped = obj.acquisitionService.getCurrentRig().state == RigState.STOPPED;
+            isStopped = obj.acquisitionService.getCurrentRig().state == RigState.stopped;
             
             enableNewExperiment = ~hasExperiment && isStopped && isRigValid;
             enableOpenExperiment = enableNewExperiment;
@@ -320,27 +320,27 @@ classdef MainPresenter < symphonyui.ui.Presenter
             status = '';
             
             switch obj.acquisitionService.getCurrentRig().state
-                case RigState.STOPPED
+                case RigState.stopped
                     enableRecord = canRecordEpochs;
                     enablePreview = true;
-                case RigState.STOPPING
+                case RigState.stopping
                     enableProgressIndicator = true;
                     status = 'Stopping...';
-                case RigState.PAUSED
+                case RigState.paused
                     enableRecord = canRecordEpochs;
                     enablePreview = true;
                     enableStop = true;
                     status = 'Paused';
-                case RigState.PAUSING
+                case RigState.pausing
                     enableStop = true;
                     enableProgressIndicator = true;
                     status = 'Pausing...';
-                case RigState.PREVIEWING
+                case RigState.previewing
                     enablePause = true;
                     enableStop = true;
                     enableProgressIndicator = true;
                     status = 'Previewing...';
-                case RigState.RECORDING
+                case RigState.recording
                     enablePause = true;
                     enableStop = true;
                     enableProgressIndicator = true;

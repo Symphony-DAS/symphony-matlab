@@ -27,7 +27,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             obj.view.setParent(parent);
             
             config = obj.app.config;
-            labelList = config.get(symphonyui.app.Settings.EPOCH_GROUP_LABEL_LIST);
+            labelList = config.get(symphonyui.app.Settings.epochGroupLabelList);
             try
                 obj.view.setLabelList(labelList());
             catch x

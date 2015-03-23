@@ -2,17 +2,17 @@ classdef Settings < handle
     
     properties (Constant)
         
-        GENERAL_RIG_SEARCH_PATH = 'GENERAL_RIG_SEARCH_PATH'
+        generalRigSearchPath = 'generalRigSearchPath'
         
-        GENERAL_PROTOCOL_SEARCH_PATH = 'GENERAL_PROTOCOL_SEARCH_PATH'
+        generalProtocolSearchPath = 'generalProtocolSearchPath'
         
-        EXPERIMENT_DEFAULT_NAME = 'EXPERIMENT_DEFAULT_NAME'
+        experimentDefaultName = 'experimentDefaultName'
         
-        EXPERIMENT_DEFAULT_LOCATION = 'EXPERIMENT_DEFAULT_LOCATION'
+        experimentDefaultLocation = 'experimentDefaultLocation'
         
-        EPOCH_GROUP_LABEL_LIST = 'EPOCH_GROUP_LABEL_LIST'
+        epochGroupLabelList = 'epochGroupLabelList'
         
-        SOURCE_LABEL_LIST = 'SOURCE_LABEL_LIST'
+        sourceLabelList = 'sourceLabelList'
         
     end
     
@@ -22,17 +22,17 @@ classdef Settings < handle
             import symphonyui.app.Settings;
             
             switch setting
-                case Settings.GENERAL_RIG_SEARCH_PATH
+                case Settings.generalRigSearchPath
                     d = {fullfile(symphonyui.app.App.getRootPath(), 'examples', '+io', '+github', '+symphony_das', '+rigs')};
-                case Settings.GENERAL_PROTOCOL_SEARCH_PATH
+                case Settings.generalProtocolSearchPath
                     d = {fullfile(symphonyui.app.App.getRootPath(), 'examples', '+io', '+github', '+symphony_das', '+protocols')};
-                case Settings.EXPERIMENT_DEFAULT_NAME
+                case Settings.experimentDefaultName
                     d = @()datestr(now, 'yyyy-mm-dd');
-                case Settings.EXPERIMENT_DEFAULT_LOCATION
+                case Settings.experimentDefaultLocation
                     d = @()pwd();
-                case Settings.EPOCH_GROUP_LABEL_LIST
+                case Settings.epochGroupLabelList
                     d = {'Control', 'Drug', 'Wash'};
-                case Settings.SOURCE_LABEL_LIST
+                case Settings.sourceLabelList
                     d = {'Animal', 'Tissue', 'Cell'};
                 otherwise
                     error(['No default for setting ' setting]);

@@ -23,11 +23,6 @@ classdef Config < handle
         end
         
         function put(obj, key, value)
-            % Function handles do not persist well.
-            if isa(value, 'function_handle')
-                value = func2str(value);
-            end
-            
             if ispref(obj.group, key)
                 if isequal(getpref(obj.group, key), value)
                     return;
