@@ -1,42 +1,44 @@
 classdef Config < handle
     
-    events (NotifyAccess = private)
-        Changed
+    properties (Constant, Access = private)
+        GROUP = 'symphonyui'
     end
     
-    properties (Constant, Access = private)
-        group = 'symphonyui'
+    properties (Access = private)
+        defaults
     end
     
     methods
         
-        function v = get(obj, key, default)
-            if nargin < 3
-                default = symphonyui.app.Settings.getDefault(key);
-            end
-            
-            if ispref(obj.group, key)
-                v = getpref(obj.group, key);
+        function obj = Config()
+            obj.defaults = containers.Map();
+        end
+        
+        function setDefaults(obj, defaults)
+            obj.defaults = defaults;
+        end
+        
+        function v = get(obj, key)
+            if ispref(symphonyui.infra.Config.GROUP, key)
+                v = getpref(symphonyui.infra.Config.GROUP, key);
             else
-                v = default;
+                v = obj.defaults(key);
             end
         end
         
-        function put(obj, key, value)
-            if ispref(obj.group, key)
-                if isequal(getpref(obj.group, key), value)
+        function put(obj, key, value) %#ok<INUSL>
+            if ispref(symphonyui.app.Config.GROUP, key)
+                if isequal(getpref(symphonyui.infra.Config.GROUP, key), value)
                     return;
                 end
-                setpref(obj.group, key, value);
+                setpref(symphonyui.infra.Config.GROUP, key, value);
             else
-                addpref(obj.group, key, value);
+                addpref(symphonyui.infra.Config.GROUP, key, value);
             end
-            
-            notify(obj, 'Changed', symphonyui.infra.KeyValueEventData(key, value));
         end
         
-        function clear(obj)
-            rmpref(obj.group);
+        function clear(obj) %#ok<MANU>
+            rmpref(symphonyui.infra.Config.GROUP);
         end
         
     end

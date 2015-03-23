@@ -19,6 +19,8 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj, ~, ~)
+            import symphonyui.app.Settings;
+            
             if isempty(obj.experiment.currentEpochGroup)
                 parent = [obj.experiment.name ' (Experiment)'];
             else
@@ -27,7 +29,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             obj.view.setParent(parent);
             
             config = obj.app.config;
-            labelList = config.get(symphonyui.app.Settings.epochGroupLabelList);
+            labelList = config.get(Settings.EPOCH_GROUP_LABEL_LIST);
             try
                 obj.view.setLabelList(labelList());
             catch x

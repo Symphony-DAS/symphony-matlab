@@ -28,7 +28,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             obj.view.setSelectedParent(sourceList{end});
             
             config = obj.app.config;
-            labelList = config.get(symphonyui.app.Settings.sourceLabelList);
+            labelList = config.get(symphonyui.app.Settings.SOURCE_LABEL_LIST);
             try
                 obj.view.setLabelList(labelList());
             catch x

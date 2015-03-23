@@ -19,9 +19,11 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
+            import symphonyui.app.Settings;
+            
             config = obj.app.config;
-            name = config.get(symphonyui.app.Settings.experimentDefaultName);
-            location = config.get(symphonyui.app.Settings.experimentDefaultLocation);
+            name = config.get(Settings.EXPERIMENT_DEFAULT_NAME);
+            location = config.get(Settings.EXPERIMENT_DEFAULT_LOCATION);
             try
                 obj.view.setName(name());
                 obj.view.setLocation(location());

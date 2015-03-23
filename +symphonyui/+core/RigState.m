@@ -1,12 +1,12 @@
 classdef RigState
     
     enumeration
-        stopped
-        stopping
-        paused
-        pausing
-        previewing
-        recording
+        STOPPED
+        STOPPING
+        PAUSED
+        PAUSING
+        PREVIEWING
+        RECORDING
     end
     
 end

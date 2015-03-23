@@ -30,7 +30,6 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
             
             s = obj.acquisitionService;
-            obj.addListener(s, 'ChangedAvailableRigs', @obj.onServiceChangedAvailableRigs);
             obj.addListener(s, 'SelectedRig', @obj.onServiceSelectedRig);
         end
         
@@ -45,10 +44,6 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
-        end
-        
-        function onServiceChangedAvailableRigs(obj, ~, ~)
-            obj.view.setRigList(obj.acquisitionService.getAvailableRigIds());
         end
         
         function onServiceSelectedRig(obj, ~, ~)

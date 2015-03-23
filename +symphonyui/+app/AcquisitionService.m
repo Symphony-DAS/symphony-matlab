@@ -3,8 +3,6 @@ classdef AcquisitionService < symphonyui.util.mixin.Observer
     events (NotifyAccess = private)
         OpenedExperiment
         ClosedExperiment
-        ChangedAvailableRigs
-        ChangedAvailableProtocols
         SelectedRig
         SelectedProtocol
     end
@@ -23,45 +21,34 @@ classdef AcquisitionService < symphonyui.util.mixin.Observer
     
     methods
         
-        % Assumes at least one rig and protocol exist in the repos at all times (usually a null object).
         function obj = AcquisitionService(experimentFactory, rigRepository, protocolRepository)
             obj.experimentFactory = experimentFactory;
             
             obj.rigRepository = rigRepository;
-            obj.addListener(rigRepository, 'LoadedAll', @(h,d)notify(obj, 'ChangedAvailableRigs'));
             rigs = rigRepository.getAll();
             if isempty(rigs)
                 error('At least one rig should exist in the repo');
             end
-            if numel(rigs) > 1
-                obj.currentRig = rigs{2};
-            else
-                obj.currentRig = rigs{1};
-            end
+            obj.currentRig = rigs{1};
             
             obj.protocolRepository = protocolRepository;
-            obj.addListener(protocolRepository, 'LoadedAll', @(h,d)notify(obj, 'ChangedAvailableProtocols'));
             protocols = protocolRepository.getAll();
             if isempty(protocols)
                 error('At least one protocol should exist in the repo');
             end
-            if numel(protocols) > 1
-                obj.currentProtocol = protocols{2};
-            else
-                obj.currentProtocol = protocols{1};
-            end
+            obj.currentProtocol = protocols{1};
         end
         
-        function delete(obj)
-            delete@symphonyui.util.mixin.Observer(obj);
-            delete(obj.rigRepository);
-            delete(obj.protocolRepository);
+        function close(obj)
+            if ~isempty(obj.currentExperiment)
+                obj.closeExperiment();
+            end
         end
         
         %% Experiment
         
         function createExperiment(obj, name, location, purpose)
-            if obj.hasCurrentExperiment
+            if ~isempty(obj.currentExperiment)
                 error('An experiment is already open');
             end
             experiment = obj.experimentFactory.create(name, location, purpose);
@@ -71,7 +58,7 @@ classdef AcquisitionService < symphonyui.util.mixin.Observer
         end
         
         function openExperiment(obj, path)
-            if obj.hasCurrentExperiment
+            if ~isempty(obj.currentExperiment)
                 error('An experiment is already open');
             end
             experiment = obj.experimentFactory.open(path);
@@ -80,7 +67,7 @@ classdef AcquisitionService < symphonyui.util.mixin.Observer
         end
         
         function closeExperiment(obj)
-            if ~obj.hasCurrentExperiment
+            if isempty(obj.currentExperiment)
                 error('No experiment open');
             end
             obj.currentExperiment.close();
@@ -88,14 +75,7 @@ classdef AcquisitionService < symphonyui.util.mixin.Observer
             notify(obj, 'ClosedExperiment');
         end
         
-        function tf = hasCurrentExperiment(obj)
-            tf = ~isempty(obj.currentExperiment);
-        end
-        
         function e = getCurrentExperiment(obj)
-            if ~obj.hasCurrentExperiment
-                error('No experiment open');
-            end
             e = obj.currentExperiment;
         end
         

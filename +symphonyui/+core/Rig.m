@@ -21,7 +21,7 @@ classdef Rig < symphonyui.infra.Discoverable
         
         function obj = Rig()
             obj.isInitialized = false;
-            obj.state = symphonyui.core.RigState.stopped;
+            obj.state = symphonyui.core.RigState.STOPPED;
         end
         
         function initialize(obj)
@@ -43,22 +43,22 @@ classdef Rig < symphonyui.infra.Discoverable
         end
         
         function record(obj, protocol, experiment)
-            obj.state = symphonyui.core.RigState.recording;
+            obj.state = symphonyui.core.RigState.RECORDING;
             disp(protocol);
             disp(experiment);
         end
         
         function preview(obj, protocol)
-            obj.state = symphonyui.core.RigState.previewing;
+            obj.state = symphonyui.core.RigState.PREVIEWING;
             disp(protocol);
         end
         
         function pause(obj)
-            obj.state = symphonyui.core.RigState.paused;
+            obj.state = symphonyui.core.RigState.PAUSED;
         end
         
         function stop(obj)
-            obj.state = symphonyui.core.RigState.stopped;
+            obj.state = symphonyui.core.RigState.STOPPED;
         end
         
         function [tf, msg] = isValid(obj)
