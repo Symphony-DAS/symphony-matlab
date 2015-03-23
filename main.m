@@ -1,7 +1,7 @@
 function main()
     jpath = { ...
-        fullfile(symphonyui.app.App.rootPath, 'bundled', 'PropertyGrid'), ...
-        fullfile(symphonyui.app.App.rootPath, 'bundled', 'JavaTreeWrapper', '+uiextras', '+jTree', 'UIExtrasTree.jar')};
+        fullfile(symphonyui.app.App.getRootPath(), 'bundled', 'PropertyGrid'), ...
+        fullfile(symphonyui.app.App.getRootPath(), 'bundled', 'JavaTreeWrapper', '+uiextras', '+jTree', 'UIExtrasTree.jar')};
     if ~any(ismember(javaclasspath, jpath))
         javaaddpath(jpath);
     end

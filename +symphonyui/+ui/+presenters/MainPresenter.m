@@ -32,9 +32,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'NewExperiment', @obj.onViewSelectedNewExperiment);
             obj.addListener(v, 'OpenExperiment', @obj.onViewSelectedOpenExperiment);
             obj.addListener(v, 'CloseExperiment', @obj.onViewSelectedCloseExperiment);
+            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
-            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'ViewExperiment', @obj.onViewSelectedViewExperiment);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
@@ -104,6 +104,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function addExperimentListeners(obj)
             experiment = obj.acquisitionService.getCurrentExperiment();
+            obj.listeners.experiment.addedSource = obj.addListener(experiment, 'AddedSource', @obj.onExperimentAddedSource);
             obj.listeners.experiment.beganEpochGroup = obj.addListener(experiment, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
             obj.listeners.experiment.endedEpochGroup = obj.addListener(experiment, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
         end
@@ -113,6 +114,16 @@ classdef MainPresenter < symphonyui.ui.Presenter
             for i = 1:numel(fields)
                 obj.removeListener(obj.listeners.experiment.(fields{i}));
             end
+        end
+        
+        function onViewSelectedAddSource(obj, ~, ~)
+            experiment = obj.acquisitionService.getCurrentExperiment();
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(experiment, obj.app);
+            presenter.goWaitStop();
+        end
+        
+        function onExperimentAddedSource(obj, ~, ~)
+            obj.updateViewState();
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -132,12 +143,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onExperimentEndedEpochGroup(obj, ~, ~)
             obj.updateViewState();
-        end
-        
-        function onViewSelectedAddSource(obj, ~, ~)
-            experiment = obj.acquisitionService.getCurrentExperiment();
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(experiment, obj.app);
-            presenter.goWaitStop();
         end
         
         function onViewSelectedAddNote(obj, ~, ~)
@@ -288,15 +293,17 @@ classdef MainPresenter < symphonyui.ui.Presenter
             import symphonyui.core.RigState;
             
             hasExperiment = obj.acquisitionService.hasCurrentExperiment();
-            hasEpochGroup = hasExperiment && obj.acquisitionService.getCurrentExperiment().hasCurrentEpochGroup();
+            canEndEpochGroup = hasExperiment && obj.acquisitionService.getCurrentExperiment().canEndEpochGroup();
+            canRecordEpochs = hasExperiment && obj.acquisitionService.getCurrentExperiment().canRecordEpochs();
             isRigValid = obj.acquisitionService.getCurrentRig().isValid();
             isStopped = obj.acquisitionService.getCurrentRig().state == RigState.STOPPED;
             
             enableNewExperiment = ~hasExperiment && isStopped && isRigValid;
             enableOpenExperiment = enableNewExperiment;
             enableCloseExperiment = hasExperiment && isStopped;
+            enableAddSource = hasExperiment;
             enableBeginEpochGroup = hasExperiment;
-            enableEndEpochGroup = hasEpochGroup;
+            enableEndEpochGroup = canEndEpochGroup;
             enableAddNote = hasExperiment;
             enableViewExperiment = hasExperiment;
             enableSelectRig = ~hasExperiment && isStopped;
@@ -314,13 +321,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             switch obj.acquisitionService.getCurrentRig().state
                 case RigState.STOPPED
-                    enableRecord = hasExperiment;
+                    enableRecord = canRecordEpochs;
                     enablePreview = true;
                 case RigState.STOPPING
                     enableProgressIndicator = true;
                     status = 'Stopping...';
                 case RigState.PAUSED
-                    enableRecord = hasExperiment;
+                    enableRecord = canRecordEpochs;
                     enablePreview = true;
                     enableStop = true;
                     status = 'Paused';
@@ -352,6 +359,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             obj.view.enableNewExperiment(enableNewExperiment);
             obj.view.enableOpenExperiment(enableOpenExperiment);
+            obj.view.enableAddSource(enableAddSource);
             obj.view.enableCloseExperiment(enableCloseExperiment);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);

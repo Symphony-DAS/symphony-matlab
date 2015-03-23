@@ -19,21 +19,31 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj, ~, ~)
-            parent = obj.experiment.currentEpochGroup;
-            if isempty(parent)
-                obj.view.setParent([obj.experiment.name ' (Experiment)']);
+            if isempty(obj.experiment.currentEpochGroup)
+                parent = [obj.experiment.name ' (Experiment)'];
             else
-                obj.view.setParent(parent.label);
+                parent = obj.experiment.currentEpochGroup.label;
             end
+            obj.view.setParent(parent);
             
             config = obj.app.config;
-            labelList = config.get(symphonyui.infra.Settings.EPOCH_GROUP_LABEL_LIST);
+            labelList = config.get(symphonyui.app.Settings.EPOCH_GROUP_LABEL_LIST);
             try
                 obj.view.setLabelList(labelList());
             catch x
                 msg = ['Unable to set view from config: ' x.message];
                 obj.log.debug(msg, x);
                 obj.view.showError(msg);
+            end
+            
+            sourceList = {};
+            sources = obj.experiment.getFlatSourceList();
+            for i = 1:numel(sources)
+                sourceList{end + 1} = sources(i).id; %#ok<AGROW>
+            end
+            obj.view.setSourceList(sourceList);
+            if ~isempty(sourceList)
+                obj.view.setSelectedSource(sourceList{end});
             end
         end
         
@@ -61,9 +71,14 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             obj.view.update();
             
             label = obj.view.getSelectedLabel();
+            source = obj.view.getSelectedSource();
+            if isempty(source)
+                obj.view.showError('Epoch group must have a source');
+                return;
+            end
             
             try
-                obj.experiment.beginEpochGroup(label);
+                obj.experiment.beginEpochGroup(label, source);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

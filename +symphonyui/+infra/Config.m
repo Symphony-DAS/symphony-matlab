@@ -12,7 +12,7 @@ classdef Config < handle
         
         function v = get(obj, key, default)
             if nargin < 3
-                default = symphonyui.infra.Settings.getDefault(key);
+                default = symphonyui.app.Settings.getDefault(key);
             end
             
             if ispref(obj.group, key)

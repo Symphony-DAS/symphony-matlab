@@ -20,33 +20,25 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj)
-            obj.view.enableExperimentName(false);
-            obj.view.enableExperimentLocation(false);
-            obj.view.enableExperimentPurpose(false);
-            obj.view.enableExperimentStartTime(false);
-            obj.view.enableEpochGroupLabel(false);
-            obj.view.enableEpochGroupStartTime(false);
-            obj.view.enableEpochLabel(false);
-            obj.view.enableSourceLabel(false);
-            
+        function onGoing(obj)            
             obj.addExperiment();
             obj.selectExperiment();
+            obj.updateViewState();
         end
         
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
+            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
-            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
             
             e = obj.experiment;
+            obj.addListener(e, 'AddedSource', @obj.onExperimentAddedSource);
             obj.addListener(e, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
             obj.addListener(e, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
-            obj.addListener(e, 'AddedSource', @obj.onExperimentAddedSource);
             obj.addListener(e, 'AddedNote', @obj.onExperimentAddedNote);
         end
 
@@ -89,6 +81,40 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedCard(1);
         end
         
+        function onViewSelectedAddSource(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.experiment, obj.app);
+            presenter.goWaitStop();
+        end
+        
+        function onExperimentAddedSource(obj, ~, data)
+            source = data.source;
+            obj.addSource(source);
+            obj.selectSource(source);
+            obj.updateViewState();
+        end
+        
+        function addSource(obj, source)
+            if isempty(source.parent)
+                parent = obj.experiment;
+            else
+                parent = source.parent;
+            end
+            
+            obj.view.addSourceNode(parent.id, source.label, source.id);
+            obj.idMap(source.id) = source;
+            
+            sources = source.children;
+            for i = 1:numel(sources)
+                obj.addSource(sources(i));
+            end
+        end
+        
+        function selectSource(obj, source)
+            obj.view.setSourceLabel(source.label);
+            obj.view.setSelectedNode(source.id);
+            obj.view.setSelectedCard(2);
+        end
+        
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
             presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.experiment, obj.app);
             presenter.goWaitStop();
@@ -99,11 +125,17 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.addEpochGroup(group);
             obj.selectEpochGroup(group);
             obj.view.setEpochGroupNodeCurrent(group.id);
-            obj.view.enableEndEpochGroup(true);
+            obj.updateViewState();
         end
         
         function addEpochGroup(obj, group)
-            obj.view.addEpochGroupNode(group.parent.id, group.label, group.id);
+            if isempty(group.parent)
+                parent = obj.experiment;
+            else
+                parent = group.parent;
+            end
+            
+            obj.view.addEpochGroupNode(parent.id, group.label, group.id);
             obj.idMap(group.id) = group;
             
             groups = group.children;
@@ -117,7 +149,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setEpochGroupStartTime(group.startTime);
             obj.view.setEpochGroupSource(group.source.label);
             obj.view.setSelectedNode(group.id);
-            obj.view.setSelectedCard(2);
+            obj.view.setSelectedCard(3);
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
@@ -128,7 +160,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             group = data.epochGroup;
             obj.view.collapseNode(group.id);
             obj.view.setEpochGroupNodeNormal(group.id);
-            obj.view.enableEndEpochGroup(obj.experiment.hasCurrentEpochGroup());
+            obj.updateViewState();
         end
         
         function addEpoch(obj, epoch)
@@ -139,33 +171,6 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         function selectEpoch(obj, epoch)
             obj.view.setEpochLabel(epoch.label);
             obj.view.setSelectedNode(epoch.id);
-            obj.view.setSelectedCard(3);
-        end
-        
-        function onViewSelectedAddSource(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.experiment, obj.app);
-            presenter.goWaitStop();
-        end
-        
-        function onExperimentAddedSource(obj, ~, data)
-            source = data.source;
-            obj.addSource(source);
-            obj.selectSource(source);
-        end
-        
-        function addSource(obj, source)
-            obj.view.addSourceNode(source.parent.id, source.label, source.id);
-            obj.idMap(source.id) = source;
-            
-            sources = source.children;
-            for i = 1:numel(sources)
-                obj.addSource(sources(i));
-            end
-        end
-        
-        function selectSource(obj, source)
-            obj.view.setSourceLabel(source.label);
-            obj.view.setSelectedNode(source.id);
             obj.view.setSelectedCard(4);
         end
         
@@ -189,13 +194,17 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             switch class(item)
                 case 'symphonyui.core.Experiment'
                     obj.selectExperiment();
+                case 'symphonyui.core.Source'
+                    obj.selectSource(item);
                 case 'symphonyui.core.EpochGroup'
                     obj.selectEpochGroup(item);
                 case 'symphonyui.core.Epoch'
                     obj.selectEpoch(item);
-                case 'symphonyui.core.Source'
-                    obj.selectSource(item);
             end
+        end
+        
+        function updateViewState(obj)
+            obj.view.enableEndEpochGroup(obj.experiment.canEndEpochGroup());
         end
 
     end

@@ -1,6 +1,7 @@
 classdef BeginEpochGroupView < symphonyui.ui.View
     
     events
+        AddSource
         Begin
         Cancel
     end
@@ -8,6 +9,8 @@ classdef BeginEpochGroupView < symphonyui.ui.View
     properties (Access = private)
         parentField
         labelDropDown
+        sourceDropDown
+        addSourceButton
         beginButton
         cancelButton
     end
@@ -19,7 +22,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             import symphonyui.util.ui.*;
             
             set(obj.figureHandle, 'Name', 'Begin Epoch Group');
-            set(obj.figureHandle, 'Position', screenCenter(300, 111));
+            set(obj.figureHandle, 'Position', screenCenter(300, 143));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
@@ -34,7 +37,15 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             obj.parentField = createLabeledTextField(groupLayout, 'Parent:', [groupLabelSize -1]);
             set(obj.parentField, 'Enable', 'off');
             obj.labelDropDown = createLabeledDropDownMenu(groupLayout, 'Label:', [groupLabelSize -1]);
-            set(groupLayout, 'Sizes', [25 25]);
+            [obj.sourceDropDown, l] = createLabeledDropDownMenu(groupLayout, 'Source:', [groupLabelSize -1]);
+            obj.addSourceButton = uicontrol( ...
+                'Parent', l, ...
+                'Style', 'pushbutton', ...
+                'String', '...', ...
+                'TooltipString', 'Add Source...', ...
+                'Callback', @(h,d)notify(obj, 'AddSource'));
+            set(l, 'Sizes', [groupLabelSize -1 30]);
+            set(groupLayout, 'Sizes', [25 25 25]);
             
             % Begin/Cancel controls.
             controlsLayout = uiextras.HBox( ...
@@ -72,6 +83,18 @@ classdef BeginEpochGroupView < symphonyui.ui.View
         
         function setLabelList(obj, l)
             symphonyui.util.ui.setStringList(obj.labelDropDown, l);
+        end
+        
+        function s = getSelectedSource(obj)
+            s = symphonyui.util.ui.getSelectedValue(obj.sourceDropDown);
+        end
+        
+        function setSelectedSource(obj, s)
+            symphonyui.util.ui.setSelectedValue(obj.sourceDropDown, s);
+        end
+        
+        function setSourceList(obj, l)
+            symphonyui.util.ui.setStringList(obj.sourceDropDown, l);
         end
         
     end

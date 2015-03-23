@@ -16,10 +16,14 @@ classdef EpochGroup < handle
     
     methods
         
-        function obj = EpochGroup(parent, label)
+        function obj = EpochGroup(label, source, parent)
+            if nargin < 3
+                parent = [];
+            end
             obj.id = char(java.util.UUID.randomUUID);
             obj.parent = parent;
             obj.label = label;
+            obj.source = source;
             obj.children = symphonyui.core.EpochGroup.empty(0, 1);
         end
         

@@ -17,10 +17,18 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
     end
     
     methods (Access = protected)
-
-        function onGoing(obj, ~, ~)            
+        
+        function onGoing(obj, ~, ~)
+            sourceList = {[obj.experiment.name ' (Experiment)']};
+            sources = obj.experiment.getFlatSourceList();
+            for i = 1:numel(sources)
+                sourceList{end + 1} = sources(i).id; %#ok<AGROW>
+            end
+            obj.view.setParentList(sourceList);
+            obj.view.setSelectedParent(sourceList{end});
+            
             config = obj.app.config;
-            labelList = config.get(symphonyui.infra.Settings.SOURCE_LABEL_LIST);
+            labelList = config.get(symphonyui.app.Settings.SOURCE_LABEL_LIST);
             try
                 obj.view.setLabelList(labelList());
             catch x
@@ -53,10 +61,11 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
         function onViewSelectedAdd(obj, ~, ~)
             obj.view.update();
             
+            parent = obj.view.getSelectedParent();
             label = obj.view.getSelectedLabel();
             
             try
-                obj.experiment.addSource(label);
+                obj.experiment.addSource(label, parent);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

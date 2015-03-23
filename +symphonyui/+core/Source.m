@@ -9,10 +9,15 @@ classdef Source < handle
     
     methods
         
-        function obj = Source(parent, label)
+        function obj = Source(label, parent)
             obj.id = char(java.util.UUID.randomUUID);
-            obj.parent = parent;
             obj.label = label;
+            obj.parent = parent;
+            obj.children = symphonyui.core.Source.empty(0, 1);
+        end
+        
+        function addChild(obj, source)
+            obj.children(end + 1) = source;
         end
         
     end

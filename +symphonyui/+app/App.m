@@ -2,9 +2,6 @@ classdef App < handle
     
     properties (Constant)
         version = '2.0.0-preview'
-        rootPath = fullfile(mfilename('fullpath'), '..', '..', '..')
-        documentationUrl = 'https://github.com/Symphony-DAS/Symphony/wiki'
-        userGroupUrl = 'https://groups.google.com/forum/#!forum/symphony-das'
     end
     
     properties (SetAccess = private)
@@ -18,6 +15,26 @@ classdef App < handle
                 config = symphonyui.infra.Config();
             end
             obj.config = config;
+        end
+        
+    end
+    
+    methods (Static)
+        
+        function p = getRootPath()
+            p = fullfile(mfilename('fullpath'), '..', '..', '..');
+        end
+        
+        function p = getIconsPath()
+            p = fullfile(symphonyui.app.App.getRootPath(), 'resources', 'icons');
+        end
+        
+        function url = getDocumentationUrl()
+            url = 'https://github.com/Symphony-DAS/Symphony/wiki';
+        end
+        
+        function url = getUserGroupUrl()
+            url = 'https://groups.google.com/forum/#!forum/symphony-das';
         end
         
     end

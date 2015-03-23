@@ -29,7 +29,7 @@ classdef DiscoverableRepository < handle
         end
         
         function setSearchPaths(obj, paths)
-            nullsPath = fullfile(symphonyui.app.App.rootPath, '+symphonyui', '+core', '+nulls');
+            nullsPath = fullfile(symphonyui.app.App.getRootPath(), '+symphonyui', '+core', '+nulls');
             paths = [nullsPath, paths];
             for i = 1:numel(paths)
                 [~, parent] = symphonyui.util.packageName(paths{i});

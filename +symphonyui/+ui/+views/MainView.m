@@ -1,13 +1,13 @@
 classdef MainView < symphonyui.ui.View
-    
+
     events
         NewExperiment
         OpenExperiment
         CloseExperiment
         Exit
+        AddSource
         BeginEpochGroup
         EndEpochGroup
-        AddSource
         AddNote
         ViewExperiment
         SelectedProtocol
@@ -23,7 +23,7 @@ classdef MainView < symphonyui.ui.View
         UserGroup
         AboutSymphony
     end
-    
+
     properties (Access = private)
         fileMenu
         experimentMenu
@@ -41,16 +41,16 @@ classdef MainView < symphonyui.ui.View
         viewExperimentButton
         statusText
     end
-    
+
     methods
-        
+
         function createUi(obj)
             import symphonyui.util.*;
             import symphonyui.util.ui.*;
-            
+
             set(obj.figureHandle, 'Name', 'Symphony');
             set(obj.figureHandle, 'Position', screenCenter(280, 350));
-            
+
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'File');
@@ -67,20 +67,20 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'Exit', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'Exit'));
-            
+
             % Experiment menu.
             obj.experimentMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Experiment');
+            obj.experimentMenu.addSource = uimenu(obj.experimentMenu.root, ...
+                'Label', 'Add Source...', ...
+                'Callback', @(h,d)notify(obj, 'AddSource'));
             obj.experimentMenu.beginEpochGroup = uimenu(obj.experimentMenu.root, ...
                 'Label', 'Begin Epoch Group...', ...
+                'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
             obj.experimentMenu.endEpochGroup = uimenu(obj.experimentMenu.root, ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
-            obj.experimentMenu.addSource = uimenu(obj.experimentMenu.root, ...
-                'Label', 'Add Source...', ...
-                'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'AddSource'));
             obj.experimentMenu.addNote = uimenu(obj.experimentMenu.root, ...
                 'Label', 'Add Note...', ...
                 'Separator', 'on', ...
@@ -91,7 +91,7 @@ classdef MainView < symphonyui.ui.View
                 'Separator', 'on', ...
                 'Accelerator', 'e', ...
                 'Callback', @(h,d)notify(obj, 'ViewExperiment'));
-            
+
             % Acquisition menu.
             obj.acquisitionMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Acquisition');
@@ -109,7 +109,7 @@ classdef MainView < symphonyui.ui.View
             obj.acquisitionMenu.stop = uimenu(obj.acquisitionMenu.root, ...
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
-            
+
             % Tools menu.
             obj.toolsMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Tools');
@@ -126,7 +126,7 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'Settings...', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'Settings'));
-            
+
             % Help menu.
             obj.helpMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Help');
@@ -141,23 +141,19 @@ classdef MainView < symphonyui.ui.View
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'AboutSymphony'));
             
-            iconsFolder = fullfile(symphonyui.app.App.rootPath, 'resources', 'icons');
-            if iconsFolder(1) == filesep
-                iconsFolder(1) = [];
-            end
-            iconsUrl = strrep(['file:/' iconsFolder '/'],'\','/');
-            
+            iconsUrl = pathToUrl(symphonyui.app.App.getIconsPath());
+
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
-            
+
             obj.protocolDropDown = createDropDownMenu(mainLayout, {''});
             set(obj.protocolDropDown, 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
-            
+
             obj.protocolParameterGrid = PropertyGrid(mainLayout);
             addlistener(obj.protocolParameterGrid, 'ChangedProperty', @(h,d)notify(obj, 'ChangedProtocolParameters'));
-            
+
             controlsPanel = uix.Panel( ...
                 'Parent', mainLayout, ...
                 'BorderType', 'line', ...
@@ -170,7 +166,7 @@ classdef MainView < symphonyui.ui.View
             obj.warningIcon = javacomponent(label, [], controlsLayout);
             uiextras.Empty('Parent', controlsLayout);
             obj.recordButton = uicontrol( ...
-                'Parent', controlsLayout, ...        
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'record_big.png'] '"/></html>'], ...
                 'TooltipString', 'Record', ...
@@ -179,7 +175,7 @@ classdef MainView < symphonyui.ui.View
                 java(findjobj(obj.recordButton)).setFlyOverAppearance(true);
             end
             obj.previewButton = uicontrol( ...
-                'Parent', controlsLayout, ...        
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'preview_big.png'] '"/></html>'], ...
                 'TooltipString', 'Preview', ...
@@ -210,132 +206,132 @@ classdef MainView < symphonyui.ui.View
             label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             label.setVisible(false);
             obj.progressIndicatorIcon = javacomponent(label, [], controlsLayout);
-            
+
             set(controlsLayout, 'Sizes', [36 -1 36 36 36 36 -1 36]);
-            
+
             set(mainLayout, 'Sizes', [25 -1 40]);
         end
-        
+
         function close(obj)
             close@symphonyui.ui.View(obj);
             obj.protocolParameterGrid.Close();
         end
-        
+
         function enableNewExperiment(obj, tf)
             set(obj.fileMenu.newExperiment, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
         function enableOpenExperiment(obj, tf)
             set(obj.fileMenu.openExperiment, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
         function enableCloseExperiment(obj, tf)
             set(obj.fileMenu.closeExperiment, 'Enable', symphonyui.util.onOff(tf));
         end
-        
-        function enableBeginEpochGroup(obj, tf)
-            set(obj.experimentMenu.beginEpochGroup, 'Enable', symphonyui.util.onOff(tf));
-        end
-        
-        function enableEndEpochGroup(obj, tf)
-            set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.util.onOff(tf));
-        end
-        
+
         function enableAddSource(obj, tf)
             set(obj.experimentMenu.addSource, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
+        function enableBeginEpochGroup(obj, tf)
+            set(obj.experimentMenu.beginEpochGroup, 'Enable', symphonyui.util.onOff(tf));
+        end
+
+        function enableEndEpochGroup(obj, tf)
+            set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.util.onOff(tf));
+        end
+
         function enableAddNote(obj, tf)
             set(obj.experimentMenu.addNote, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
         function enableViewExperiment(obj, tf)
             set(obj.experimentMenu.viewExperiment, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
         function enableSelectRig(obj, tf)
             set(obj.toolsMenu.selectRig, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
         function enableViewRig(obj, tf)
             set(obj.toolsMenu.viewRig, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
         function enableSettings(obj, tf)
             set(obj.toolsMenu.settings, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
         function enableSelectProtocol(obj, tf)
             set(obj.protocolDropDown, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
         function p = getSelectedProtocol(obj)
             p = symphonyui.util.ui.getSelectedValue(obj.protocolDropDown);
         end
-        
+
         function setSelectedProtocol(obj, p)
             symphonyui.util.ui.setSelectedValue(obj.protocolDropDown, p);
         end
-        
+
         function setProtocolList(obj, p)
             symphonyui.util.ui.setStringList(obj.protocolDropDown, p);
         end
-        
+
         function enableProtocolParameters(obj, tf)
             set(obj.protocolParameterGrid, 'Enable', tf);
         end
-        
+
         function p = getProtocolParameters(obj)
             properties = get(obj.protocolParameterGrid, 'Properties');
             p = fieldsToParameters(properties);
         end
-        
+
         function setProtocolParameters(obj, parameters)
             properties = parametersToFields(parameters);
             set(obj.protocolParameterGrid, 'Properties', properties);
         end
-        
+
         function updateProtocolParameters(obj, parameters)
             properties = parametersToFields(parameters);
             obj.protocolParameterGrid.UpdateProperties(properties);
         end
-        
+
         function enableRecord(obj, tf)
             enable = symphonyui.util.onOff(tf);
             set(obj.acquisitionMenu.record, 'Enable', enable);
             set(obj.recordButton, 'Enable', enable);
         end
-        
+
         function enablePreview(obj, tf)
             enable = symphonyui.util.onOff(tf);
             set(obj.acquisitionMenu.preview, 'Enable', enable);
             set(obj.previewButton, 'Enable', enable);
         end
-        
+
         function enablePause(obj, tf)
             enable = symphonyui.util.onOff(tf);
             set(obj.acquisitionMenu.pause, 'Enable', enable);
             set(obj.pauseButton, 'Enable', enable);
         end
-        
+
         function enableStop(obj, tf)
             enable = symphonyui.util.onOff(tf);
             set(obj.acquisitionMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
         end
-        
+
         function enableProgressIndicator(obj, tf)
             obj.progressIndicatorIcon.setVisible(tf);
         end
-        
+
         function enableWarning(obj, tf)
             obj.warningIcon.setVisible(tf);
         end
-        
+
         function setWarning(obj, s)
             obj.warningIcon.setToolTipText(s);
         end
-        
+
         function setStatus(obj, s)
             if isempty(s)
                 title = 'Symphony';
@@ -345,9 +341,9 @@ classdef MainView < symphonyui.ui.View
             set(obj.figureHandle, 'Name', title);
             obj.progressIndicatorIcon.setToolTipText(s);
         end
-        
+
     end
-    
+
 end
 
 function fields = parametersToFields(parameters)
@@ -355,10 +351,10 @@ function fields = parametersToFields(parameters)
     if isempty(parameters)
         return;
     end
-    
+
     for i = 1:numel(parameters)
         p = parameters(i);
-        
+
         description = p.description;
         if ~isempty(p.units)
             description = [description ' (' p.units ')']; %#ok<AGROW>
@@ -382,12 +378,12 @@ end
 function parameters = fieldsToParameters(fields)
     % TODO: Parse description into description and units.
     import symphonyui.core.*;
-    
-    parameters = Parameter.empty(0, 1);    
+
+    parameters = Parameter.empty(0, 1);
     if isempty(fields)
         return;
     end
-    
+
     for i = 1:numel(fields)
         f = fields(i);
         p = symphonyui.core.Parameter(f.Name, f.Value, ...

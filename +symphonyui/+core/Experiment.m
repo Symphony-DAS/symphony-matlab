@@ -3,10 +3,10 @@ classdef Experiment < handle
     events
         Opened
         Closed
+        AddedSource
         BeganEpochGroup
         EndedEpochGroup
         RecordedEpoch
-        AddedSource
         AddedNote
     end
     
@@ -45,20 +45,47 @@ classdef Experiment < handle
             notify(obj, 'Closed');
         end
         
-        function beginEpochGroup(obj, label)
-            disp(['Begin Epoch Group: ' label]);
-            if isempty(obj.currentEpochGroup)
-                parent = obj;
+        function l = getFlatSourceList(obj)
+            l = getFlatSourceListHelper(obj.sources, symphonyui.core.Source.empty(0, 1));
+        end
+        
+        function s = getSource(obj, id)
+            list = obj.getFlatSourceList();
+            s = list(arrayfun(@(e)strcmp(e.id, id), list));
+        end
+        
+        function addSource(obj, label, parentId)
+            if nargin < 3
+                parent = [];
             else
-                parent = obj.currentEpochGroup;
+                parent = obj.getSource(parentId);
             end
-            group = symphonyui.core.EpochGroup(parent, label);
-            if isempty(obj.currentEpochGroup)
+            source = symphonyui.core.Source(label, parent);
+            if isempty(parent)
+                obj.sources(end + 1) = source;
+            else
+                parent.addChild(source);
+            end
+            notify(obj, 'AddedSource', symphonyui.core.SourceEventData(source));
+        end
+        
+        function beginEpochGroup(obj, label, sourceId)
+            disp(['Begin Epoch Group: ' label]);
+            source = obj.getSource(sourceId);
+            parent = obj.currentEpochGroup;
+            group = symphonyui.core.EpochGroup(label, source, parent);
+            if isempty(parent)
                 obj.epochGroups(end + 1) = group;
+            else
+                parent.addChild(group);
             end
             obj.currentEpochGroup = group;
             group.start();
             notify(obj, 'BeganEpochGroup', symphonyui.core.EpochGroupEventData(group));
+        end
+        
+        function tf = canEndEpochGroup(obj)
+            tf = ~isempty(obj.currentEpochGroup);
         end
         
         function endEpochGroup(obj)
@@ -71,24 +98,30 @@ classdef Experiment < handle
                 obj.currentEpochGroup = group.parent;
             end
             notify(obj, 'EndedEpochGroup', symphonyui.core.EpochGroupEventData(group));
-        end
-        
-        function tf = hasCurrentEpochGroup(obj)
-            tf = ~isempty(obj.currentEpochGroup);
-        end
-        
-        function addSource(obj, label)
-            source = symphonyui.core.Source(obj, label);
-            obj.sources(end + 1) = source;
-            notify(obj, 'AddedSource', symphonyui.core.SourceEventData(source));
-        end
+        end       
         
         function addNote(obj, text)
             obj.notes(end + 1) = symphonyui.core.Note(text, now);
             notify(obj, 'AddedNote');
         end
         
+        function tf = canRecordEpochs(obj)
+            tf = ~isempty(obj.currentEpochGroup);
+        end
+        
     end
     
 end
+
+function list = getFlatSourceListHelper(sources, list)
+    for i = 1:numel(sources)
+        list(end + 1) = sources(i); %#ok<AGROW>
+
+        children = sources(i).children;
+        for k = 1:numel(children)
+            list = getFlatSourceListHelper(children, list);
+        end
+    end
+end
+
 
