@@ -1,8 +1,8 @@
 classdef SingleAmp < symphonyui.core.Rig
     
     properties (Constant)
-        displayName = 'Example Single Amp Rig'
-        version = 1
+        DISPLAY_NAME = 'Example Single Amp Rig'
+        VERSION = 1
     end
     
     methods

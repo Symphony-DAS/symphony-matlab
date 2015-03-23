@@ -19,26 +19,26 @@ classdef Config < handle
         end
         
         function v = get(obj, key)
-            if ispref(symphonyui.infra.Config.GROUP, key)
-                v = getpref(symphonyui.infra.Config.GROUP, key);
+            if ispref(obj.GROUP, key)
+                v = getpref(obj.GROUP, key);
             else
                 v = obj.defaults(key);
             end
         end
         
-        function put(obj, key, value) %#ok<INUSL>
-            if ispref(symphonyui.app.Config.GROUP, key)
-                if isequal(getpref(symphonyui.infra.Config.GROUP, key), value)
+        function put(obj, key, value)
+            if ispref(obj.GROUP, key)
+                if isequal(getpref(obj.GROUP, key), value)
                     return;
                 end
-                setpref(symphonyui.infra.Config.GROUP, key, value);
+                setpref(obj.GROUP, key, value);
             else
-                addpref(symphonyui.infra.Config.GROUP, key, value);
+                addpref(obj.GROUP, key, value);
             end
         end
         
-        function clear(obj) %#ok<MANU>
-            rmpref(symphonyui.infra.Config.GROUP);
+        function clear(obj)
+            rmpref(obj.GROUP);
         end
         
     end

@@ -1,8 +1,8 @@
 classdef Test < symphonyui.core.Protocol
     
     properties (Constant)
-        displayName = 'Test'
-        version = 1
+        DISPLAY_NAME = 'Test'
+        VERSION = 1
     end
     
     properties

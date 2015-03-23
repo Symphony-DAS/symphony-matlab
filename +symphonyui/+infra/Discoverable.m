@@ -1,8 +1,8 @@
 classdef (Abstract) Discoverable < handle
     
     properties (Abstract, Constant)
-        displayName
-        version
+        DISPLAY_NAME
+        VERSION
     end
     
     properties (Transient, Hidden)

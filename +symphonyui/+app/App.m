@@ -1,9 +1,5 @@
 classdef App < handle
     
-    properties (Constant)
-        version = '2.0.0-preview'
-    end
-    
     properties (SetAccess = private)
         config
     end
@@ -20,6 +16,10 @@ classdef App < handle
     end
     
     methods (Static)
+        
+        function v = getVersion()
+            v = '2.0.0-preview';
+        end
         
         function p = getRootPath()
             p = fullfile(mfilename('fullpath'), '..', '..', '..');

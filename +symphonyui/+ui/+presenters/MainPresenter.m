@@ -277,7 +277,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 clear = true;
             end
             parameters = obj.acquisitionService.getCurrentProtocol().getParameters();
-            i = ~arrayfun(@(e)any(strcmp(e.name, {'displayName', 'version'})), parameters);
+            i = ~arrayfun(@(e)any(strcmp(e.name, {'DISPLAY_NAME', 'VERSION'})), parameters);
             if clear
                 obj.view.setProtocolParameters(parameters(i));
             else
@@ -391,7 +391,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onViewSelectedAboutSymphony(obj, ~, ~)
             message = { ...
                 sprintf('Symphony Data Acquisition System'), ...
-                sprintf('Version %s', obj.app.version), ...
+                sprintf('Version %s', obj.app.getVersion()), ...
                 sprintf('%c %s Symphony-DAS', 169, datestr(now, 'YYYY'))};
             obj.view.showMessage(message, 'About Symphony');
         end
