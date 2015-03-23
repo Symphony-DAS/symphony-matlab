@@ -29,14 +29,26 @@ classdef AcquisitionService < symphonyui.util.mixin.Observer
             if isempty(rigs)
                 error('At least one rig should exist in the repo');
             end
-            obj.currentRig = rigs{1};
+            
+            % Prefer starting with a non-null rig.
+            if isa(rigs{1}, 'symphonyui.infra.nulls.NullRig') && numel(rigs) > 1
+                obj.currentRig = rigs{2};
+            else
+                obj.currentRig = rigs{1};
+            end
             
             obj.protocolRepository = protocolRepository;
             protocols = protocolRepository.getAll();
             if isempty(protocols)
                 error('At least one protocol should exist in the repo');
             end
-            obj.currentProtocol = protocols{1};
+            
+            % Prefer starting with a non-null protocol.
+            if isa(protocols{1}, 'symphonyui.infra.nulls.NullProtocol') && numel(protocols) > 1
+                obj.currentProtocol = protocols{2};
+            else
+                obj.currentProtocol = protocols{1};
+            end
         end
         
         function close(obj)
