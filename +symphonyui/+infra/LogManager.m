@@ -3,7 +3,7 @@ classdef LogManager < handle
     methods (Static)
         
         function l = getLogger(className)
-            l = symphonyui.util.logging.Logger(className);
+            l = symphonyui.infra.Logger(className);
         end
         
     end
