@@ -6,6 +6,7 @@ classdef ExperimentView < symphonyui.ui.View
         EndEpochGroup
         AddNote
         SelectedNode
+        ViewEpochGroupSource
     end
 
     properties (Access = private)
@@ -111,8 +112,16 @@ classdef ExperimentView < symphonyui.ui.View
             set(obj.epochGroupCard.labelField, 'Enable', 'off');
             obj.epochGroupCard.startTimeField = createLabeledTextField(epochGroupLayout, 'Start time:', [epochGroupLabelSize -1]);
             set(obj.epochGroupCard.startTimeField, 'Enable', 'off');
-            obj.epochGroupCard.sourceField = createLabeledTextField(epochGroupLayout, 'Source:', [epochGroupLabelSize -1]);
+            [obj.epochGroupCard.sourceField, l] = createLabeledTextField(epochGroupLayout, 'Source:', [epochGroupLabelSize -1]);
             set(obj.epochGroupCard.sourceField, 'Enable', 'off');
+            obj.epochGroupCard.viewSourceButton = uicontrol( ...
+                'Parent', l, ...
+                'Style', 'pushbutton', ...
+                'String', '...', ...
+                'TooltipString', 'View Source', ...
+                'Callback', @(h,d)notify(obj, 'ViewEpochGroupSource'));
+            set(l, 'Sizes', [epochGroupLabelSize -1 30]);
+            
             set(epochGroupLayout, 'Sizes', [25 25 25]);
 
             % Epoch card.
@@ -291,6 +300,10 @@ classdef ExperimentView < symphonyui.ui.View
 
         function enableEpochGroupSource(obj, tf)
             set(obj.epochGroupCard.sourceField, 'Enable', symphonyui.util.onOff(tf));
+        end
+        
+        function s = getEpochGroupSource(obj)
+            s = get(obj.epochGroupCard.sourceField, 'String');
         end
 
         function setEpochGroupSource(obj, s)
