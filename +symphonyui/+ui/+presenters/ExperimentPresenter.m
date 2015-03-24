@@ -34,10 +34,13 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
+            obj.addListener(v, 'AddSourceProperty', @obj.onViewSelectedAddSourceProperty);
+            obj.addListener(v, 'RemoveSourceProperty', @obj.onViewSelectedRemoveSourceProperty);
             obj.addListener(v, 'ViewEpochGroupSource', @obj.onViewSelectedViewEpochGroupSource);
             
             e = obj.experiment;
             obj.addListener(e, 'AddedSource', @obj.onExperimentAddedSource);
+            obj.addListener(e, 'ChangedSourceProperties', @obj.onExperimentChangedSourceProperties);
             obj.addListener(e, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
             obj.addListener(e, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
             obj.addListener(e, 'AddedNote', @obj.onExperimentAddedNote);
@@ -116,8 +119,31 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function selectSource(obj, source)
             obj.view.setSourceLabel(source.label);
+            obj.view.setSourceProperties(source.propertyMap);
             obj.view.setSelectedNode(source.id);
             obj.view.setSelectedCard(2);
+        end
+        
+        function onViewSelectedAddSourceProperty(obj, ~, ~)
+            sourceId = obj.view.getSelectedNode();
+            obj.experiment.putSourceProperty(sourceId, num2str(rand()), 'value');
+        end
+        
+        function onViewSelectedRemoveSourceProperty(obj, ~, ~)
+            sourceId = obj.view.getSelectedNode();
+            property = obj.view.getSelectedSourceProperty();
+            if isempty(property)
+                return;
+            end
+            obj.experiment.removeSourceProperty(sourceId, property);
+        end
+        
+        function onExperimentChangedSourceProperties(obj, ~, data)
+            source = data.source;
+            if ~strcmp(obj.view.getSelectedNode(), source.id)
+                return;
+            end
+            obj.view.setSourceProperties(source.propertyMap);
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)

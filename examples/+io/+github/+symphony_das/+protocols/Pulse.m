@@ -18,12 +18,13 @@ classdef Pulse < symphonyui.core.Protocol
     
     methods
         
-        function p = getParameters(obj)
-            import symphonyui.core.ParameterType;
+        function p = getParameter(obj, name)
+            p = getParameter@symphonyui.core.Protocol(obj, name);
             
-            p = getParameters@symphonyui.core.Protocol(obj);
-            
-            p.findByName('amp').type = ParameterType('char', 'row', {'Amplifier_Ch1', 'Amplifier_Ch2'});
+            switch name
+                case 'name'
+                    p.type = ParameterType('char', 'row', {'Amplifier_Ch1', 'Amplifier_Ch2'});
+            end
         end
         
     end

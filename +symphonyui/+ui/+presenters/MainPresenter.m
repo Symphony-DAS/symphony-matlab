@@ -38,7 +38,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'ViewExperiment', @obj.onViewSelectedViewExperiment);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
-            obj.addListener(v, 'ChangedProtocolParameters', @obj.onViewChangedProtocolParameters);
+            obj.addListener(v, 'ChangedProtocolParameter', @obj.onViewChangedProtocolParameter);
             obj.addListener(v, 'Record', @obj.onViewSelectedRecord);
             obj.addListener(v, 'Preview', @obj.onViewSelectedPreview);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
@@ -215,7 +215,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function addProtocolListeners(obj)
             protocol = obj.acquisitionService.getCurrentProtocol();
-            obj.listeners.protocol.changedParameters = obj.addListener(protocol, 'ChangedParameters', @obj.onProtocolChangedParameters);
+            obj.listeners.protocol.changedParameters = obj.addListener(protocol, 'ChangedParameter', @obj.onProtocolChangedParameter);
         end
         
         function removeProtocolListeners(obj)
@@ -225,13 +225,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
         end
         
-        function onViewChangedProtocolParameters(obj, ~, ~)
+        function onViewChangedProtocolParameter(obj, ~, data)
             parameters = obj.view.getProtocolParameters();
             protocol = obj.acquisitionService.getCurrentProtocol();
-            protocol.setParameters(parameters);
+            %protocol.setParameters(parameters);
         end
         
-        function onProtocolChangedParameters(obj, ~, ~)
+        function onProtocolChangedParameter(obj, ~, ~)
             obj.updateViewProtocolParameters(false);
             obj.updateViewState();
         end
@@ -280,7 +280,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             if nargin < 2
                 clear = true;
             end
-            parameters = obj.acquisitionService.getCurrentProtocol().getParameters();
+            parameters = obj.acquisitionService.getCurrentProtocol().getAllParameters();
             i = ~arrayfun(@(e)any(strcmp(e.name, {'DISPLAY_NAME', 'VERSION'})), parameters);
             if clear
                 obj.view.setProtocolParameters(parameters(i));

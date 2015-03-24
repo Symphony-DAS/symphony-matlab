@@ -11,7 +11,7 @@ classdef MainView < symphonyui.ui.View
         AddNote
         ViewExperiment
         SelectedProtocol
-        ChangedProtocolParameters
+        ChangedProtocolParameter
         Record
         Preview
         Pause
@@ -152,7 +152,7 @@ classdef MainView < symphonyui.ui.View
             set(obj.protocolDropDown, 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
 
             obj.protocolParameterGrid = PropertyGrid(mainLayout);
-            addlistener(obj.protocolParameterGrid, 'ChangedProperty', @(h,d)notify(obj, 'ChangedProtocolParameters'));
+            addlistener(obj.protocolParameterGrid, 'ChangedProperty', @(h,d)notify(obj, 'ChangedProtocolParameter', d));
 
             controlsPanel = uix.Panel( ...
                 'Parent', mainLayout, ...

@@ -234,6 +234,23 @@ classdef PropertyGrid < UIControl
                 s = nestedassign(s, field.PropertyData.Name, field.PropertyData.Value);
             end
         end
+        
+        function name = GetSelectedProperty(obj)
+        % The name of the currently selected property (if any).
+        % Like JIDE, this function also uses a hierarchical naming scheme
+        % (dot notation).
+        %
+        % Output arguments:
+        % name:
+        %    a selected property in dot notation
+            selectedfield = obj.Table.getSelectedProperty();
+            if isempty(selectedfield)
+                name = [];
+            else
+                name = char(selectedfield.getFullName());
+            end
+        end
+        
     end
     methods (Access = private)
         function EditMatrix(self, name)
@@ -309,7 +326,7 @@ classdef PropertyGrid < UIControl
                     end
                     field.PropertyData.Value = value;  % persist changes in property value
                     self.UpdateDependentProperties(field);
-                    notify(self, 'ChangedProperty');
+                    notify(self, 'ChangedProperty', PropertyEventData(name));
                 catch me
                     field.Value = field.PropertyData.Value;  % revert changes
                     self.Table.repaint();
@@ -336,21 +353,6 @@ classdef PropertyGrid < UIControl
     end
 
     methods (Access = private)  % methods (Access = private, Static) for MatLab 2010a and up
-        function name = GetSelectedProperty(obj)
-        % The name of the currently selected property (if any).
-        % Like JIDE, this function also uses a hierarchical naming scheme
-        % (dot notation).
-        %
-        % Output arguments:
-        % name:
-        %    a selected property in dot notation
-            selectedfield = obj.Table.getSelectedProperty();
-            if isempty(selectedfield)
-                name = [];
-            else
-                name = char(selectedfield.getFullName());
-            end
-        end
 
         function OnKeyPressed(self, ~, event)
         % Fired when a key is pressed when the property grid has the focus.

@@ -6,6 +6,8 @@ classdef ExperimentView < symphonyui.ui.View
         EndEpochGroup
         AddNote
         SelectedNode
+        AddSourceProperty
+        RemoveSourceProperty
         ViewEpochGroupSource
     end
 
@@ -33,7 +35,7 @@ classdef ExperimentView < symphonyui.ui.View
             import symphonyui.util.ui.*;
 
             set(obj.figureHandle, 'Name', 'Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(400, 400));
+            set(obj.figureHandle, 'Position', screenCenter(500, 500));
 
             % Toolbar.
             obj.toolbar = uitoolbar( ...
@@ -101,7 +103,12 @@ classdef ExperimentView < symphonyui.ui.View
             sourceLabelSize = 60;
             obj.sourceCard.labelField = createLabeledTextField(sourceLayout, 'Label:', [sourceLabelSize -1]);
             set(obj.sourceCard.labelField, 'Enable', 'off');
-            set(sourceLayout, 'Sizes', [25]);
+            [obj.sourceCard.propertyGrid, obj.sourceCard.addSourcePropertyButton, obj.sourceCard.removeSourcePropertyButton] = ...
+                createLabeledPropertyGrid(sourceLayout, 'Properties:', [sourceLabelSize -1]);
+            set(obj.sourceCard.addSourcePropertyButton, 'Callback', @(h,d)notify(obj, 'AddSourceProperty'));
+            set(obj.sourceCard.removeSourcePropertyButton, 'Callback', @(h,d)notify(obj, 'RemoveSourceProperty'));
+            
+            set(sourceLayout, 'Sizes', [25 120]);
 
             % Epoch group card.
             epochGroupLayout = uiextras.VBox( ...
@@ -136,7 +143,7 @@ classdef ExperimentView < symphonyui.ui.View
             set(obj.cardPanel, 'UserData', {'Experiment', 'Source', 'Epoch Group', 'Epoch'});
             set(obj.cardPanel, 'Selection', 1);
 
-            set(topLayout, 'Sizes', [110 -1]);
+            set(topLayout, 'Sizes', [140 -1]);
 
             % Notes controls.
             notesLayout = uiextras.VBox( ...
@@ -246,6 +253,7 @@ classdef ExperimentView < symphonyui.ui.View
         function addNote(obj, id, date, text)
             jtable = obj.notesTable.getTable();
             jtable.getModel().addRow({datestr(date, 14), text});
+            jtable.clearSelection();
             jtable.scrollRectToVisible(jtable.getCellRect(jtable.getRowCount()-1, 0, true));
             obj.idMap(id) = jtable.getModel.getRowCount() - 1;
         end
@@ -325,7 +333,31 @@ classdef ExperimentView < symphonyui.ui.View
         function setSourceLabel(obj, l)
             set(obj.sourceCard.labelField, 'String', l);
         end
+        
+        function setSourceProperties(obj, propertyMap)
+            properties = mapToFields(propertyMap);
+            set(obj.sourceCard.propertyGrid, 'Properties', properties);
+        end
+        
+        function p = getSelectedSourceProperty(obj)
+            p = obj.sourceCard.propertyGrid.GetSelectedProperty();
+        end
 
     end
 
+end
+
+function fields = mapToFields(map)
+    fields = PropertyGridField.empty(0, 1);
+    keys = map.keys;
+    if isempty(keys)
+        return;
+    end
+
+    for i = 1:numel(keys)
+        k = keys{i};
+
+        f = PropertyGridField(k, map(k));
+        fields(end + 1) = f; %#ok<AGROW>
+    end
 end

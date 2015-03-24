@@ -4,6 +4,7 @@ classdef Experiment < handle
         Opened
         Closed
         AddedSource
+        ChangedSourceProperties
         BeganEpochGroup
         EndedEpochGroup
         RecordedEpoch
@@ -67,6 +68,18 @@ classdef Experiment < handle
                 parent.addChild(source);
             end
             notify(obj, 'AddedSource', symphonyui.core.SourceEventData(source));
+        end
+        
+        function putSourceProperty(obj, sourceId, name, value)
+            source = obj.getSource(sourceId);
+            source.putProperty(name, value);
+            notify(obj, 'ChangedSourceProperties', symphonyui.core.SourceEventData(source));
+        end
+        
+        function removeSourceProperty(obj, sourceId, name)
+            source = obj.getSource(sourceId);
+            source.removeProperty(name);
+            notify(obj, 'ChangedSourceProperties', symphonyui.core.SourceEventData(source));
         end
         
         function beginEpochGroup(obj, label, sourceId)
