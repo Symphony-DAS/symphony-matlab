@@ -40,7 +40,7 @@ classdef Parameter < matlab.mixin.SetGet
         
         function n = get.displayName(obj)
             if isempty(obj.displayName)
-                n = obj.name;
+                n = symphonyui.util.humanizeVarName(obj.name);
             else
                 n = obj.displayName;
             end
