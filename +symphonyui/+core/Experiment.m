@@ -122,9 +122,7 @@ function list = getFlatSourceListHelper(sources, list)
         list(end + 1) = sources(i); %#ok<AGROW>
 
         children = sources(i).children;
-        for k = 1:numel(children)
-            list = getFlatSourceListHelper(children, list);
-        end
+        list = getFlatSourceListHelper(children, list);
     end
 end
 
