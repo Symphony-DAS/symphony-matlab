@@ -20,8 +20,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj)            
-            obj.addExperiment();
+        function onGoing(obj)
+            obj.populateExperimentTree();
             obj.selectExperiment();
             obj.updateViewState();
         end
@@ -50,6 +50,10 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             if strcmp(data.key, 't') && strcmp(data.modifier, 'control')
                 obj.onViewSelectedAddNote();
             end
+        end
+        
+        function populateExperimentTree(obj)
+            obj.addExperiment();
         end
         
         function addExperiment(obj)

@@ -69,6 +69,10 @@ classdef AddSourceView < symphonyui.ui.View
             symphonyui.util.ui.setSelectedValue(obj.parentDropDown, p);
         end
         
+        function l = getParentList(obj)
+            l = get(obj.parentDropDown, 'String');
+        end
+        
         function setParentList(obj, l)
             symphonyui.util.ui.setStringList(obj.parentDropDown, l);
         end

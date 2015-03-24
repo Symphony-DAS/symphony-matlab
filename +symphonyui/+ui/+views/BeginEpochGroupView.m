@@ -93,6 +93,10 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             symphonyui.util.ui.setSelectedValue(obj.sourceDropDown, s);
         end
         
+        function l = getSourceList(obj)
+            l = get(obj.sourceDropDown, 'String');
+        end
+        
         function setSourceList(obj, l)
             symphonyui.util.ui.setStringList(obj.sourceDropDown, l);
         end

@@ -19,7 +19,7 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
-            obj.view.setRigList(obj.acquisitionService.getAvailableRigIds());
+            obj.populateRigList();
             obj.view.setSelectedRig(obj.acquisitionService.getCurrentRig().id);
         end
         
@@ -44,6 +44,10 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
+        end
+        
+        function populateRigList(obj)
+            obj.view.setRigList(obj.acquisitionService.getAvailableRigIds());
         end
         
         function onServiceSelectedRig(obj, ~, ~)

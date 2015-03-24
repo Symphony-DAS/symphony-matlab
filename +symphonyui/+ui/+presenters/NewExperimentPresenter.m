@@ -19,19 +19,7 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
-            import symphonyui.app.Settings;
-            
-            config = obj.app.config;
-            name = config.get(Settings.EXPERIMENT_DEFAULT_NAME);
-            location = config.get(Settings.EXPERIMENT_DEFAULT_LOCATION);
-            try
-                obj.view.setName(name());
-                obj.view.setLocation(location());
-            catch x
-                msg = ['Unable to set view from config: ' x.message];
-                obj.log.debug(msg, x);
-                obj.view.showError(msg);
-            end
+            obj.populateFromConfig();
         end
         
         function onGo(obj)
@@ -49,6 +37,22 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
     end
     
     methods (Access = private)
+        
+        function populateFromConfig(obj)
+            import symphonyui.app.Settings;
+            
+            config = obj.app.config;
+            name = config.get(Settings.EXPERIMENT_DEFAULT_NAME);
+            location = config.get(Settings.EXPERIMENT_DEFAULT_LOCATION);
+            try
+                obj.view.setName(name());
+                obj.view.setLocation(location());
+            catch x
+                msg = ['Unable to populate view from config: ' x.message];
+                obj.log.debug(msg, x);
+                obj.view.showError(msg);
+            end
+        end
         
         function onViewKeyPress(obj, ~, data)
             switch data.key

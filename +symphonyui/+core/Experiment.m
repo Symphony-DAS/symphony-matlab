@@ -70,6 +70,10 @@ classdef Experiment < handle
         end
         
         function beginEpochGroup(obj, label, sourceId)
+            if isempty(sourceId)
+                error('Source cannot be empty');
+            end
+            
             disp(['Begin Epoch Group: ' label]);
             source = obj.getSource(sourceId);
             parent = obj.currentEpochGroup;

@@ -19,47 +19,41 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj, ~, ~)
-            import symphonyui.app.Settings;
+            obj.populateFromConfig();
+            obj.populateParent();
+            obj.populateSourceList();
+            obj.view.setSelectedSource(obj.view.getSourceList{end});
+        end
+        
+        function onBind(obj)
+            v = obj.view;
+            obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
+            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
+            obj.addListener(v, 'Begin', @obj.onViewSelectedBegin);
+            obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
             
-            if isempty(obj.experiment.currentEpochGroup)
-                parent = [obj.experiment.name ' (Experiment)'];
-            else
-                parent = obj.experiment.currentEpochGroup.label;
-            end
-            obj.view.setParent(parent);
+            e = obj.experiment;
+            obj.addListener(e, 'AddedSource', @obj.onExperimentAddedSource);
+        end
+
+    end
+    
+    methods (Access = private)
+        
+        function populateFromConfig(obj)
+            import symphonyui.app.Settings;
             
             config = obj.app.config;
             labelList = config.get(Settings.EPOCH_GROUP_LABEL_LIST);
             try
                 obj.view.setLabelList(labelList());
             catch x
-                msg = ['Unable to set view from config: ' x.message];
+                msg = ['Unable to populate view from config: ' x.message];
                 obj.log.debug(msg, x);
                 obj.view.showError(msg);
             end
-            
-            sourceList = {};
-            sources = obj.experiment.getFlatSourceList();
-            for i = 1:numel(sources)
-                sourceList{end + 1} = sources(i).id; %#ok<AGROW>
-            end
-            obj.view.setSourceList(sourceList);
-            if ~isempty(sourceList)
-                obj.view.setSelectedSource(sourceList{end});
-            end
         end
         
-        function onBind(obj)
-            v = obj.view;
-            obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
-            obj.addListener(v, 'Begin', @obj.onViewSelectedBegin);
-            obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
-        end
-
-    end
-    
-    methods (Access = private)
-
         function onViewKeyPress(obj, ~, data)
             switch data.key
                 case 'return'
@@ -69,15 +63,39 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             end
         end
         
+        function populateParent(obj)
+            if isempty(obj.experiment.currentEpochGroup)
+                parent = [obj.experiment.name ' (Experiment)'];
+            else
+                parent = obj.experiment.currentEpochGroup.label;
+            end
+            obj.view.setParent(parent);
+        end
+        
+        function onViewSelectedAddSource(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.experiment, obj.app);
+            presenter.goWaitStop();
+        end
+        
+        function onExperimentAddedSource(obj, ~, ~)
+            obj.populateSourceList();
+            obj.view.setSelectedSource(obj.view.getSourceList{end});
+        end
+        
+        function populateSourceList(obj)
+            sourceList = {};
+            sources = obj.experiment.getFlatSourceList();
+            for i = 1:numel(sources)
+                sourceList{end + 1} = sources(i).id; %#ok<AGROW>
+            end
+            obj.view.setSourceList(sourceList);
+        end
+        
         function onViewSelectedBegin(obj, ~, ~)
             obj.view.update();
             
             label = obj.view.getSelectedLabel();
             source = obj.view.getSelectedSource();
-            if isempty(source)
-                obj.view.showError('Epoch group must have a source');
-                return;
-            end
             
             try
                 obj.experiment.beginEpochGroup(label, source);

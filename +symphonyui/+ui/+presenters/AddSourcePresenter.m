@@ -19,23 +19,9 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj, ~, ~)
-            sourceList = {[obj.experiment.name ' (Experiment)']};
-            sources = obj.experiment.getFlatSourceList();
-            for i = 1:numel(sources)
-                sourceList{end + 1} = sources(i).id; %#ok<AGROW>
-            end
-            obj.view.setParentList(sourceList);
-            obj.view.setSelectedParent(sourceList{end});
-            
-            config = obj.app.config;
-            labelList = config.get(symphonyui.app.Settings.SOURCE_LABEL_LIST);
-            try
-                obj.view.setLabelList(labelList());
-            catch x
-                msg = ['Unable to set view from config: ' x.message];
-                obj.log.debug(msg, x);
-                obj.view.showError(msg);
-            end
+            obj.populateFromConfig();
+            obj.populateParentList();
+            obj.view.setSelectedParent(obj.view.getParentList{end});
         end
         
         function onBind(obj)
@@ -48,6 +34,20 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
     end
     
     methods (Access = private)
+        
+        function populateFromConfig(obj)
+            import symphonyui.app.Settings;
+            
+            config = obj.app.config;
+            labelList = config.get(symphonyui.app.Settings.SOURCE_LABEL_LIST);
+            try
+                obj.view.setLabelList(labelList());
+            catch x
+                msg = ['Unable to populate view from config: ' x.message];
+                obj.log.debug(msg, x);
+                obj.view.showError(msg);
+            end
+        end
 
         function onViewKeyPress(obj, ~, data)
             switch data.key
@@ -56,6 +56,15 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
+        end
+        
+        function populateParentList(obj)
+            sourceList = {[obj.experiment.name ' (Experiment)']};
+            sources = obj.experiment.getFlatSourceList();
+            for i = 1:numel(sources)
+                sourceList{end + 1} = sources(i).id; %#ok<AGROW>
+            end
+            obj.view.setParentList(sourceList);
         end
         
         function onViewSelectedAdd(obj, ~, ~)

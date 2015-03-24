@@ -21,7 +21,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
-            obj.view.setProtocolList(obj.acquisitionService.getAvailableProtocolIds());
+            obj.populateProtocolList();
             obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocol().id);
             obj.updateViewProtocolParameters();
             obj.updateViewState();
@@ -189,6 +189,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onRigSetState(obj, ~, ~)
             obj.updateViewState();
+        end
+        
+        function populateProtocolList(obj)
+            obj.view.setProtocolList(obj.acquisitionService.getAvailableProtocolIds());
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
