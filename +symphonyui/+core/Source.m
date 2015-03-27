@@ -1,4 +1,4 @@
-classdef Source < handle
+classdef Source < symphonyui.core.Entity
     
     properties (Hidden)
         id
@@ -9,24 +9,15 @@ classdef Source < handle
     
     methods
         
-        function obj = Source(label, parent)
+        function obj = Source()
             obj.id = char(java.util.UUID.randomUUID);
-            obj.label = label;
-            obj.propertyMap = containers.Map();
-            obj.parent = parent;
+%             obj.label = label;
+%             obj.parent = parent;
             obj.children = symphonyui.core.Source.empty(0, 1);
         end
         
         function addChild(obj, source)
             obj.children(end + 1) = source;
-        end
-        
-        function putProperty(obj, name, value)
-            obj.propertyMap(name) = value;
-        end
-        
-        function removeProperty(obj, name)
-            obj.propertyMap.remove(name);
         end
         
     end

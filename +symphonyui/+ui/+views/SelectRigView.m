@@ -14,11 +14,10 @@ classdef SelectRigView < symphonyui.ui.View
     methods
         
         function createUi(obj)
-            import symphonyui.util.*;
-            import symphonyui.util.ui.*;
+            import symphonyui.ui.util.*;
             
             set(obj.figureHandle, 'Name', 'Select Rig');
-            set(obj.figureHandle, 'Position', screenCenter(250, 79));
+            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(250, 79));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
@@ -59,15 +58,15 @@ classdef SelectRigView < symphonyui.ui.View
         end
         
         function r = getSelectedRig(obj)
-            r = symphonyui.util.ui.getSelectedValue(obj.rigDropDown);
+            r = symphonyui.ui.util.getSelectedValue(obj.rigDropDown);
         end
         
         function setSelectedRig(obj, r)
-            symphonyui.util.ui.setSelectedValue(obj.rigDropDown, r);
+            symphonyui.ui.util.setSelectedValue(obj.rigDropDown, r);
         end
         
         function setRigList(obj, l)
-            symphonyui.util.ui.setStringList(obj.rigDropDown, l);
+            symphonyui.ui.util.setStringList(obj.rigDropDown, l);
         end
         
         function enableOk(obj, tf)

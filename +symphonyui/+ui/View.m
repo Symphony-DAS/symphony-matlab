@@ -1,4 +1,4 @@
-classdef View < symphonyui.util.mixin.Observer
+classdef View < symphonyui.infra.mixin.Observer
     
     events
         KeyPress

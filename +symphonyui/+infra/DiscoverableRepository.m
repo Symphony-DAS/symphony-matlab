@@ -54,7 +54,7 @@ classdef DiscoverableRepository < handle
         function load(obj, className)
             constructor = str2func(className);
             Discoverable = constructor();
-            id = Discoverable.DISPLAY_NAME;
+            id = Discoverable.displayName;
             if obj.objects.isKey(id)
                 id = [id ' (' className ')'];
             end

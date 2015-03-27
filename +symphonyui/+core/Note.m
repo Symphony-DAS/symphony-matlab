@@ -3,7 +3,7 @@ classdef Note < handle
     properties (SetAccess = private)
         id
         text
-        date
+        date % the date
     end
     
     methods

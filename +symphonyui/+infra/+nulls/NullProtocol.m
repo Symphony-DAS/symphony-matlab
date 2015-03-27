@@ -1,8 +1,8 @@
 classdef NullProtocol < symphonyui.core.Protocol
 
     properties (Constant)
-        DISPLAY_NAME = '(None)'
-        VERSION = 1
+        displayName = '(None)'
+        version = 1
     end
 
     methods

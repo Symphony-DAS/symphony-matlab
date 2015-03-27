@@ -19,11 +19,10 @@ classdef SettingsView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.util.*;
-            import symphonyui.util.ui.*;
+            import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Settings');
-            set(obj.figureHandle, 'Position', screenCenter(467, 356));
+            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(467, 356));
             set(obj.figureHandle, 'WindowStyle', 'modal');
 
             mainLayout = uiextras.VBox( ...
@@ -114,7 +113,7 @@ classdef SettingsView < symphonyui.ui.View
         end
 
         function n = getSelectedNode(obj)
-            n = symphonyui.util.ui.getSelectedValue(obj.nodeList);
+            n = symphonyui.ui.util.getSelectedValue(obj.nodeList);
         end
         
         function l = getCardList(obj)

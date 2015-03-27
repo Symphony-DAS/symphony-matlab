@@ -1,4 +1,4 @@
-classdef AcquisitionService < symphonyui.util.mixin.Observer
+classdef AcquisitionService < symphonyui.infra.mixin.Observer
     
     events (NotifyAccess = private)
         OpenedExperiment

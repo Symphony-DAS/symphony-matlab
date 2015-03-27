@@ -1,4 +1,4 @@
-classdef Presenter < symphonyui.util.mixin.Observer
+classdef Presenter < symphonyui.infra.mixin.Observer
     
     properties (Access = protected)
         log
@@ -9,7 +9,7 @@ classdef Presenter < symphonyui.util.mixin.Observer
     methods
         
         function obj = Presenter(app, view)
-            obj.log = symphonyui.infra.LogManager.getLogger(class(obj));
+            obj.log = org.apache.logging.log4j.LogManager.getLogger(class(obj));
             obj.app = app;
             obj.view = view;
         end

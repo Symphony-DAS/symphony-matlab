@@ -11,7 +11,7 @@ classdef MainView < symphonyui.ui.View
         AddNote
         ViewExperiment
         SelectedProtocol
-        ChangedProtocolParameter
+        ChangedProtocolProperty
         Record
         Preview
         Pause
@@ -31,7 +31,7 @@ classdef MainView < symphonyui.ui.View
         toolsMenu
         helpMenu
         protocolDropDown
-        protocolParameterGrid
+        protocolPropertyPane
         warningIcon
         recordButton
         previewButton
@@ -45,11 +45,10 @@ classdef MainView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.util.*;
-            import symphonyui.util.ui.*;
+            import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Symphony');
-            set(obj.figureHandle, 'Position', screenCenter(300, 360));
+            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(300, 360));
 
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
@@ -141,7 +140,7 @@ classdef MainView < symphonyui.ui.View
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'AboutSymphony'));
             
-            iconsUrl = pathToUrl(symphonyui.app.App.getIconsPath());
+            iconsUrl = symphonyui.util.pathToUrl(symphonyui.app.App.getIconsPath());
 
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
@@ -151,8 +150,9 @@ classdef MainView < symphonyui.ui.View
             obj.protocolDropDown = createDropDownMenu(mainLayout, {''});
             set(obj.protocolDropDown, 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
 
-            obj.protocolParameterGrid = PropertyGrid(mainLayout);
-            addlistener(obj.protocolParameterGrid, 'ChangedProperty', @(h,d)notify(obj, 'ChangedProtocolParameter', d));
+            obj.protocolPropertyPane = uiextras.jide.PropertyPane( ...
+                'Parent', mainLayout, ...
+                'Callback', @(h,d)notify(obj, 'ChangedProtocolProperty'));
 
             controlsPanel = uix.Panel( ...
                 'Parent', mainLayout, ...
@@ -171,41 +171,39 @@ classdef MainView < symphonyui.ui.View
                 'String', ['<html><img src="' [iconsUrl 'record_big.png'] '"/></html>'], ...
                 'TooltipString', 'Record', ...
                 'Callback', @(h,d)notify(obj, 'Record'));
-            try %#ok<TRYNC>
-                java(findjobj(obj.recordButton)).setFlyOverAppearance(true);
-            end
             obj.previewButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'preview_big.png'] '"/></html>'], ...
                 'TooltipString', 'Preview', ...
                 'Callback', @(h,d)notify(obj, 'Preview'));
-            try %#ok<TRYNC>
-                java(findjobj(obj.previewButton)).setFlyOverAppearance(true);
-            end
             obj.pauseButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'pause_big.png'] '"/></html>'], ...
                 'TooltipString', 'Pause', ...
                 'Callback', @(h,d)notify(obj, 'Pause'));
-            try %#ok<TRYNC>
-                java(findjobj(obj.pauseButton)).setFlyOverAppearance(true);
-            end
             obj.stopButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'stop_big.png'] '"/></html>'], ...
                 'TooltipString', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
-            try %#ok<TRYNC>
-                java(findjobj(obj.stopButton)).setFlyOverAppearance(true);
-            end
             uiextras.Empty('Parent', controlsLayout);
             label = javax.swing.JLabel(['<html><img src="' [iconsUrl 'progress_indicator.gif'] '"/></html>']);
             label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             label.setVisible(false);
             obj.progressIndicatorIcon = javacomponent(label, [], controlsLayout);
+            
+            % Avoid using findjobj (extremely slow).
+            try %#ok<TRYNC>
+                drawnow;
+                container = obj.progressIndicatorIcon.getParent().getParent().getParent();
+                container.getComponent(1).getComponent(0).setFlyOverAppearance(true);
+                container.getComponent(2).getComponent(0).setFlyOverAppearance(true);
+                container.getComponent(3).getComponent(0).setFlyOverAppearance(true);
+                container.getComponent(4).getComponent(0).setFlyOverAppearance(true);
+            end
 
             set(controlsLayout, 'Sizes', [36 -1 36 36 36 36 -1 36]);
 
@@ -214,7 +212,7 @@ classdef MainView < symphonyui.ui.View
 
         function close(obj)
             close@symphonyui.ui.View(obj);
-            obj.protocolParameterGrid.Close();
+            obj.protocolPropertyPane.Close();
         end
 
         function enableNewExperiment(obj, tf)
@@ -266,35 +264,33 @@ classdef MainView < symphonyui.ui.View
         end
 
         function p = getSelectedProtocol(obj)
-            p = symphonyui.util.ui.getSelectedValue(obj.protocolDropDown);
+            p = symphonyui.ui.util.getSelectedValue(obj.protocolDropDown);
         end
 
         function setSelectedProtocol(obj, p)
-            symphonyui.util.ui.setSelectedValue(obj.protocolDropDown, p);
+            symphonyui.ui.util.setSelectedValue(obj.protocolDropDown, p);
         end
 
         function setProtocolList(obj, p)
-            symphonyui.util.ui.setStringList(obj.protocolDropDown, p);
+            symphonyui.ui.util.setStringList(obj.protocolDropDown, p);
         end
 
-        function enableProtocolParameters(obj, tf)
-            set(obj.protocolParameterGrid, 'Enable', tf);
+        function enableProtocolProperties(obj, tf)
+            set(obj.protocolPropertyPane, 'Enable', tf);
         end
 
-        function p = getProtocolParameters(obj)
-            properties = get(obj.protocolParameterGrid, 'Properties');
-            p = fieldsToParameters(properties);
+        function p = getProtocolProperties(obj)
+            p = get(obj.protocolPropertyPane, 'Properties');
         end
 
-        function setProtocolParameters(obj, parameters)
-            properties = parametersToFields(parameters);
-            set(obj.protocolParameterGrid, 'Properties', properties);
+        function setProtocolProperties(obj, properties)
+            set(obj.protocolPropertyPane, 'Properties', properties);
         end
 
-        function updateProtocolParameters(obj, parameters)
-            properties = parametersToFields(parameters);
-            obj.protocolParameterGrid.UpdateProperties(properties);
-        end
+%         function updateProtocolPropertys(obj, parameters)
+%             properties = parametersToFields(parameters);
+%             obj.protocolPropertyPane.UpdateProperties(properties);
+%         end
 
         function enableRecord(obj, tf)
             enable = symphonyui.util.onOff(tf);
@@ -343,56 +339,6 @@ classdef MainView < symphonyui.ui.View
         end
 
     end
-
+    
 end
 
-function fields = parametersToFields(parameters)
-    fields = PropertyGridField.empty(0, 1);
-    if isempty(parameters)
-        return;
-    end
-
-    for i = 1:numel(parameters)
-        p = parameters(i);
-
-        description = p.description;
-        if ~isempty(p.units)
-            description = [description ' (' p.units ')']; %#ok<AGROW>
-        end
-
-        f = PropertyGridField(p.name, p.value, ...
-            'DisplayName', p.displayName, ...
-            'Description', description, ...
-            'ReadOnly', p.isReadOnly, ...
-            'Dependent', p.isDependent);
-        if ~isempty(p.type)
-            set(f, 'Type', PropertyType(p.type.primitiveType, p.type.shape, p.type.domain));
-        end
-        if ~isempty(p.category)
-            set(f, 'Category', p.category);
-        end
-        fields(end + 1) = f; %#ok<AGROW>
-    end
-end
-
-function parameters = fieldsToParameters(fields)
-    % TODO: Parse description into description and units.
-    import symphonyui.core.*;
-
-    parameters = Parameter.empty(0, 1);
-    if isempty(fields)
-        return;
-    end
-
-    for i = 1:numel(fields)
-        f = fields(i);
-        p = symphonyui.core.Parameter(f.Name, f.Value, ...
-            'type', ParameterType(f.Type.PrimitiveType, f.Type.Shape, f.Type.Domain), ...
-            'category', f.Category, ...
-            'displayName', f.DisplayName, ...
-            'description', f.Description, ...
-            'isReadOnly', f.ReadOnly, ...
-            'isDependent', f.Dependent);
-        parameters(end + 1) = p;
-    end
-end

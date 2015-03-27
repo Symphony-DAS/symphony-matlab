@@ -31,11 +31,10 @@ classdef ExperimentView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.util.*;
-            import symphonyui.util.ui.*;
+            import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(500, 500));
+            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(500, 500));
 
             % Toolbar.
             obj.toolbar = uitoolbar( ...

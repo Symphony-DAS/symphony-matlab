@@ -1,0 +1,70 @@
+
+              Apache Log4j 2.2 RELEASE NOTES
+
+The Apache Log4j 2 team is pleased to announce the Log4j 2.2 release!
+
+Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
+Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
+many other modern features such as support for Markers, property substitution using Lookups, and asynchronous
+Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
+
+This is the fifth GA release. It contains several bugfixes and new features.
+
+GA Release 2.2
+
+Changes in this version include:
+
+New features:
+o LOG4J2-941:  Allow JSON layout to create one compact log record per line. Thanks to Konstantinos Liakos. 
+o LOG4J2-933:  HTML layout should not use attribute minimalization for hr noshade. Thanks to ppiman at gmail.com. 
+o LOG4J2-895:  Specify the SyslogAppender connect timeout value as part of the configuration.
+        The SyslogAppender takes a new parameter connectTimeoutMillis. 
+o LOG4J2-899:  Specify the SocketAppender connect timeout value as part of the configuration.
+        The SyslogAppender takes a new parameter connectTimeoutMillis. 
+
+Fixed Bugs:
+o LOG4J2-938:  (JMX) To avoid memory leaks when web applications are restarted, JMX notifications are sent from
+        the caller thread in web applications. For non-web applications notifications are sent from a background thread
+        as before. Thanks to Mauro Molinari. 
+o LOG4J2-957:  Missing toUpperCase("Locale.ENGLISH"). Thanks to fatih guleryuz. 
+o LOG4J2-956:  Manual refers to Route "AppenderRef" attribute, should be "ref". Thanks to David Kellerman. 
+o LOG4J2-944:  Log4j Flume appender is not adding millisecond to the event headers when the event is logged at 000 milliseconds. Thanks to Vinayaka Ramachandra. 
+o LOG4J2-924:  Log4j 1.2 Bridge doesn't map level ALL correctly in Category.getEffectiveLevel(). Thanks to Ryan Rupp. 
+o LOG4J2-931:  ConsoleAppender is missing @PluginFactory annotation at createAppender method. Thanks to Robert Gacki. 
+o LOG4J2-919:  Logging system fails to initialize if XInclude API is not available. Thanks to David Johle. 
+o LOG4J2-914:  ThrowableProxy.getExtendedStackTraceAsString causes NullpointerException. Thanks to Kaj Bjurman. 
+o LOG4J2-912:  XML configuration does not report full error message for XInclude parser configuration problems. 
+o LOG4J2-903:  ClassLoaderContextSelector uses ClassLoader.toString() as a key Thanks to Mauro Molinari. 
+o LOG4J2-834:  ThrowableProxy throws NoClassDefFoundError. Thanks to Nikita Koval, Leonard Broman, Thiago Kronig. 
+o LOG4J2-893:  NullPointerException on filter when mapping JUL to Log4j2. 
+o LOG4J2-892:  JUL adapter does not map Log4j'2 FATAL level to a JUL level. 
+o LOG4J2-881:  AbstractLifecycle should not implement equals() and hashCode(). Thanks to Mariano Gonzalez. 
+o LOG4J2-897:  Javadoc for org.apache.log4j.BasicConfigurator.configure() is incorrect. 
+o LOG4J2-891:  AbstractLifecycle should not implement equals() and hashCode(). 
+o LOG4J2-946:  [docs] Using Log4j 2 in Web Applications: Update example (Log4jWebLifeCycle is not visible). Thanks to artemonster. 
+
+Changes:
+o LOG4J2-955:  Documentation: clarify system properties to control status logger, improve troubleshooting FAQ entry. 
+o LOG4J2-950:  Incorrect attribute name in PropertiesRewritePolicy example. Thanks to Joel Edwards. 
+o LOG4J2-901:  Update docs for SyslogAppender: "No structured id name was supplied" Thanks to Tihomir Meščić, Siegfried Greisinger. 
+o LOG4J2-958:  Update from Jackson 2.5.0 to 2.5.1. 
+o LOG4J2-925:  Update from Jackson 2.4.4 to 2.5.0. 
+o LOG4J2-910:  Update Jackson from 2.4.3 to 2.4.4. 
+o LOG4J2-881:  Update Jackson from 2.4.2 to 2.4.3. 
+o LOG4J2-882:  Update maven-core from 3.1.0 to 3.2.3. 
+o LOG4J2-883:  Update tests from org.apache.felix.framework 4.2.1 to 4.4.1. 
+o LOG4J2-884:  Update org.eclipse.osgi from 3.6.0 to 3.7.1. 
+o LOG4J2-900:  Update Apache Flume from 1.5.0.1 to 1.5.2. 
+
+
+Apache Log4j 2.2 requires a minimum of Java 6 to build and run. Future releases may require a minimum
+of Java 7.
+
+Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
+very implementation specific classes and methods. The package names and Maven groupId have been changed to
+org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
+patches, or suggestions for improvement, see the Apache Apache Log4j 2 website:
+
+http://logging.apache.org/log4j/2.x/

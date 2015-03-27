@@ -18,11 +18,10 @@ classdef NewExperimentView < symphonyui.ui.View
     methods
         
         function createUi(obj)
-            import symphonyui.util.*;
-            import symphonyui.util.ui.*;
+            import symphonyui.ui.util.*;
             
             set(obj.figureHandle, 'Name', 'New Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(400, 147));
+            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(400, 147));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             labelSize = 58;

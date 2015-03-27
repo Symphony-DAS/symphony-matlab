@@ -18,11 +18,10 @@ classdef BeginEpochGroupView < symphonyui.ui.View
     methods
         
         function createUi(obj)
-            import symphonyui.util.*;
-            import symphonyui.util.ui.*;
+            import symphonyui.ui.util.*;
             
             set(obj.figureHandle, 'Name', 'Begin Epoch Group');
-            set(obj.figureHandle, 'Position', screenCenter(300, 143));
+            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(300, 143));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
@@ -78,19 +77,19 @@ classdef BeginEpochGroupView < symphonyui.ui.View
         end
         
         function l = getSelectedLabel(obj)
-            l = symphonyui.util.ui.getSelectedValue(obj.labelDropDown);
+            l = symphonyui.ui.util.getSelectedValue(obj.labelDropDown);
         end
         
         function setLabelList(obj, l)
-            symphonyui.util.ui.setStringList(obj.labelDropDown, l);
+            symphonyui.ui.util.setStringList(obj.labelDropDown, l);
         end
         
         function s = getSelectedSource(obj)
-            s = symphonyui.util.ui.getSelectedValue(obj.sourceDropDown);
+            s = symphonyui.ui.util.getSelectedValue(obj.sourceDropDown);
         end
         
         function setSelectedSource(obj, s)
-            symphonyui.util.ui.setSelectedValue(obj.sourceDropDown, s);
+            symphonyui.ui.util.setSelectedValue(obj.sourceDropDown, s);
         end
         
         function l = getSourceList(obj)
@@ -98,7 +97,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
         end
         
         function setSourceList(obj, l)
-            symphonyui.util.ui.setStringList(obj.sourceDropDown, l);
+            symphonyui.ui.util.setStringList(obj.sourceDropDown, l);
         end
         
     end

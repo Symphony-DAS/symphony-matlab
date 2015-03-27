@@ -1,8 +1,8 @@
 classdef Pulse < symphonyui.core.Protocol
     
     properties (Constant)
-        DISPLAY_NAME = 'Example Pulse'
-        VERSION = 1
+        displayName = 'Example Pulse'
+        version = 1
     end
     
     properties

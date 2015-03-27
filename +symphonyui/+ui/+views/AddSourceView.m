@@ -15,11 +15,10 @@ classdef AddSourceView < symphonyui.ui.View
     methods
         
         function createUi(obj)
-            import symphonyui.util.*;
-            import symphonyui.util.ui.*;
+            import symphonyui.ui.util.*;
             
             set(obj.figureHandle, 'Name', 'Add Source');
-            set(obj.figureHandle, 'Position', screenCenter(300, 111));
+            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(300, 111));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
@@ -62,11 +61,11 @@ classdef AddSourceView < symphonyui.ui.View
         end
         
         function p = getSelectedParent(obj)
-            p = symphonyui.util.ui.getSelectedValue(obj.parentDropDown);
+            p = symphonyui.ui.util.getSelectedValue(obj.parentDropDown);
         end
         
         function setSelectedParent(obj, p)
-            symphonyui.util.ui.setSelectedValue(obj.parentDropDown, p);
+            symphonyui.ui.util.setSelectedValue(obj.parentDropDown, p);
         end
         
         function l = getParentList(obj)
@@ -74,15 +73,15 @@ classdef AddSourceView < symphonyui.ui.View
         end
         
         function setParentList(obj, l)
-            symphonyui.util.ui.setStringList(obj.parentDropDown, l);
+            symphonyui.ui.util.setStringList(obj.parentDropDown, l);
         end
         
         function l = getSelectedLabel(obj)
-            l = symphonyui.util.ui.getSelectedValue(obj.labelDropDown);
+            l = symphonyui.ui.util.getSelectedValue(obj.labelDropDown);
         end
         
         function setLabelList(obj, l)
-            symphonyui.util.ui.setStringList(obj.labelDropDown, l);
+            symphonyui.ui.util.setStringList(obj.labelDropDown, l);
         end
         
     end

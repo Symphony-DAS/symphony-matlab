@@ -33,9 +33,14 @@ function main()
 end
 
 function setupJavaPath()
+    import symphonyui.app.App;
+    
     jpath = { ...
-        fullfile(symphonyui.app.App.getRootPath(), 'bundled', 'PropertyGrid'), ...
-        fullfile(symphonyui.app.App.getRootPath(), 'bundled', 'JavaTreeWrapper', '+uiextras', '+jTree', 'UIExtrasTree.jar')};
+        fullfile(App.getRootPath(), 'dependencies', 'apache-log4j-2.2-bin', 'log4j-api-2.2.jar'), ...
+        fullfile(App.getRootPath(), 'dependencies', 'apache-log4j-2.2-bin', 'log4j-core-2.2.jar'), ...
+        fullfile(App.getRootPath(), 'dependencies', 'JavaTreeWrapper_20150126', 'JavaTreeWrapper', '+uiextras', '+jTree', 'UIExtrasTree.jar'), ...
+        fullfile(App.getRootPath(), 'dependencies', 'PropertyPane', '+uiextras', '+jide', 'UIExtrasPropertyPane.jar')};
+    
     if ~any(ismember(javaclasspath, jpath))
         javaaddpath(jpath);
     end

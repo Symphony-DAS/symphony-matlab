@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jide">
+    <CLASSES>
+      <root url="file://C:/Program Files/MATLAB/R2014b/java/jarext/jide" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://C:/Program Files/MATLAB/R2014b/java/jarext/jide" recursive="false" />
+  </library>
+</component>

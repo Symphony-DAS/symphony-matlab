@@ -19,7 +19,7 @@ classdef Epoch < handle
             
         end
         
-        function addParameter(obj, name, value)
+        function addProperty(obj, name, value)
             
         end
         
