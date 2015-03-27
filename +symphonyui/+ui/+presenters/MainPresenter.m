@@ -225,10 +225,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
 %             end
         end
         
-        function onViewChangedProtocolProperty(obj, ~, ~)
+        function onViewChangedProtocolProperty(obj, ~, data)
+            disp(data);
             properties = obj.view.getProtocolProperties();
             protocol = obj.acquisitionService.getCurrentProtocol();
-            protocol.setProperties(properties);
+            %protocol.setProperties(properties);
         end
         
         function onProtocolChangedProperty(obj, ~, ~)

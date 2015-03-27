@@ -18,12 +18,11 @@ classdef Pulse < symphonyui.core.Protocol
     
     methods
         
-        function p = getParameter(obj, name)
-            p = getParameter@symphonyui.core.Protocol(obj, name);
-            
+        function p = getPropertyDescriptor(obj, name)
+            p = uiextras.jide.PropertyDescriptor();
             switch name
-                case 'name'
-                    p.type = ParameterType('char', 'row', {'Amplifier_Ch1', 'Amplifier_Ch2'});
+                case 'version'
+                    set(p, 'IsHidden', true);
             end
         end
         

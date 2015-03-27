@@ -2,7 +2,7 @@ classdef Introspector < handle
     
     properties
         className
-        descriptors
+        staticDescriptors
     end
     
     methods
@@ -13,7 +13,7 @@ classdef Introspector < handle
         
         function introspectProperties(obj, className)
             obj.className = className;
-            obj.descriptors = uiextras.jide.PropertyDescriptor.empty(0, 1);
+            obj.staticDescriptors = struct();
             
             clazz = meta.class.fromName(className);
             for i = 1:numel(clazz.Properties)
@@ -30,9 +30,11 @@ classdef Introspector < handle
                     comment = strjoin(comment, '\n');
                 end
                 
-                obj.descriptors(end + 1) = uiextras.jide.PropertyDescriptor( ...
+                obj.staticDescriptors.(mpo.Name) = uiextras.jide.PropertyDescriptor( ...
                     'Name', mpo.Name, ...
-                    'Description', comment);
+                    'Description', comment, ...
+                    'IsHidden', mpo.Hidden, ...
+                    'IsEditable', ~(mpo.Constant || mpo.Dependent));
             end
         end
         
@@ -43,16 +45,24 @@ classdef Introspector < handle
             
             l = PropertyGridField.empty(0, 1);
             
-            for i = 1:numel(obj.descriptors)
-                d = obj.descriptors(i);
+            names = fields(obj.staticDescriptors);
+            for i = 1:numel(names)               
+                desc = obj.staticDescriptors.(names{i});
+                try %#ok<TRYNC>
+                    desc = merge(desc, instance.getPropertyDescriptor(names{i}));
+                end
                 
-                name = d.Name;
-                value = instance.(name);
-                description = d.Description;
-                
-                property = PropertyGridField(name, value, ...
-                    'Description', description);
-                l(end + 1) = property;
+                if desc.IsHidden
+                    continue;
+                end
+
+                p = PropertyGridField(desc.Name, instance.(desc.Name), ...
+                    'Description', desc.Description, ...
+                    'ReadOnly', ~desc.IsEditable);
+                if ~isempty(desc.Category)
+                    set(p, 'Category', desc.Category);
+                end
+                l(end + 1) = p;
             end
         end
         
@@ -60,3 +70,17 @@ classdef Introspector < handle
     
 end
 
+function d1 = merge(d1, d2)
+    if ~isempty(d2.Category)
+        d1.Category = d2.Category;
+    end
+    if ~isempty(d2.Description)
+        d1.Description = d2.Description;
+    end
+    if ~isempty(d2.IsHidden)
+        d1.IsHidden = d2.IsHidden;
+    end
+    if ~isempty(d2.IsEditable)
+        d1.IsEditable = d2.IsEditable;
+    end
+end

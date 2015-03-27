@@ -1,6 +1,6 @@
 classdef PropertyPane < matlab.mixin.SetGet
     
-    properties (Dependent)
+    properties
         Parent
         Enable
         Properties
@@ -41,6 +41,7 @@ classdef PropertyPane < matlab.mixin.SetGet
             style.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             obj.Model = handle(UIExtrasPropertyPane.CellStylePropertyTableModel(), 'CallbackProperties');
             obj.Model.setCellStyle(style);
+            set(obj.Model, 'PropertyChangeCallback', @(h,d)obj.OnPropertyChangeCallback(h, d));
             obj.Table.setModel(obj.Model);
             
             obj.Fields = JidePropertyGridField.empty(0, 1);
@@ -100,12 +101,35 @@ classdef PropertyPane < matlab.mixin.SetGet
             obj.Pane.setShowDescription(hasDescription);
         end
         
-        function c = get.Callback(obj)
-            c = get(obj.Model, 'PropertyChangeCallback');
-        end
+    end
+    
+    methods (Access = private)
         
-        function set.Callback(obj, c)
-            set(obj.Model, 'PropertyChangeCallback', c);
+        function OnPropertyChangeCallback(obj, ~, event)
+            if ~isempty(obj.Callback)
+                name = get(event, 'PropertyName');
+                field = obj.Fields.FindByName(name);
+                value = field.Value;
+                
+                didChange = false;
+                if field.CanAccept(value)
+                    try
+                        field.PropertyData.Value = value;
+                        didChange = true;
+                    catch x
+                        field.Value = field.PropertyData.Value;
+                        obj.Table.repaint();
+                        rethrow(x);
+                    end
+                else
+                    field.Value = field.PropertyData.Value;
+                    obj.Table.repaint();
+                end
+                
+                if didChange
+                    obj.Callback(obj, uiextras.jide.PropertyEventData(field));
+                end
+            end
         end
         
     end

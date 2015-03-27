@@ -18,15 +18,6 @@ classdef Protocol < symphonyui.infra.mixin.Discoverable
                 return;
             end
             
-%             properties = obj.getAllProperties();
-%             for i = 1:numel(properties)
-%                 if ~properties(i).isValid
-%                     tf = false;
-%                     msg = [properties(i).displayName ' is not valid'];
-%                     return;
-%                 end
-%             end
-            
             tf = true;
             msg = [];
         end
