@@ -38,7 +38,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'ViewExperiment', @obj.onViewSelectedViewExperiment);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
-            obj.addListener(v, 'ChangedProtocolProperty', @obj.onViewChangedProtocolProperty);
+            obj.addListener(v, 'SetProtocolProperty', @obj.onViewSetProtocolProperty);
             obj.addListener(v, 'Record', @obj.onViewSelectedRecord);
             obj.addListener(v, 'Preview', @obj.onViewSelectedPreview);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
@@ -214,26 +214,25 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function addProtocolListeners(obj)
-%             protocol = obj.acquisitionService.getCurrentProtocol();
-%             obj.listeners.protocol.changedPropertys = obj.addListener(protocol, 'ChangedProperty', @obj.onProtocolChangedProperty);
+            protocol = obj.acquisitionService.getCurrentProtocol();
+            obj.listeners.protocol.setProperty = obj.addListener(protocol, 'SetProperty', @obj.onProtocolSetProperty);
         end
         
         function removeProtocolListeners(obj)
-%             fields = fieldnames(obj.listeners.protocol);
-%             for i = 1:numel(fields)
-%                 obj.removeListener(obj.listeners.protocol.(fields{i}));
-%             end
+            fields = fieldnames(obj.listeners.protocol);
+            for i = 1:numel(fields)
+                obj.removeListener(obj.listeners.protocol.(fields{i}));
+            end
         end
         
-        function onViewChangedProtocolProperty(obj, ~, data)
-            disp(data);
-            properties = obj.view.getProtocolProperties();
+        function onViewSetProtocolProperty(obj, ~, data)
+            property = data.Property;
             protocol = obj.acquisitionService.getCurrentProtocol();
-            %protocol.setProperties(properties);
+            protocol.(property.Name) = property.Value;
         end
         
-        function onProtocolChangedProperty(obj, ~, ~)
-            obj.populateProtocolProperties(false);
+        function onProtocolSetProperty(obj, ~, ~)
+            obj.populateProtocolProperties();
             obj.updateViewState();
         end
         
@@ -277,19 +276,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
         end
         
-        function populateProtocolProperties(obj, clear)
-            if nargin < 2
-                clear = true;
-            end
+        function populateProtocolProperties(obj)
             protocol = obj.acquisitionService.getCurrentProtocol();
             introspector = uiextras.jide.Introspector(class(protocol));
             properties = introspector.createPropertyList(protocol);
-%             i = ~arrayfun(@(e)any(strcmp(e.name, {'displayName', 'version'})), properties);
-            if clear
-                obj.view.setProtocolProperties(properties);
-            else
-                %obj.view.updateProtocolPropertys(parameters(i));
-            end
+            obj.view.setProtocolProperties(properties);
         end
         
         function updateViewState(obj)

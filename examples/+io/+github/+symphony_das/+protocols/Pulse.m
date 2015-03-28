@@ -23,6 +23,10 @@ classdef Pulse < symphonyui.core.Protocol
             switch name
                 case 'version'
                     set(p, 'IsHidden', true);
+                case 'amp'
+                    set(p, 'Category', 'Bee');
+                case {'preTime', 'tailTime'}
+                    set(p, 'Category', 'Apple');
             end
         end
         

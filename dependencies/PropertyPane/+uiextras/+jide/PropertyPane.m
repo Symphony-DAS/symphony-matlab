@@ -1,9 +1,10 @@
-classdef PropertyPane < matlab.mixin.SetGet
+classdef PropertyPane < matlab.mixin.SetGet %#ok<*MCSUP>
     
     properties
         Parent
         Enable
         Properties
+        Selection
         Callback
     end
     
@@ -31,7 +32,7 @@ classdef PropertyPane < matlab.mixin.SetGet
             CellRendererManager.registerRenderer(javaclass('char',1), MultilineStringCellRenderer, MultilineStringCellEditor.CONTEXT);
             
             obj.Table = handle(objectEDT('com.jidesoft.grid.PropertyTable'), 'CallbackProperties');
-            set(obj.Table, 'KeyPressedCallback', @obj.OnKeyPress);
+            set(obj.Table, 'KeyPressedCallback', @(h,d)obj.OnKeyPress(h, d));
             
             obj.Pane = objectEDT('com.jidesoft.grid.PropertyPane', obj.Table);
             obj.Pane.setShowToolBar(false);
@@ -40,6 +41,7 @@ classdef PropertyPane < matlab.mixin.SetGet
             style = CellStyle();
             style.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             obj.Model = handle(UIExtrasPropertyPane.CellStylePropertyTableModel(), 'CallbackProperties');
+            obj.Model.setCategoryOrder(1);
             obj.Model.setCellStyle(style);
             set(obj.Model, 'PropertyChangeCallback', @(h,d)obj.OnPropertyChangeCallback(h, d));
             obj.Table.setModel(obj.Model);
@@ -54,7 +56,7 @@ classdef PropertyPane < matlab.mixin.SetGet
             set(obj.Model, 'PropertyChangeCallback', []);
         end
         
-        function onKeyPress(obj, ~, ~)
+        function OnKeyPress(obj, ~, ~)
             disp('key!');
         end
         
@@ -84,12 +86,10 @@ classdef PropertyPane < matlab.mixin.SetGet
                 obj.Fields(i) = JidePropertyGridField(properties(i));
             end
             list = obj.Fields.GetTableModel();
+            
             obj.Model.setOriginalProperties(list);
             
-            hasCategory = properties.HasCategory();
-            hasDescription = properties.HasDescription();
-            
-            if hasCategory
+            if properties.HasCategory();
                 obj.Model.setOrder(0);
             else
                 obj.Model.setOrder(2);
@@ -97,8 +97,18 @@ classdef PropertyPane < matlab.mixin.SetGet
             obj.Model.refresh();
             obj.Model.expandAll();
             
-            obj.Pane.setShowToolBar(hasCategory);
-            obj.Pane.setShowDescription(hasDescription);
+            obj.Pane.setShowDescription(properties.HasDescription());
+        end
+        
+        function set.Selection(obj, index)
+            prop = obj.Fields(index).GetTableModel().get(0);
+            obj.Table.setSelectedProperty(prop);
+        end
+        
+        function i = get.Selection(obj)
+            prop = obj.Table.getSelectedProperty();
+            list = obj.Fields.GetTableModel();
+            i = list.indexOf(prop) + 1;
         end
         
     end
@@ -127,7 +137,7 @@ classdef PropertyPane < matlab.mixin.SetGet
                 end
                 
                 if didChange
-                    obj.Callback(obj, uiextras.jide.PropertyEventData(field));
+                    obj.Callback(obj, uiextras.jide.PropertyEventData(field.PropertyData));
                 end
             end
         end

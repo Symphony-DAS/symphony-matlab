@@ -11,7 +11,7 @@ classdef MainView < symphonyui.ui.View
         AddNote
         ViewExperiment
         SelectedProtocol
-        ChangedProtocolProperty
+        SetProtocolProperty
         Record
         Preview
         Pause
@@ -152,7 +152,7 @@ classdef MainView < symphonyui.ui.View
 
             obj.protocolPropertyPane = uiextras.jide.PropertyPane( ...
                 'Parent', mainLayout, ...
-                'Callback', @(h,d)notify(obj, 'ChangedProtocolProperty', d));
+                'Callback', @(h,d)notify(obj, 'SetProtocolProperty', d));
 
             controlsPanel = uix.Panel( ...
                 'Parent', mainLayout, ...
@@ -286,11 +286,6 @@ classdef MainView < symphonyui.ui.View
         function setProtocolProperties(obj, properties)
             set(obj.protocolPropertyPane, 'Properties', properties);
         end
-
-%         function updateProtocolPropertys(obj, parameters)
-%             properties = parametersToFields(parameters);
-%             obj.protocolPropertyPane.UpdateProperties(properties);
-%         end
 
         function enableRecord(obj, tf)
             enable = symphonyui.util.onOff(tf);

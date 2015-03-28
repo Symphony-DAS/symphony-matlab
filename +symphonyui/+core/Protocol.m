@@ -1,4 +1,4 @@
-classdef Protocol < symphonyui.infra.mixin.Discoverable
+classdef Protocol < symphonyui.infra.mixin.Discoverable & symphonyui.infra.mixin.SetObservable
     
     properties (Hidden)
         rig

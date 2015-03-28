@@ -15,7 +15,7 @@ classdef Test < symphonyui.core.Protocol
         string = 'Test Stringzz'
         string2 = 'This should be the rig name'
         integer = 12
-        cellArray = {'one', 'two', 'three'}
+        %cellArray = {'one', 'two', 'three'}
         logical = true
         logical2 = false
         matrix = [1 2 3 4 5]
