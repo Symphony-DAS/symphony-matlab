@@ -24,6 +24,8 @@ classdef PropertyGridField < hgsetget
         ReadOnly = false;
         % Whether the property is computed based on other properties.
         Dependent = false;
+        % Whether the property is hidden.
+        Hidden = false;
         % Direct descendants of this property.
         Children = PropertyGridField.empty(1,0);
     end
@@ -61,8 +63,12 @@ classdef PropertyGridField < hgsetget
         end
         
         function self = set.Category(self, category)
-            validateattributes(category, {'char'}, {'nonempty','row'});
-            self.Category = category;
+            if isempty(category)
+                self.Category = [];
+            else
+                validateattributes(category, {'char'}, {'nonempty','row'});
+                self.Category = category;
+            end
         end
         
         function self = set.DisplayName(self, name)
@@ -142,6 +148,7 @@ classdef PropertyGridField < hgsetget
             end
             self = [];  % not found
         end
+        
     end
     methods (Access = private)
         function WireHierarchy(selfarray, descendants)

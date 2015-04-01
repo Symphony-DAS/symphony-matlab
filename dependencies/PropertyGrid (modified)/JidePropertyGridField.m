@@ -27,6 +27,7 @@ classdef JidePropertyGridField < handle
     end
     methods
         function self = JidePropertyGridField(data)
+            self.Control = com.jidesoft.grid.DefaultProperty();
             if nargin > 0
                 self.Initialize(data);
             end
@@ -38,12 +39,13 @@ classdef JidePropertyGridField < handle
             validateattributes(self, {'JidePropertyGridField'}, {'scalar'});
         
             self.PropertyData = data;
-            field = com.jidesoft.grid.DefaultProperty();
+            field = self.Control;
             field.setName(data.Name);  % JIDE automatically uses a hierarchical naming scheme
             field.setCategory(data.Category);
             field.setDisplayName(data.DisplayName);
             field.setDescription(data.Description);
             field.setEditable(~data.ReadOnly);
+            field.setHidden(data.Hidden); % Added by Mark Cafaro
             switch data.Type.Shape
                 case 'scalar'
                     switch data.Type.PrimitiveType
@@ -88,7 +90,6 @@ classdef JidePropertyGridField < handle
                 otherwise
                     error('PropertyGrid:ArgumentTypeMismatch', 'Data shape %s is not supported.', data.Type.Shape);
             end
-            self.Control = field;
             self.Value = data.Value;
             
             for k = 1 : numel(data.Children)

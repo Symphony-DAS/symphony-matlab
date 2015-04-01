@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/UIExtrasPropertyPane.iml" filepath="$PROJECT_DIR$/UIExtrasPropertyPane.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PropertyGrid.iml" filepath="$PROJECT_DIR$/PropertyGrid.iml" />
     </modules>
   </component>
 </project>

@@ -1,4 +1,4 @@
-package UIExtrasPropertyPane;
+package PropertyGrid;
 
 import com.jidesoft.grid.CellStyle;
 import com.jidesoft.grid.Property;

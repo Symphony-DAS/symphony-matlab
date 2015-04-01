@@ -3,7 +3,7 @@
 % mimics MatLab's property inspector. Unlike the inspector, it supports
 % structures, new-style MatLab objects, both with value and handle
 % semantics.
-% 
+%
 % The property grid displays a list of (object) properties with values
 % editable in-place. Each property has an associated semantics (or type)
 % that restricts the possible values the property can take and helps
@@ -38,21 +38,25 @@
 % See also: inspect
 
 % Copyright 2010 Levente Hunyadi
-classdef PropertyGrid < UIControl
-    properties (Dependent)
+classdef PropertyGrid < UIControl %#ok<*MCSUP>
+    properties
         % The handle graphics control that wraps the property grid.
         Control;
         % Properties listed in the property grid.
         Properties;
         % The MatLab structure or object bound to the property grid.
         Item;
+        % Called when a property is changed.
+        Callback;
+        % Is the grid enabled?
+        Enable;
     end
     properties (Access = private)
-        % A uipanel that wraps the property grid.
+        % A matlab.ui.container.internal.JavaWrapper.
         Container;
         % A com.jidesoft.grid.PropertyPane instance.
         % Encapsulates a property table and decorates it with icons to
-        % choose sorting order, expand and collapse categories, and a 
+        % choose sorting order, expand and collapse categories, and a
         % description panel.
         Pane;
         % A com.jidesoft.grid.PropertyTable instance.
@@ -61,6 +65,7 @@ classdef PropertyGrid < UIControl
         % A com.jidesoft.grid.PropertyTableModel instance.
         % Contains the properties enlisted in the property grid.
         Model;
+        % An array of JidePropertyGridFields contained by the grid.
         Fields = JidePropertyGridField.empty(1,0);
         % The MatLab structure or object bound to the property grid.
         BoundItem = [];
@@ -69,17 +74,16 @@ classdef PropertyGrid < UIControl
         function self = PropertyGrid(varargin)
             self = self@UIControl(varargin{:});
         end
-        
+
         function self = Instantiate(self, parent)
             if nargin < 2
                 parent = figure;
             end
-            
-            self.Container = uipanel(parent, ...
-                'Units', 'normalized', ...
-                'Position', [0 0 1 1], ...
-                'Tag', '__PropertyGrid__', ...
-                'UserData', self);
+
+            path = fullfile(fileparts(mfilename('fullpath')), 'PropertyGrid.jar');
+            if ~any(ismember(javaclasspath, path))
+                javaaddpath(path);
+            end
 
             % initialize JIDE
             com.mathworks.mwswing.MJUtilities.initJIDE;
@@ -90,37 +94,43 @@ classdef PropertyGrid < UIControl
             % create JIDE property pane
             self.Table = handle(objectEDT('com.jidesoft.grid.PropertyTable'), 'CallbackProperties');  % property grid (without table model)
             self.Pane = objectEDT('com.jidesoft.grid.PropertyPane', self.Table);  % property pane (with icons at top and help panel at bottom)
+            self.Pane.setShowToolBar(false);
 
-            % control = jcontrol(parent, pane, 'Position', [0 0 1 1]);
-            panel = self.Container;
-            pixelpos = getpixelposition(panel);
-            [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], panel); %#ok<ASGLU>
+            pixelpos = getpixelposition(parent);
+            [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], parent); %#ok<ASGLU>
             set(container, 'Units', 'normalized');
-            set(self.Table, 'KeyPressedCallback', @PropertyGrid.OnKeyPressed);
+            self.Container = container;
+
+            set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
         end
-        
+
+        function Close(self)
+            set(self.Table, 'KeyPressedCallback', []);
+            if ~isempty(self.Model)
+                set(self.Model, 'PropertyChangeCallback', []);  % clear callback
+            end
+        end
+
         function ctrl = get.Control(self)
             ctrl = self.Container;
         end
-        
+
         function properties = get.Properties(self)
         % Retrieves properties displayed in the grid.
             properties = self.Fields.GetProperties();
         end
-        
-        function self = set.Properties(self, properties)
+
+        function set.Properties(self, properties)
         % Explicitly sets properties displayed in the grid.
         % Setting this property clears any object bindings.
             validateattributes(properties, {'PropertyGridField'}, {'vector'});
             self.BoundItem = [];
-            
+
             if ~isempty(self.Model)
                 set(self.Model, 'PropertyChangeCallback', []);  % clear callback
             end
-            
+
             % create JIDE properties
-            toolbar = properties.HasCategory();
-            description = properties.HasDescription();
             self.Fields = JidePropertyGridField.empty(0,1);
             for k = 1 : numel(properties)
                 self.Fields(k) = JidePropertyGridField(properties(k));
@@ -128,31 +138,50 @@ classdef PropertyGrid < UIControl
 
             % create JIDE table model
             list = self.Fields.GetTableModel();
-            model = handle(com.jidesoft.grid.PropertyTableModel(list), 'CallbackProperties');
+            model = handle(PropertyGrid.CellStylePropertyTableModel(list), 'CallbackProperties');
+            style = com.jidesoft.grid.CellStyle();
+            style.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            model.setCellStyle(style);
             model.setMiscCategoryName('Miscellaneous');  % caption for uncategorized properties
+            model.setCategoryOrder(1);
+            if properties.HasCategory()
+                model.setOrder(0);
+            else
+                model.setOrder(2);
+            end
+            model.refresh();
             model.expandAll();
             self.Model = model;
 
             % set JIDE table model to property table
             self.Table.setModel(model);
-            self.Pane.setShowToolBar(toolbar);
-            if toolbar
-                self.Pane.setOrder(0);
-            else
-                self.Pane.setOrder(1);
-            end
-            self.Pane.setShowDescription(description);
+            self.Pane.setShowDescription(properties.HasDescription());
 
             % wire property change event hook
-            set(model, 'PropertyChangeCallback', @PropertyGrid.OnPropertyChange);
+            set(model, 'PropertyChangeCallback', @self.OnPropertyChange);
         end
-        
+
+        function UpdateProperties(self, properties)
+            validateattributes(properties, {'PropertyGridField'}, {'vector'});
+
+            for i = 1:numel(properties)
+                data = properties(i);
+                field = self.Fields.FindByName(data.Name);
+                if isempty(field)
+                    continue;
+                end
+                field.Initialize(data);
+            end
+
+            self.Model.refresh();
+        end
+
         function item = get.Item(self)
         % Retrieves the object bound to the property grid.
             item = self.BoundItem;
         end
-        
-        function self = set.Item(self, item)
+
+        function set.Item(self, item)
         % Binds an object to the property grid.
         % Any changes made in the property grid are automatically reflected
         % in the bound object. Only handle objects (i.e. those that derive
@@ -173,13 +202,21 @@ classdef PropertyGrid < UIControl
             end
             self.Bind(item, properties);
         end
-        
+
+        function tf = get.Enable(self)
+            tf = self.Table.getEnabled();
+        end
+
+        function set.Enable(self, tf)
+            self.Table.setEnabled(tf);
+        end
+
         function self = Bind(self, item, properties)
         % Binds an object to the property grid with a custom property list.
             self.Properties = properties;
             self.BoundItem = item;
         end
-        
+
         function s = GetPropertyValues(self)
         % Returns the set of property names and values in a structure.
             s = struct;
@@ -188,6 +225,23 @@ classdef PropertyGrid < UIControl
                 s = nestedassign(s, field.PropertyData.Name, field.PropertyData.Value);
             end
         end
+        
+        function name = GetSelectedProperty(obj)
+        % The name of the currently selected property (if any).
+        % Like JIDE, this function also uses a hierarchical naming scheme
+        % (dot notation).
+        %
+        % Output arguments:
+        % name:
+        %    a selected property in dot notation
+            selectedfield = obj.Table.getSelectedProperty();
+            if isempty(selectedfield)
+                name = [];
+            else
+                name = char(selectedfield.getFullName());
+            end
+        end
+        
     end
     methods (Access = private)
         function EditMatrix(self, name)
@@ -216,7 +270,7 @@ classdef PropertyGrid < UIControl
             field.Value = editor.Item;
             self.UpdateField(name);
         end
-        
+
         function UpdateDependentProperties(self, field)
         % Propagates changes triggered by dependent properties.
         %
@@ -251,7 +305,7 @@ classdef PropertyGrid < UIControl
                 end
             end
         end
-        
+
         function UpdateField(self, name)
         % Updates a property value or reverts changes if value is illegal.
             field = self.Fields.FindByName(name);
@@ -263,6 +317,9 @@ classdef PropertyGrid < UIControl
                     end
                     field.PropertyData.Value = value;  % persist changes in property value
                     self.UpdateDependentProperties(field);
+                    if ~isempty(self.Callback)
+                        self.Callback(self, PropertyEventData(field.PropertyData));
+                    end
                 catch me
                     field.Value = field.PropertyData.Value;  % revert changes
                     self.Table.repaint();
@@ -286,31 +343,16 @@ classdef PropertyGrid < UIControl
             h = findobjuser(@(userdata) userdata.(member) == obj, '__PropertyGrid__');
             self = get(h, 'UserData');
         end
-
-        function name = GetSelectedProperty(obj)
-        % The name of the currently selected property (if any).
-        % Like JIDE, this function also uses a hierarchical naming scheme
-        % (dot notation).
-        %
-        % Output arguments:
-        % name:
-        %    a selected property in dot notation
-            selectedfield = obj.getSelectedProperty();
-            if isempty(selectedfield)
-                name = [];
-            else
-                name = char(selectedfield.getFullName());
-            end
-        end
     end
-    methods (Static)  % methods (Access = private, Static) for MatLab 2010a and up
-        function OnKeyPressed(obj, event)
+
+    methods (Access = private)  % methods (Access = private, Static) for MatLab 2010a and up
+
+        function OnKeyPressed(self, ~, event)
         % Fired when a key is pressed when the property grid has the focus.
             key = char(event.getKeyText(event.getKeyCode()));
             switch key
                 case 'F1'
-                    name = PropertyGrid.GetSelectedProperty(obj);
-                    self = PropertyGrid.FindPropertyGrid(obj, 'Table');
+                    name = self.GetSelectedProperty();
                     if ~isempty(name) && ~isempty(self.BoundItem)  % help
                         nameparts = strsplit(name, '.');
                         if numel(nameparts) > 1
@@ -321,21 +363,19 @@ classdef PropertyGrid < UIControl
                         helpdialog([class(helpobject) '.' nameparts{end}]);
                     end
                 case 'F2'
-                    name = PropertyGrid.GetSelectedProperty(obj);
+                    name = self.GetSelectedProperty();
                     if ~isempty(name)  % edit property value
-                        self = PropertyGrid.FindPropertyGrid(obj, 'Table');
                         self.EditMatrix(name);
                     end
             end
         end
-        
-        function OnPropertyChange(obj, event) %#ok<INUSL>
+
+        function OnPropertyChange(self, ~, event)
         % Fired when a property value in a property grid has changed.
         % This function is declared static because object methods cannot be
         % directly used with the @ operator. Even though the anonymous
         % function construct @(obj,evt) self.OnPropertyChange(obj,evt);
         % could be feasible, it leads to a memory leak.
-            self = PropertyGrid.FindPropertyGrid(obj, 'Model');
             name = get(event, 'PropertyName');  % JIDE automatically uses a hierarchical naming scheme
             self.UpdateField(name);
 

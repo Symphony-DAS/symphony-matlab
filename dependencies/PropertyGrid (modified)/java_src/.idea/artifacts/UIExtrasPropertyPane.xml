@@ -2,7 +2,7 @@
   <artifact type="jar" name="UIExtrasPropertyPane">
     <output-path>$PROJECT_DIR$/out/artifacts/UIExtrasPropertyPane</output-path>
     <root id="archive" name="UIExtrasPropertyPane.jar">
-      <element id="module-output" name="UIExtrasPropertyPane" />
+      <element id="module-output" name="PropertyGrid" />
     </root>
   </artifact>
 </component>

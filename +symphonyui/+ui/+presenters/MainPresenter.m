@@ -3,6 +3,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
     properties (Access = private)
         acquisitionService
         experimentPresenter
+        protocolIntrospector
         listeners
     end
     
@@ -22,9 +23,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onGoing(obj)
             obj.populateProtocolList();
-            obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocol().id);
-            obj.populateProtocolProperties();
-            obj.updateViewState();
+            obj.selectProtocol(obj.acquisitionService.getCurrentProtocol());
         end
         
         function onBind(obj)
@@ -208,7 +207,12 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onServiceSelectedProtocol(obj, ~, ~)
             obj.removeProtocolListeners();
             obj.addProtocolListeners();
-            obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocol().id);
+            obj.selectProtocol(obj.acquisitionService.getCurrentProtocol());
+        end
+        
+        function selectProtocol(obj, protocol)
+            obj.view.setSelectedProtocol(protocol.id);
+            obj.protocolIntrospector = Introspector(class(protocol));
             obj.populateProtocolProperties();
             obj.updateViewState();
         end
@@ -232,7 +236,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onProtocolSetProperty(obj, ~, ~)
-            obj.populateProtocolProperties();
+            obj.populateProtocolProperties(true);
             obj.updateViewState();
         end
         
@@ -276,11 +280,17 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
         end
         
-        function populateProtocolProperties(obj)
+        function populateProtocolProperties(obj, update)
+            if nargin < 2
+                update = false;
+            end
             protocol = obj.acquisitionService.getCurrentProtocol();
-            introspector = uiextras.jide.Introspector(class(protocol));
-            properties = introspector.createPropertyList(protocol);
-            obj.view.setProtocolProperties(properties);
+            properties = obj.protocolIntrospector.CreatePropertyList(protocol);
+            if update
+                obj.view.updateProtocolProperties(properties);
+            else
+                obj.view.setProtocolProperties(properties);
+            end
         end
         
         function updateViewState(obj)

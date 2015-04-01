@@ -2,10 +2,13 @@ classdef PropertyDescriptor < matlab.mixin.SetGet
     
     properties
         Name
+        Type
         Category
+        DisplayName
         Description
-        IsHidden
-        IsEditable
+        ReadOnly
+        Dependent
+        Hidden
     end
     
     methods

@@ -31,7 +31,7 @@ classdef MainView < symphonyui.ui.View
         toolsMenu
         helpMenu
         protocolDropDown
-        protocolPropertyPane
+        protocolPropertyGrid
         warningIcon
         recordButton
         previewButton
@@ -150,8 +150,7 @@ classdef MainView < symphonyui.ui.View
             obj.protocolDropDown = createDropDownMenu(mainLayout, {''});
             set(obj.protocolDropDown, 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
 
-            obj.protocolPropertyPane = uiextras.jide.PropertyPane( ...
-                'Parent', mainLayout, ...
+            obj.protocolPropertyGrid = PropertyGrid(mainLayout, ...
                 'Callback', @(h,d)notify(obj, 'SetProtocolProperty', d));
 
             controlsPanel = uix.Panel( ...
@@ -212,7 +211,7 @@ classdef MainView < symphonyui.ui.View
 
         function close(obj)
             close@symphonyui.ui.View(obj);
-            obj.protocolPropertyPane.Close();
+            obj.protocolPropertyGrid.Close();
         end
 
         function enableNewExperiment(obj, tf)
@@ -276,15 +275,19 @@ classdef MainView < symphonyui.ui.View
         end
 
         function enableProtocolProperties(obj, tf)
-            set(obj.protocolPropertyPane, 'Enable', tf);
+            set(obj.protocolPropertyGrid, 'Enable', tf);
         end
 
         function p = getProtocolProperties(obj)
-            p = get(obj.protocolPropertyPane, 'Properties');
+            p = get(obj.protocolPropertyGrid, 'Properties');
         end
 
         function setProtocolProperties(obj, properties)
-            set(obj.protocolPropertyPane, 'Properties', properties);
+            set(obj.protocolPropertyGrid, 'Properties', properties);
+        end
+        
+        function updateProtocolProperties(obj, properties)
+            obj.protocolPropertyGrid.UpdateProperties(properties);
         end
 
         function enableRecord(obj, tf)

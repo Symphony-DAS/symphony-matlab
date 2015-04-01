@@ -16,6 +16,10 @@ function arr = javaStringArray(str)
 assert(iscellstr(str) && isvector(str), ...
     'java:StringArray:InvalidArgumentType', ...
     'Cell row or column vector of strings expected.');
+if isempty(str)
+    arr = toArray(java.util.Vector);
+    return;
+end
 arr = javaArray('java.lang.String', length(str));
 for k = 1 : numel(str);
     arr(k) = java.lang.String(str{k});
