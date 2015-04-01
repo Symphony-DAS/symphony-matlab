@@ -285,7 +285,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 update = false;
             end
             protocol = obj.acquisitionService.getCurrentProtocol();
-            properties = obj.protocolIntrospector.CreatePropertyList(protocol);
+            try
+                properties = obj.protocolIntrospector.CreatePropertyList(protocol);
+            catch x
+                properties = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
             if update
                 obj.view.updateProtocolProperties(properties);
             else

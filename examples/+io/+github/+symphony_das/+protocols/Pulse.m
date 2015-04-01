@@ -19,14 +19,16 @@ classdef Pulse < symphonyui.core.Protocol
     methods
         
         function p = getPropertyDescriptor(obj, name)
-            p = uiextras.jide.PropertyDescriptor();
+            p = uiextras.jide.PropertyDescriptor(name);
             switch name
                 case {'displayName', 'version'}
-                    set(p, 'Hidden', obj.preTime > 60);
+                    p.Hidden = obj.preTime > 60;
                 case 'amp'
-                    set(p, 'Category', num2str(obj.preTime));
+                    %p.Domain = {'hi', 'wow'};
+                    p.Category = num2str(obj.preTime);
                 case {'preTime', 'tailTime'}
-                    set(p, 'Category', 'Apple');
+                    p.Category = 'Apple';
+                    p.Domain = [50 70];
             end
         end
         

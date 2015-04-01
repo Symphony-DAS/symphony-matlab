@@ -5,7 +5,7 @@
 % Copyright 2010 Levente Hunyadi
 function example_propertygrid
 
-import.uiextras.jide.*;
+import uiextras.jide.*;
 
 properties = [ ...
     PropertyGridField('double', pi, ...

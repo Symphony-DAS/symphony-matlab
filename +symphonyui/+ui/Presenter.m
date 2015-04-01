@@ -9,7 +9,7 @@ classdef Presenter < symphonyui.infra.mixin.Observer
     methods
         
         function obj = Presenter(app, view)
-            obj.log = org.apache.logging.log4j.LogManager.getLogger(class(obj));
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.app = app;
             obj.view = view;
         end
