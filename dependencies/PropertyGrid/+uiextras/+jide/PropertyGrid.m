@@ -38,7 +38,7 @@
 % See also: inspect
 
 % Copyright 2010 Levente Hunyadi
-classdef PropertyGrid < UIControl %#ok<*MCSUP>
+classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
     properties
         % The handle graphics control that wraps the property grid.
         Control;
@@ -66,13 +66,13 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
         % Contains the properties enlisted in the property grid.
         Model;
         % An array of JidePropertyGridFields contained by the grid.
-        Fields = JidePropertyGridField.empty(1,0);
+        Fields = uiextras.jide.JidePropertyGridField.empty(1,0);
         % The MatLab structure or object bound to the property grid.
         BoundItem = [];
     end
     methods
         function self = PropertyGrid(varargin)
-            self = self@UIControl(varargin{:});
+            self = self@uiextras.jide.UIControl(varargin{:});
         end
 
         function self = Instantiate(self, parent)
@@ -80,20 +80,20 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
                 parent = figure;
             end
 
-            path = fullfile(fileparts(mfilename('fullpath')), 'PropertyGrid.jar');
+            path = fullfile(fileparts(mfilename('fullpath')), 'UIExtrasPropertyGrid.jar');
             if ~any(ismember(javaclasspath, path))
                 javaaddpath(path);
             end
 
             % initialize JIDE
             com.mathworks.mwswing.MJUtilities.initJIDE;
-            com.jidesoft.grid.CellEditorManager.registerEditor(javaclass('cellstr',1), com.jidesoft.grid.StringArrayCellEditor);
-            com.jidesoft.grid.CellEditorManager.registerEditor(javaclass('char',1), com.jidesoft.grid.MultilineStringCellEditor, com.jidesoft.grid.MultilineStringCellEditor.CONTEXT);
-            com.jidesoft.grid.CellRendererManager.registerRenderer(javaclass('char',1), com.jidesoft.grid.MultilineStringCellRenderer, com.jidesoft.grid.MultilineStringCellEditor.CONTEXT);
+            com.jidesoft.grid.CellEditorManager.registerEditor(uiextras.jide.javaclass('cellstr',1), com.jidesoft.grid.StringArrayCellEditor);
+            com.jidesoft.grid.CellEditorManager.registerEditor(uiextras.jide.javaclass('char',1), com.jidesoft.grid.MultilineStringCellEditor, com.jidesoft.grid.MultilineStringCellEditor.CONTEXT);
+            com.jidesoft.grid.CellRendererManager.registerRenderer(uiextras.jide.javaclass('char',1), com.jidesoft.grid.MultilineStringCellRenderer, com.jidesoft.grid.MultilineStringCellEditor.CONTEXT);
 
             % create JIDE property pane
-            self.Table = handle(objectEDT('com.jidesoft.grid.PropertyTable'), 'CallbackProperties');  % property grid (without table model)
-            self.Pane = objectEDT('com.jidesoft.grid.PropertyPane', self.Table);  % property pane (with icons at top and help panel at bottom)
+            self.Table = handle(uiextras.jide.objectEDT('com.jidesoft.grid.PropertyTable'), 'CallbackProperties');  % property grid (without table model)
+            self.Pane = uiextras.jide.objectEDT('com.jidesoft.grid.PropertyPane', self.Table);  % property pane (with icons at top and help panel at bottom)
             self.Pane.setShowToolBar(false);
 
             pixelpos = getpixelposition(parent);
@@ -123,7 +123,7 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
         function set.Properties(self, properties)
         % Explicitly sets properties displayed in the grid.
         % Setting this property clears any object bindings.
-            validateattributes(properties, {'PropertyGridField'}, {'vector'});
+            validateattributes(properties, {'uiextras.jide.PropertyGridField'}, {'vector'});
             self.BoundItem = [];
 
             if ~isempty(self.Model)
@@ -131,14 +131,14 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
             end
 
             % create JIDE properties
-            self.Fields = JidePropertyGridField.empty(0,1);
+            self.Fields = uiextras.jide.JidePropertyGridField.empty(0,1);
             for k = 1 : numel(properties)
-                self.Fields(k) = JidePropertyGridField(properties(k));
+                self.Fields(k) = uiextras.jide.JidePropertyGridField(properties(k));
             end
 
             % create JIDE table model
             list = self.Fields.GetTableModel();
-            model = handle(PropertyGrid.CellStylePropertyTableModel(list), 'CallbackProperties');
+            model = handle(UIExtrasPropertyGrid.CellStylePropertyTableModel(list), 'CallbackProperties');
             style = com.jidesoft.grid.CellStyle();
             style.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             model.setCellStyle(style);
@@ -162,7 +162,7 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
         end
 
         function UpdateProperties(self, properties)
-            validateattributes(properties, {'PropertyGridField'}, {'vector'});
+            validateattributes(properties, {'uiextras.jide.PropertyGridField'}, {'vector'});
 
             for i = 1:numel(properties)
                 data = properties(i);
@@ -196,9 +196,9 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
                     'Only structures and MatLab objects are bindable.');
             end
             if ~isempty(item)
-                properties = PropertyGridField.GenerateFrom(item);
+                properties = uiextras.jide.PropertyGridField.GenerateFrom(item);
             else
-                properties = PropertyGridField.empty(1,0);
+                properties = uiextras.jide.PropertyGridField.empty(1,0);
             end
             self.Bind(item, properties);
         end
@@ -222,10 +222,10 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
             s = struct;
             for k = 1 : numel(self.Fields)
                 field = self.Fields(k);
-                s = nestedassign(s, field.PropertyData.Name, field.PropertyData.Value);
+                s = uiextras.jide.nestedassign(s, field.PropertyData.Name, field.PropertyData.Value);
             end
         end
-        
+
         function name = GetSelectedProperty(obj)
         % The name of the currently selected property (if any).
         % Like JIDE, this function also uses a hierarchical naming scheme
@@ -241,7 +241,7 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
                 name = char(selectedfield.getFullName());
             end
         end
-        
+
     end
     methods (Access = private)
         function EditMatrix(self, name)
@@ -262,7 +262,7 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
                 'Name', sprintf('Edit matrix "%s"', name), ...
                 'NumberTitle', 'off', ...
                 'Toolbar', 'none');
-            editor = MatrixEditor(fig, ...
+            editor = uiextras.jide.MatrixEditor(fig, ...
                 'ReadOnly', field.PropertyData.ReadOnly, ...
                 'Type', field.PropertyData.Type, ...
                 'Item', field.PropertyData.Value);
@@ -285,18 +285,18 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
                 for k = 1 : numel(self.Fields)
                     f = self.Fields(k);
                     if f ~= field
-                        value = nestedfetch(self.BoundItem, f.PropertyData.Name);  % query dependent property value
+                        value = uiextras.jide.nestedfetch(self.BoundItem, f.PropertyData.Name);  % query dependent property value
                         f.Value = value;
                         f.PropertyData.Value = value;
                     end
                 end
                 self.Table.repaint();
             else  % requery dependent properties only
-                dependent = getdependentproperties(self.BoundItem);  % a cell array of dependent property names
+                dependent = uiextras.jide.getdependentproperties(self.BoundItem);  % a cell array of dependent property names
                 if ~isempty(dependent)
                     for k = 1 : numel(dependent)
                         name = dependent{k};
-                        value = nestedfetch(self.BoundItem, name);  % query dependent property value
+                        value = uiextras.jide.nestedfetch(self.BoundItem, name);  % query dependent property value
                         field = self.Fields.FindByName(name);
                         field.Value = value;               % update value displayed in grid
                         field.PropertyData.Value = value;  % update value stored internally
@@ -313,12 +313,12 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
             if field.CanAccept(value)
                 try
                     if ~isempty(self.BoundItem)  % reflect changes in bound object
-                        self.BoundItem = nestedassign(self.BoundItem, name, value);
+                        self.BoundItem = uiextras.jide.nestedassign(self.BoundItem, name, value);
                     end
                     field.PropertyData.Value = value;  % persist changes in property value
                     self.UpdateDependentProperties(field);
                     if ~isempty(self.Callback)
-                        self.Callback(self, PropertyEventData(field.PropertyData));
+                        self.Callback(self, uiextras.jide.PropertyEventData(field.PropertyData));
                     end
                 catch me
                     field.Value = field.PropertyData.Value;  % revert changes
@@ -340,7 +340,7 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
         %    a com.jidesoft.grid.DefaultProperty instance
             validateattributes(member, {'char'}, {'nonempty','row'});
             % find which PropertyGrid contains the object for which the callback is executing
-            h = findobjuser(@(userdata) userdata.(member) == obj, '__PropertyGrid__');
+            h = uiextras.jide.findobjuser(@(userdata) userdata.(member) == obj, '__PropertyGrid__');
             self = get(h, 'UserData');
         end
     end
@@ -356,11 +356,11 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
                     if ~isempty(name) && ~isempty(self.BoundItem)  % help
                         nameparts = strsplit(name, '.');
                         if numel(nameparts) > 1
-                            helpobject = nestedfetch(self.BoundItem, strjoin('.', nameparts(1:end-1)));
+                            helpobject = uiextras.jide.nestedfetch(self.BoundItem, strjoin('.', nameparts(1:end-1)));
                         else
                             helpobject = self.BoundItem;
                         end
-                        helpdialog([class(helpobject) '.' nameparts{end}]);
+                        uiextras.jide.helpdialog([class(helpobject) '.' nameparts{end}]);
                     end
                 case 'F2'
                     name = self.GetSelectedProperty();
@@ -380,8 +380,8 @@ classdef PropertyGrid < UIControl %#ok<*MCSUP>
             self.UpdateField(name);
 
             if 0  % debug mode
-                oldvalue = var2str(get(event, 'OldValue'));  % old value as a string
-                newvalue = var2str(get(event, 'NewValue'));  % new value as a string
+                oldvalue = uiextras.jide.var2str(get(event, 'OldValue'));  % old value as a string
+                newvalue = uiextras.jide.var2str(get(event, 'NewValue'));  % new value as a string
                 fprintf('Property value of "%s" has changed.\n', name);
                 fprintf('Old value: %s\n', oldvalue);
                 fprintf('New value: %s\n', newvalue);

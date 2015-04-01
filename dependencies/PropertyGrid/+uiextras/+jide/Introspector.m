@@ -1,38 +1,38 @@
 classdef Introspector < handle
-    
+
     properties (Access = private)
         ClassName
         StaticDescriptors
         HasDynamicDescriptors
     end
-    
+
     methods
-        
+
         function obj = Introspector(className)
             obj.IntrospectProperties(className);
         end
-        
+
         function IntrospectProperties(obj, className)
             obj.ClassName = className;
             obj.StaticDescriptors = struct();
-            
+
             clazz = meta.class.fromName(className);
-            
+
             for i = 1:numel(clazz.Properties)
                 mpo = clazz.Properties{i};
-                
+
                 % Do not include abstract, hidden, or private properties.
                 if mpo.Abstract || mpo.Hidden || ~strcmp(mpo.GetAccess, 'public')
                     continue;
                 end
-                
-                comment = helptext([obj.ClassName '.' mpo.Name]);
+
+                comment = uiextras.jide.helptext([obj.ClassName '.' mpo.Name]);
                 if ~isempty(comment)
                     comment{1} = strtrim(regexprep(comment{1}, ['^' mpo.Name ' - '], ''));
                     comment = strjoin(comment, '\n');
                 end
-                
-                obj.StaticDescriptors.(mpo.Name) = PropertyDescriptor( ...
+
+                obj.StaticDescriptors.(mpo.Name) = uiextras.jide.PropertyDescriptor( ...
                     'Name', mpo.Name, ...
                     'DisplayName', mpo.Name, ...
                     'Description', comment, ...
@@ -40,23 +40,23 @@ classdef Introspector < handle
                     'Dependent', mpo.Dependent, ...
                     'Hidden', mpo.Hidden);
             end
-            
+
             obj.HasDynamicDescriptors = any(cellfun(@(c)strcmp(c.Name, 'getPropertyDescriptor'), clazz.Methods));
         end
-        
+
         function [l, exceptions] = CreatePropertyList(obj, instance)
             exceptions = MException.empty(0, 1);
-            
+
             if ~isa(instance, obj.ClassName)
                 error('Class mismatch');
             end
-            
-            l = PropertyGridField.empty(0, 1);
-            
+
+            l = uiextras.jide.PropertyGridField.empty(0, 1);
+
             names = fields(obj.StaticDescriptors);
-            for i = 1:numel(names)               
+            for i = 1:numel(names)
                 desc = obj.StaticDescriptors.(names{i});
-                
+
                 if obj.HasDynamicDescriptors
                     try
                         desc = merge(desc, instance.getPropertyDescriptor(names{i}));
@@ -64,8 +64,8 @@ classdef Introspector < handle
                         exceptions(end + 1) = x; %#ok<AGROW>
                     end
                 end
-                
-                p = PropertyGridField(desc.Name, instance.(desc.Name), ...
+
+                p = uiextras.jide.PropertyGridField(desc.Name, instance.(desc.Name), ...
                     'DisplayName', desc.DisplayName, ...
                     'Description', desc.Description, ...
                     'ReadOnly', desc.ReadOnly, ...
@@ -77,9 +77,9 @@ classdef Introspector < handle
                 l(end + 1) = p;
             end
         end
-        
+
     end
-    
+
 end
 
 function d1 = merge(d1, d2)

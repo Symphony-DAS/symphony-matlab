@@ -1,5 +1,5 @@
 Property grid using JIDE implementation
-Copyright 2010 Levente Hunyadi
+Copyright 2010 Levente Hunyadi (Modified by Mark Cafaro 2015)
 
 A graphical user control based on the JIDE PropertyGrid that mimics MatLab's property inspector.
 

@@ -21,7 +21,7 @@ classdef SampleObject
         % Whenever the setter method of this property is used to modify the
         % value, an exception is thrown.
         Unchangeable = 'unchangeable';
-        NestedObject = SampleNestedObject;
+        NestedObject = uiextras.jide.SampleNestedObject;
     end
     properties (Constant)
         Re = 6.378e6;  % Earth radius (m)
@@ -47,25 +47,25 @@ classdef SampleObject
         function Method(self)
             disp(self.PrivateProperty);
         end
-        
+
         function self = set.Caption(self, caption)
             caption = deblank(caption);
             fprintf('Caption has been changed from %s to %s.\n', self.Caption, caption);
             self.Caption = caption;
         end
-        
+
         function value = get.DependentProperty(self)
             value = self.Caption;
         end
-        
+
         function self = set.DependentProperty(self, value)
             self.Caption = value;
         end
-        
+
         function value = get.ReadOnlyDependentProperty(self)
             value = [ self.Caption ' - ' self.Caption ];
         end
-        
+
         function self = set.Unchangeable(self, value) %#ok<INUSL>
             error('SampleObject:InvalidOperation', 'Cannot change property value to %s', value);
         end

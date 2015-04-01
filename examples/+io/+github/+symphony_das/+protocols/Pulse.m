@@ -19,7 +19,7 @@ classdef Pulse < symphonyui.core.Protocol
     methods
         
         function p = getPropertyDescriptor(obj, name)
-            p = PropertyDescriptor();
+            p = uiextras.jide.PropertyDescriptor();
             switch name
                 case {'displayName', 'version'}
                     set(p, 'Hidden', obj.preTime > 60);

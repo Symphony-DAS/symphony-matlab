@@ -37,7 +37,7 @@ classdef PropertyType
                 self.Domain = domain;
             end
         end
-        
+
         function s = char(self)
         % Compact textual representation of property type information.
             if ~isempty(self.Shape)
@@ -53,39 +53,39 @@ classdef PropertyType
                 end
             end
         end
-        
+
         function tf = islogical(self)
             tf = strcmp(self.PrimitiveType, 'logical');
         end
-        
+
         function tf = isinteger(self)
             tf = any(strmatch(self.PrimitiveType, {'int8','uint8','int16','uint16','int32','uint32','int64','uint64'}, 'exact'));
         end
-        
+
         function tf = isfloat(self)
             tf = any(strmatch(self.PrimitiveType, {'denserealsingle','denserealdouble','densecomplexsingle','densecomplexdouble','sparserealsingle','sparserealdouble','sparsecomplexsingle','sparsecomplexdouble'}, 'exact'));
         end
-        
+
         function tf = isnumeric(self)
             tf = isinteger(self) || isfloat(self);
         end
-        
+
         function tf = isreal(self)
             tf = any(strmatch(self.PrimitiveType, {'denserealsingle','denserealdouble','sparserealsingle','sparserealdouble'}, 'exact'));
         end
-        
+
         function tf = is2d(self)
             tf = any(strmatch(self.Shape, {'row','column','matrix'}, 'exact'));
         end
-        
+
         function tf = isvector(self)
             tf = any(strmatch(self.Shape, {'row','column'}, 'exact'));
         end
-        
+
         function tf = isstring(self)
             tf = strcmp(self.PrimitiveType, 'char') && strcmp(self.Shape, 'row');
         end
-        
+
         function tf = isset(self)
             tf = islogical(self) && isvector(self) && ~isempty(self.Domain);
         end
@@ -103,12 +103,12 @@ classdef PropertyType
                 'cellstr', ...
                 'object'});
         end
-        
+
         function self = set.Shape(self, shape)
             validateattributes(shape, {'char'}, {'nonempty','row'});
             self.Shape = validatestring(shape, {'scalar','row','column','matrix','empty'});  % 'empty' is a pseudo-shape for the 0-by-0 empty matrix
         end
-        
+
         function self = set.Domain(self, domain)
             if isempty(domain)
                 self.Domain = [];
@@ -148,7 +148,7 @@ classdef PropertyType
         % tf:
         %    false if any of the property constaints (type, shape or
         %    domain) would be violated
-            validateattributes(self, {'PropertyType'}, {'scalar'});
+            validateattributes(self, {'uiextras.jide.PropertyType'}, {'scalar'});
             if nargin < 3
                 precisionloss = false;
             end
@@ -157,16 +157,16 @@ classdef PropertyType
             elseif (isnumeric(value) || islogical(value) || ischar(value)) && any(isnan(value(:)));
                 tf = false;
             else
-                type = PropertyType.AutoDiscoverType(value);
-                shape = PropertyType.AutoDiscoverShape(value);
-                tf = PropertyType.CanAcceptType(self.PrimitiveType, type, precisionloss) ...
-                    && PropertyType.CanAcceptShape(self.Shape, shape) ...
+                type = uiextras.jide.PropertyType.AutoDiscoverType(value);
+                shape = uiextras.jide.PropertyType.AutoDiscoverShape(value);
+                tf = uiextras.jide.PropertyType.CanAcceptType(self.PrimitiveType, type, precisionloss) ...
+                    && uiextras.jide.PropertyType.CanAcceptShape(self.Shape, shape) ...
                     && self.CanAcceptValue(value);
             end
         end
-        
+
         function clazz = GetPrimitiveMatLabType(self)
-            validateattributes(self, {'PropertyType'}, {'scalar'});
+            validateattributes(self, {'uiextras.jide.PropertyType'}, {'scalar'});
             switch (self.PrimitiveType)
                 case {'logical','char','int8','uint8','int16','uint16','int32','uint32','int64','uint64'}
                     clazz = self.PrimitiveType;
@@ -178,9 +178,9 @@ classdef PropertyType
                     clazz = 'cell';
             end
         end
-        
+
         function javatype = GetPrimitiveJavaType(self)
-            validateattributes(self, {'PropertyType'}, {'scalar'});
+            validateattributes(self, {'uiextras.jide.PropertyType'}, {'scalar'});
             switch self.PrimitiveType
                 case {'denserealdouble','sparserealdouble'}  % add a double-precision floating point property
                     matlabtype = 'double';  % MatLab type that is marshalled to Java
@@ -199,11 +199,11 @@ classdef PropertyType
                 otherwise
                     error('MatrixEditor:ArgumentTypeMismatch', 'Type %s is not supported.', self.PrimitiveType);
             end
-            javatype = javaclass(matlabtype);
+            javatype = uiextras.jide.javaclass(matlabtype);
         end
-        
+
         function javavalue = GetPrimitiveJavaValue(self, value)
-            validateattributes(self, {'PropertyType'}, {'scalar'});
+            validateattributes(self, {'uiextras.jide.PropertyType'}, {'scalar'});
             switch self.PrimitiveType
                 case {'denserealdouble','sparserealdouble'}  % add a double-precision floating point property
                     javavalue = java.lang.Double(value);
@@ -228,7 +228,7 @@ classdef PropertyType
                     %error('PropertyType:ArgumentTypeMismatch', 'Type %s is not supported.', self.PrimitiveType);
             end
         end
-        
+
         function javamatrix = GetJavaVectorOfVectors(self, matrix)
             assert(isnumeric(self) || islogical(self), 'PropertyType:InvalidOperation', ...
                 'Operation supported on numeric and logical matrices only.');
@@ -241,7 +241,7 @@ classdef PropertyType
                 end
             end
         end
-        
+
         function javamatrix = GetJavaMatrix(self, matrix)
         % Get MatLab value as Java 2d array of proper type.
             assert(isnumeric(self), 'PropertyType:InvalidOperation', ...
@@ -256,7 +256,7 @@ classdef PropertyType
                 end
             end
         end
-        
+
         function javavector = GetJavaVector(self, vector)
         % Get MatLab value as a Java vector of proper type.
             assert(isnumeric(self), 'PropertyType:InvalidOperation', ...
@@ -287,7 +287,7 @@ classdef PropertyType
                             javavalue = java.lang.String(strjoin(value, sprintf('\n')));
                         case 'logical'
                             if ~isempty(self.Domain)
-                                javavalue = javaStringArray(self.Domain(value));  % value is an indicator vector
+                                javavalue = uiextras.jide.javaStringArray(self.Domain(value));  % value is an indicator vector
                             else
                                 javavalue = mat2str(value);
                             end
@@ -308,7 +308,7 @@ classdef PropertyType
                     end
             end
         end
-        
+
         function [value,stringconversion] = ConvertFromJava(self, javavalue)
         % Converts a Java object into the appropriate MatLab value.
             stringconversion = false;
@@ -343,7 +343,7 @@ classdef PropertyType
                             value = strsplit(javavalue);
                         case 'logical'
                             if ~isempty(self.Domain)
-                                value = strsetmatch(cell(javavalue), self.Domain);
+                                value = uiextras.jide.strsetmatch(cell(javavalue), self.Domain);
                             else
                                 value = self.ConvertFromString(javavalue);
                                 stringconversion = true;
@@ -403,7 +403,7 @@ classdef PropertyType
             end
             value = self.ConvertFromMatLab(value);
         end
-        
+
         function value = ConvertFromMatLab(self, value)
         % Casts a MatLab value to the prescribed property type.
             if ~isreal(value) && isnumeric(self) && isreal(self)
@@ -436,7 +436,7 @@ classdef PropertyType
             if islogical(self) && isvector(self)  % interpret logical vector as a set
                 tf = isempty(self.Domain) || numel(value) == numel(self.Domain);  % size of logical vector corresponds to size of universe
             else  % test whether domain contains value
-                tf = PropertyType.IsInDomain(self.Domain, value);
+                tf = uiextras.jide.PropertyType.IsInDomain(self.Domain, value);
             end
         end
     end
@@ -446,13 +446,13 @@ classdef PropertyType
         % The property type is chosen to be the most specific possible that
         % fits the given value.
             if isobject(value)
-                obj = PropertyType('object', PropertyType.AutoDiscoverShape(value));
+                obj = uiextras.jide.PropertyType('object', uiextras.jide.PropertyType.AutoDiscoverShape(value));
                 obj.ObjectType = class(value);
             else
-                obj = PropertyType(PropertyType.AutoDiscoverType(value), PropertyType.AutoDiscoverShape(value));
+                obj = uiextras.jide.PropertyType(uiextras.jide.PropertyType.AutoDiscoverType(value), uiextras.jide.PropertyType.AutoDiscoverShape(value));
             end
         end
-        
+
         function type = AutoDiscoverType(value)
             clazz = class(value);
             switch clazz
@@ -482,7 +482,7 @@ classdef PropertyType
                         'Argument type "%s" is not supported.', class(value));
             end
         end
-        
+
         function shape = AutoDiscoverShape(value)
             if ndims(value) > 2
                 error('PropertyType:InvalidArgumentValue', ...
@@ -500,7 +500,7 @@ classdef PropertyType
                 shape = 'matrix';
             end
         end
-        
+
         function tf = CanAcceptType(generaltype, specifictype, precisionloss)
         % Type assignment check.
         %
@@ -563,7 +563,7 @@ classdef PropertyType
             end
             tf = any(strmatch(specifictype, type, 'exact'));
         end
-        
+
         function tf = CanAcceptShape(generalshape, specificshape)
         % Shape assignment check.
         %
@@ -593,12 +593,12 @@ classdef PropertyType
             end
             tf = any(strmatch(specificshape, shape, 'exact'));
         end
-        
+
         function tf = IsInDomain(domain, value)
             if isempty(domain)
                 tf = true;
             elseif iscellstr(domain)
-                tf = any(strcmp(value, domain)); 
+                tf = any(strcmp(value, domain));
             elseif iscell(domain)
                 tf = any(cellfun(@(v) v==value, domain));
             elseif isnumeric(domain) && length(domain) == 2

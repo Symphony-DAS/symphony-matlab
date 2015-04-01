@@ -43,12 +43,12 @@ classdef UIControl < hgsetget
             if nargin > 0
                 if isscalar(arg) && ishandle(arg)
                     obj.Parent = arg;
-                    obj = constructor(obj, varargin{:});
+                    obj = uiextras.jide.constructor(obj, varargin{:});
                 else
                     if ~strcmp('figure', get(obj.Control, 'Type'))
                         obj.Parent = gcf;
                     end
-                    obj = constructor(obj, arg, varargin{:});
+                    obj = uiextras.jide.constructor(obj, arg, varargin{:});
                 end
             end
         end
@@ -56,7 +56,7 @@ classdef UIControl < hgsetget
         function parent = get.Parent(obj)
             parent = get(obj.Control, 'Parent');
         end
-        
+
         function obj = set.Parent(obj, parent)
             if ~strcmp(get(obj.Control, 'Type'), 'figure')  % figures do not require a parent
                 set(obj.Control, 'Parent', parent);
@@ -66,15 +66,15 @@ classdef UIControl < hgsetget
         function units = get.Units(obj)
             units = get(obj.Control, 'Units');
         end
-        
+
         function obj = set.Units(obj, units)
             set(obj.Control, 'Units', units);
         end
-        
+
         function position = get.Position(obj)
             position = get(obj.Control, 'Position');
         end
-        
+
         function obj = set.Position(obj, position)
             set(obj.Control, 'Position', position);
         end
@@ -83,7 +83,7 @@ classdef UIControl < hgsetget
             units = get(obj.Control, 'Units');
             if isempty(units)
                 units = 'normalized';
-            end 
+            end
             switch units
                 case 'normalized'
                     set(obj.Control, 'Position', position);
@@ -93,7 +93,7 @@ classdef UIControl < hgsetget
                     set(obj.Control, 'Units', units);
             end
         end
-        
+
         function position = get.NormalizedPosition(obj)
             units = get(obj.Control, 'Units');
             if isempty(units)

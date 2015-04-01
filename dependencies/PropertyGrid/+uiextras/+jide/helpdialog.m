@@ -23,7 +23,7 @@ else
     key = class(obj);
 end
 title = [key ' - Quick help'];
-text = helptext(key);
+text = uiextras.jide.helptext(key);
 if isempty(text)
     text = {'No help available.'};
 end
@@ -64,7 +64,7 @@ else
     set(iconaxes, ...
         'Visible', 'off', ...
         'YDir', 'reverse');
-    
+
     % help text
     rgb = get(fig, 'Color');
     text = cellfun(@(line) helpdialog_html(line), text, 'UniformOutput', false);
@@ -76,11 +76,11 @@ else
     jscrollpane = javax.swing.JScrollPane(jtext, javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     jscrollpane.getViewport().setBackground(jcolor);
     jscrollpane.setBorder(javax.swing.border.EmptyBorder(0,0,0,0));
-    
+
     [jcontrol,jcontainer] = javacomponent(jscrollpane, [0 0 100 100]);
     set(jcontainer, 'Tag', 'HelpText');
 
-    
+
     movegui(fig, 'center');  % center figure on screen
     set(fig, 'Visible', 'on');
 end

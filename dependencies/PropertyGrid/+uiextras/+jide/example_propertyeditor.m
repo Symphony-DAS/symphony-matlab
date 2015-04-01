@@ -12,6 +12,6 @@ f = figure( ...
     'NumberTitle', 'off', ...
     'Toolbar', 'none');
 items = { SampleObject SampleObject };
-editor = PropertyEditor(f, 'Items', items);
-editor.AddItem(SampleNestedObject, 1);
+editor = uiextras.jide.PropertyEditor(f, 'Items', items);
+editor.AddItem(uiextras.jide.SampleNestedObject, 1);
 editor.RemoveItem(1);

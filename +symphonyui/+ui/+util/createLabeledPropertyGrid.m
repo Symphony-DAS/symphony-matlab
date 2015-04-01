@@ -2,14 +2,14 @@ function [grid, addButton, removeButton] = createLabeledPropertyGrid(parent, lab
     layout = uiextras.VBox( ...
         'Parent', parent, ...
         'Spacing', 7);
-    
+
     l = uiextras.HBox( ...
         'Parent', layout, ...
         'Spacing', 7);
     symphonyui.ui.util.createLabel(l, label);
-    grid = PropertyGrid(l);
-    set(l, 'Sizes', sizes);    
-    
+    grid = uiextras.jide.PropertyGrid(l);
+    set(l, 'Sizes', sizes);
+
     l = uiextras.HBox( ...
         'Parent', layout, ...
         'Spacing', 7);
@@ -23,6 +23,6 @@ function [grid, addButton, removeButton] = createLabeledPropertyGrid(parent, lab
         'Style', 'pushbutton', ...
         'String', 'Remove');
     set(l, 'Sizes', [-1 75 75]);
-    
+
     set(layout, 'Sizes', [-1 25]);
 end

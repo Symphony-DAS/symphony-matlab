@@ -212,7 +212,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function selectProtocol(obj, protocol)
             obj.view.setSelectedProtocol(protocol.id);
-            obj.protocolIntrospector = Introspector(class(protocol));
+            obj.protocolIntrospector = uiextras.jide.Introspector(class(protocol));
             obj.populateProtocolProperties();
             obj.updateViewState();
         end

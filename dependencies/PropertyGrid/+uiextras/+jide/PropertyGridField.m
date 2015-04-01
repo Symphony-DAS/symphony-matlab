@@ -27,33 +27,33 @@ classdef PropertyGridField < hgsetget
         % Whether the property is hidden.
         Hidden = false;
         % Direct descendants of this property.
-        Children = PropertyGridField.empty(1,0);
+        Children = uiextras.jide.PropertyGridField.empty(1,0);
     end
     methods
         function self = PropertyGridField(name, value, varargin)
             self.Name = name;
             self.Value = value;
-            self = constructor(self, varargin{:});
+            self = uiextras.jide.constructor(self, varargin{:});
         end
 
         function self = set.Name(self, name)
             validateattributes(name, {'char'}, {'nonempty','row'});
             self.Name = name;
         end
-        
+
         function self = set.Type(self, type)
-            validateattributes(type, {'PropertyType'}, {'scalar'});
+            validateattributes(type, {'uiextras.jide.PropertyType'}, {'scalar'});
             assert(type.CanAccept(self.Value), ...
                 'PropertyGridField:InvalidOperation', ...
                 'Setting type "%s" would invalidate current property value.', char(type)); %#ok<MCSUP>
             self.Type = type;
             self.Value = type.ConvertFromMatLab(self.Value);  %#ok<MCSUP> % convert value type to match assigned type
         end
-        
+
         function self = set.Value(self, value)
             if isempty(self.Type) %#ok<MCSUP>
                 self.Value = value;
-                self.Type = PropertyType.AutoDiscover(value); %#ok<MCSUP>
+                self.Type = uiextras.jide.PropertyType.AutoDiscover(value); %#ok<MCSUP>
             else
                 assert(self.Type.CanAccept(value), ...
                     'PropertyGridField:InvalidArgumentValue', ...
@@ -61,7 +61,7 @@ classdef PropertyGridField < hgsetget
                 self.Value = value;
             end
         end
-        
+
         function self = set.Category(self, category)
             if isempty(category)
                 self.Category = [];
@@ -70,7 +70,7 @@ classdef PropertyGridField < hgsetget
                 self.Category = category;
             end
         end
-        
+
         function self = set.DisplayName(self, name)
             if isempty(name)
                 self.DisplayName = [];
@@ -88,12 +88,12 @@ classdef PropertyGridField < hgsetget
                 self.Description = description;
             end
         end
-        
+
         function self = set.ReadOnly(self, readonly)
             validateattributes(readonly, {'logical'}, {'scalar'});
             self.ReadOnly = readonly;
         end
-        
+
         function tf = HasCategory(selfarray)
         % True if any object in the array has a category specification.
             for k = 1 : numel(selfarray)
@@ -117,16 +117,16 @@ classdef PropertyGridField < hgsetget
             end
             tf = false;
         end
-        
+
         function root = GetHierarchy(selfarray)
         % Converts a flat property list into a hierarchical structure.
         % Parent-child relationships are discovered from hierarchical
         % qualified names where components are separated by dot (.).
-            root = arrayfilter(@(self) isempty(strfind(self.Name, '.')) , selfarray);  % get simple names only
+            root = uiextras.jide.arrayfilter(@(self) isempty(strfind(self.Name, '.')) , selfarray);  % get simple names only
             root.WireHierarchy(selfarray);
             selfarray.UnqualifyNames();
         end
-        
+
         function UnqualifyNames(selfarray)
         % Reduces qualified names to unqualified names (without dot).
             for k = 1 : numel(selfarray)
@@ -137,7 +137,7 @@ classdef PropertyGridField < hgsetget
                 end
             end
         end
-        
+
         function self = FindByName(selfarray, name)
         % Looks up a property field by name.
             for k = 1 : numel(selfarray)
@@ -148,7 +148,7 @@ classdef PropertyGridField < hgsetget
             end
             self = [];  % not found
         end
-        
+
     end
     methods (Access = private)
         function WireHierarchy(selfarray, descendants)
@@ -172,7 +172,7 @@ classdef PropertyGridField < hgsetget
         %    hu.bme.aut, hu.bme.cs, hu.bme.mit
         % nodes.FilterChildren('hu.bme') does not select
         %    hu.bme.aut.www (not a direct child)
-            names = getclassfield(selfarray, 'Name');
+            names = uiextras.jide.getclassfield(selfarray, 'Name');
             if iscell(filterprefix)
                 prefix = [strjoin('.', filterprefix) '.'];
             else
@@ -180,10 +180,10 @@ classdef PropertyGridField < hgsetget
             end
             ix = strmatch(prefix, names);  % get names that begin with prefix
             if isempty(ix)
-                filteredarray = PropertyGridField.empty(1,0);
+                filteredarray = uiextras.jide.PropertyGridField.empty(1,0);
                 return;
             end
-            
+
             len = numel(prefix);
             names = names(ix);                                             % drop names that do not begin with prefix
             names = cellfun(@(name) name(len+1:end), names, ...            % drop leading prefix from names
@@ -196,30 +196,30 @@ classdef PropertyGridField < hgsetget
         function fields = GenerateFrom(obj)
         % Property fields for a structure, a value or a handle object.
             if isstruct(obj)
-                fields = PropertyGridField.GenerateFromStruct(obj);
+                fields = uiextras.jide.PropertyGridField.GenerateFromStruct(obj);
             elseif isobject(obj)
-                fields = PropertyGridField.GenerateFromClass(obj);
+                fields = uiextras.jide.PropertyGridField.GenerateFromClass(obj);
             else
-                fields = PropertyGridField.empty(1,0);
+                fields = uiextras.jide.PropertyGridField.empty(1,0);
             end
         end
-        
+
         function fields = GenerateFromStruct(obj)
         % Automatically generated property fields for a structure.
             names = fieldnames(obj);
             n = numel(names);
-            
+
             k = 0;
-            fields = PropertyGridField.empty(1,0);
+            fields = uiextras.jide.PropertyGridField.empty(1,0);
             for i = 1 : n
                 name = names{i};
                 value = obj.(name);
                 k = k + 1;
-                fields(k) = PropertyGridField(name, value);
-                fields(k).Children = PropertyGridField.GenerateFrom(value);
+                fields(k) = uiextras.jide.PropertyGridField(name, value);
+                fields(k).Children = uiextras.jide.PropertyGridField.GenerateFrom(value);
             end
         end
-        
+
         function fields = GenerateFromClass(obj)
         % Automatically generated property fields for an object.
             assert(isobject(obj), 'PropertyGridField:ArgumentTypeMismatch', ...
@@ -233,7 +233,7 @@ classdef PropertyGridField < hgsetget
 
             k = 0;  % number of properties found
             n = numel(clazz.Properties);  % maximum number of properties
-            fields = PropertyGridField.empty(0, 1);
+            fields = uiextras.jide.PropertyGridField.empty(0, 1);
             for i = 1 : n
                 property = clazz.Properties{i};
                 if property.Abstract || property.Hidden || ~strcmp(property.GetAccess, 'public');
@@ -246,21 +246,21 @@ classdef PropertyGridField < hgsetget
                 end
                 description = property.Description;  % not currently used in MatLab
                 if isempty(description)
-                    text = helptext([clazz.Name '.' property.Name]);  % fetch help text as description
+                    text = uiextras.jide.helptext([clazz.Name '.' property.Name]);  % fetch help text as description
                     if ~isempty(text)
                         description = text{1};  % use first line
                     end
                 end
                 readonly = property.Constant || ~strcmp(property.SetAccess, 'public') || property.Dependent && isempty(property.SetMethod);
                 dependent = property.Dependent;
-                
+
                 k = k + 1;
-                fields(k) = PropertyGridField(property.Name, value, ...
+                fields(k) = uiextras.jide.PropertyGridField(property.Name, value, ...
                     'DisplayName', property.Name, ...
                     'Description', description, ...
                     'ReadOnly', readonly, ...
                     'Dependent', dependent);
-                fields(k).Children = PropertyGridField.GenerateFrom(value);
+                fields(k).Children = uiextras.jide.PropertyGridField.GenerateFrom(value);
             end
         end
     end

@@ -17,7 +17,7 @@ classdef JidePropertyGridField < handle
     end
     properties (Access = private)
         % Children the property field might have.
-        Children = JidePropertyGridField.empty(0,1);
+        Children = uiextras.jide.JidePropertyGridField.empty(0,1);
         % A JIDE DefaultProperty instance.
         Control;
         % JIDE editor context (if any).
@@ -32,12 +32,12 @@ classdef JidePropertyGridField < handle
                 self.Initialize(data);
             end
         end
-        
+
         function self = Initialize(self, data)
         % Initializes a JIDE property based on a property grid field.
         % May register editor contexts with the global CellEditorManager.
-            validateattributes(self, {'JidePropertyGridField'}, {'scalar'});
-        
+            validateattributes(self, {'uiextras.jide.JidePropertyGridField'}, {'scalar'});
+
             self.PropertyData = data;
             field = self.Control;
             field.setName(data.Name);  % JIDE automatically uses a hierarchical naming scheme
@@ -64,14 +64,14 @@ classdef JidePropertyGridField < handle
                             field.setEditorContext(com.jidesoft.grid.BooleanCheckBoxCellEditor.CONTEXT);
                         case {'densecomplexdouble','sparsecomplexdouble','densecomplexsingle','sparsecomplexsingle'}
                             matlabtype = [];
-                            field.setType(javaclass('char',1));  % edit as string and convert with eval
+                            field.setType(uiextras.jide.javaclass('char',1));  % edit as string and convert with eval
                         otherwise
                             matlabtype = [];
                             field.setEditable(false);
                             %error('PropertyGrid:ArgumentTypeMismatch', 'Scalar %s is not supported.', data.Type.PrimitiveType);
                     end
                     if ~isempty(matlabtype)
-                        javatype = javaclass(matlabtype);
+                        javatype = uiextras.jide.javaclass(matlabtype);
                         field.setType(javatype);
                         if ~isempty(data.Type.Domain)
                             if iscell(data.Type.Domain)  % explicit enumeration of domain elements
@@ -91,20 +91,20 @@ classdef JidePropertyGridField < handle
                     error('PropertyGrid:ArgumentTypeMismatch', 'Data shape %s is not supported.', data.Type.Shape);
             end
             self.Value = data.Value;
-            
+
             for k = 1 : numel(data.Children)
-                self.Children(k) = JidePropertyGridField(data.Children(k));
+                self.Children(k) = uiextras.jide.JidePropertyGridField(data.Children(k));
                 self.Control.addChild(self.Children(k).Control);
             end
         end
-        
+
         function delete(self)
         % Deallocates registered editor contexts.
             if ~isempty(self.Context)
                 com.jidesoft.grid.CellEditorManager.unregisterEditor(self.ContextType, self.Context);
             end
         end
-        
+
         function value = get.Value(self)
         % Gets the native MatLab value of a property.
             javavalue = self.Control.getValue();
@@ -114,7 +114,7 @@ classdef JidePropertyGridField < handle
                 self.Control.setValue(javavalue);
             end
         end
-        
+
         function set.Value(self, value)
         % Sets the Java value of a property based on the native value.
             javavalue = self.PropertyData.Type.ConvertToJava(value);
@@ -127,7 +127,7 @@ classdef JidePropertyGridField < handle
         % Input arguments:
         % value:
         %    a native MatLab value
-            validateattributes(self, {'JidePropertyGridField'}, {'scalar'});
+            validateattributes(self, {'uiextras.jide.JidePropertyGridField'}, {'scalar'});
             tf = self.PropertyData.Type.CanAccept(value);
         end
 
@@ -137,7 +137,7 @@ classdef JidePropertyGridField < handle
         end
 
         function properties = GetProperties(selfarray)
-            properties = PropertyGridField.empty(0,1);
+            properties = uiextras.jide.PropertyGridField.empty(0,1);
             for k = 1 : numel(selfarray)
                 properties(k) = selfarray(k).PropertyData;
             end
@@ -149,15 +149,15 @@ classdef JidePropertyGridField < handle
             for k = 1 : n
                 ctrls{k} = selfarray(k).Control;
             end
-            list = javaArrayList(ctrls);
+            list = uiextras.jide.javaArrayList(ctrls);
         end
     end
     methods (Access = private)
         function self = FindByNameRecurse(selfarray, nameparts)
-            names = getclassfield(getclassfield(selfarray, 'PropertyData'), 'Name');
+            names = uiextras.jide.getclassfield(uiextras.jide.getclassfield(selfarray, 'PropertyData'), 'Name');
             ix = strmatch(nameparts{1}, names, 'exact');
             if isempty(ix)
-                self = JidePropertyGridField.empty(0,1);
+                self = uiextras.jide.JidePropertyGridField.empty(0,1);
                 return;
             end
             ix = ix(1);
@@ -168,41 +168,41 @@ classdef JidePropertyGridField < handle
                 self = selfarray(ix).Children.FindByNameRecurse(namerest);
             end
         end
-        
+
         function InitializeVector(self, field)
             data = self.PropertyData;
             switch data.Type.PrimitiveType
                 case 'char'  % add a string property
                     switch data.Type.Shape
                         case 'row'
-                            field.setType(javaclass('char',1));
+                            field.setType(uiextras.jide.javaclass('char',1));
                             if ~isempty(data.Type.Domain)
-                                self.AddComboBoxEditor(field, javaclass('char',1), javaStringArray(data.Type.Domain));
+                                self.AddComboBoxEditor(field, uiextras.jide.javaclass('char',1), uiextras.jide.javaStringArray(data.Type.Domain));
                             end
                         otherwise
-                            field.setType(javaclass('char',1));  % edit as string and convert with eval
+                            field.setType(uiextras.jide.javaclass('char',1));  % edit as string and convert with eval
                     end
                 case 'cellstr'
-                    field.setType(javaclass('char',1));
+                    field.setType(uiextras.jide.javaclass('char',1));
                     field.setEditorContext(com.jidesoft.grid.MultilineStringCellEditor.CONTEXT);
                 case 'logical'
                     if ~isempty(data.Type.Domain)
-                        field.setType(javaclass('cellstr',1));  % java.lang.String array
+                        field.setType(uiextras.jide.javaclass('cellstr',1));  % java.lang.String array
                         self.AddCheckBoxListEditor(field, data.Type.Domain);
                     else
-                        field.setType(javaclass('char',1));  % edit as string and convert with eval
+                        field.setType(uiextras.jide.javaclass('char',1));  % edit as string and convert with eval
                     end
                 case {...
                         'denserealdouble','sparserealdouble','denserealsingle','sparserealsingle',...
                         'densecomplexdouble','sparsecomplexdouble','densecomplexsingle','sparsecomplexsingle',...
                         'int8','uint8','int16','uint16','int32','uint32','int64','uint64'}
-                    field.setType(javaclass('char',1));  % edit as string and convert with eval
+                    field.setType(uiextras.jide.javaclass('char',1));  % edit as string and convert with eval
                 otherwise
                     field.setEditable(false);
                     %error('PropertyGrid:ArgumentTypeMismatch', 'Unsupported type: %s %s.', data.Type.Shape, data.Type.PrimitiveType);
             end
         end
-        
+
         function InitializeMatrix(self, field)
             data = self.PropertyData;
             switch data.Type.PrimitiveType
@@ -210,13 +210,13 @@ classdef JidePropertyGridField < handle
                         'denserealdouble','sparserealdouble','denserealsingle','sparserealsingle',...
                         'densecomplexdouble','sparsecomplexdouble','densecomplexsingle','sparsecomplexsingle',...
                         'char','int8','uint8','int16','uint16','int32','uint32','int64','uint64','logical'}
-                    field.setType(javaclass('char',1));  % edit as string and convert with eval
+                    field.setType(uiextras.jide.javaclass('char',1));  % edit as string and convert with eval
                 otherwise
                     field.setEditable(false);
                     %error('PropertyGrid:ArgumentTypeMismatch', 'Matrix %s is not supported.', data.Type.PrimitiveType);
             end
         end
-        
+
         function ApplyContext(self, field, javatype, editor, editortype)
         % Registers a context for an editor.
         %
@@ -234,7 +234,7 @@ classdef JidePropertyGridField < handle
             com.jidesoft.grid.CellEditorManager.registerEditor(javatype, editor, self.Context);  % register new context
             field.setEditorContext(self.Context);  % apply context to property
         end
-        
+
         function AddCheckBoxListEditor(self, field, labels)
         % Registers a new check box list context.
         %
@@ -243,10 +243,10 @@ classdef JidePropertyGridField < handle
         %    a com.jidesoft.grid.Property instance
         % labels:
         %    a cell array of strings to label elements in the set shown
-            editor = com.jidesoft.grid.CheckBoxListComboBoxCellEditor(javaStringArray(labels), javaclass('cellstr',1));
-            self.ApplyContext(field, javaclass('cellstr',1), editor, 'checkboxlist');
+            editor = com.jidesoft.grid.CheckBoxListComboBoxCellEditor(uiextras.jide.javaStringArray(labels), uiextras.jide.javaclass('cellstr',1));
+            self.ApplyContext(field, uiextras.jide.javaclass('cellstr',1), editor, 'checkboxlist');
         end
-        
+
         function AddComboBoxEditor(self, field, javatype, javadomain)
         % Registers a new list selection context.
         % A drop-down combo box allows the user to select a single value
@@ -262,7 +262,7 @@ classdef JidePropertyGridField < handle
             editor = com.jidesoft.grid.ListComboBoxCellEditor(javadomain);
             self.ApplyContext(field, javatype, editor, 'combobox');
         end
-        
+
         function AddSliderEditor(self, field, javatype, lower, upper)
         % Registers a new slider context.
         % The slider has a limited range.
@@ -278,7 +278,7 @@ classdef JidePropertyGridField < handle
             editor = com.jidesoft.grid.SliderCellEditor(int32(lower), int32(upper));
             self.ApplyContext(field, javatype, editor, 'slider');
         end
-        
+
         function AddSpinnerEditor(self, field, javatype, lower, upper)
         % Registers a new spinner context.
         % The spinner has a limited range and a fixed step.

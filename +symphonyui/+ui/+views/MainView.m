@@ -139,7 +139,7 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'About Symphony', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'AboutSymphony'));
-            
+
             iconsUrl = symphonyui.util.pathToUrl(symphonyui.app.App.getIconsPath());
 
             mainLayout = uiextras.VBox( ...
@@ -150,7 +150,7 @@ classdef MainView < symphonyui.ui.View
             obj.protocolDropDown = createDropDownMenu(mainLayout, {''});
             set(obj.protocolDropDown, 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
 
-            obj.protocolPropertyGrid = PropertyGrid(mainLayout, ...
+            obj.protocolPropertyGrid = uiextras.jide.PropertyGrid(mainLayout, ...
                 'Callback', @(h,d)notify(obj, 'SetProtocolProperty', d));
 
             controlsPanel = uix.Panel( ...
@@ -193,7 +193,7 @@ classdef MainView < symphonyui.ui.View
             label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             label.setVisible(false);
             obj.progressIndicatorIcon = javacomponent(label, [], controlsLayout);
-            
+
             % Avoid using findjobj (extremely slow).
             try %#ok<TRYNC>
                 drawnow;
@@ -285,7 +285,7 @@ classdef MainView < symphonyui.ui.View
         function setProtocolProperties(obj, properties)
             set(obj.protocolPropertyGrid, 'Properties', properties);
         end
-        
+
         function updateProtocolProperties(obj, properties)
             obj.protocolPropertyGrid.UpdateProperties(properties);
         end
@@ -337,6 +337,5 @@ classdef MainView < symphonyui.ui.View
         end
 
     end
-    
-end
 
+end

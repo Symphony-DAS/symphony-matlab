@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="UIExtrasPropertyGrid">
+    <output-path>$PROJECT_DIR$/out/artifacts/UIExtrasPropertyGrid</output-path>
+    <root id="archive" name="UIExtrasPropertyGrid.jar">
+      <element id="module-output" name="UIExtrasPropertyGrid" />
+    </root>
+  </artifact>
+</component>

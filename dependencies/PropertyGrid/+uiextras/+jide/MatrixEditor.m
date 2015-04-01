@@ -2,9 +2,9 @@
 % This control presents an m-by-n table of matrix entries.
 
 % Copyright 2008-2010 Levente Hunyadi
-classdef MatrixEditor < UIControl
+classdef MatrixEditor < uiextras.jide.UIControl
     properties
-        Type = PropertyType.empty(1,0);
+        Type = uiextras.jide.PropertyType.empty(1,0);
     end
     properties (Dependent)
         Control;
@@ -26,9 +26,9 @@ classdef MatrixEditor < UIControl
     end
     methods
         function self = MatrixEditor(varargin)
-            self = self@UIControl(varargin{:});
+            self = self@uiextras.jide.UIControl(varargin{:});
         end
-        
+
         function self = Instantiate(self, parent)
             if nargin < 2
                 parent = figure;
@@ -40,25 +40,25 @@ classdef MatrixEditor < UIControl
                 'Position', [0 0 1 1], ...
                 'Tag', '__MatrixEditor__', ...
                 'UserData', self);
-            
+
             % initialization
             com.mathworks.mwswing.MJUtilities.initJIDE;
             com.jidesoft.grid.CellRendererManager.initDefaultRenderer();
             com.jidesoft.grid.CellEditorManager.initDefaultEditor();
-            
+
             % table model
             self.JideTableModel = handle(javax.swing.table.DefaultTableModel(), 'CallbackProperties');
-            set(self.JideTableModel, 'TableChangedCallback', @MatrixEditor.OnTableChanged);
-            
+            set(self.JideTableModel, 'TableChangedCallback', @uiextras.jide.MatrixEditor.OnTableChanged);
+
             % JIDE table grid control
-            self.JideTable = objectEDT('com.jidesoft.grid.ContextSensitiveTable', self.JideTableModel);
+            self.JideTable = uiextras.jide.objectEDT('com.jidesoft.grid.ContextSensitiveTable', self.JideTableModel);
             self.JideTable.setCellSelectionEnabled(true);
 
             pixelpos = getpixelposition(panel);
             [control,self.Table] = javacomponent(self.JideTable, [10 10 pixelpos(3)-20 pixelpos(4)-20], panel); %#ok<ASGLU>
             set(self.Table, ...
                 'Units', 'normalized');
-            
+
             % menu
             menu = uimenu(ancestor(parent, 'figure'), ...
                 'Label', 'Matrix', ...
@@ -73,38 +73,38 @@ classdef MatrixEditor < UIControl
                 'RemoveRow', uimenu(menu, 'Label', 'Remove row', 'Callback', @self.OnRemoveRow));
             self.OnMatrixMenuClicked();
         end
-        
+
         function control = get.Control(self)
             control = self.Table;
         end
-        
+
         function t = get.Transpose(self)
             t = self.MatrixTranspose;
         end
-        
+
         function self = set.Transpose(self, t)
             validateattributes(t, {'logical'}, {'scalar'});
             item = self.Item;
             self.MatrixTranspose = t;
             self.Item = item;
         end
-        
+
         function r = get.ReadOnly(self)
             r = ~self.JideTable.isEnabled();
         end
-        
+
         function self = set.ReadOnly(self, r)
             validateattributes(r, {'logical'}, {'scalar'});
             self.JideTable.setEnabled(~r);
         end
-        
+
         function matrix = get.Item(self)
             matrix = self.Matrix;
             if self.MatrixTranspose
                 matrix = transpose(matrix);
             end
         end
-        
+
         function self = set.Item(self, matrix)
             validateattributes(matrix, {'numeric','logical'}, {'2d'});
             if self.MatrixTranspose
@@ -112,7 +112,7 @@ classdef MatrixEditor < UIControl
             end
             self.Matrix = matrix;
             if isempty(self.Type)
-                self.Type = PropertyType.AutoDiscover(matrix);
+                self.Type = uiextras.jide.PropertyType.AutoDiscover(matrix);
             end
             data = self.Type.GetJavaVectorOfVectors(matrix);
             if size(matrix,2) > 0
@@ -126,12 +126,12 @@ classdef MatrixEditor < UIControl
         end
 
         function self = set.Type(self, type)
-            validateattributes(type, {'PropertyType'}, {'scalar'});
+            validateattributes(type, {'uiextras.jide.PropertyType'}, {'scalar'});
             self.Type = type;
         end
-        
+
         function item = GetItemAsString(self)
-            validateattributes(self, {'MatrixEditor'}, {'scalar'});
+            validateattributes(self, {'uiextras.jide.MatrixEditor'}, {'scalar'});
             matrix = self.Matrix;
             if self.MatrixTranspose
                 matrix = transpose(matrix);
@@ -146,7 +146,7 @@ classdef MatrixEditor < UIControl
         % Input arguments:
         % obj:
         %    a javax.swing.table.DefaultTableModel instance
-            h = findobjuser(@(userdata) userdata.JideTableModel == obj, '__MatrixEditor__');  % find which HGO contains the object for which the callback is executing
+            h = uiextras.jide.findobjuser(@(userdata) userdata.JideTableModel == obj, '__MatrixEditor__');  % find which HGO contains the object for which the callback is executing
             self = get(h, 'UserData');
         end
     end
@@ -158,10 +158,10 @@ classdef MatrixEditor < UIControl
             if javarow < 0 || javacol < 0 || event.getType() ~= javax.swing.event.TableModelEvent.UPDATE
                 return;  % no selection
             end
-            self = MatrixEditor.FindEditor(source);
+            self = uiextras.jide.MatrixEditor.FindEditor(source);
             row = javarow + 1;
             col = javacol + 1;
-            
+
             entryvalue = source.getValueAt(javarow, javacol);
             value = entryvalue;  % represented as-is by default
             if ischar(entryvalue)  % represented as text
@@ -200,7 +200,7 @@ classdef MatrixEditor < UIControl
                 end
             end
         end
-    end        
+    end
     methods (Access = private)
         function self = OnMatrixMenuClicked(self, source, event) %#ok<INUSD>
         % Fired when the Matrix menu (or the context menu) is to be shown.
@@ -235,11 +235,11 @@ classdef MatrixEditor < UIControl
             set(self.Menu.RemoveColumn, 'Enable', remcolstate);
             set(self.Menu.RemoveRow, 'Enable', remrowstate);
         end
-        
+
         function self = OnShowTranspose(self, source, event) %#ok<INUSD>
             self.Transpose = ~self.Transpose;  % call setter method
         end
-        
+
         function self = OnAddColumnBefore(self, source, event) %#ok<INUSD>
             index = self.GetSelectedColumn();
             if isempty(index)
@@ -264,7 +264,7 @@ classdef MatrixEditor < UIControl
             end
             self.AddRowAt(index);  % index ranges from 0 to row count-1
         end
-        
+
         function self = OnAddRowAfter(self, source, event) %#ok<INUSD>
             index = self.GetSelectedRow();
             if ~isempty(index)
@@ -273,7 +273,7 @@ classdef MatrixEditor < UIControl
                 self.AddRowAt(size(self.Matrix,1));
             end
         end
-        
+
         function self = OnRemoveColumn(self, source, event) %#ok<INUSD>
             index = self.GetSelectedColumn();  % index ranges from 0 to column count-1
             if isempty(index)
@@ -302,7 +302,7 @@ classdef MatrixEditor < UIControl
             self.JideTableModel.removeRow(index);
             self.JideTable.repaint();
         end
-        
+
         function index = GetSelectedColumn(self)
         % Returns the currently selected column.
         %
@@ -314,7 +314,7 @@ classdef MatrixEditor < UIControl
                 index = [];
             end
         end
-        
+
         function index = GetSelectedRow(self)
         % Returns the currently selected row.
         %
@@ -354,7 +354,7 @@ classdef MatrixEditor < UIControl
             self.JideTableModel.setColumnCount(size(matrix,2));
             self.JideTable.repaint();
         end
-        
+
         function self = AddRowAt(self, index)
         % Add new row at the specified index.
         % Items whose index is greater than the specified index are shifted

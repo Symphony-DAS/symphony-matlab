@@ -106,7 +106,7 @@ classdef ExperimentView < symphonyui.ui.View
                 createLabeledPropertyGrid(sourceLayout, 'Properties:', [sourceLabelSize -1]);
             set(obj.sourceCard.addSourcePropertyButton, 'Callback', @(h,d)notify(obj, 'AddSourceProperty'));
             set(obj.sourceCard.removeSourcePropertyButton, 'Callback', @(h,d)notify(obj, 'RemoveSourceProperty'));
-            
+
             set(sourceLayout, 'Sizes', [25 120]);
 
             % Epoch group card.
@@ -127,7 +127,7 @@ classdef ExperimentView < symphonyui.ui.View
                 'TooltipString', 'View Source', ...
                 'Callback', @(h,d)notify(obj, 'ViewEpochGroupSource'));
             set(l, 'Sizes', [epochGroupLabelSize -1 30]);
-            
+
             set(epochGroupLayout, 'Sizes', [25 25 25]);
 
             % Epoch card.
@@ -308,7 +308,7 @@ classdef ExperimentView < symphonyui.ui.View
         function enableEpochGroupSource(obj, tf)
             set(obj.epochGroupCard.sourceField, 'Enable', symphonyui.util.onOff(tf));
         end
-        
+
         function s = getEpochGroupSource(obj)
             s = get(obj.epochGroupCard.sourceField, 'String');
         end
@@ -332,12 +332,12 @@ classdef ExperimentView < symphonyui.ui.View
         function setSourceLabel(obj, l)
             set(obj.sourceCard.labelField, 'String', l);
         end
-        
+
         function setSourceProperties(obj, propertyMap)
             properties = mapToFields(propertyMap);
             set(obj.sourceCard.propertyGrid, 'Properties', properties);
         end
-        
+
         function p = getSelectedSourceProperty(obj)
             p = obj.sourceCard.propertyGrid.GetSelectedProperty();
         end
@@ -347,7 +347,7 @@ classdef ExperimentView < symphonyui.ui.View
 end
 
 function fields = mapToFields(map)
-    fields = PropertyGridField.empty(0, 1);
+    fields = uiextras.jide.PropertyGridField.empty(0, 1);
     keys = map.keys;
     if isempty(keys)
         return;
@@ -356,7 +356,7 @@ function fields = mapToFields(map)
     for i = 1:numel(keys)
         k = keys{i};
 
-        f = PropertyGridField(k, map(k));
+        f = uiextras.jide.PropertyGridField(k, map(k));
         fields(end + 1) = f; %#ok<AGROW>
     end
 end
