@@ -9,19 +9,15 @@ function main()
     
     experimentFactory = ExperimentFactory();
     
-    rigRepository = DiscoverableRepository('symphonyui.core.Rig');
-    rigRepository.setSearchPaths([ ...
-        fullfile(App.getRootPath(), '+symphonyui', '+infra', '+nulls'), ...
-        config.get(Settings.GENERAL_RIG_SEARCH_PATH)]);
-    rigRepository.loadAll();
+    rigDescriptorRepository = ClassDescriptorRepository('symphonyui.core.Rig');
+    rigDescriptorRepository.setSearchPaths(config.get(Settings.GENERAL_RIG_SEARCH_PATH));
+    rigDescriptorRepository.loadAll();
     
-    protocolRepository = DiscoverableRepository('symphonyui.core.Protocol');
-    protocolRepository.setSearchPaths([ ...
-        fullfile(App.getRootPath(), '+symphonyui', '+infra', '+nulls'), ...    
-        config.get(Settings.GENERAL_PROTOCOL_SEARCH_PATH)]);
-    protocolRepository.loadAll();
+    protocolDescriptorRepository = ClassDescriptorRepository('symphonyui.core.Protocol');
+    protocolDescriptorRepository.setSearchPaths(config.get(Settings.GENERAL_PROTOCOL_SEARCH_PATH));
+    protocolDescriptorRepository.loadAll();
     
-    acquisitionService = AcquisitionService(experimentFactory, rigRepository, protocolRepository);
+    acquisitionService = AcquisitionService(experimentFactory, rigDescriptorRepository, protocolDescriptorRepository);
     
     app = App(config);
     

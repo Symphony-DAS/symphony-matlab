@@ -1,8 +1,4 @@
-classdef DiscoverableRepository < handle
-
-    events (NotifyAccess = private)
-        LoadedAll
-    end
+classdef ClassDescriptorRepository < handle
 
     properties (Access = private)
         subtype
@@ -11,8 +7,8 @@ classdef DiscoverableRepository < handle
     end
 
     methods
-
-        function obj = DiscoverableRepository(subtype)
+        
+        function obj = ClassDescriptorRepository(subtype)
             obj.subtype = subtype;
         end
 
@@ -47,19 +43,13 @@ classdef DiscoverableRepository < handle
                     obj.load(classNames{i});
                 end
             end
-
-            notify(obj, 'LoadedAll');
         end
 
         function load(obj, className)
-            constructor = str2func(className);
-            Discoverable = constructor();
-            id = Discoverable.displayName;
-            if obj.objects.isKey(id)
-                id = [id ' (' className ')'];
-            end
-            Discoverable.setId(id);
-            obj.objects(id) = Discoverable;
+            clazz = meta.class.fromName(className);
+            descriptor.id = clazz.Name;
+            descriptor.class = clazz.Name;
+            obj.objects(descriptor.id) = descriptor;
         end
 
     end

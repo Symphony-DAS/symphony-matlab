@@ -1,20 +1,14 @@
-% An Observer must explicitly be deleted inorder to avoid a memory leak.
-
-classdef (Abstract) Observer < handle
+classdef EventManager < handle
     
-    properties (Access = private)
+    properties
         listeners
     end
     
     methods
         
-        function delete(obj)
-            obj.removeAllListeners();
+        function obj = EventManager()
+            obj.listeners = {};
         end
-        
-    end
-    
-    methods (Access = protected)
         
         function l = addListener(obj, varargin)
             l = addlistener(varargin{:});
@@ -32,6 +26,10 @@ classdef (Abstract) Observer < handle
                 delete(obj.listeners{1});
                 obj.listeners(1) = [];
             end
+        end
+        
+        function delete(obj)
+            obj.removeAllListeners();
         end
         
     end

@@ -20,7 +20,7 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
         
         function onGoing(obj)
             obj.populateRigList();
-            obj.view.setSelectedRig(obj.acquisitionService.getCurrentRig().id);
+            obj.view.setSelectedRig(obj.acquisitionService.getCurrentRigId());
         end
         
         function onBind(obj)
@@ -51,16 +51,14 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceSelectedRig(obj, ~, ~)
-            obj.view.setSelectedRig(obj.acquisitionService.getCurrentRig().id);
+            obj.view.setSelectedRig(obj.acquisitionService.getCurrentRigId());
         end
         
         function onViewSelectedOk(obj, ~, ~)
             obj.view.update();
             
             try
-                obj.acquisitionService.getCurrentRig().close();
                 obj.acquisitionService.selectRig(obj.view.getSelectedRig());
-                obj.acquisitionService.getCurrentRig().initialize();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
