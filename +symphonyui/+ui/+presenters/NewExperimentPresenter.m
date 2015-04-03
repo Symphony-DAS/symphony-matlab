@@ -22,10 +22,6 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             obj.populateFromConfig();
         end
         
-        function onGo(obj)
-            obj.view.requestPurposeFocus();
-        end
-        
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
@@ -75,10 +71,9 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             
             name = obj.view.getName();            
             location = obj.view.getLocation();
-            purpose = obj.view.getPurpose();
             
             try
-                obj.acquisitionService.createExperiment(name, location, purpose);
+                obj.acquisitionService.createExperiment(name, location);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

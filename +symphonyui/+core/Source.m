@@ -1,4 +1,4 @@
-classdef Source < symphonyui.core.Entity
+classdef Source < handle
     
     properties (Hidden)
         id

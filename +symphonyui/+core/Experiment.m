@@ -26,11 +26,10 @@ classdef Experiment < handle
     
     methods
         
-        function obj = Experiment(name, location, purpose)
+        function obj = Experiment(name, location)
             obj.id = char(java.util.UUID.randomUUID);
             obj.name = name;
             obj.location = location;
-            obj.purpose = purpose;
             obj.epochGroups = symphonyui.core.EpochGroup.empty(0, 1);
             obj.sources = symphonyui.core.Source.empty(0, 1);
             obj.notes = symphonyui.core.Note.empty(0, 1);

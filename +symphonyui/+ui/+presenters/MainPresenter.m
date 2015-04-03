@@ -301,7 +301,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function updateViewState(obj)
             import symphonyui.core.RigState;
             
-            hasExperiment = ~isempty(obj.acquisitionService.getCurrentExperiment());
+            hasExperiment = obj.acquisitionService.hasCurrentExperiment();
             canEndEpochGroup = hasExperiment && obj.acquisitionService.getCurrentExperiment().canEndEpochGroup();
             canRecordEpochs = hasExperiment && obj.acquisitionService.getCurrentExperiment().canRecordEpochs();
             isRigValid = obj.acquisitionService.getCurrentRig().isValid();
