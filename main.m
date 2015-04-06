@@ -21,9 +21,6 @@ function main()
     
     app = App(config);
     
-    rigPresenter = symphonyui.ui.presenters.SelectRigPresenter(acquisitionService, app);
-    rigPresenter.goWaitStop();
-    
     mainPresenter = symphonyui.ui.presenters.MainPresenter(acquisitionService, app);
     mainPresenter.go();
 end

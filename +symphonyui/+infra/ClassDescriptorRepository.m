@@ -44,10 +44,11 @@ classdef ClassDescriptorRepository < handle
                 end
             end
         end
-
+        
         function load(obj, className)
             clazz = meta.class.fromName(className);
-            descriptor.id = clazz.Name;
+            split = strsplit(clazz.Name, '.');
+            descriptor.id = humanize(split{end});
             descriptor.class = clazz.Name;
             obj.objects(descriptor.id) = descriptor;
         end
@@ -77,8 +78,15 @@ function names = discover(type, paths)
             if ~any(strcmp(super, type))
                 continue;
             end
-
+            
             names{end + 1} = className;
         end
     end
+end
+
+function n = humanize(n)
+    n = regexprep(n, '([A-Z][a-z]+)', ' $1');
+    n = regexprep(n, '([A-Z][A-Z]+)', ' $1');
+    n = regexprep(n, '([^A-Za-z ]+)', ' $1');
+    n = strtrim(n);
 end
