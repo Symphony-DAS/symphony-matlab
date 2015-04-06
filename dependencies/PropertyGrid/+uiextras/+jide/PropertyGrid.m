@@ -50,6 +50,8 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
         Callback;
         % Is the grid enabled?
         Enable;
+        % Show description pane?
+        ShowDescription;
     end
     properties (Access = private)
         % A matlab.ui.container.internal.JavaWrapper.
@@ -95,6 +97,7 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
             self.Table = handle(uiextras.jide.objectEDT('com.jidesoft.grid.PropertyTable'), 'CallbackProperties');  % property grid (without table model)
             self.Pane = uiextras.jide.objectEDT('com.jidesoft.grid.PropertyPane', self.Table);  % property pane (with icons at top and help panel at bottom)
             self.Pane.setShowToolBar(false);
+            self.Pane.setShowDescription(false);
 
             pixelpos = getpixelposition(parent);
             [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], parent); %#ok<ASGLU>
@@ -155,7 +158,6 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
 
             % set JIDE table model to property table
             self.Table.setModel(model);
-            self.Pane.setShowDescription(properties.HasDescription());
 
             % wire property change event hook
             set(model, 'PropertyChangeCallback', @self.OnPropertyChange);
@@ -209,6 +211,14 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
 
         function set.Enable(self, tf)
             self.Table.setEnabled(tf);
+        end
+        
+        function tf = get.ShowDescription(self)
+            tf = self.Pane.getShowDescription();
+        end
+        
+        function set.ShowDescription(self, tf)
+            self.Pane.setShowDescription(tf);
         end
 
         function self = Bind(self, item, properties)
