@@ -1,10 +1,5 @@
 classdef NullRig < symphonyui.core.Rig
 
-    properties (Constant)
-        displayName = '(None)'
-        version = 1
-    end
-
     methods
 
         function setup(obj) %#ok<MANU>

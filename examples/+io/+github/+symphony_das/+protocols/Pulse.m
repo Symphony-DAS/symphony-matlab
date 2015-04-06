@@ -1,10 +1,5 @@
 classdef Pulse < symphonyui.core.Protocol
     
-    properties (Constant)
-        displayName = 'Example Pulse'
-        version = 1
-    end
-    
     properties
         amp                             % Output device
         preTime = 50                    % Pulse leading duration (ms)
@@ -17,20 +12,6 @@ classdef Pulse < symphonyui.core.Protocol
     end
     
     methods
-        
-        function p = getPropertyDescriptor(obj, name)
-            p = uiextras.jide.PropertyDescriptor(name);
-            switch name
-                case {'displayName', 'version'}
-                    p.Hidden = obj.preTime > 60;
-                case 'amp'
-                    %p.Domain = {'hi', 'wow'};
-                    p.Category = num2str(obj.preTime);
-                case {'preTime', 'tailTime'}
-                    p.Category = 'Apple';
-                    p.Domain = [50 70];
-            end
-        end
         
     end
     

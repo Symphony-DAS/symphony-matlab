@@ -1,10 +1,5 @@
 classdef Test < symphonyui.core.Protocol
     
-    properties (Constant)
-        displayName = 'Test'
-        version = 1
-    end
-    
     properties
         % This is pretime
         preTime
