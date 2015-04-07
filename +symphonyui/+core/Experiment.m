@@ -4,20 +4,25 @@ classdef Experiment < handle
         Opened
         Closed
         AddedSource
-        ChangedSourceProperties
         BeganEpochGroup
         EndedEpochGroup
         RecordedEpoch
         AddedNote
     end
     
-    properties
-        id
+    properties (SetAccess = private)
         name
         location
-        purpose
         startTime
         endTime
+    end
+    
+    properties
+        purpose
+    end
+    
+    properties (SetAccess = private, Hidden)
+        id
         epochGroups
         currentEpochGroup
         sources
@@ -27,9 +32,10 @@ classdef Experiment < handle
     methods
         
         function obj = Experiment(name, location)
-            obj.id = char(java.util.UUID.randomUUID);
             obj.name = name;
             obj.location = location;
+            obj.purpose = '';
+            obj.id = fullfile(obj.location, obj.name);
             obj.epochGroups = symphonyui.core.EpochGroup.empty(0, 1);
             obj.sources = symphonyui.core.Source.empty(0, 1);
             obj.notes = symphonyui.core.Note.empty(0, 1);
@@ -45,12 +51,16 @@ classdef Experiment < handle
             notify(obj, 'Closed');
         end
         
-        function l = getFlatSourceList(obj)
-            l = getFlatSourceListHelper(obj.sources, symphonyui.core.Source.empty(0, 1));
+        function i = getAllSourceIds(obj)
+            i = {};
+            list = createFlatList(obj.sources, symphonyui.core.Source.empty(0, 1));
+            for k = 1:numel(list)
+                i{k} = list(k).id; %#ok<AGROW>
+            end
         end
         
         function s = getSource(obj, id)
-            list = obj.getFlatSourceList();
+            list = createFlatList(obj.sources, symphonyui.core.Source.empty(0, 1));
             s = list(arrayfun(@(e)strcmp(e.id, id), list));
         end
         
@@ -60,7 +70,7 @@ classdef Experiment < handle
             else
                 parent = obj.getSource(parentId);
             end
-            source = symphonyui.core.Source(label, parent);
+            source = symphonyui.core.Source(char(java.util.UUID.randomUUID), label, parent);
             if isempty(parent)
                 obj.sources(end + 1) = source;
             else
@@ -69,16 +79,17 @@ classdef Experiment < handle
             notify(obj, 'AddedSource', symphonyui.core.SourceEventData(source));
         end
         
-        function putSourceProperty(obj, sourceId, name, value)
-            source = obj.getSource(sourceId);
-            source.putProperty(name, value);
-            notify(obj, 'ChangedSourceProperties', symphonyui.core.SourceEventData(source));
+        function i = getAllEpochGroupIds(obj)
+            i = {};
+            list = createFlatList(obj.epochGroups, symphonyui.core.EpochGroup.empty(0, 1));
+            for k = 1:numel(list)
+                i{k} = list(k).id; %#ok<AGROW>
+            end
         end
         
-        function removeSourceProperty(obj, sourceId, name)
-            source = obj.getSource(sourceId);
-            source.removeProperty(name);
-            notify(obj, 'ChangedSourceProperties', symphonyui.core.SourceEventData(source));
+        function e = getEpochGroup(obj, id)
+            list = createFlatList(obj.epochGroups, symphonyui.core.EpochGroup.empty(0, 1));
+            e = list(arrayfun(@(e)strcmp(e.id, id), list));
         end
         
         function beginEpochGroup(obj, label, sourceId)
@@ -89,7 +100,7 @@ classdef Experiment < handle
             disp(['Begin Epoch Group: ' label]);
             source = obj.getSource(sourceId);
             parent = obj.currentEpochGroup;
-            group = symphonyui.core.EpochGroup(label, source, parent);
+            group = symphonyui.core.EpochGroup(char(java.util.UUID.randomUUID), label, source, parent);
             if isempty(parent)
                 obj.epochGroups(end + 1) = group;
             else
@@ -129,12 +140,12 @@ classdef Experiment < handle
     
 end
 
-function list = getFlatSourceListHelper(sources, list)
-    for i = 1:numel(sources)
-        list(end + 1) = sources(i); %#ok<AGROW>
+function list = createFlatList(items, list)
+    for i = 1:numel(items)
+        list(end + 1) = items(i); %#ok<AGROW>
 
-        children = sources(i).children;
-        list = getFlatSourceListHelper(children, list);
+        children = items(i).children;
+        list = createFlatList(children, list);
     end
 end
 

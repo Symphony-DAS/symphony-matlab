@@ -83,12 +83,8 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         end
         
         function populateSourceList(obj)
-            sourceList = {};
-            sources = obj.experiment.getFlatSourceList();
-            for i = 1:numel(sources)
-                sourceList{end + 1} = sources(i).id; %#ok<AGROW>
-            end
-            obj.view.setSourceList(sourceList);
+            list = obj.experiment.getAllSourceIds();
+            obj.view.setSourceList(list);
         end
         
         function onViewSelectedBegin(obj, ~, ~)

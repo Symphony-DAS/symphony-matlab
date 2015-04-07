@@ -165,7 +165,7 @@ classdef AcquisitionService < symphonyui.infra.mixin.Observer
         %% Acquisition
         
         function record(obj)
-            if obj.hasCurrentExperiment()
+            if ~obj.hasCurrentExperiment()
                 error('No experiment open');
             end
             rig = obj.getCurrentRig();

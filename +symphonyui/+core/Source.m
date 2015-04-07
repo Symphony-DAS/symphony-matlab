@@ -1,18 +1,21 @@
 classdef Source < handle
     
-    properties (Hidden)
-        id
+    properties (SetAccess = private)
         label
+    end
+    
+    properties (SetAccess = private, Hidden)
+        id
         parent
         children
     end
     
-    methods
+    methods (Access = ?symphonyui.core.Experiment)
         
-        function obj = Source()
-            obj.id = char(java.util.UUID.randomUUID);
-%             obj.label = label;
-%             obj.parent = parent;
+        function obj = Source(id, label, parent)
+            obj.id = id;
+            obj.label = label;
+            obj.parent = parent;
             obj.children = symphonyui.core.Source.empty(0, 1);
         end
         

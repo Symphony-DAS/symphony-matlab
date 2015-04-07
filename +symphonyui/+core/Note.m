@@ -17,6 +17,15 @@ classdef Note < handle
             obj.date = date;
         end
         
+        function c = char(obj)
+            if isempty(obj)
+                c = '';
+                return;
+            end
+            c = sprintf('%s, ', obj.text);
+            c = c(1:end-2);
+        end
+        
     end
     
 end

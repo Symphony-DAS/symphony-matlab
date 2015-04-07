@@ -59,12 +59,8 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
         end
         
         function populateParentList(obj)
-            sourceList = {[obj.experiment.name ' (Experiment)']};
-            sources = obj.experiment.getFlatSourceList();
-            for i = 1:numel(sources)
-                sourceList{end + 1} = sources(i).id; %#ok<AGROW>
-            end
-            obj.view.setParentList(sourceList);
+            list = [{[obj.experiment.name ' (Experiment)']}, obj.experiment.getAllSourceIds()];
+            obj.view.setParentList(list);
         end
         
         function onViewSelectedAdd(obj, ~, ~)

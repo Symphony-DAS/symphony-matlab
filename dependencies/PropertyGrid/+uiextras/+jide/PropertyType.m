@@ -495,7 +495,11 @@ classdef PropertyType
             elseif size(value,2) == 1
                 shape = 'column';
             elseif size(value,1) == 0 && size(value,2) == 0
-                shape = 'empty';  % no dimensions
+                if ischar(value)
+                    shape = 'row';
+                else
+                    shape = 'empty';  % no dimensions
+                end
             else
                 shape = 'matrix';
             end

@@ -1,26 +1,25 @@
 classdef EpochGroup < handle
     
-    properties
+    properties (SetAccess = private)
         id
         label
         startTime
         endTime
-        source
         keywords
         attributes
+    end
+    
+    properties (Hidden)
         epochs
-        
+        source
         parent
         children
     end
     
-    methods
+    methods (Access = ?symphonyui.core.Experiment)
         
-        function obj = EpochGroup(label, source, parent)
-            if nargin < 3
-                parent = [];
-            end
-            obj.id = char(java.util.UUID.randomUUID);
+        function obj = EpochGroup(id, label, source, parent)
+            obj.id = id;
             obj.parent = parent;
             obj.label = label;
             obj.source = source;

@@ -3,7 +3,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
     properties (Access = private)
         acquisitionService
         experimentPresenter
-        protocolIntrospector
         eventManagers
     end
     
@@ -212,8 +211,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function selectCurrentProtocol(obj)
             obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocolId());
-            protocol = obj.acquisitionService.getCurrentProtocol();
-            obj.protocolIntrospector = uiextras.jide.Introspector(class(protocol));
             obj.populateProtocolProperties();
             obj.updateViewState();
         end
@@ -285,7 +282,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
             protocol = obj.acquisitionService.getCurrentProtocol();
             try
-                properties = obj.protocolIntrospector.CreatePropertyList(protocol);
+                properties = uiextras.jide.PropertyGridField.GenerateFrom(protocol);
             catch x
                 properties = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
