@@ -2,12 +2,23 @@ classdef ExperimentView < symphonyui.ui.View
 
     events
         SelectedNode
+        ViewEpochGroupSource
     end
 
     properties (Access = private)
         experimentTree
-        propertyGrid
+        cardPanel
+        experimentCard
+        sourceCard
+        epochGroupCard
+        epochCard
         idMap
+    end
+
+    properties (Constant)
+        EXPERIMENT_CARD = 1
+        SOURCE_CARD = 2
+        EPOCH_GROUP_CARD = 3
     end
 
     methods
@@ -16,13 +27,13 @@ classdef ExperimentView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(400, 400));
-            
+            set(obj.figureHandle, 'Position', screenCenter(500, 400));
+
             mainLayout = uiextras.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
-            
+
             masterLayout = uiextras.VBox( ...
                 'Parent', mainLayout);
 
@@ -31,15 +42,51 @@ classdef ExperimentView < symphonyui.ui.View
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'SelectionChangeFcn', @(h,d)notify(obj, 'SelectedNode'));
-            
+
             detailLayout = uiextras.VBox( ...
                 'Parent', mainLayout);
 
-            obj.propertyGrid = uiextras.jide.PropertyGrid(detailLayout);
+            obj.cardPanel = uix.CardPanel( ...
+                'Parent', detailLayout);
+
+            % Experiment card.
+            experimentLayout = uiextras.VBox( ...
+                'Parent', obj.cardPanel, ...
+                'Spacing', 7);
+            experimentLabelSize = 60;
+            obj.experimentCard.nameField = createLabeledTextField(experimentLayout, 'Name:', experimentLabelSize, 'Enable', 'off');
+            obj.experimentCard.locationField = createLabeledTextField(experimentLayout, 'Location:', experimentLabelSize, 'Enable', 'off');
+            obj.experimentCard.startTimeField = createLabeledTextField(experimentLayout, 'Start time:', experimentLabelSize, 'Enable', 'off');
+            obj.experimentCard.purposeField = createLabeledTextField(experimentLayout, 'Purpose:', experimentLabelSize, 'Enable', 'off');
+            set(experimentLayout, 'Sizes', [25 25 25 25]);
+
+            % Source card.
+            sourceLayout = uiextras.VBox( ...
+                'Parent', obj.cardPanel, ...
+                'Spacing', 7);
+            sourceLabelSize = 60;
+            obj.sourceCard.labelField = createLabeledTextField(sourceLayout, 'Label:', sourceLabelSize, 'Enable', 'off');
+            set(sourceLayout, 'Sizes', [25]);
+
+            % Epoch group card.
+            epochGroupLayout = uiextras.VBox( ...
+                'Parent', obj.cardPanel, ...
+                'Spacing', 7);
+            epochGroupLabelSize = 60;
+            obj.epochGroupCard.labelField = createLabeledTextField(epochGroupLayout, 'Label:', epochGroupLabelSize, 'Enable', 'off');
+            obj.epochGroupCard.startTimeField = createLabeledTextField(epochGroupLayout, 'Start time:', epochGroupLabelSize, 'Enable', 'off');
+            obj.epochGroupCard.sourceField = createLabeledTextFieldWithButton(epochGroupLayout, 'Source:', epochGroupLabelSize, @(h,d)notify(obj, 'ViewEpochGroupSource'), 'Enable', 'off');
+            set(epochGroupLayout, 'Sizes', [25 25 25]);
+
+            set(obj.cardPanel, 'Selection', 1);
+
+            set(mainLayout, 'Sizes', [-1 -2]);
 
             obj.idMap = containers.Map();
-            
-            set(mainLayout, 'Sizes', [-1 -2]);
+        end
+
+        function setSelectedCard(obj, index)
+            set(obj.cardPanel, 'Selection', index);
         end
 
         function setExperimentNode(obj, name, id)
@@ -109,10 +156,6 @@ classdef ExperimentView < symphonyui.ui.View
         function setSelectedNode(obj, id)
             node = obj.idMap(id);
             obj.experimentTree.SelectedNodes = node;
-        end
-        
-        function setProperties(obj, properties)
-            set(obj.propertyGrid, 'Properties', properties);
         end
 
     end

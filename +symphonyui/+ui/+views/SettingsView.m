@@ -48,8 +48,8 @@ classdef SettingsView < symphonyui.ui.View
             generalLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
-            obj.generalCard.rigSearchPathsField = createLabeledTextField(generalLayout, 'Rig search paths:', [generalLabelSize -1]);
-            obj.generalCard.protocolSearchPathsField = createLabeledTextField(generalLayout, 'Protocol search paths:', [generalLabelSize -1]);
+            obj.generalCard.rigSearchPathsField = createLabeledTextField(generalLayout, 'Rig search paths:', generalLabelSize);
+            obj.generalCard.protocolSearchPathsField = createLabeledTextField(generalLayout, 'Protocol search paths:', generalLabelSize);
             set(generalLayout, 'Sizes', [25 25]);
 
             % Experiments card.
@@ -57,9 +57,9 @@ classdef SettingsView < symphonyui.ui.View
             experimentLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
-            obj.experimentCard.defaultNameField = createLabeledTextField(experimentLayout, 'Default name:', [experimentLabelSize -1]);
-            obj.experimentCard.defaultPurposeField = createLabeledTextField(experimentLayout, 'Default purpose:', [experimentLabelSize -1]);
-            obj.experimentCard.defaultLocationField = createLabeledTextField(experimentLayout, 'Default location:', [experimentLabelSize -1]);
+            obj.experimentCard.defaultNameField = createLabeledTextField(experimentLayout, 'Default name:', experimentLabelSize);
+            obj.experimentCard.defaultPurposeField = createLabeledTextField(experimentLayout, 'Default purpose:', experimentLabelSize);
+            obj.experimentCard.defaultLocationField = createLabeledTextField(experimentLayout, 'Default location:', experimentLabelSize);
             set(experimentLayout, 'Sizes', [25 25 25]);
 
             % Epoch group card.
@@ -67,12 +67,12 @@ classdef SettingsView < symphonyui.ui.View
             epochGroupLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
-            obj.epochGroupCard.labelListField = createLabeledTextField(epochGroupLayout, 'Label list:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.recordingListField = createLabeledTextField(epochGroupLayout, 'Recording list:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.defaultKeywordsField = createLabeledTextField(epochGroupLayout, 'Default keywords:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.externalSolutionListField = createLabeledTextField(epochGroupLayout, 'External solution list:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.internalSolutionListField = createLabeledTextField(epochGroupLayout, 'Internal solution list:', [epochGroupLabelSize -1]);
-            obj.epochGroupCard.otherListField = createLabeledTextField(epochGroupLayout, 'Other list:', [epochGroupLabelSize -1]);
+            obj.epochGroupCard.labelListField = createLabeledTextField(epochGroupLayout, 'Label list:', epochGroupLabelSize);
+            obj.epochGroupCard.recordingListField = createLabeledTextField(epochGroupLayout, 'Recording list:', epochGroupLabelSize);
+            obj.epochGroupCard.defaultKeywordsField = createLabeledTextField(epochGroupLayout, 'Default keywords:', epochGroupLabelSize);
+            obj.epochGroupCard.externalSolutionListField = createLabeledTextField(epochGroupLayout, 'External solution list:', epochGroupLabelSize);
+            obj.epochGroupCard.internalSolutionListField = createLabeledTextField(epochGroupLayout, 'Internal solution list:', epochGroupLabelSize);
+            obj.epochGroupCard.otherListField = createLabeledTextField(epochGroupLayout, 'Other list:', epochGroupLabelSize);
             set(epochGroupLayout, 'Sizes', [25 25 25 25 25 25]);
 
             % Sources card.
@@ -115,7 +115,7 @@ classdef SettingsView < symphonyui.ui.View
         function n = getSelectedNode(obj)
             n = symphonyui.ui.util.getSelectedValue(obj.nodeList);
         end
-        
+
         function l = getCardList(obj)
             l = get(obj.cardPanel, 'UserData');
         end

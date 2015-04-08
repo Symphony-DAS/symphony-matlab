@@ -33,8 +33,13 @@ classdef View < handle
                 set(obj.figureHandle, 'DefaultUicontrolFontName', 'Helvetica Neue');
                 set(obj.figureHandle, 'DefaultUicontrolFontSize', 12);
             end
-
-            obj.createUi();
+            
+            try
+                obj.createUi();
+            catch x
+                delete(obj.figureHandle);
+                rethrow(x);
+            end
         end
 
         function delete(obj)

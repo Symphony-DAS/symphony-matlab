@@ -60,7 +60,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function selectExperiment(obj, experiment)
             obj.view.setSelectedNode(obj.getNodeId(experiment));
-            obj.populateProperties(experiment);
+            obj.view.setSelectedCard(obj.view.EXPERIMENT_CARD);
         end
         
         function onExperimentAddedSource(obj, ~, data)
@@ -86,18 +86,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function selectSource(obj, source)
             obj.view.setSelectedNode(obj.getNodeId(source));
-            obj.populateProperties(source);
-        end
-        
-        function populateProperties(obj, entity)
-            try
-                properties = uiextras.jide.PropertyGridField.GenerateFrom(entity);
-            catch x
-                properties = uiextras.jide.PropertyGridField.empty(0, 1);
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-            end
-            obj.view.setProperties(properties);
+            obj.view.setSelectedCard(obj.view.SOURCE_CARD);
         end
         
         function onExperimentBeganEpochGroup(obj, ~, data)
@@ -124,7 +113,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function selectEpochGroup(obj, group)
             obj.view.setSelectedNode(obj.getNodeId(group));
-            obj.populateProperties(group);
+            obj.view.setSelectedCard(obj.view.EPOCH_GROUP_CARD);
         end
         
         function onExperimentEndedEpochGroup(obj, ~, data)
@@ -139,7 +128,6 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function selectEpoch(obj, epoch)
             obj.view.setSelectedNode(obj.getNodeId(epoch));
-            obj.populateProperties(epoch);
         end
         
         function onViewSelectedNode(obj, ~, ~)
