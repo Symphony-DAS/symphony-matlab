@@ -106,7 +106,7 @@
       <file>${PROJECT_ROOT}\+symphonyui\+util\displayNameMap.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+util\fieldsToParameters.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+util\onOff.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+util\packageName.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+util\.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+util\parametersToFields.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+util\screenCenter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+util\search.m</file>

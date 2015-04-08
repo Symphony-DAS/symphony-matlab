@@ -78,7 +78,7 @@
       <showModules />
       <showLibraryContents />
       <hideEmptyPackages />
-      <abbreviatePackageNames />
+      <abbreviates />
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />

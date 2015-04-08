@@ -18,7 +18,7 @@ classdef AddSourceView < symphonyui.ui.View
             import symphonyui.ui.util.*;
             
             set(obj.figureHandle, 'Name', 'Add Source');
-            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(300, 111));
+            set(obj.figureHandle, 'Position', screenCenter(300, 111));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...

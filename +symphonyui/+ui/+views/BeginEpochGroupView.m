@@ -21,7 +21,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             import symphonyui.ui.util.*;
             
             set(obj.figureHandle, 'Name', 'Begin Epoch Group');
-            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(300, 143));
+            set(obj.figureHandle, 'Position', screenCenter(300, 143));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...

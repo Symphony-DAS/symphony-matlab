@@ -16,7 +16,7 @@ classdef ExperimentView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Experiment');
-            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(400, 400));
+            set(obj.figureHandle, 'Position', screenCenter(400, 400));
             
             mainLayout = uiextras.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...

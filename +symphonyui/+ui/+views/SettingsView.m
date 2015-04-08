@@ -22,7 +22,7 @@ classdef SettingsView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Settings');
-            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(467, 356));
+            set(obj.figureHandle, 'Position', screenCenter(467, 356));
             set(obj.figureHandle, 'WindowStyle', 'modal');
 
             mainLayout = uiextras.VBox( ...

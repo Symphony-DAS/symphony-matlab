@@ -48,7 +48,7 @@ classdef MainView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Symphony');
-            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(300, 260));
+            set(obj.figureHandle, 'Position', screenCenter(300, 260));
 
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
@@ -140,7 +140,7 @@ classdef MainView < symphonyui.ui.View
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'AboutSymphony'));
 
-            iconsUrl = symphonyui.util.pathToUrl(symphonyui.app.App.getIconsPath());
+            iconsUrl = pathToUrl(symphonyui.app.App.getIconsPath());
 
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
@@ -215,51 +215,51 @@ classdef MainView < symphonyui.ui.View
         end
 
         function enableNewExperiment(obj, tf)
-            set(obj.fileMenu.newExperiment, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.fileMenu.newExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableOpenExperiment(obj, tf)
-            set(obj.fileMenu.openExperiment, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.fileMenu.openExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableCloseExperiment(obj, tf)
-            set(obj.fileMenu.closeExperiment, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.fileMenu.closeExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableAddSource(obj, tf)
-            set(obj.experimentMenu.addSource, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.experimentMenu.addSource, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableBeginEpochGroup(obj, tf)
-            set(obj.experimentMenu.beginEpochGroup, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.experimentMenu.beginEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableEndEpochGroup(obj, tf)
-            set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableAddNote(obj, tf)
-            set(obj.experimentMenu.addNote, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.experimentMenu.addNote, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableViewExperiment(obj, tf)
-            set(obj.experimentMenu.viewExperiment, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.experimentMenu.viewExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableSelectRig(obj, tf)
-            set(obj.toolsMenu.selectRig, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.toolsMenu.selectRig, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableViewRig(obj, tf)
-            set(obj.toolsMenu.viewRig, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.toolsMenu.viewRig, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableSettings(obj, tf)
-            set(obj.toolsMenu.settings, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.toolsMenu.settings, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableSelectProtocol(obj, tf)
-            set(obj.protocolDropDown, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.protocolDropDown, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function p = getSelectedProtocol(obj)
@@ -291,25 +291,25 @@ classdef MainView < symphonyui.ui.View
         end
 
         function enableRecord(obj, tf)
-            enable = symphonyui.util.onOff(tf);
+            enable = symphonyui.ui.util.onOff(tf);
             set(obj.acquisitionMenu.record, 'Enable', enable);
             set(obj.recordButton, 'Enable', enable);
         end
 
         function enablePreview(obj, tf)
-            enable = symphonyui.util.onOff(tf);
+            enable = symphonyui.ui.util.onOff(tf);
             set(obj.acquisitionMenu.preview, 'Enable', enable);
             set(obj.previewButton, 'Enable', enable);
         end
 
         function enablePause(obj, tf)
-            enable = symphonyui.util.onOff(tf);
+            enable = symphonyui.ui.util.onOff(tf);
             set(obj.acquisitionMenu.pause, 'Enable', enable);
             set(obj.pauseButton, 'Enable', enable);
         end
 
         function enableStop(obj, tf)
-            enable = symphonyui.util.onOff(tf);
+            enable = symphonyui.ui.util.onOff(tf);
             set(obj.acquisitionMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
         end

@@ -17,7 +17,7 @@ classdef SelectRigView < symphonyui.ui.View
             import symphonyui.ui.util.*;
             
             set(obj.figureHandle, 'Name', 'Select Rig');
-            set(obj.figureHandle, 'Position', symphonyui.util.screenCenter(250, 79));
+            set(obj.figureHandle, 'Position', screenCenter(250, 79));
             set(obj.figureHandle, 'WindowStyle', 'modal');
             
             mainLayout = uiextras.VBox( ...
@@ -70,7 +70,7 @@ classdef SelectRigView < symphonyui.ui.View
         end
         
         function enableOk(obj, tf)
-            set(obj.okButton, 'Enable', symphonyui.util.onOff(tf));
+            set(obj.okButton, 'Enable', onOff(tf));
         end
         
     end

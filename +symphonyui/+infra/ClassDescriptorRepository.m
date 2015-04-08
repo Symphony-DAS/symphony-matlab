@@ -26,7 +26,7 @@ classdef ClassDescriptorRepository < handle
 
         function setSearchPaths(obj, paths)
             for i = 1:numel(paths)
-                [~, parent] = symphonyui.util.packageName(paths{i});
+                [~, parent] = packageName(paths{i});
                 if exist(parent, 'dir')
                     addpath(parent);
                 end
@@ -61,7 +61,7 @@ function names = discover(type, paths)
     names = {};
 
     for i = 1:numel(paths)
-        package = symphonyui.util.packageName(paths{i});
+        package = packageName(paths{i});
         if ~isempty(package)
             package = [package '.']; %#ok<AGROW>
         end
@@ -89,4 +89,16 @@ function n = humanize(n)
     n = regexprep(n, '([A-Z][A-Z]+)', ' $1');
     n = regexprep(n, '([^A-Za-z ]+)', ' $1');
     n = strtrim(n);
+end
+
+function [name, parentPath] = packageName(path)
+    if isempty(path)
+        name = [];
+        parentPath = [];
+        return;
+    end
+    [parentPath, name] = strtok(path, '+');
+    name = regexp(name, '\+(\w)+', 'tokens');
+    name = strcat([name{:}], [repmat({'.'},1,numel(name)-1) {''}]);
+    name = [name{:}];
 end
