@@ -1,14 +1,13 @@
 classdef BeginEpochGroupView < symphonyui.ui.View
 
     events
-        AddSource
         Begin
         Cancel
     end
 
     properties (Access = private)
         parentField
-        labelDropDown
+        labelField
         sourceDropDown
         beginButton
         cancelButton
@@ -33,8 +32,8 @@ classdef BeginEpochGroupView < symphonyui.ui.View
                 'Spacing', 7);
             groupLabelSize = 40;
             obj.parentField = createLabeledTextField(groupLayout, 'Parent:', groupLabelSize, 'Enable', 'off');
-            obj.labelDropDown = createLabeledDropDownMenu(groupLayout, 'Label:', groupLabelSize);
-            obj.sourceDropDown = createLabeledDropDownMenuWithButton(groupLayout, 'Source:', groupLabelSize, @(h,d)notify(obj, 'AddSource'));
+            obj.labelField = createLabeledTextField(groupLayout, 'Label:', groupLabelSize);
+            obj.sourceDropDown = createLabeledDropDownMenu(groupLayout, 'Source:', groupLabelSize);
             set(groupLayout, 'Sizes', [25 25 25]);
 
             % Begin/Cancel controls.
@@ -67,12 +66,12 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             set(obj.parentField, 'String', p);
         end
 
-        function l = getSelectedLabel(obj)
-            l = symphonyui.ui.util.getSelectedValue(obj.labelDropDown);
+        function l = getLabel(obj)
+            l = get(obj.labelField, 'String');
         end
-
-        function setLabelList(obj, l)
-            symphonyui.ui.util.setStringList(obj.labelDropDown, l);
+        
+        function requestLabelFocus(obj)
+            obj.requestFocus(obj.labelField);
         end
 
         function s = getSelectedSource(obj)

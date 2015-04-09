@@ -19,40 +19,22 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj, ~, ~)
-            obj.populateFromConfig();
             obj.populateParent();
             obj.populateSourceList();
             obj.view.setSelectedSource(obj.view.getSourceList{end});
+            obj.view.requestLabelFocus();
         end
         
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
-            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'Begin', @obj.onViewSelectedBegin);
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
-            
-            e = obj.experiment;
-            obj.addListener(e, 'AddedSource', @obj.onExperimentAddedSource);
         end
 
     end
     
     methods (Access = private)
-        
-        function populateFromConfig(obj)
-            import symphonyui.app.Settings;
-            
-            config = obj.app.config;
-            labelList = config.get(Settings.EPOCH_GROUP_LABEL_LIST);
-            try
-                obj.view.setLabelList(labelList());
-            catch x
-                msg = ['Unable to populate view from config: ' x.message];
-                obj.log.debug(msg, x);
-                obj.view.showError(msg);
-            end
-        end
         
         function onViewKeyPress(obj, ~, data)
             switch data.key
@@ -65,21 +47,11 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         
         function populateParent(obj)
             if isempty(obj.experiment.currentEpochGroup)
-                parent = [obj.experiment.name ' (Experiment)'];
+                parent = '(None)';
             else
                 parent = obj.experiment.currentEpochGroup.label;
             end
             obj.view.setParent(parent);
-        end
-        
-        function onViewSelectedAddSource(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.experiment, obj.app);
-            presenter.goWaitStop();
-        end
-        
-        function onExperimentAddedSource(obj, ~, ~)
-            obj.populateSourceList();
-            obj.view.setSelectedSource(obj.view.getSourceList{end});
         end
         
         function populateSourceList(obj)
@@ -90,7 +62,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         function onViewSelectedBegin(obj, ~, ~)
             obj.view.update();
             
-            label = obj.view.getSelectedLabel();
+            label = obj.view.getLabel();
             source = obj.view.getSelectedSource();
             
             try

@@ -20,6 +20,7 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
         
         function onGoing(obj)
             obj.populateFromConfig();
+            obj.view.requestPurposeFocus();
         end
         
         function onBind(obj)
@@ -71,9 +72,10 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             
             name = obj.view.getName();            
             location = obj.view.getLocation();
+            purpose = obj.view.getPurpose();
             
             try
-                obj.acquisitionService.createExperiment(name, location);
+                obj.acquisitionService.createExperiment(name, location, purpose);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

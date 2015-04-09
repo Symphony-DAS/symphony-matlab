@@ -28,12 +28,12 @@ classdef Experiment < handle
     
     methods
         
-        function obj = Experiment(name, location)
+        function obj = Experiment(name, location, purpose)
             import symphonyui.core.*;
             
             obj.name = name;
             obj.location = location;
-            obj.purpose = '';
+            obj.purpose = purpose;
             obj.id = fullfile(obj.location, obj.name);
             obj.sources = Source.empty(0, 1);
             obj.epochGroups = EpochGroup.empty(0, 1);
@@ -68,7 +68,7 @@ classdef Experiment < handle
         
         function addSource(obj, label, parentId)
             if isempty(label)
-                error('Source label cannot be empty');
+                error('Label cannot be empty');
             end
             sourceId = obj.idGenerators.source.generateId(label);
             parent = obj.getSource(parentId);
@@ -95,6 +95,9 @@ classdef Experiment < handle
         end
         
         function beginEpochGroup(obj, label, sourceId)
+            if isempty(label)
+                error('Label cannot be empty');
+            end
             if isempty(sourceId)
                 error('Source cannot be empty');
             end

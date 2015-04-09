@@ -9,6 +9,7 @@ classdef NewExperimentView < symphonyui.ui.View
     properties (Access = private)
         nameField
         locationField
+        purposeField
         openButton
         cancelButton
     end
@@ -19,7 +20,7 @@ classdef NewExperimentView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'New Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(500, 115));
+            set(obj.figureHandle, 'Position', screenCenter(500, 147));
             set(obj.figureHandle, 'WindowStyle', 'modal');
 
             labelSize = 58;
@@ -34,8 +35,9 @@ classdef NewExperimentView < symphonyui.ui.View
 
             obj.nameField = createLabeledTextField(parametersLayout, 'Name:', labelSize);
             obj.locationField = createLabeledTextFieldWithButton(parametersLayout, 'Location:', labelSize, @(h,d)notify(obj, 'BrowseLocation'));
-
-            set(parametersLayout, 'Sizes', [25 25]);
+            obj.purposeField = createLabeledTextField(parametersLayout, 'Purpose:', labelSize);
+            
+            set(parametersLayout, 'Sizes', [25 25 25]);
 
             % Open/Cancel controls.
             controlsLayout = uiextras.HBox( ...
@@ -77,6 +79,14 @@ classdef NewExperimentView < symphonyui.ui.View
 
         function setLocation(obj, l)
             set(obj.locationField, 'String', l);
+        end
+        
+        function p = getPurpose(obj)
+            p = get(obj.purposeField, 'String');
+        end
+        
+        function requestPurposeFocus(obj)
+            obj.requestFocus(obj.purposeField);
         end
 
     end

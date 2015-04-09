@@ -103,7 +103,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
                 parentId = obj.getNodeId(group.parent);
             end
             
-            obj.view.addEpochGroupNode(parentId, group.id, obj.getNodeId(group));
+            obj.view.addEpochGroupNode(parentId, group.label, obj.getNodeId(group));
             
             groups = group.children;
             for i = 1:numel(groups)

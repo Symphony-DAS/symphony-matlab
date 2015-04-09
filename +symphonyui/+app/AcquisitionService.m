@@ -37,11 +37,11 @@ classdef AcquisitionService < handle
 
         %% Experiment
 
-        function createExperiment(obj, name, location)
+        function createExperiment(obj, name, location, purpose)
             if obj.hasCurrentExperiment()
                 error('An experiment is already open');
             end
-            experiment = obj.experimentFactory.create(name, location);
+            experiment = obj.experimentFactory.create(name, location, purpose);
             experiment.open();
             obj.session.experiment = experiment;
             notify(obj, 'OpenedExperiment');
