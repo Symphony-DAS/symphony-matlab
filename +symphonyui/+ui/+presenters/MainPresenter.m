@@ -302,18 +302,20 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function updateViewState(obj)
             import symphonyui.core.RigState;
             
-            hasExperiment = obj.acquisitionService.hasCurrentExperiment();
-            canEndEpochGroup = hasExperiment && obj.acquisitionService.getCurrentExperiment().canEndEpochGroup();
-            canRecordEpochs = hasExperiment && obj.acquisitionService.getCurrentExperiment().canRecordEpochs();
-            isRigValid = obj.acquisitionService.getCurrentRig().isValid();
-            isStopped = obj.acquisitionService.getCurrentRig().state == RigState.STOPPED;
+            experiment = obj.acquisitionService.getCurrentExperiment();
+            rig = obj.acquisitionService.getCurrentRig();
             
-            enableNewExperiment = ~hasExperiment && isStopped && isRigValid;
+            hasExperiment = ~isempty(experiment);
+            hasSource = hasExperiment && ~isempty(experiment.sources);
+            hasCurrentEpochGroup = hasExperiment && ~isempty(experiment.currentEpochGroup);
+            isStopped = rig.state == RigState.STOPPED;
+            
+            enableNewExperiment = ~hasExperiment && isStopped && rig.isValid();
             enableOpenExperiment = enableNewExperiment;
             enableCloseExperiment = hasExperiment && isStopped;
             enableAddSource = hasExperiment;
-            enableBeginEpochGroup = hasExperiment;
-            enableEndEpochGroup = canEndEpochGroup;
+            enableBeginEpochGroup = hasSource;
+            enableEndEpochGroup = hasCurrentEpochGroup;
             enableAddNote = hasExperiment;
             enableViewExperiment = hasExperiment;
             enableSelectRig = ~hasExperiment && isStopped;
@@ -329,15 +331,16 @@ classdef MainPresenter < symphonyui.ui.Presenter
             warning = '';
             status = '';
             
-            switch obj.acquisitionService.getCurrentRig().state
+            canRecord = hasCurrentEpochGroup;
+            switch rig.state
                 case RigState.STOPPED
-                    enableRecord = canRecordEpochs;
+                    enableRecord = canRecord;
                     enablePreview = true;
                 case RigState.STOPPING
                     enableProgressIndicator = true;
                     status = 'Stopping...';
                 case RigState.PAUSED
-                    enableRecord = canRecordEpochs;
+                    enableRecord = canRecord;
                     enablePreview = true;
                     enableStop = true;
                     status = 'Paused';

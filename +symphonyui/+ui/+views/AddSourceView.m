@@ -59,7 +59,11 @@ classdef AddSourceView < symphonyui.ui.View
                 h.setDefaultButton(obj.addButton);
             end
         end
-
+        
+        function enableSelectParent(obj, tf)
+            set(obj.parentDropDown, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
         function p = getSelectedParent(obj)
             p = symphonyui.ui.util.getSelectedValue(obj.parentDropDown);
         end

@@ -21,10 +21,11 @@ classdef Experiment < handle
         epochGroups
         currentEpochGroup
         notes
-        idGenerators
     end
     
-    
+    properties (Access = private)
+        idGenerators
+    end
     
     methods
         
@@ -115,10 +116,6 @@ classdef Experiment < handle
             notify(obj, 'BeganEpochGroup', symphonyui.core.EpochGroupEventData(group));
         end
         
-        function tf = canEndEpochGroup(obj)
-            tf = ~isempty(obj.currentEpochGroup);
-        end
-        
         function endEpochGroup(obj)
             disp(['End Epoch Group: ' obj.currentEpochGroup.label]);
             group = obj.currentEpochGroup;
@@ -129,15 +126,11 @@ classdef Experiment < handle
                 obj.currentEpochGroup = group.parent;
             end
             notify(obj, 'EndedEpochGroup', symphonyui.core.EpochGroupEventData(group));
-        end       
+        end
         
         function addNote(obj, text)
             obj.notes(end + 1) = symphonyui.core.Note(text, now);
             notify(obj, 'AddedNote');
-        end
-        
-        function tf = canRecordEpochs(obj)
-            tf = ~isempty(obj.currentEpochGroup);
         end
         
     end

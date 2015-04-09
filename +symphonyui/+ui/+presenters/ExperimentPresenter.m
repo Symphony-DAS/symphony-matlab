@@ -59,6 +59,10 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function selectExperiment(obj, experiment)
+            obj.view.setExperimentName(experiment.name);
+            obj.view.setExperimentLocation(experiment.location);
+            obj.view.setExperimentStartTime(experiment.startTime);
+            obj.view.setExperimentPurpose(experiment.purpose);
             obj.view.setSelectedNode(obj.getNodeId(experiment));
             obj.view.setSelectedCard(obj.view.EXPERIMENT_CARD);
         end
@@ -85,6 +89,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function selectSource(obj, source)
+            obj.view.setSourceLabel(source.label);
             obj.view.setSelectedNode(obj.getNodeId(source));
             obj.view.setSelectedCard(obj.view.SOURCE_CARD);
         end
@@ -94,6 +99,13 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.addEpochGroup(group);
             obj.selectEpochGroup(group);
             obj.view.setEpochGroupNodeCurrent(obj.getNodeId(group));
+        end
+        
+        function onExperimentEndedEpochGroup(obj, ~, data)
+            group = data.epochGroup;
+            obj.selectEpochGroup(group);
+            obj.view.collapseNode(obj.getNodeId(group));
+            obj.view.setEpochGroupNodeNormal(obj.getNodeId(group));
         end
         
         function addEpochGroup(obj, group)
@@ -112,14 +124,12 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function selectEpochGroup(obj, group)
+            obj.view.setEpochGroupLabel(group.label);
+            obj.view.setEpochGroupStartTime(group.startTime);
+            obj.view.setEpochGroupEndTime(group.endTime);
+            obj.view.setEpochGroupSource(group.source.id);
             obj.view.setSelectedNode(obj.getNodeId(group));
             obj.view.setSelectedCard(obj.view.EPOCH_GROUP_CARD);
-        end
-        
-        function onExperimentEndedEpochGroup(obj, ~, data)
-            group = data.epochGroup;
-            obj.view.collapseNode(obj.getNodeId(group));
-            obj.view.setEpochGroupNodeNormal(obj.getNodeId(group));
         end
         
         function addEpoch(obj, epoch)
