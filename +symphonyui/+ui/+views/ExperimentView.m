@@ -8,47 +8,77 @@ classdef ExperimentView < symphonyui.ui.View
     properties (Access = private)
         experimentTree
         cardPanel
+        emptyCard
         experimentCard
-        sourceCard
         epochGroupCard
         epochCard
+        sourceCard
+        tabPanel
         idMap
     end
 
     properties (Constant)
-        EXPERIMENT_CARD = 1
-        SOURCE_CARD = 2
-        EPOCH_GROUP_CARD = 3
+        SOURCES_NODE_ID         = 'SOURCES_NODE_ID'
+        EPOCH_GROUPS_NODE_ID    = 'EPOCH_GROUPS_NODE_ID'
+        
+        EMPTY_CARD          = 1
+        EXPERIMENT_CARD     = 2
+        SOURCE_CARD         = 3
+        EPOCH_GROUP_CARD    = 4
+        EPOCH_CARD          = 5
     end
 
     methods
 
         function createUi(obj)
             import symphonyui.ui.util.*;
-
+            
+            obj.idMap = containers.Map();
+            
             set(obj.figureHandle, 'Name', 'Experiment');
-            set(obj.figureHandle, 'Position', screenCenter(500, 400));
+            set(obj.figureHandle, 'Position', screenCenter(500, 410));
 
             mainLayout = uiextras.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
 
-            masterLayout = uiextras.VBox( ...
-                'Parent', mainLayout);
+            masterLayout = uiextras.VBoxFlex( ...
+                'Parent', mainLayout, ...
+                'Spacing', 7);
 
             obj.experimentTree = uiextras.jTree.Tree( ...
                 'Parent', masterLayout, ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'SelectionChangeFcn', @(h,d)notify(obj, 'SelectedNode'));
+            root = obj.experimentTree.Root;
+            root.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'experiment.png'));
+            
+            sources = uiextras.jTree.TreeNode( ...
+                'Parent', root, ...
+                'Name', 'Sources', ...
+                'Value', obj.SOURCES_NODE_ID);
+            sources.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'folder.png'));
+            obj.idMap(obj.SOURCES_NODE_ID) = sources;
+            
+            groups = uiextras.jTree.TreeNode( ...
+                'Parent', root, ...
+                'Name', 'Epoch Groups', ...
+                'Value', obj.EPOCH_GROUPS_NODE_ID);
+            groups.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'folder.png'));
+            obj.idMap(obj.EPOCH_GROUPS_NODE_ID) = groups;
 
             detailLayout = uiextras.VBox( ...
                 'Parent', mainLayout);
 
             obj.cardPanel = uix.CardPanel( ...
                 'Parent', detailLayout);
-
+            
+            % Empty card.
+            emptyLayout = uiextras.VBox( ...
+                'Parent', obj.cardPanel);
+            
             % Experiment card.
             experimentLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
@@ -58,15 +88,17 @@ classdef ExperimentView < symphonyui.ui.View
             obj.experimentCard.locationField = createLabeledTextField(experimentLayout, 'Location:', experimentLabelSize, 'Enable', 'off');
             obj.experimentCard.startTimeField = createLabeledTextField(experimentLayout, 'Start time:', experimentLabelSize, 'Enable', 'off');
             obj.experimentCard.purposeField = createLabeledTextField(experimentLayout, 'Purpose:', experimentLabelSize, 'Enable', 'off');
-            set(experimentLayout, 'Sizes', [25 25 25 25]);
-
+            obj.experimentCard.tabPanelParent = uix.Panel('Parent', experimentLayout, 'BorderType', 'none');
+            set(experimentLayout, 'Sizes', [25 25 25 25 -1]);
+            
             % Source card.
             sourceLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
             sourceLabelSize = 60;
             obj.sourceCard.labelField = createLabeledTextField(sourceLayout, 'Label:', sourceLabelSize, 'Enable', 'off');
-            set(sourceLayout, 'Sizes', [25]);
+            obj.sourceCard.tabPanelParent = uix.Panel('Parent', sourceLayout, 'BorderType', 'none');
+            set(sourceLayout, 'Sizes', [25 -1]);
 
             % Epoch group card.
             epochGroupLayout = uiextras.VBox( ...
@@ -76,28 +108,59 @@ classdef ExperimentView < symphonyui.ui.View
             obj.epochGroupCard.labelField = createLabeledTextField(epochGroupLayout, 'Label:', epochGroupLabelSize, 'Enable', 'off');
             obj.epochGroupCard.startTimeField = createLabeledTextField(epochGroupLayout, 'Start time:', epochGroupLabelSize, 'Enable', 'off');
             obj.epochGroupCard.sourceField = createLabeledTextFieldWithButton(epochGroupLayout, 'Source:', epochGroupLabelSize, @(h,d)notify(obj, 'ViewEpochGroupSource'), 'Enable', 'off');
-            set(epochGroupLayout, 'Sizes', [25 25 25]);
+            obj.epochGroupCard.tabPanelParent = uix.Panel('Parent', epochGroupLayout, 'BorderType', 'none');
+            set(epochGroupLayout, 'Sizes', [25 25 25 -1]);
+            
+            % Epoch card.
+            epochLayout = uiextras.VBox( ...
+                'Parent', obj.cardPanel, ...
+                'Spacing', 7);
+            obj.epochCard.tabPanelParent = uix.Panel('Parent', epochLayout, 'BorderType', 'none');
+            set(epochLayout, 'Sizes', [-1]);
+            
+            % Tab panel
+            obj.tabPanel = uix.TabPanel( ...
+                'Parent', experimentLayout, ...
+                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
+                'Padding', 11);
+            uicontrol('Parent', obj.tabPanel, 'Background', 'r');
+            uicontrol('Parent', obj.tabPanel, 'Background', 'b');
+            uicontrol('Parent', obj.tabPanel, 'Background', 'g');
+            set(obj.tabPanel, 'TabTitles', {'Properties', 'Keywords', 'Notes'});
+            set(obj.tabPanel, 'TabWidth', 70);
 
             set(obj.cardPanel, 'Selection', 1);
 
             set(mainLayout, 'Sizes', [-1 -2]);
-
-            obj.idMap = containers.Map();
         end
 
         function setSelectedCard(obj, index)
             set(obj.cardPanel, 'Selection', index);
+            
+            switch index
+                case obj.EMPTY_CARD
+                    parent = [];
+                case obj.EXPERIMENT_CARD
+                    parent = obj.experimentCard.tabPanelParent;
+                case obj.SOURCE_CARD
+                    parent = obj.sourceCard.tabPanelParent;
+                case obj.EPOCH_GROUP_CARD
+                    parent = obj.epochGroupCard.tabPanelParent;
+                case obj.EPOCH_CARD
+                    parent = obj.epochCard.tabPanelParent;
+            end
+            set(obj.tabPanel, 'Parent', parent);
         end
 
-        function setExperimentNode(obj, name, id)
+        function setExperimentTreeRootNode(obj, name, id)
             root = obj.experimentTree.Root;
             set(root, ...
                 'Name', name, ...
                 'Value', id);
-            root.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'experiment.png'));
             obj.idMap(id) = root;
         end
-
+        
         function addSourceNode(obj, parentId, name, id)
             parent = obj.idMap(parentId);
             node = uiextras.jTree.TreeNode( ...

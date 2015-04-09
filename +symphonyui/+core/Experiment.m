@@ -11,34 +11,36 @@ classdef Experiment < handle
     end
     
     properties (SetAccess = private)
+        id
         name
         location
+        purpose
         startTime
         endTime
-    end
-    
-    properties
-        purpose
-    end
-    
-    properties (SetAccess = private, Hidden)
-        id
+        sources
         epochGroups
         currentEpochGroup
-        sources
         notes
+        idGenerators
     end
+    
+    
     
     methods
         
         function obj = Experiment(name, location)
+            import symphonyui.core.*;
+            
             obj.name = name;
             obj.location = location;
             obj.purpose = '';
             obj.id = fullfile(obj.location, obj.name);
-            obj.epochGroups = symphonyui.core.EpochGroup.empty(0, 1);
-            obj.sources = symphonyui.core.Source.empty(0, 1);
-            obj.notes = symphonyui.core.Note.empty(0, 1);
+            obj.sources = Source.empty(0, 1);
+            obj.epochGroups = EpochGroup.empty(0, 1);
+            obj.notes = Note.empty(0, 1);
+            obj.idGenerators = struct( ...
+                'source', util.IdGenerator(), ...
+                'epochGroup', util.IdGenerator());
         end
         
         function open(obj)
@@ -65,12 +67,12 @@ classdef Experiment < handle
         end
         
         function addSource(obj, label, parentId)
-            if nargin < 3
-                parent = [];
-            else
-                parent = obj.getSource(parentId);
+            if isempty(label)
+                error('Source label cannot be empty');
             end
-            source = symphonyui.core.Source(char(java.util.UUID.randomUUID), label, parent);
+            sourceId = obj.idGenerators.source.generateId(label);
+            parent = obj.getSource(parentId);
+            source = symphonyui.core.Source(sourceId, label, parent);
             if isempty(parent)
                 obj.sources(end + 1) = source;
             else
@@ -96,11 +98,10 @@ classdef Experiment < handle
             if isempty(sourceId)
                 error('Source cannot be empty');
             end
-            
-            disp(['Begin Epoch Group: ' label]);
+            groupId = obj.idGenerators.epochGroup.generateId(label);
             source = obj.getSource(sourceId);
             parent = obj.currentEpochGroup;
-            group = symphonyui.core.EpochGroup(char(java.util.UUID.randomUUID), label, source, parent);
+            group = symphonyui.core.EpochGroup(groupId, label, source, parent);
             if isempty(parent)
                 obj.epochGroups(end + 1) = group;
             else

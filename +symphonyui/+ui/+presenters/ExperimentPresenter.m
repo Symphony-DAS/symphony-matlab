@@ -5,10 +5,10 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
     end
     
     properties (Constant, Access = private)
-        EXPERIMENT_ID_PREFIX = 'X';
-        SOURCE_ID_PREFIX = 'S';
-        EPOCH_GROUP_ID_PREFIX = 'G';
-        EPOCH_ID_PREFIX = 'E';
+        EXPERIMENT_ID_PREFIX    = 'X'
+        SOURCE_ID_PREFIX        = 'S'
+        EPOCH_GROUP_ID_PREFIX   = 'G'
+        EPOCH_ID_PREFIX         = 'E'
     end
     
     methods
@@ -45,11 +45,11 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateExperimentTree(obj)
-            obj.view.setExperimentNode(obj.experiment.name, obj.getNodeId(obj.experiment));
+            obj.view.setExperimentTreeRootNode(obj.experiment.name, obj.getNodeId(obj.experiment));
             
             sources = obj.experiment.sources;
             for i = 1:numel(sources)
-                obj.addSource(source(i));
+                obj.addSource(sources(i));
             end
             
             groups = obj.experiment.epochGroups;
@@ -71,12 +71,12 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function addSource(obj, source)
             if isempty(source.parent)
-                parent = obj.experiment;
+                parentId = obj.view.SOURCES_NODE_ID;
             else
-                parent = source.parent;
+                parentId = obj.getNodeId(source.parent);
             end
             
-            obj.view.addSourceNode(obj.getNodeId(parent), source.label, obj.getNodeId(source));
+            obj.view.addSourceNode(parentId, source.id, obj.getNodeId(source));
             
             sources = source.children;
             for i = 1:numel(sources)
@@ -98,12 +98,12 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function addEpochGroup(obj, group)
             if isempty(group.parent)
-                parent = obj.experiment;
+                parentId = obj.view.EPOCH_GROUPS_NODE_ID;
             else
-                parent = group.parent;
+                parentId = obj.getNodeId(group.parent);
             end
             
-            obj.view.addEpochGroupNode(obj.getNodeId(parent), group.label, obj.getNodeId(group));
+            obj.view.addEpochGroupNode(parentId, group.id, obj.getNodeId(group));
             
             groups = group.children;
             for i = 1:numel(groups)
@@ -123,7 +123,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function addEpoch(obj, epoch)
-            obj.view.addEpochNode(obj.getNodeId(epoch.epochGroup), epoch.label, obj.getNodeId(epoch));
+            
         end
         
         function selectEpoch(obj, epoch)
@@ -132,6 +132,11 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedNode(obj, ~, ~)
             nodeId = obj.view.getSelectedNode();
+            if isequal(nodeId, obj.view.SOURCES_NODE_ID) || isequal(nodeId, obj.view.EPOCH_GROUPS_NODE_ID)
+                obj.view.setSelectedCard(obj.view.EMPTY_CARD);
+                return;
+            end
+            
             prefix = nodeId(1);
             id = nodeId(2:end);
             switch prefix

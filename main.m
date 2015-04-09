@@ -21,8 +21,9 @@ function main()
     
     app = App(config);
     
-    mainPresenter = symphonyui.ui.presenters.MainPresenter(acquisitionService, app);
-    mainPresenter.go();
+    presenter = symphonyui.ui.presenters.MainPresenter(acquisitionService, app);
+    presenter.go();
+    presenter.showRigSelector();
 end
 
 function setupJavaPath()

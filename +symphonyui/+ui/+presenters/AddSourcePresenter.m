@@ -19,9 +19,9 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj, ~, ~)
-            obj.populateFromConfig();
             obj.populateParentList();
             obj.view.setSelectedParent(obj.view.getParentList{end});
+            obj.view.requestLabelFocus();
         end
         
         function onBind(obj)
@@ -34,20 +34,6 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
     end
     
     methods (Access = private)
-        
-        function populateFromConfig(obj)
-            import symphonyui.app.Settings;
-            
-            config = obj.app.config;
-            labelList = config.get(symphonyui.app.Settings.SOURCE_LABEL_LIST);
-            try
-                obj.view.setLabelList(labelList());
-            catch x
-                msg = ['Unable to populate view from config: ' x.message];
-                obj.log.debug(msg, x);
-                obj.view.showError(msg);
-            end
-        end
 
         function onViewKeyPress(obj, ~, data)
             switch data.key
@@ -59,7 +45,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
         end
         
         function populateParentList(obj)
-            list = [{[obj.experiment.name ' (Experiment)']}, obj.experiment.getAllSourceIds()];
+            list = [{'(None)'}, obj.experiment.getAllSourceIds()];
             obj.view.setParentList(list);
         end
         
@@ -67,7 +53,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             obj.view.update();
             
             parent = obj.view.getSelectedParent();
-            label = obj.view.getSelectedLabel();
+            label = obj.view.getLabel();
             
             try
                 obj.experiment.addSource(label, parent);

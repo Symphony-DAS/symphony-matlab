@@ -20,6 +20,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 'protocol', symphonyui.ui.util.EventManager());
         end
         
+        function showRigSelector(obj)
+            presenter = symphonyui.ui.presenters.SelectRigPresenter(obj.acquisitionService, obj.app);
+            presenter.goWaitStop();
+        end
+        
     end
     
     methods (Access = protected)
@@ -155,8 +160,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedSelectRig(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.SelectRigPresenter(obj.acquisitionService, obj.app);
-            presenter.goWaitStop();
+            obj.showRigSelector();
         end
         
         function onServiceSelectedRig(obj, ~, ~)
