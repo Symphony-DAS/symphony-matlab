@@ -1,12 +1,10 @@
-classdef EpochGroup < handle
+classdef EpochGroup < symphonyui.core.Entity
     
     properties (SetAccess = private)
         id
         label
         startTime
         endTime
-        keywords
-        attributes
     end
     
     properties (Hidden)

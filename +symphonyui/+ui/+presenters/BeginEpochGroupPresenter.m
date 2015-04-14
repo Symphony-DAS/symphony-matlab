@@ -36,8 +36,8 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
-        function onViewKeyPress(obj, ~, data)
-            switch data.key
+        function onViewKeyPress(obj, ~, event)
+            switch event.key
                 case 'return'
                     obj.onViewSelectedBegin();
                 case 'escape'

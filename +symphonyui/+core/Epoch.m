@@ -1,4 +1,4 @@
-classdef Epoch < handle
+classdef Epoch < symphonyui.core.Entity
     
     properties
         id

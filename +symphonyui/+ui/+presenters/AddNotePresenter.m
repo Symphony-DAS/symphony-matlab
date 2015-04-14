@@ -1,17 +1,17 @@
 classdef AddNotePresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
-        experiment
+        entity
     end
 
     methods
 
-        function obj = AddNotePresenter(experiment, app, view)
+        function obj = AddNotePresenter(entity, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.AddNoteView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.experiment = experiment;
+            obj.entity = entity;
         end
 
     end
@@ -32,8 +32,8 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
 
     methods (Access = private)
 
-        function onViewKeyPress(obj, ~, data)
-            switch data.key
+        function onViewKeyPress(obj, ~, event)
+            switch event.key
                 case 'return'
                     obj.onViewSelectedAdd();
                 case 'escape'
@@ -45,7 +45,7 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
             obj.view.update();
 
             try
-                obj.experiment.addNote(obj.view.getText());
+                obj.entity.addNote(obj.view.getText());
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

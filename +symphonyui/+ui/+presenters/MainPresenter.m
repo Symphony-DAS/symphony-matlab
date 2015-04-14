@@ -229,8 +229,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.eventManagers.protocol.removeAllListeners();
         end
         
-        function onViewSetProtocolProperty(obj, ~, data)
-            property = data.Property;
+        function onViewSetProtocolProperty(obj, ~, event)
+            property = event.Property;
             protocol = obj.acquisitionService.getCurrentProtocol();
             protocol.(property.Name) = property.Value;
         end

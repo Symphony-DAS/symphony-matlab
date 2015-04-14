@@ -36,6 +36,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.addListener(e, 'AddedSource', @obj.onExperimentAddedSource);
             obj.addListener(e, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
             obj.addListener(e, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
+            obj.addListener(e, 'AddedNote', @obj.onExperimentAddedNote);
         end
 
     end
@@ -70,8 +71,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedCard(obj.view.EXPERIMENT_CARD);
         end
         
-        function onExperimentAddedSource(obj, ~, data)
-            source = data.source;
+        function onExperimentAddedSource(obj, ~, event)
+            source = event.data;
             obj.addSource(source);
             obj.selectSource(source);
         end
@@ -102,18 +103,22 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedCard(obj.view.SOURCE_CARD);
         end
         
-        function onExperimentBeganEpochGroup(obj, ~, data)
-            group = data.epochGroup;
+        function onExperimentBeganEpochGroup(obj, ~, event)
+            group = event.data;
             obj.addEpochGroup(group);
             obj.selectEpochGroup(group);
             obj.view.setEpochGroupNodeCurrent(obj.entityToId(group));
         end
         
-        function onExperimentEndedEpochGroup(obj, ~, data)
-            group = data.epochGroup;
+        function onExperimentEndedEpochGroup(obj, ~, event)
+            group = event.epochGroup;
             obj.selectEpochGroup(group);
             obj.view.collapseNode(obj.entityToId(group));
             obj.view.setEpochGroupNodeNormal(obj.entityToId(group));
+        end
+        
+        function onExperimentAddedNote(obj, ~, event)
+            
         end
         
         function addEpochGroup(obj, group)

@@ -51,8 +51,8 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             end
         end
         
-        function onViewKeyPress(obj, ~, data)
-            switch data.key
+        function onViewKeyPress(obj, ~, event)
+            switch event.key
                 case 'return'
                     obj.onViewSelectedOpen();
                 case 'escape'

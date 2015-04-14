@@ -1,4 +1,4 @@
-classdef Source < handle
+classdef Source < symphonyui.core.Entity
     
     properties (SetAccess = private)
         label

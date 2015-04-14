@@ -1,5 +1,5 @@
-classdef Experiment < handle
-    
+classdef Experiment < symphonyui.core.Entity
+
     events
         Opened
         Closed
@@ -7,11 +7,9 @@ classdef Experiment < handle
         BeganEpochGroup
         EndedEpochGroup
         RecordedEpoch
-        AddedNote
     end
-    
+
     properties (SetAccess = private)
-        id
         name
         location
         purpose
@@ -20,40 +18,37 @@ classdef Experiment < handle
         sources
         epochGroups
         currentEpochGroup
-        notes
     end
-    
+
     properties (Access = private)
         idGenerators
     end
-    
+
     methods
-        
+
         function obj = Experiment(name, location, purpose)
             import symphonyui.core.*;
-            
+
             obj.name = name;
             obj.location = location;
             obj.purpose = purpose;
-            obj.id = fullfile(obj.location, obj.name);
             obj.sources = Source.empty(0, 1);
             obj.epochGroups = EpochGroup.empty(0, 1);
-            obj.notes = Note.empty(0, 1);
             obj.idGenerators = struct( ...
                 'source', util.IdGenerator(), ...
                 'epochGroup', util.IdGenerator());
         end
-        
+
         function open(obj)
             obj.startTime = now;
             notify(obj, 'Opened');
         end
-        
+
         function close(obj)
             obj.endTime = now;
             notify(obj, 'Closed');
         end
-        
+
         function i = getAllSourceIds(obj)
             i = {};
             list = createFlatList(obj.sources, symphonyui.core.Source.empty(0, 1));
@@ -61,12 +56,12 @@ classdef Experiment < handle
                 i{k} = list(k).id; %#ok<AGROW>
             end
         end
-        
+
         function s = getSource(obj, id)
             list = createFlatList(obj.sources, symphonyui.core.Source.empty(0, 1));
             s = list(arrayfun(@(e)strcmp(e.id, id), list));
         end
-        
+
         function addSource(obj, label, parentId)
             if isempty(label)
                 error('Label cannot be empty');
@@ -79,9 +74,9 @@ classdef Experiment < handle
             else
                 parent.addChild(source);
             end
-            notify(obj, 'AddedSource', symphonyui.core.SourceEventData(source));
+            notify(obj, 'AddedSource', symphonyui.core.util.DomainEventData(source));
         end
-        
+
         function i = getAllEpochGroupIds(obj)
             i = {};
             list = createFlatList(obj.epochGroups, symphonyui.core.EpochGroup.empty(0, 1));
@@ -89,12 +84,12 @@ classdef Experiment < handle
                 i{k} = list(k).id; %#ok<AGROW>
             end
         end
-        
+
         function e = getEpochGroup(obj, id)
             list = createFlatList(obj.epochGroups, symphonyui.core.EpochGroup.empty(0, 1));
             e = list(arrayfun(@(e)strcmp(e.id, id), list));
         end
-        
+
         function beginEpochGroup(obj, label, sourceId)
             if isempty(label)
                 error('Label cannot be empty');
@@ -113,28 +108,23 @@ classdef Experiment < handle
             end
             obj.currentEpochGroup = group;
             group.start();
-            notify(obj, 'BeganEpochGroup', symphonyui.core.EpochGroupEventData(group));
+            notify(obj, 'BeganEpochGroup', symphonyui.core.util.DomainEventData(group));
         end
-        
+
         function endEpochGroup(obj)
             disp(['End Epoch Group: ' obj.currentEpochGroup.label]);
             group = obj.currentEpochGroup;
             group.stop();
             if group.parent == obj
                 obj.currentEpochGroup = [];
-            else    
+            else
                 obj.currentEpochGroup = group.parent;
             end
-            notify(obj, 'EndedEpochGroup', symphonyui.core.EpochGroupEventData(group));
+            notify(obj, 'EndedEpochGroup', symphonyui.core.util.DomainEventData(group));
         end
-        
-        function addNote(obj, text)
-            obj.notes(end + 1) = symphonyui.core.Note(text, now);
-            notify(obj, 'AddedNote');
-        end
-        
+
     end
-    
+
 end
 
 function list = createFlatList(items, list)
@@ -145,5 +135,3 @@ function list = createFlatList(items, list)
         list = createFlatList(children, list);
     end
 end
-
-

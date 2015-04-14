@@ -25,8 +25,8 @@ classdef SettingsPresenter < symphonyui.ui.Presenter
 
     methods (Access = private)
 
-        function onViewKeyPress(obj, ~, data)
-            switch data.key
+        function onViewKeyPress(obj, ~, event)
+            switch event.key
                 case 'return'
                     obj.onViewSelectedOk();
                 case 'escape'
