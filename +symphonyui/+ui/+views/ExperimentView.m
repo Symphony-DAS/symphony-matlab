@@ -2,7 +2,9 @@ classdef ExperimentView < symphonyui.ui.View
 
     events
         SelectedNode
-        ViewEpochGroupSource
+        AddProperty
+        AddKeyword
+        AddNote
     end
 
     properties (Access = private)
@@ -14,7 +16,10 @@ classdef ExperimentView < symphonyui.ui.View
         epochCard
         sourceCard
         tabPanel
-        idMap
+        propertyGrid
+        keywordsTable
+        notesTable
+        idToNode
     end
 
     properties (Constant)
@@ -29,11 +34,11 @@ classdef ExperimentView < symphonyui.ui.View
     end
 
     methods
-
+        
         function createUi(obj)
             import symphonyui.ui.util.*;
             
-            obj.idMap = containers.Map();
+            obj.idToNode = containers.Map();
             
             set(obj.figureHandle, 'Name', 'Experiment');
             set(obj.figureHandle, 'Position', screenCenter(500, 410));
@@ -60,14 +65,14 @@ classdef ExperimentView < symphonyui.ui.View
                 'Name', 'Sources', ...
                 'Value', obj.SOURCES_NODE_ID);
             sources.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'folder.png'));
-            obj.idMap(obj.SOURCES_NODE_ID) = sources;
+            obj.idToNode(obj.SOURCES_NODE_ID) = sources;
             
             groups = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
                 'Name', 'Epoch Groups', ...
                 'Value', obj.EPOCH_GROUPS_NODE_ID);
             groups.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'folder.png'));
-            obj.idMap(obj.EPOCH_GROUPS_NODE_ID) = groups;
+            obj.idToNode(obj.EPOCH_GROUPS_NODE_ID) = groups;
 
             detailLayout = uiextras.VBox( ...
                 'Parent', mainLayout);
@@ -76,8 +81,7 @@ classdef ExperimentView < symphonyui.ui.View
                 'Parent', detailLayout);
             
             % Empty card.
-            emptyLayout = uiextras.VBox( ...
-                'Parent', obj.cardPanel);
+            emptyLayout = uiextras.VBox('Parent', obj.cardPanel); %#ok<NASGU>
             
             % Experiment card.
             experimentLayout = uiextras.VBox( ...
@@ -123,11 +127,59 @@ classdef ExperimentView < symphonyui.ui.View
             obj.tabPanel = uix.TabPanel( ...
                 'Parent', experimentLayout, ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
-                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
-                'Padding', 11);
-            uicontrol('Parent', obj.tabPanel, 'Background', 'r');
-            uicontrol('Parent', obj.tabPanel, 'Background', 'b');
-            uicontrol('Parent', obj.tabPanel, 'Background', 'g');
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
+            
+            propertiesLayout = uiextras.VBox( ...
+                'Parent', obj.tabPanel, ...
+                'Spacing', 7);
+            obj.propertyGrid = uiextras.jide.PropertyGrid(propertiesLayout);
+            propertiesControlsLayout = uiextras.HBox( ...
+                'Parent', propertiesLayout, ...
+                'Spacing', 7);
+            uiextras.Empty('Parent', propertiesControlsLayout);
+            uicontrol( ...
+                'Parent', propertiesControlsLayout, ...
+                'String', 'Add', ...
+                'Callback', @(h,d)notify(obj, 'AddProperty'));
+            set(propertiesControlsLayout, 'Sizes', [-1 75]);
+            set(propertiesLayout, 'Sizes', [-1 25]);
+            
+            keywordsLayout = uiextras.VBox( ...
+                'Parent', obj.tabPanel, ...
+                'Spacing', 7);
+            obj.keywordsTable = createTable( ...
+                'Parent', keywordsLayout, ...
+                'Container', keywordsLayout, ...
+                'Buttons', 'off');
+            keywordsControlsLayout = uiextras.HBox( ...
+                'Parent', keywordsLayout, ...
+                'Spacing', 7);
+            uiextras.Empty('Parent', keywordsControlsLayout);
+            uicontrol( ...
+                'Parent', keywordsControlsLayout, ...
+                'String', 'Add', ...
+                'Callback', @(h,d)notify(obj, 'AddKeyword'));
+            set(keywordsControlsLayout, 'Sizes', [-1 75]);
+            set(keywordsLayout, 'Sizes', [-1 25]);
+            
+            notesLayout = uiextras.VBox( ...
+                'Parent', obj.tabPanel, ...
+                'Spacing', 7);
+            obj.notesTable = createTable( ...
+                'Parent', notesLayout, ...
+                'Container', notesLayout, ...
+                'Buttons', 'off');
+            notesControlsLayout = uiextras.HBox( ...
+                'Parent', notesLayout, ...
+                'Spacing', 7);
+            uiextras.Empty('Parent', notesControlsLayout);
+            uicontrol( ...
+                'Parent', notesControlsLayout, ...
+                'String', 'Add', ...
+                'Callback', @(h,d)notify(obj, 'AddNote'));
+            set(notesControlsLayout, 'Sizes', [-1 75]);
+            set(notesLayout, 'Sizes', [-1 25]);
+            
             set(obj.tabPanel, 'TabTitles', {'Properties', 'Keywords', 'Notes'});
             set(obj.tabPanel, 'TabWidth', 70);
 
@@ -141,7 +193,7 @@ classdef ExperimentView < symphonyui.ui.View
             
             switch index
                 case obj.EMPTY_CARD
-                    parent = [];
+                    return;
                 case obj.EXPERIMENT_CARD
                     parent = obj.experimentCard.tabPanelParent;
                 case obj.SOURCE_CARD
@@ -159,7 +211,7 @@ classdef ExperimentView < symphonyui.ui.View
             set(root, ...
                 'Name', name, ...
                 'Value', id);
-            obj.idMap(id) = root;
+            obj.idToNode(id) = root;
         end
         
         function setExperimentName(obj, n)
@@ -179,13 +231,13 @@ classdef ExperimentView < symphonyui.ui.View
         end
         
         function addSourceNode(obj, parentId, name, id)
-            parent = obj.idMap(parentId);
+            parent = obj.idToNode(parentId);
             node = uiextras.jTree.TreeNode( ...
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', id);
             node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'source.png'));
-            obj.idMap(id) = node;
+            obj.idToNode(id) = node;
         end
         
         function setSourceLabel(obj, l)
@@ -193,13 +245,13 @@ classdef ExperimentView < symphonyui.ui.View
         end
 
         function addEpochGroupNode(obj, parentId, name, id)
-            parent = obj.idMap(parentId);
+            parent = obj.idToNode(parentId);
             node = uiextras.jTree.TreeNode( ...
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', id);
             node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'group.png'));
-            obj.idMap(id) = node;
+            obj.idToNode(id) = node;
         end
         
         function setEpochGroupLabel(obj, l)
@@ -219,32 +271,32 @@ classdef ExperimentView < symphonyui.ui.View
         end
 
         function setEpochGroupNodeCurrent(obj, id)
-            node = obj.idMap(id);
+            node = obj.idToNode(id);
             node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'group_current.png'));
         end
 
         function setEpochGroupNodeNormal(obj, id)
-            node = obj.idMap(id);
+            node = obj.idToNode(id);
             node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'group.png'));
         end
 
         function addEpochNode(obj, parentId, name, id)
-            parent = obj.idMap(parentId);
+            parent = obj.idToNode(parentId);
             node = uiextras.jTree.TreeNode( ...
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', id);
             node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'epoch.png'));
-            obj.idMap(id) = node;
+            obj.idToNode(id) = node;
         end
 
         function collapseNode(obj, id)
-            node = obj.idMap(id);
+            node = obj.idToNode(id);
             node.collapse();
         end
 
         function expandNode(obj, id)
-            node = obj.idMap(id);
+            node = obj.idToNode(id);
             node.expand();
         end
 
@@ -254,7 +306,7 @@ classdef ExperimentView < symphonyui.ui.View
         end
 
         function setSelectedNode(obj, id)
-            node = obj.idMap(id);
+            node = obj.idToNode(id);
             obj.experimentTree.SelectedNodes = node;
         end
 

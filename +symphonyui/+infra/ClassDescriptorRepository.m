@@ -3,7 +3,7 @@ classdef ClassDescriptorRepository < handle
     properties (Access = private)
         subtype
         searchPaths
-        objects
+        idToDescriptor
     end
 
     methods
@@ -13,15 +13,15 @@ classdef ClassDescriptorRepository < handle
         end
 
         function o = getAll(obj)
-            o = obj.objects.values;
+            o = obj.idToDescriptor.values;
         end
 
         function o = getAllIds(obj)
-            o = obj.objects.keys;
+            o = obj.idToDescriptor.keys;
         end
 
         function o = get(obj, id)
-            o = obj.objects(id);
+            o = obj.idToDescriptor(id);
         end
 
         function setSearchPaths(obj, paths)
@@ -35,7 +35,7 @@ classdef ClassDescriptorRepository < handle
         end
 
         function loadAll(obj)
-            obj.objects = containers.Map();
+            obj.idToDescriptor = containers.Map();
 
             classNames = discover(obj.subtype, obj.searchPaths);
             for i = 1:numel(classNames)
@@ -50,7 +50,7 @@ classdef ClassDescriptorRepository < handle
             split = strsplit(clazz.Name, '.');
             descriptor.id = humanize(split{end});
             descriptor.class = clazz.Name;
-            obj.objects(descriptor.id) = descriptor;
+            obj.idToDescriptor(descriptor.id) = descriptor;
         end
 
     end
