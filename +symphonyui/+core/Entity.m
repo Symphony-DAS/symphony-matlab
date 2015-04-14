@@ -21,7 +21,14 @@ classdef Entity < handle
         end
         
         function addProperty(obj, key, value)
+            if isempty(key)
+                error('Key cannot be empty');
+            end
+            
             obj.propertyMap(key) = value;
+            property.key = key;
+            property.value = value;
+            notify(obj, 'AddedProperty', symphonyui.core.util.DomainEventData(property));
         end
         
         function addKeyword(obj, keyword)

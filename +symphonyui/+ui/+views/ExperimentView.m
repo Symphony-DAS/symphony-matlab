@@ -321,12 +321,12 @@ classdef ExperimentView < symphonyui.ui.View
         end
         
         function clearProperties(obj)
-            
+            set(obj.propertyGrid, 'Properties', uiextras.jide.PropertyGridField.empty(0, 1));
         end
         
         function addProperty(obj, key, value)
             properties = get(obj.propertyGrid, 'Properties');
-            p = uiextras.jide.PropertyGridField(key, value);
+            p = uiextras.jide.PropertyGridField(key, value, 'ReadOnly', true);
             set(obj.propertyGrid, 'Properties', [properties, p]);
         end
         

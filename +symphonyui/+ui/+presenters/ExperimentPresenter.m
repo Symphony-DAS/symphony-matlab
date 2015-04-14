@@ -216,11 +216,13 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedAddProperty(obj, ~, ~)
             node = obj.idToNode(obj.view.getSelectedNode());
-            disp(node.entity);
-            disp('Add property');
+            entity = node.entity;
+            
+            presenter = symphonyui.ui.presenters.AddPropertyPresenter(entity, obj.app);
+            presenter.goWaitStop();
         end
         
-        function onEntityAddedProperty(obj, ~, ~)
+        function onEntityAddedProperty(obj, ~, event)
             obj.addProperty(event.data);
         end
         
@@ -230,8 +232,10 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedAddKeyword(obj, ~, ~)
             node = obj.idToNode(obj.view.getSelectedNode());
-            disp(node.entity);
-            disp('Add keyword');
+            entity = node.entity;
+            
+            presenter = symphonyui.ui.presenters.AddKeywordPresenter(entity, obj.app);
+            presenter.goWaitStop();
         end
         
         function onEntityAddedKeyword(obj, ~, event)
