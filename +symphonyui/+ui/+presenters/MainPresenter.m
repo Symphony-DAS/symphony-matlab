@@ -42,7 +42,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
-            obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'ViewExperiment', @obj.onViewSelectedViewExperiment);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(v, 'SetProtocolProperty', @obj.onViewSetProtocolProperty);
@@ -147,12 +146,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onExperimentEndedEpochGroup(obj, ~, ~)
             obj.updateViewState();
-        end
-        
-        function onViewSelectedAddNote(obj, ~, ~)
-            experiment = obj.acquisitionService.getCurrentExperiment();
-            presenter = symphonyui.ui.presenters.AddNotePresenter(experiment, obj.app);
-            presenter.goWaitStop();
         end
         
         function onViewSelectedViewExperiment(obj, ~, ~)
@@ -316,7 +309,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableAddSource = hasExperiment;
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasCurrentEpochGroup;
-            enableAddNote = hasExperiment;
             enableViewExperiment = hasExperiment;
             enableSelectRig = ~hasExperiment && isStopped;
             enableSettings = ~hasExperiment && isStopped;
@@ -376,7 +368,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableCloseExperiment(enableCloseExperiment);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
-            obj.view.enableAddNote(enableAddNote);
             obj.view.enableViewExperiment(enableViewExperiment);
             obj.view.enableSelectRig(enableSelectRig);
             obj.view.enableSettings(enableSettings);

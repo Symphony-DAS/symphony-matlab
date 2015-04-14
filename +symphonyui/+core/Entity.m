@@ -1,12 +1,13 @@
 classdef Entity < handle
     
     events (NotifyAccess = private)
+        AddedProperty
         AddedKeyword
         AddedNote
     end
     
     properties (SetAccess = private)
-        attributes
+        propertyMap
         keywords
         notes
     end
@@ -14,13 +15,13 @@ classdef Entity < handle
     methods
         
         function obj = Entity()
-            obj.attributes = containers.Map();
+            obj.propertyMap = containers.Map();
             obj.keywords = {};
             obj.notes = symphonyui.core.Note.empty(0, 1);
         end
         
         function addProperty(obj, key, value)
-            obj.attributes(key) = value;
+            obj.propertyMap(key) = value;
         end
         
         function addKeyword(obj, keyword)

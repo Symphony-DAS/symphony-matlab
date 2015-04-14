@@ -3,6 +3,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
     properties (Access = private)
         experiment
         idToNode
+        entityEventManager
     end
     
     methods
@@ -14,6 +15,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj = obj@symphonyui.ui.Presenter(app, view);
             obj.experiment = experiment;
             obj.idToNode = containers.Map();
+            obj.entityEventManager = symphonyui.ui.util.EventManager();
         end
 
     end
@@ -36,7 +38,6 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.addListener(e, 'AddedSource', @obj.onExperimentAddedSource);
             obj.addListener(e, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
             obj.addListener(e, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
-            obj.addListener(e, 'AddedNote', @obj.onExperimentAddedNote);
         end
 
     end
@@ -69,6 +70,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setExperimentPurpose(obj.experiment.purpose);
             obj.view.setSelectedNode(obj.entityToId(obj.experiment));
             obj.view.setSelectedCard(obj.view.EXPERIMENT_CARD);
+            
+            obj.selectEntity(obj.experiment);
         end
         
         function onExperimentAddedSource(obj, ~, event)
@@ -101,6 +104,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setSourceLabel(source.label);
             obj.view.setSelectedNode(obj.entityToId(source));
             obj.view.setSelectedCard(obj.view.SOURCE_CARD);
+            
+            obj.selectEntity(source);
         end
         
         function onExperimentBeganEpochGroup(obj, ~, event)
@@ -115,10 +120,6 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.selectEpochGroup(group);
             obj.view.collapseNode(obj.entityToId(group));
             obj.view.setEpochGroupNodeNormal(obj.entityToId(group));
-        end
-        
-        function onExperimentAddedNote(obj, ~, event)
-            
         end
         
         function addEpochGroup(obj, group)
@@ -148,6 +149,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setEpochGroupSource(group.source.id);
             obj.view.setSelectedNode(obj.entityToId(group));
             obj.view.setSelectedCard(obj.view.EPOCH_GROUP_CARD);
+            
+            obj.selectEntity(group);
         end
         
         function addEpoch(obj, epoch)
@@ -169,10 +172,60 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             node.selectFcn();
         end
         
+        function selectEntity(obj, entity)
+            obj.removeEntityListeners();
+            obj.addEntityListeners(entity);
+            obj.populateEntityAttributes(entity);
+        end
+        
+        function removeEntityListeners(obj)
+            obj.entityEventManager.removeAllListeners();
+        end
+        
+        function addEntityListeners(obj, entity)
+            manager = obj.entityEventManager;
+            manager.addListener(entity, 'AddedProperty', @obj.onEntityAddedProperty);
+            manager.addListener(entity, 'AddedKeyword', @obj.onEntityAddedKeyword);
+            manager.addListener(entity, 'AddedNote', @obj.onEntityAddedNote);
+        end
+        
+        function populateEntityAttributes(obj, entity)
+            obj.view.clearProperties();
+            obj.view.clearKeywords();
+            obj.view.clearNotes();
+            
+            propertyMap = entity.propertyMap;
+            keys = propertyMap.keys;
+            values = propertyMap.values;
+            for i = 1:numel(keys)
+                property.key = keys{i};
+                property.value = values{i};
+                obj.addProperty(property);
+            end
+            
+            keywords = entity.keywords;
+            for i = 1:numel(keywords)
+                obj.addKeyword(keywords{i});
+            end
+            
+            notes = entity.notes;
+            for i = 1:numel(notes)
+                obj.addNote(notes(i));
+            end
+        end
+        
         function onViewSelectedAddProperty(obj, ~, ~)
             node = obj.idToNode(obj.view.getSelectedNode());
             disp(node.entity);
             disp('Add property');
+        end
+        
+        function onEntityAddedProperty(obj, ~, ~)
+            obj.addProperty(event.data);
+        end
+        
+        function addProperty(obj, property)
+            obj.view.addProperty(property.key, property.value);
         end
         
         function onViewSelectedAddKeyword(obj, ~, ~)
@@ -181,10 +234,28 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             disp('Add keyword');
         end
         
+        function onEntityAddedKeyword(obj, ~, event)
+            obj.addKeyword(event.data);
+        end
+        
+        function addKeyword(obj, keyword)
+            obj.view.addKeyword(keyword);
+        end
+        
         function onViewSelectedAddNote(obj, ~, ~)
             node = obj.idToNode(obj.view.getSelectedNode());
-            disp(node.entity);
-            disp('Add note');
+            entity = node.entity;
+            
+            presenter = symphonyui.ui.presenters.AddNotePresenter(entity, obj.app);
+            presenter.goWaitStop();
+        end
+        
+        function onEntityAddedNote(obj, ~, event)
+            obj.addNote(event.data);
+        end
+        
+        function addNote(obj, note)
+            obj.view.addNote(note.date, note.text);
         end
         
         function i = entityToId(obj, entity)

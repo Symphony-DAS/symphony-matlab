@@ -319,6 +319,40 @@ classdef ExperimentView < symphonyui.ui.View
             node = obj.idToNode(id);
             obj.experimentTree.SelectedNodes = node;
         end
+        
+        function clearProperties(obj)
+            
+        end
+        
+        function addProperty(obj, key, value)
+            properties = get(obj.propertyGrid, 'Properties');
+            p = uiextras.jide.PropertyGridField(key, value);
+            set(obj.propertyGrid, 'Properties', [properties, p]);
+        end
+        
+        function clearKeywords(obj)
+            jtable = obj.keywordsTable.getTable();
+            jtable.getModel().setRowCount(0);
+        end
+        
+        function addKeyword(obj, keyword)
+            jtable = obj.keywordsTable.getTable();
+            jtable.getModel().addRow({keyword});
+            jtable.clearSelection();
+            jtable.scrollRectToVisible(jtable.getCellRect(jtable.getRowCount()-1, 0, true));
+        end
+        
+        function clearNotes(obj)
+            jtable = obj.notesTable.getTable();
+            jtable.getModel().setRowCount(0);
+        end
+        
+        function addNote(obj, date, text)
+            jtable = obj.notesTable.getTable();
+            jtable.getModel().addRow({datestr(date, 14), text});
+            jtable.clearSelection();
+            jtable.scrollRectToVisible(jtable.getCellRect(jtable.getRowCount()-1, 0, true));
+        end
 
     end
 
