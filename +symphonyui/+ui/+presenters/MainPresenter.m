@@ -20,9 +20,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 'protocol', symphonyui.ui.util.EventManager());
         end
         
-        function showRigConfiguration(obj)
-            rig = obj.acquisitionService.getRig();
-            presenter = symphonyui.ui.presenters.ConfigureRigPresenter(rig, obj.app);
+        function showRigSelector(obj)
+            presenter = symphonyui.ui.presenters.SelectRigPresenter(obj.acquisitionService, obj.app);
             presenter.goWaitStop();
         end
         
@@ -50,7 +49,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Preview', @obj.onViewSelectedPreview);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
-            obj.addListener(v, 'ConfigureRig', @obj.onViewSelectedConfigureRig);
+            obj.addListener(v, 'SelectRig', @obj.onViewSelectedSelectRig);
             obj.addListener(v, 'Settings', @obj.onViewSelectedSettings);
             obj.addListener(v, 'Documentation', @obj.onViewSelectedDocumentation);
             obj.addListener(v, 'UserGroup', @obj.onViewSelectedUserGroup);
@@ -60,6 +59,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             s = obj.acquisitionService;
             obj.addListener(s, 'OpenedExperiment', @obj.onServiceOpenedExperiment);
             obj.addListener(s, 'ClosedExperiment', @obj.onServiceClosedExperiment);
+            obj.addListener(s, 'SelectedRig', @obj.onServiceSelectedRig);
             obj.addListener(s, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             
             obj.addRigListeners();
@@ -152,12 +152,18 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.experimentPresenter.show();
         end
         
-        function onViewSelectedConfigureRig(obj, ~, ~)
-            obj.showRigConfiguration();
+        function onViewSelectedSelectRig(obj, ~, ~)
+            obj.showRigSelector();
+        end
+        
+        function onServiceSelectedRig(obj, ~, ~)
+            obj.removeRigListeners();
+            obj.addRigListeners();
+            obj.updateViewState();
         end
         
         function addRigListeners(obj)
-            rig = obj.acquisitionService.getRig();
+            rig = obj.acquisitionService.getCurrentRig();
             manager = obj.eventManagers.rig;
             manager.addListener(rig, 'Initialized', @obj.onRigInitialized);
             manager.addListener(rig, 'Closed', @obj.onRigClosed);
@@ -290,7 +296,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             import symphonyui.core.RigState;
             
             experiment = obj.acquisitionService.getCurrentExperiment();
-            rig = obj.acquisitionService.getRig();
+            rig = obj.acquisitionService.getCurrentRig();
             
             hasExperiment = ~isempty(experiment);
             hasSource = hasExperiment && ~isempty(experiment.sources);
@@ -304,7 +310,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasCurrentEpochGroup;
             enableViewExperiment = hasExperiment;
-            enableConfigureRig = ~hasExperiment && isStopped;
+            enableSelectRig = ~hasExperiment && isStopped;
             enableSettings = ~hasExperiment && isStopped;
             enableSelectProtocol = isStopped;
             enableProtocolProperties = isStopped;
@@ -363,7 +369,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
             obj.view.enableViewExperiment(enableViewExperiment);
-            obj.view.enableConfigureRig(enableConfigureRig);
+            obj.view.enableSelectRig(enableSelectRig);
             obj.view.enableSettings(enableSettings);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolProperties(enableProtocolProperties);
