@@ -32,8 +32,8 @@ classdef Experiment < symphonyui.core.Entity
             obj.name = name;
             obj.location = location;
             obj.purpose = purpose;
-            obj.sources = Source.empty(0, 1);
-            obj.epochGroups = EpochGroup.empty(0, 1);
+            obj.sources = {};
+            obj.epochGroups = {};
             obj.idGenerators = struct( ...
                 'source', util.IdGenerator(), ...
                 'epochGroup', util.IdGenerator());
@@ -51,15 +51,19 @@ classdef Experiment < symphonyui.core.Entity
 
         function i = getAllSourceIds(obj)
             i = {};
-            list = createFlatList(obj.sources, symphonyui.core.Source.empty(0, 1));
+            list = createFlatList(obj.sources);
             for k = 1:numel(list)
-                i{k} = list(k).id; %#ok<AGROW>
+                i{k} = list{k}.id; %#ok<AGROW>
             end
         end
 
         function s = getSource(obj, id)
-            list = createFlatList(obj.sources, symphonyui.core.Source.empty(0, 1));
-            s = list(arrayfun(@(e)strcmp(e.id, id), list));
+            list = createFlatList(obj.sources);
+            index = cellfun(@(c)strcmp(c.id, id), list);
+            if isempty(index)
+                error(['No source with id ''' id '''']);
+            end
+            s = list{index};
         end
 
         function addSource(obj, label, parentId)
@@ -67,10 +71,14 @@ classdef Experiment < symphonyui.core.Entity
                 error('Label cannot be empty');
             end
             sourceId = obj.idGenerators.source.generateId(label);
-            parent = obj.getSource(parentId);
+            if isempty(parentId)
+                parent = [];
+            else
+                parent = obj.getSource(parentId);
+            end
             source = symphonyui.core.Source(sourceId, label, parent);
             if isempty(parent)
-                obj.sources(end + 1) = source;
+                obj.sources{end + 1} = source;
             else
                 parent.addChild(source);
             end
@@ -79,15 +87,19 @@ classdef Experiment < symphonyui.core.Entity
 
         function i = getAllEpochGroupIds(obj)
             i = {};
-            list = createFlatList(obj.epochGroups, symphonyui.core.EpochGroup.empty(0, 1));
+            list = createFlatList(obj.epochGroups);
             for k = 1:numel(list)
                 i{k} = list(k).id; %#ok<AGROW>
             end
         end
 
         function e = getEpochGroup(obj, id)
-            list = createFlatList(obj.epochGroups, symphonyui.core.EpochGroup.empty(0, 1));
-            e = list(arrayfun(@(e)strcmp(e.id, id), list));
+            list = createFlatList(obj.epochGroups);
+            index = cellfun(@(c)strcmp(c.id, id), list);
+            if isempty(index)
+                error(['No epoch group with id ''' id '''']);
+            end
+            e = list{index};
         end
 
         function beginEpochGroup(obj, label, sourceId)
@@ -102,7 +114,7 @@ classdef Experiment < symphonyui.core.Entity
             parent = obj.currentEpochGroup;
             group = symphonyui.core.EpochGroup(groupId, label, source, parent);
             if isempty(parent)
-                obj.epochGroups(end + 1) = group;
+                obj.epochGroups{end + 1} = group;
             else
                 parent.addChild(group);
             end
@@ -128,10 +140,14 @@ classdef Experiment < symphonyui.core.Entity
 end
 
 function list = createFlatList(items, list)
-    for i = 1:numel(items)
-        list(end + 1) = items(i); %#ok<AGROW>
+    if nargin < 2
+        list = {};
+    end
 
-        children = items(i).children;
+    for i = 1:numel(items)
+        list{end + 1} = items{i}; %#ok<AGROW>
+
+        children = items{i}.children;
         list = createFlatList(children, list);
     end
 end

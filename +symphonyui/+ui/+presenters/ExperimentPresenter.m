@@ -54,12 +54,12 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             
             sources = obj.experiment.sources;
             for i = 1:numel(sources)
-                obj.addSource(sources(i));
+                obj.addSource(sources{i});
             end
             
             groups = obj.experiment.epochGroups;
             for i = 1:numel(groups)
-                obj.addEpochGroup(groups(i));
+                obj.addEpochGroup(groups{i});
             end
         end
         
@@ -116,7 +116,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function onExperimentEndedEpochGroup(obj, ~, event)
-            group = event.epochGroup;
+            group = event.data;
             obj.selectEpochGroup(group);
             obj.view.collapseNode(obj.entityToId(group));
             obj.view.setEpochGroupNodeNormal(obj.entityToId(group));
@@ -210,7 +210,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             
             notes = entity.notes;
             for i = 1:numel(notes)
-                obj.addNote(notes(i));
+                obj.addNote(notes{i});
             end
         end
         

@@ -57,6 +57,9 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             obj.view.update();
             
             parent = obj.view.getSelectedParent();
+            if strcmp(parent, '(None)')
+                parent = [];
+            end
             label = obj.view.getLabel();
             
             try
