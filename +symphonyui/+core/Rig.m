@@ -28,7 +28,6 @@ classdef Rig < handle
             if obj.isInitialized
                 return;
             end
-            obj.setup();
             obj.isInitialized = true;
             notify(obj, 'Initialized');
         end
@@ -71,10 +70,6 @@ classdef Rig < handle
             msg = [];
         end
         
-    end
-    
-    methods (Abstract)
-        setup(obj);
     end
     
 end
