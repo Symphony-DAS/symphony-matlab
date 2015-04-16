@@ -20,7 +20,6 @@ function main()
     app = App(config);
     
     presenter = symphonyui.ui.presenters.MainPresenter(acquisitionService, app);
-    presenter.showRigLoader();
     presenter.go();
 end
 

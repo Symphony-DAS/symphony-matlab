@@ -3,6 +3,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
     properties (Access = private)
         acquisitionService
         experimentPresenter
+        rigPresenter
         protocolIdToName
         eventManagers
     end
@@ -22,18 +23,18 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 'protocol', symphonyui.ui.util.EventManager());
         end
         
-        function showRigLoader(obj)
-            presenter = symphonyui.ui.presenters.LoadRigPresenter(obj.acquisitionService, obj.app);
-            presenter.goWaitStop();
-        end
-        
     end
     
     methods (Access = protected)
         
         function onGoing(obj)
+            obj.showRigLoader();
             obj.populateProtocolList();
             obj.selectCurrentProtocol();
+        end
+        
+        function onStopping(obj)
+            delete(obj.acquisitionService);
         end
         
         function onBind(obj)
@@ -52,6 +53,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
             obj.addListener(v, 'LoadRig', @obj.onViewSelectedLoadRig);
+            obj.addListener(v, 'ViewRig', @obj.onViewSelectedViewRig);
             obj.addListener(v, 'Settings', @obj.onViewSelectedSettings);
             obj.addListener(v, 'Documentation', @obj.onViewSelectedDocumentation);
             obj.addListener(v, 'UserGroup', @obj.onViewSelectedUserGroup);
@@ -66,13 +68,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             obj.addRigListeners();
             obj.addProtocolListeners();
-            if obj.acquisitionService.hasCurrentExperiment()
+            if ~isempty(obj.acquisitionService.getCurrentExperiment())
                 obj.addExperimentListeners();
             end
-        end
-        
-        function onViewSelectedClose(obj, ~, ~)
-            obj.exit();
         end
         
     end
@@ -91,22 +89,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onServiceOpenedExperiment(obj, ~, ~)   
             obj.addExperimentListeners();
             obj.updateViewState();
-            
-            experiment = obj.acquisitionService.getCurrentExperiment();
-            obj.experimentPresenter = symphonyui.ui.presenters.ExperimentPresenter(experiment, obj.app);
-            obj.experimentPresenter.go();
-        end
-        
-        function onViewSelectedCloseExperiment(obj, ~, ~)
-            obj.acquisitionService.closeExperiment();
-        end
-        
-        function onServiceClosedExperiment(obj, ~, ~)
-            obj.removeExperimentListeners();
-            obj.updateViewState();
-            
-            obj.experimentPresenter.stop();
-            obj.experimentPresenter = [];
+            obj.showExperiment();
         end
         
         function addExperimentListeners(obj)
@@ -119,6 +102,20 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function removeExperimentListeners(obj)
             obj.eventManagers.experiment.removeAllListeners();
+        end
+        
+        function onViewSelectedCloseExperiment(obj, ~, ~)
+            obj.acquisitionService.closeExperiment();
+        end
+        
+        function onServiceClosedExperiment(obj, ~, ~)
+            obj.removeExperimentListeners();
+            obj.updateViewState();
+            
+            if ~isempty(obj.experimentPresenter)
+                obj.experimentPresenter.stop();
+                obj.experimentPresenter = [];
+            end
         end
         
         function onViewSelectedAddSource(obj, ~, ~)
@@ -151,11 +148,27 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedViewExperiment(obj, ~, ~)
-            obj.experimentPresenter.show();
+            obj.showExperiment();
+        end
+        
+        function showExperiment(obj)
+            if isempty(obj.experimentPresenter) || obj.experimentPresenter.isStopped
+                experiment = obj.acquisitionService.getCurrentExperiment();
+                obj.experimentPresenter = symphonyui.ui.presenters.ExperimentPresenter(experiment, obj.app);
+                obj.experimentPresenter.hideOnViewSelectedClose = true;
+                obj.experimentPresenter.go();
+            else
+                obj.experimentPresenter.show();
+            end
         end
         
         function onViewSelectedLoadRig(obj, ~, ~)
             obj.showRigLoader();
+        end
+        
+        function showRigLoader(obj)
+            presenter = symphonyui.ui.presenters.LoadRigPresenter(obj.acquisitionService, obj.app);
+            presenter.goWaitStop();
         end
         
         function onServiceLoadedRig(obj, ~, ~)
@@ -176,12 +189,31 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.eventManagers.rig.removeAllListeners();
         end
         
+        function onViewSelectedViewRig(obj, ~, ~)
+            obj.showRig();
+        end
+        
+        function showRig(obj)
+            if isempty(obj.rigPresenter) || obj.rigPresenter.isStopped
+                rig = obj.acquisitionService.getCurrentRig();
+                obj.rigPresenter = symphonyui.ui.presenters.RigPresenter(rig, obj.app);
+                obj.rigPresenter.go();
+            else
+                obj.rigPresenter.show();
+            end
+        end
+        
         function onRigInitialized(obj, ~, ~)
             obj.updateViewState();
         end
         
         function onRigClosed(obj, ~, ~)
             obj.updateViewState();
+            
+            if ~isempty(obj.rigPresenter)
+                obj.rigPresenter.stop();
+                obj.rigPresenter = [];
+            end
         end
         
         function onRigSetState(obj, ~, ~)
@@ -418,11 +450,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedExit(obj, ~, ~)
-            obj.exit();
-        end
-        
-        function exit(obj)
-            delete(obj.acquisitionService);
             obj.stop();
         end
         

@@ -6,7 +6,7 @@ classdef ExperimentFactory < handle
             e = symphonyui.core.Experiment(name, location, purpose);
         end
         
-        function e = open(obj, path)
+        function e = load(obj, path)
             e = symphonyui.core.Experiment('name', 'location');
         end
         

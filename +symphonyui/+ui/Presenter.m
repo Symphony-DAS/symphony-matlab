@@ -1,5 +1,13 @@
 classdef Presenter < handle
     
+    properties
+        hideOnViewSelectedClose
+    end
+    
+    properties (SetAccess = private)
+        isStopped
+    end
+    
     properties (Access = protected)
         log
         app
@@ -13,6 +21,8 @@ classdef Presenter < handle
     methods
         
         function obj = Presenter(app, view)
+            obj.hideOnViewSelectedClose = false;
+            obj.isStopped = false;
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.app = app;
             obj.view = view;
@@ -30,16 +40,20 @@ classdef Presenter < handle
             obj.onGo();
         end
         
-        % A Presenter must be stopped or a memory leak will result.
         function stop(obj)
             obj.onStopping();
             obj.unbind();
             obj.view.close();
+            obj.isStopped = true;
             obj.onStop();
         end
         
         function show(obj)
             obj.view.show();
+        end
+        
+        function hide(obj)
+            obj.view.hide();
         end
         
         function goWaitStop(obj)
@@ -85,7 +99,11 @@ classdef Presenter < handle
         end
         
         function onViewSelectedClose(obj, ~, ~)
-            obj.view.hide();
+            if obj.hideOnViewSelectedClose
+                obj.hide();
+            else
+                obj.stop();
+            end
         end
         
     end

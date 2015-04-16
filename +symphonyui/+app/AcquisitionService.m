@@ -34,12 +34,13 @@ classdef AcquisitionService < handle
             if ~isempty(obj.getCurrentExperiment())
                 obj.closeExperiment();
             end
+            obj.getCurrentRig().close();
         end
 
         %% Experiment
 
         function createExperiment(obj, name, location, purpose)
-            if obj.hasCurrentExperiment()
+            if ~isempty(obj.getCurrentExperiment())
                 error('An experiment is already open');
             end
             experiment = obj.experimentFactory.create(name, location, purpose);
@@ -49,25 +50,22 @@ classdef AcquisitionService < handle
         end
 
         function openExperiment(obj, path)
-            if obj.hasCurrentExperiment()
+            if ~isempty(obj.getCurrentExperiment())
                 error('An experiment is already open');
             end
-            experiment = obj.experimentFactory.open(path);
+            experiment = obj.experimentFactory.load(path);
+            experiment.open();
             obj.session.experiment = experiment;
             notify(obj, 'OpenedExperiment');
         end
-
+        
         function closeExperiment(obj)
-            if ~obj.hasCurrentExperiment()
+            if isempty(obj.getCurrentExperiment())
                 error('No experiment open');
             end
             obj.session.experiment.close();
             obj.session.experiment = [];
             notify(obj, 'ClosedExperiment');
-        end
-
-        function tf = hasCurrentExperiment(obj)
-            tf = ~isempty(obj.getCurrentExperiment());
         end
 
         function e = getCurrentExperiment(obj)
@@ -81,7 +79,7 @@ classdef AcquisitionService < handle
             rig.initialize();
             
             obj.session.rig = rig;
-            obj.getCurrentProtocol().setRig(rig);
+            obj.session.protocol.setRig(rig);
             
             notify(obj, 'LoadedRig');
         end
@@ -112,7 +110,7 @@ classdef AcquisitionService < handle
         end
         
         function i = getCurrentProtocolId(obj)
-            protocol = obj.getCurrentProtocol();
+            protocol = obj.session.protocol;
             if isa(protocol, 'symphonyui.app.nulls.NullProtocol')
                 i = '(None)';
                 return;
@@ -123,7 +121,7 @@ classdef AcquisitionService < handle
         %% Acquisition
 
         function record(obj)
-            if ~obj.hasCurrentExperiment()
+            if ~isempty(obj.getCurrentExperiment())
                 error('No experiment open');
             end
             rig = obj.getCurrentRig();

@@ -41,6 +41,7 @@ classdef Experiment < symphonyui.core.Entity
 
         function open(obj)
             obj.startTime = now;
+            obj.endTime = [];
             notify(obj, 'Opened');
         end
 
