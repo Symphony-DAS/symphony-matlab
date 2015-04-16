@@ -22,6 +22,7 @@ classdef Rig < handle
         function obj = Rig()
             obj.isInitialized = false;
             obj.state = symphonyui.core.RigState.STOPPED;
+            obj.configure();
         end
         
         function initialize(obj)
@@ -70,6 +71,10 @@ classdef Rig < handle
             msg = [];
         end
         
+    end
+    
+    methods (Abstract)
+        configure(obj);
     end
     
 end

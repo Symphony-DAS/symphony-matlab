@@ -22,8 +22,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 'protocol', symphonyui.ui.util.EventManager());
         end
         
-        function showRigConfigurationLoader(obj)
-            presenter = symphonyui.ui.presenters.LoadRigConfigurationPresenter(obj.acquisitionService, obj.app);
+        function showRigLoader(obj)
+            presenter = symphonyui.ui.presenters.LoadRigPresenter(obj.acquisitionService, obj.app);
             presenter.goWaitStop();
         end
         
@@ -51,7 +51,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Preview', @obj.onViewSelectedPreview);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
-            obj.addListener(v, 'LoadRigConfiguration', @obj.onViewSelectedLoadRigConfiguration);
+            obj.addListener(v, 'LoadRig', @obj.onViewSelectedLoadRig);
             obj.addListener(v, 'Settings', @obj.onViewSelectedSettings);
             obj.addListener(v, 'Documentation', @obj.onViewSelectedDocumentation);
             obj.addListener(v, 'UserGroup', @obj.onViewSelectedUserGroup);
@@ -61,7 +61,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             s = obj.acquisitionService;
             obj.addListener(s, 'OpenedExperiment', @obj.onServiceOpenedExperiment);
             obj.addListener(s, 'ClosedExperiment', @obj.onServiceClosedExperiment);
-            obj.addListener(s, 'LoadedRigConfiguration', @obj.onServiceLoadedRigConfiguration);
+            obj.addListener(s, 'LoadedRig', @obj.onServiceLoadedRig);
             obj.addListener(s, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             
             obj.addRigListeners();
@@ -154,11 +154,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.experimentPresenter.show();
         end
         
-        function onViewSelectedLoadRigConfiguration(obj, ~, ~)
-            obj.showRigConfigurationLoader();
+        function onViewSelectedLoadRig(obj, ~, ~)
+            obj.showRigLoader();
         end
         
-        function onServiceLoadedRigConfiguration(obj, ~, ~)
+        function onServiceLoadedRig(obj, ~, ~)
             obj.removeRigListeners();
             obj.addRigListeners();
             obj.updateViewState();
@@ -323,7 +323,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasCurrentEpochGroup;
             enableViewExperiment = hasExperiment;
-            enableLoadRigConfiguration = ~hasExperiment && isStopped;
+            enableLoadRig = ~hasExperiment && isStopped;
             enableSettings = ~hasExperiment && isStopped;
             enableSelectProtocol = isStopped;
             enableProtocolProperties = isStopped;
@@ -382,7 +382,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
             obj.view.enableViewExperiment(enableViewExperiment);
-            obj.view.enableLoadRigConfiguration(enableLoadRigConfiguration);
+            obj.view.enableLoadRig(enableLoadRig);
             obj.view.enableSettings(enableSettings);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolProperties(enableProtocolProperties);

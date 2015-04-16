@@ -1,4 +1,4 @@
-classdef LoadRigConfigurationView < symphonyui.ui.View
+classdef LoadRigView < symphonyui.ui.View
 
     events
         BrowseLocation
@@ -17,7 +17,7 @@ classdef LoadRigConfigurationView < symphonyui.ui.View
         function createUi(obj)
             import symphonyui.ui.util.*;
 
-            set(obj.figureHandle, 'Name', 'Load Rig Configuration');
+            set(obj.figureHandle, 'Name', 'Load Rig');
             set(obj.figureHandle, 'Position', screenCenter(500, 79));
             set(obj.figureHandle, 'WindowStyle', 'modal');
 

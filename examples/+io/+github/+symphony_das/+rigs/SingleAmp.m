@@ -2,7 +2,7 @@ classdef SingleAmp < symphonyui.core.Rig
     
     methods
         
-        function setup(obj)
+        function configure(obj)
         end
         
     end

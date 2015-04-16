@@ -1,4 +1,4 @@
-classdef LoadRigConfigurationPresenter < symphonyui.ui.Presenter
+classdef LoadRigPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
         acquisitionService
@@ -6,9 +6,9 @@ classdef LoadRigConfigurationPresenter < symphonyui.ui.Presenter
     
     methods
         
-        function obj = LoadRigConfigurationPresenter(acquisitionService, app, view)
+        function obj = LoadRigPresenter(acquisitionService, app, view)
             if nargin < 3
-                view = symphonyui.ui.views.LoadRigConfigurationView();
+                view = symphonyui.ui.views.LoadRigView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
             obj.acquisitionService = acquisitionService;
@@ -44,7 +44,7 @@ classdef LoadRigConfigurationPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedBrowseLocation(obj, ~, ~)
-            [filename, pathname] = uigetfile(pwd, 'Rig Configuration Location');
+            [filename, pathname] = uigetfile(pwd, 'Rig Location');
             if filename ~= 0
                 location = fullfile(pathname, filename);
                 obj.view.setLocation(location);
@@ -57,7 +57,7 @@ classdef LoadRigConfigurationPresenter < symphonyui.ui.Presenter
             location = obj.view.getLocation();
             
             try
-                obj.acquisitionService.loadRigConfiguration(location);
+                obj.acquisitionService.loadRig(location);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

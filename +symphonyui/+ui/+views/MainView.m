@@ -15,7 +15,7 @@ classdef MainView < symphonyui.ui.View
         Preview
         Pause
         Stop
-        LoadRigConfiguration
+        LoadRig
         Settings
         Documentation
         UserGroup
@@ -107,10 +107,10 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'Tools');
             obj.toolsMenu.modulesMenu.root = uimenu(obj.toolsMenu.root, ...
                 'Label', 'Modules');
-            obj.toolsMenu.loadRigConfiguration = uimenu(obj.toolsMenu.root, ...
-                'Label', 'Load Rig Configuration...', ...
+            obj.toolsMenu.loadRig = uimenu(obj.toolsMenu.root, ...
+                'Label', 'Load Rig...', ...
                 'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'LoadRigConfiguration'));
+                'Callback', @(h,d)notify(obj, 'LoadRig'));
             obj.toolsMenu.settings = uimenu(obj.toolsMenu.root, ...
                 'Label', 'Settings...', ...
                 'Separator', 'on', ...
@@ -250,8 +250,8 @@ classdef MainView < symphonyui.ui.View
             set(obj.experimentMenu.viewExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
-        function enableLoadRigConfiguration(obj, tf)
-            set(obj.toolsMenu.loadRigConfiguration, 'Enable', symphonyui.ui.util.onOff(tf));
+        function enableLoadRig(obj, tf)
+            set(obj.toolsMenu.loadRig, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableSettings(obj, tf)

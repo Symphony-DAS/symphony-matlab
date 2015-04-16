@@ -3,7 +3,7 @@ classdef RigFactory < handle
     methods
         
         function r = load(obj, path)
-            r = symphonyui.core.Rig();
+            r = io.github.symphony_das.rigs.SingleAmp();
         end
         
     end

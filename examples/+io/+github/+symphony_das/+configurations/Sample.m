@@ -5,8 +5,8 @@ classdef Sample < symphonyui.core.RigConfiguration
         function obj = Sample()
             import symphonyui.builtin.devices.*;
             
-            obj.devices{end + 1} = MultiClampDevice();
-            obj.devices{end + 1} = GenericDevice();
+            obj.addDevice(MultiClampDevice());
+            obj.addDevice(GenericDevice());
         end
         
     end

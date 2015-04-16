@@ -2,7 +2,7 @@ classdef NullRig < symphonyui.core.Rig
 
     methods
 
-        function setup(obj) %#ok<MANU>
+        function configure(obj) %#ok<MANU>
 
         end
 
