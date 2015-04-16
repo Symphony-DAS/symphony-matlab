@@ -3,30 +3,31 @@ classdef AcquisitionService < handle
     events (NotifyAccess = private)
         OpenedExperiment
         ClosedExperiment
-        SelectedRig
+        LoadedRigConfiguration
         SelectedProtocol
     end
 
     properties (Access = private)
         experimentFactory
-        rigDescriptorRepository
-        protocolDescriptorRepository
+        rigFactory
+        protocolRepository
     end
 
     properties (Access = private)
         session
     end
 
-    properties (Constant, Access = private)
-        NONE_ID = '(None)';
-    end
-
     methods
 
-        function obj = AcquisitionService(experimentFactory, rigDescriptorRepository, protocolDescriptorRepository)
+        function obj = AcquisitionService(experimentFactory, rigFactory, protocolRepository)
             obj.experimentFactory = experimentFactory;
-            obj.rigDescriptorRepository = rigDescriptorRepository;
-            obj.protocolDescriptorRepository = protocolDescriptorRepository;
+            obj.rigFactory = rigFactory;
+            obj.protocolRepository = protocolRepository;
+            
+            obj.session = struct( ...
+                'experiment', [], ...
+                'rig', symphonyui.app.nulls.NullRig(), ...
+                'protocol', symphonyui.app.nulls.NullProtocol());
         end
 
         function delete(obj)
@@ -70,96 +71,53 @@ classdef AcquisitionService < handle
         end
 
         function e = getCurrentExperiment(obj)
-            e = [];
-            if isfield(obj.session, 'experiment')
-                e = obj.session.experiment;
-            end
+            e = obj.session.experiment;
         end
 
         %% Rig
-
-        function i = getAvailableRigIds(obj)
-            i = [symphonyui.app.AcquisitionService.NONE_ID, obj.rigDescriptorRepository.getAllIds()];
-        end
-
-        function selectRig(obj, id)
-            obj.getCurrentRig().close();
-
-            rig = obj.getRig(id);
+        
+        function loadRigConfiguration(obj, path)
+            rig = obj.rigFactory.load(path);
             rig.initialize();
-
+            
             obj.session.rig = rig;
-            obj.session.rigId = id;
             obj.getCurrentProtocol().setRig(rig);
-
-            notify(obj, 'SelectedRig');
+            
+            notify(obj, 'LoadedRigConfiguration');
         end
-
-        function r = getRig(obj, id)
-            if strcmp(id, symphonyui.app.AcquisitionService.NONE_ID)
-                className = 'symphonyui.app.nulls.NullRig';
-            else
-                descriptor = obj.rigDescriptorRepository.get(id);
-                className = descriptor.class;
-            end
-            constructor = str2func(className);
-            r = constructor();
-        end
-
-        function i = getCurrentRigId(obj)
-            if isfield(obj.session, 'rigId')
-                i = obj.session.rigId;
-            else
-                i = symphonyui.app.AcquisitionService.NONE_ID;
-            end
-        end
-
+        
         function r = getCurrentRig(obj)
-            if isfield(obj.session, 'rig')
-                r = obj.session.rig;
-            else
-                r = obj.getRig(symphonyui.app.AcquisitionService.NONE_ID);
-            end
+            r = obj.session.rig;
         end
-
+        
         %% Protocol
 
         function i = getAvailableProtocolIds(obj)
-            i = [symphonyui.app.AcquisitionService.NONE_ID, obj.protocolDescriptorRepository.getAllIds()];
+            i = [{'(None)'}, obj.protocolRepository.getAllIds()];
         end
 
         function selectProtocol(obj, id)
-            obj.session.protocol = obj.getProtocol(id);
-            obj.session.protocolId = id;
+            if strcmp(id, '(None)')
+                protocol = symphonyui.app.nulls.NullProtocol();
+            else
+                protocol = obj.protocolRepository.get(id);
+            end
+            obj.session.protocol = protocol;
             obj.session.protocol.setRig(obj.getCurrentRig());
             notify(obj, 'SelectedProtocol');
         end
-
-        function p = getProtocol(obj, id)
-            if strcmp(id, symphonyui.app.AcquisitionService.NONE_ID)
-                className = 'symphonyui.app.nulls.NullProtocol';
-            else
-                descriptor = obj.protocolDescriptorRepository.get(id);
-                className = descriptor.class;
-            end
-            constructor = str2func(className);
-            p = constructor();
-        end
-
-        function i = getCurrentProtocolId(obj)
-            if isfield(obj.session, 'protocolId')
-                i = obj.session.protocolId;
-            else
-                i = symphonyui.app.AcquisitionService.NONE_ID;
-            end
-        end
-
+        
         function p = getCurrentProtocol(obj)
-            if isfield(obj.session, 'protocol')
-                p = obj.session.protocol;
-            else
-                p = obj.getProtocol(symphonyui.app.AcquisitionService.NONE_ID);
+            p = obj.session.protocol;
+        end
+        
+        function i = getCurrentProtocolId(obj)
+            protocol = obj.getCurrentProtocol();
+            if isa(protocol, 'symphonyui.app.nulls.NullProtocol')
+                i = '(None)';
+                return;
             end
+            i = obj.protocolRepository.getId(protocol);
         end
 
         %% Acquisition

@@ -1,4 +1,4 @@
-classdef SelectRigPresenter < symphonyui.ui.Presenter
+classdef LoadRigConfigurationPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
         acquisitionService
@@ -6,9 +6,9 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
     
     methods
         
-        function obj = SelectRigPresenter(acquisitionService, app, view)
+        function obj = LoadRigConfigurationPresenter(acquisitionService, app, view)
             if nargin < 3
-                view = symphonyui.ui.views.SelectRigView();
+                view = symphonyui.ui.views.LoadRigConfigurationView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
             obj.acquisitionService = acquisitionService;
@@ -19,18 +19,15 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
-            obj.populateRigList();
-            obj.view.setSelectedRig(obj.acquisitionService.getCurrentRigId());
+            
         end
         
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
-            obj.addListener(v, 'Ok', @obj.onViewSelectedOk);
+            obj.addListener(v, 'BrowseLocation', @obj.onViewSelectedBrowseLocation);
+            obj.addListener(v, 'Load', @obj.onViewSelectedLoad);
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
-            
-            s = obj.acquisitionService;
-            obj.addListener(s, 'SelectedRig', @obj.onServiceSelectedRig);
         end
         
     end
@@ -40,25 +37,27 @@ classdef SelectRigPresenter < symphonyui.ui.Presenter
         function onViewKeyPress(obj, ~, event)
             switch event.key
                 case 'return'
-                    obj.onViewSelectedOk();
+                    obj.onViewSelectedLoad();
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
         end
         
-        function populateRigList(obj)
-            obj.view.setRigList(obj.acquisitionService.getAvailableRigIds());
+        function onViewSelectedBrowseLocation(obj, ~, ~)
+            [filename, pathname] = uigetfile(pwd, 'Rig Configuration Location');
+            if filename ~= 0
+                location = fullfile(pathname, filename);
+                obj.view.setLocation(location);
+            end
         end
         
-        function onServiceSelectedRig(obj, ~, ~)
-            obj.view.setSelectedRig(obj.acquisitionService.getCurrentRigId());
-        end
-        
-        function onViewSelectedOk(obj, ~, ~)
+        function onViewSelectedLoad(obj, ~, ~)
             obj.view.update();
             
+            location = obj.view.getLocation();
+            
             try
-                obj.acquisitionService.selectRig(obj.view.getSelectedRig());
+                obj.acquisitionService.loadRigConfiguration(location);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

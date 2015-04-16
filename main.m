@@ -8,21 +8,15 @@ function main()
     config.setDefaults(getDefaults());
     
     experimentFactory = ExperimentFactory();
+    rigFactory = RigFactory();
+    protocolRepository = ClassRepository('symphonyui.core.Protocol', config.get(Settings.GENERAL_PROTOCOL_SEARCH_PATH));
     
-    rigDescriptorRepository = ClassDescriptorRepository('symphonyui.core.Rig');
-    rigDescriptorRepository.setSearchPaths(config.get(Settings.GENERAL_RIG_SEARCH_PATH));
-    rigDescriptorRepository.loadAll();
-    
-    protocolDescriptorRepository = ClassDescriptorRepository('symphonyui.core.Protocol');
-    protocolDescriptorRepository.setSearchPaths(config.get(Settings.GENERAL_PROTOCOL_SEARCH_PATH));
-    protocolDescriptorRepository.loadAll();
-    
-    acquisitionService = AcquisitionService(experimentFactory, rigDescriptorRepository, protocolDescriptorRepository);
+    acquisitionService = AcquisitionService(experimentFactory, rigFactory, protocolRepository);
     
     app = App(config);
     
     presenter = symphonyui.ui.presenters.MainPresenter(acquisitionService, app);
-    presenter.showRigSelector();
+    presenter.showRigConfigurationLoader();
     presenter.go();
 end
 

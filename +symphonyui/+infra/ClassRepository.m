@@ -1,29 +1,21 @@
-classdef ClassDescriptorRepository < handle
+classdef ClassRepository < handle
 
     properties (Access = private)
         subtype
         searchPaths
-        idToDescriptor
+        objectCache
+        classNames
     end
 
     methods
         
-        function obj = ClassDescriptorRepository(subtype)
+        function obj = ClassRepository(subtype, searchPaths)
             obj.subtype = subtype;
+            obj.setSearchPaths(searchPaths);
+            obj.objectCache = containers.Map();
+            obj.loadAll();
         end
-
-        function o = getAll(obj)
-            o = obj.idToDescriptor.values;
-        end
-
-        function o = getAllIds(obj)
-            o = obj.idToDescriptor.keys;
-        end
-
-        function o = get(obj, id)
-            o = obj.idToDescriptor(id);
-        end
-
+        
         function setSearchPaths(obj, paths)
             for i = 1:numel(paths)
                 [~, parent] = packageName(paths{i});
@@ -35,22 +27,33 @@ classdef ClassDescriptorRepository < handle
         end
 
         function loadAll(obj)
-            obj.idToDescriptor = containers.Map();
-
-            classNames = discover(obj.subtype, obj.searchPaths);
-            for i = 1:numel(classNames)
-                try %#ok<TRYNC>
-                    obj.load(classNames{i});
-                end
-            end
+            obj.classNames = discover(obj.subtype, obj.searchPaths);
         end
         
-        function load(obj, className)
-            clazz = meta.class.fromName(className);
-            split = strsplit(clazz.Name, '.');
-            descriptor.id = humanize(split{end});
-            descriptor.class = clazz.Name;
-            obj.idToDescriptor(descriptor.id) = descriptor;
+        function i = getId(obj, object)
+            className = class(object);
+            if ~any(strcmp(className, obj.classNames))
+                error('Object does not exist is repository');
+            end
+            i = className;
+        end
+        
+        function i = getAllIds(obj)
+            i = obj.classNames;
+        end
+
+        function o = get(obj, id)
+            if ~any(strcmp(id, obj.classNames))
+                error(['''' id ''' does not exist is repository']);
+            end
+            if obj.objectCache.isKey(id)
+                o = obj.objectCache(id);
+                return;
+            end
+            className = id;
+            constructor = str2func(className);
+            o = constructor();
+            obj.objectCache(id) = o;
         end
 
     end
@@ -82,13 +85,6 @@ function names = discover(type, paths)
             names{end + 1} = className;
         end
     end
-end
-
-function n = humanize(n)
-    n = regexprep(n, '([A-Z][a-z]+)', ' $1');
-    n = regexprep(n, '([A-Z][A-Z]+)', ' $1');
-    n = regexprep(n, '([^A-Za-z ]+)', ' $1');
-    n = strtrim(n);
 end
 
 function [name, parentPath] = packageName(path)

@@ -1,13 +1,14 @@
-classdef SelectRigView < symphonyui.ui.View
+classdef LoadRigConfigurationView < symphonyui.ui.View
 
     events
-        Ok
+        BrowseLocation
+        Load
         Cancel
     end
-
+    
     properties (Access = private)
-        rigDropDown
-        okButton
+        locationField
+        loadButton
         cancelButton
     end
 
@@ -16,8 +17,8 @@ classdef SelectRigView < symphonyui.ui.View
         function createUi(obj)
             import symphonyui.ui.util.*;
 
-            set(obj.figureHandle, 'Name', 'Select Rig');
-            set(obj.figureHandle, 'Position', screenCenter(250, 79));
+            set(obj.figureHandle, 'Name', 'Load Rig Configuration');
+            set(obj.figureHandle, 'Position', screenCenter(500, 79));
             set(obj.figureHandle, 'WindowStyle', 'modal');
 
             mainLayout = uiextras.VBox( ...
@@ -28,19 +29,20 @@ classdef SelectRigView < symphonyui.ui.View
             rigLayout = uiextras.VBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
-
-            obj.rigDropDown = createLabeledDropDownMenu(rigLayout, 'Rig:', 25);
+            rigLabelSize = 58;
+            
+            obj.locationField = createLabeledTextFieldWithButton(rigLayout, 'Location:', rigLabelSize, @(h,d)notify(obj, 'BrowseLocation'));
 
             % Ok/Cancel controls.
             controlsLayout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
             uiextras.Empty('Parent', controlsLayout);
-            obj.okButton = uicontrol( ...
+            obj.loadButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
-                'String', 'OK', ...
-                'Callback', @(h,d)notify(obj, 'Ok'));
+                'String', 'Load', ...
+                'Callback', @(h,d)notify(obj, 'Load'));
             obj.cancelButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
@@ -50,27 +52,19 @@ classdef SelectRigView < symphonyui.ui.View
 
             set(mainLayout, 'Sizes', [-1 25]);
 
-            % Set ok button to appear as the default button.
+            % Set load button to appear as the default button.
             try %#ok<TRYNC>
                 h = handle(obj.figureHandle);
-                h.setDefaultButton(obj.okButton);
+                h.setDefaultButton(obj.loadButton);
             end
         end
 
-        function r = getSelectedRig(obj)
-            r = symphonyui.ui.util.getSelectedValue(obj.rigDropDown);
+        function l = getLocation(obj)
+            l = get(obj.locationField, 'String');
         end
 
-        function setSelectedRig(obj, r)
-            symphonyui.ui.util.setSelectedValue(obj.rigDropDown, r);
-        end
-
-        function setRigList(obj, l)
-            symphonyui.ui.util.setStringList(obj.rigDropDown, l);
-        end
-
-        function enableOk(obj, tf)
-            set(obj.okButton, 'Enable', onOff(tf));
+        function setLocation(obj, l)
+            set(obj.locationField, 'String', l);
         end
 
     end

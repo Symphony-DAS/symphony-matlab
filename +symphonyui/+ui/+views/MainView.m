@@ -15,8 +15,7 @@ classdef MainView < symphonyui.ui.View
         Preview
         Pause
         Stop
-        SelectRig
-        ViewRig
+        LoadRigConfiguration
         Settings
         Documentation
         UserGroup
@@ -108,13 +107,10 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'Tools');
             obj.toolsMenu.modulesMenu.root = uimenu(obj.toolsMenu.root, ...
                 'Label', 'Modules');
-            obj.toolsMenu.selectRig = uimenu(obj.toolsMenu.root, ...
-                'Label', 'Select Rig...', ...
+            obj.toolsMenu.loadRigConfiguration = uimenu(obj.toolsMenu.root, ...
+                'Label', 'Load Rig Configuration...', ...
                 'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'SelectRig'));
-            obj.toolsMenu.viewRig = uimenu(obj.toolsMenu.root, ...
-                'Label', 'View Rig', ...
-                'Callback', @(h,d)notify(obj, 'ViewRig'));
+                'Callback', @(h,d)notify(obj, 'LoadRigConfiguration'));
             obj.toolsMenu.settings = uimenu(obj.toolsMenu.root, ...
                 'Label', 'Settings...', ...
                 'Separator', 'on', ...
@@ -254,12 +250,8 @@ classdef MainView < symphonyui.ui.View
             set(obj.experimentMenu.viewExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
-        function enableSelectRig(obj, tf)
-            set(obj.toolsMenu.selectRig, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-
-        function enableViewRig(obj, tf)
-            set(obj.toolsMenu.viewRig, 'Enable', symphonyui.ui.util.onOff(tf));
+        function enableLoadRigConfiguration(obj, tf)
+            set(obj.toolsMenu.loadRigConfiguration, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableSettings(obj, tf)

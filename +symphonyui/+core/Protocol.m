@@ -1,5 +1,9 @@
 classdef Protocol < symphonyui.core.mixin.SetObservable
     
+    properties (Access = private)
+        id
+    end
+    
     properties (Hidden)
         rig
     end

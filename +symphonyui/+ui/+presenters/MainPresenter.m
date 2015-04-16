@@ -3,6 +3,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
     properties (Access = private)
         acquisitionService
         experimentPresenter
+        protocolIdToName
         eventManagers
     end
     
@@ -14,14 +15,15 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
             obj = obj@symphonyui.ui.Presenter(app, view); 
             obj.acquisitionService = acquisitionService;
+            obj.protocolIdToName = symphonyui.ui.util.BiMap();
             obj.eventManagers = struct( ...
                 'experiment', symphonyui.ui.util.EventManager(), ...
                 'rig', symphonyui.ui.util.EventManager(), ...
                 'protocol', symphonyui.ui.util.EventManager());
         end
         
-        function showRigSelector(obj)
-            presenter = symphonyui.ui.presenters.SelectRigPresenter(obj.acquisitionService, obj.app);
+        function showRigConfigurationLoader(obj)
+            presenter = symphonyui.ui.presenters.LoadRigConfigurationPresenter(obj.acquisitionService, obj.app);
             presenter.goWaitStop();
         end
         
@@ -49,7 +51,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Preview', @obj.onViewSelectedPreview);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
-            obj.addListener(v, 'SelectRig', @obj.onViewSelectedSelectRig);
+            obj.addListener(v, 'LoadRigConfiguration', @obj.onViewSelectedLoadRigConfiguration);
             obj.addListener(v, 'Settings', @obj.onViewSelectedSettings);
             obj.addListener(v, 'Documentation', @obj.onViewSelectedDocumentation);
             obj.addListener(v, 'UserGroup', @obj.onViewSelectedUserGroup);
@@ -59,7 +61,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             s = obj.acquisitionService;
             obj.addListener(s, 'OpenedExperiment', @obj.onServiceOpenedExperiment);
             obj.addListener(s, 'ClosedExperiment', @obj.onServiceClosedExperiment);
-            obj.addListener(s, 'SelectedRig', @obj.onServiceSelectedRig);
+            obj.addListener(s, 'LoadedRigConfiguration', @obj.onServiceLoadedRigConfiguration);
             obj.addListener(s, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             
             obj.addRigListeners();
@@ -152,11 +154,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.experimentPresenter.show();
         end
         
-        function onViewSelectedSelectRig(obj, ~, ~)
-            obj.showRigSelector();
+        function onViewSelectedLoadRigConfiguration(obj, ~, ~)
+            obj.showRigConfigurationLoader();
         end
         
-        function onServiceSelectedRig(obj, ~, ~)
+        function onServiceLoadedRigConfiguration(obj, ~, ~)
             obj.removeRigListeners();
             obj.addRigListeners();
             obj.updateViewState();
@@ -187,12 +189,22 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function populateProtocolList(obj)
-            obj.view.setProtocolList(obj.acquisitionService.getAvailableProtocolIds());
+            obj.protocolIdToName.clear();
+            
+            ids = obj.acquisitionService.getAvailableProtocolIds();
+            for i = 1:numel(ids)
+                split = strsplit(ids{i}, '.');
+                name = symphonyui.ui.util.humanize(split{end});
+                obj.protocolIdToName.put(ids{i}, name);
+            end
+            
+            obj.view.setProtocolList(obj.protocolIdToName.values);
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
+            id = obj.protocolIdToName.getKey(obj.view.getSelectedProtocol());
             try
-                obj.acquisitionService.selectProtocol(obj.view.getSelectedProtocol());
+                obj.acquisitionService.selectProtocol(id);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -207,7 +219,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function selectCurrentProtocol(obj)
-            obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocolId());
+            name = obj.protocolIdToName.get(obj.acquisitionService.getCurrentProtocolId());
+            obj.view.setSelectedProtocol(name);
             obj.populateProtocolProperties();
             obj.updateViewState();
         end
@@ -310,7 +323,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasCurrentEpochGroup;
             enableViewExperiment = hasExperiment;
-            enableSelectRig = ~hasExperiment && isStopped;
+            enableLoadRigConfiguration = ~hasExperiment && isStopped;
             enableSettings = ~hasExperiment && isStopped;
             enableSelectProtocol = isStopped;
             enableProtocolProperties = isStopped;
@@ -369,7 +382,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
             obj.view.enableViewExperiment(enableViewExperiment);
-            obj.view.enableSelectRig(enableSelectRig);
+            obj.view.enableLoadRigConfiguration(enableLoadRigConfiguration);
             obj.view.enableSettings(enableSettings);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolProperties(enableProtocolProperties);

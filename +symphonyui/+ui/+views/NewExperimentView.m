@@ -23,7 +23,6 @@ classdef NewExperimentView < symphonyui.ui.View
             set(obj.figureHandle, 'Position', screenCenter(500, 147));
             set(obj.figureHandle, 'WindowStyle', 'modal');
 
-            labelSize = 58;
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
@@ -32,10 +31,11 @@ classdef NewExperimentView < symphonyui.ui.View
             parametersLayout = uiextras.VBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
+            parametersLabelSize = 58;
 
-            obj.nameField = createLabeledTextField(parametersLayout, 'Name:', labelSize);
-            obj.locationField = createLabeledTextFieldWithButton(parametersLayout, 'Location:', labelSize, @(h,d)notify(obj, 'BrowseLocation'));
-            obj.purposeField = createLabeledTextField(parametersLayout, 'Purpose:', labelSize);
+            obj.nameField = createLabeledTextField(parametersLayout, 'Name:', parametersLabelSize);
+            obj.locationField = createLabeledTextFieldWithButton(parametersLayout, 'Location:', parametersLabelSize, @(h,d)notify(obj, 'BrowseLocation'));
+            obj.purposeField = createLabeledTextField(parametersLayout, 'Purpose:', parametersLabelSize);
             
             set(parametersLayout, 'Sizes', [25 25 25]);
 
