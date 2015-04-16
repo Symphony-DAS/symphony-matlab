@@ -22,6 +22,10 @@ classdef LoadRigPresenter < symphonyui.ui.Presenter
             
         end
         
+        function onStopping(obj)
+            
+        end
+        
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);

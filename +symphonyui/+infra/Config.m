@@ -1,17 +1,16 @@
 classdef Config < handle
     
     properties (Access = private)
-        group
         defaults
+    end
+    
+    properties (Constant, Access = private)
+        GROUP = 'symphonyui';
     end
     
     methods
         
-        function obj = Config(group)
-            if nargin < 1
-                group = 'symphonyui';
-            end
-            obj.group = group;
+        function obj = Config()
             obj.defaults = containers.Map();
         end
         
@@ -20,26 +19,22 @@ classdef Config < handle
         end
         
         function v = get(obj, key)
-            if ispref(obj.group, key)
-                v = getpref(obj.group, key);
+            if ispref(obj.GROUP, key)
+                v = getpref(obj.GROUP, key);
             else
                 v = obj.defaults(key);
             end
         end
         
         function put(obj, key, value)
-            if ispref(obj.group, key)
-                if isequal(getpref(obj.group, key), value)
+            if ispref(obj.GROUP, key)
+                if isequal(getpref(obj.GROUP, key), value)
                     return;
                 end
-                setpref(obj.group, key, value);
+                setpref(obj.GROUP, key, value);
             else
-                addpref(obj.group, key, value);
+                addpref(obj.GROUP, key, value);
             end
-        end
-        
-        function clear(obj)
-            rmpref(obj.group);
         end
         
     end

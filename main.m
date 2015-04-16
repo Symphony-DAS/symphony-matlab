@@ -5,7 +5,7 @@ function main()
     setupJavaPath();
     
     config = Config();
-    config.setDefaults(getDefaults());
+    config.setDefaults(getDefaultSettings());
     
     experimentFactory = ExperimentFactory();
     rigFactory = RigFactory();
@@ -32,7 +32,7 @@ function setupJavaPath()
     end
 end
 
-function d = getDefaults()
+function d = getDefaultSettings()
     import symphonyui.app.Settings;
     import symphonyui.app.App;
     
