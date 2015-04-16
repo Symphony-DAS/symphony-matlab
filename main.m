@@ -12,6 +12,10 @@ function main()
     protocolRepository = ClassRepository('symphonyui.core.Protocol', config.get(Settings.GENERAL_PROTOCOL_SEARCH_PATH));
     
     acquisitionService = AcquisitionService(experimentFactory, rigFactory, protocolRepository);
+    try %#ok<TRYNC>
+        ids = acquisitionService.getAvailableProtocolIds();
+        acquisitionService.selectProtocol(ids{2});
+    end
     
     app = App(config);
     
