@@ -11,6 +11,7 @@ classdef Rig < handle
     
     properties (SetAccess = private)
         isInitialized
+        devices
     end
     
     properties (Access = private)
@@ -20,8 +21,9 @@ classdef Rig < handle
     methods
         
         function obj = Rig()
-            obj.isInitialized = false;
             obj.state = symphonyui.core.RigState.STOPPED;
+            obj.isInitialized = false;
+            obj.devices = {};
             obj.configure();
         end
         
@@ -39,7 +41,7 @@ classdef Rig < handle
         end
         
         function addDevice(obj, device)
-            
+            obj.devices{end + 1} = device;
         end
         
         function record(obj, protocol, experiment)

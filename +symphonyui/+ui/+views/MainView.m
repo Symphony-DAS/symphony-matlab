@@ -8,7 +8,6 @@ classdef MainView < symphonyui.ui.View
         BeginEpochGroup
         EndEpochGroup
         AddSource
-        ViewExperiment
         SelectedProtocol
         SetProtocolProperty
         Record
@@ -16,8 +15,9 @@ classdef MainView < symphonyui.ui.View
         Pause
         Stop
         LoadRig
-        ViewRig
         Settings
+        ShowRig
+        ShowExperiment
         Documentation
         UserGroup
         AboutSymphony
@@ -26,19 +26,16 @@ classdef MainView < symphonyui.ui.View
     properties (Access = private)
         fileMenu
         experimentMenu
-        acquisitionMenu
-        toolsMenu
+        acquireMenu
+        configureMenu
+        viewMenu
         helpMenu
         protocolDropDown
         protocolPropertyGrid
-        warningIcon
         recordButton
         previewButton
         pauseButton
         stopButton
-        progressIndicatorIcon
-        viewExperimentButton
-        statusText
     end
 
     methods
@@ -47,7 +44,7 @@ classdef MainView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Symphony');
-            set(obj.figureHandle, 'Position', screenCenter(300, 260));
+            set(obj.figureHandle, 'Position', screenCenter(340, 280));
 
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
@@ -79,46 +76,51 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'Add Source...', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'AddSource'));
-            obj.experimentMenu.viewExperiment = uimenu(obj.experimentMenu.root, ...
-                'Label', 'View Experiment', ...
-                'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'ViewExperiment'));
 
-            % Acquisition menu.
-            obj.acquisitionMenu.root = uimenu(obj.figureHandle, ...
-                'Label', 'Acquisition');
-            obj.acquisitionMenu.record = uimenu(obj.acquisitionMenu.root, ...
+            % Acquire menu.
+            obj.acquireMenu.root = uimenu(obj.figureHandle, ...
+                'Label', 'Acquire');
+            obj.acquireMenu.record = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Record', ...
                 'Accelerator', 'r', ...
                 'Callback', @(h,d)notify(obj, 'Record'));
-            obj.acquisitionMenu.preview = uimenu(obj.acquisitionMenu.root, ...
+            obj.acquireMenu.preview = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Preview', ...
                 'Accelerator', 'v', ...
                 'Callback', @(h,d)notify(obj, 'Preview'));
-            obj.acquisitionMenu.pause = uimenu(obj.acquisitionMenu.root, ...
+            obj.acquireMenu.pause = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Pause', ...
                 'Callback', @(h,d)notify(obj, 'Pause'));
-            obj.acquisitionMenu.stop = uimenu(obj.acquisitionMenu.root, ...
+            obj.acquireMenu.stop = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
-
-            % Tools menu.
-            obj.toolsMenu.root = uimenu(obj.figureHandle, ...
-                'Label', 'Tools');
-            obj.toolsMenu.modulesMenu.root = uimenu(obj.toolsMenu.root, ...
-                'Label', 'Modules');
-            obj.toolsMenu.loadRig = uimenu(obj.toolsMenu.root, ...
+            
+            % Configure menu.
+            obj.configureMenu.root = uimenu(obj.figureHandle, ...
+                'Label', 'Configure');
+            obj.configureMenu.loadRig = uimenu(obj.configureMenu.root, ...
                 'Label', 'Load Rig...', ...
-                'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'LoadRig'));
-            obj.toolsMenu.viewRig = uimenu(obj.toolsMenu.root, ...
-                'Label', 'View Rig', ...
-                'Callback', @(h,d)notify(obj, 'ViewRig'));
-            obj.toolsMenu.settings = uimenu(obj.toolsMenu.root, ...
+            obj.configureMenu.settings = uimenu(obj.configureMenu.root, ...
                 'Label', 'Settings...', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'Settings'));
 
+            % View menu.
+            obj.viewMenu.root = uimenu(obj.figureHandle, ...
+                'Label', 'View');
+            obj.viewMenu.viewRig = uimenu(obj.viewMenu.root, ...
+                'Label', 'Show Rig', ...
+                'Accelerator', '1', ...
+                'Callback', @(h,d)notify(obj, 'ShowRig'));
+            obj.viewMenu.viewExperiment = uimenu(obj.viewMenu.root, ...
+                'Label', 'Show Experiment', ...
+                'Accelerator', '2', ...
+                'Callback', @(h,d)notify(obj, 'ShowExperiment'));
+            obj.viewMenu.modulesMenu.root = uimenu(obj.viewMenu.root, ...
+                'Label', 'Modules', ...
+                'Separator', 'on');
+            
             % Help menu.
             obj.helpMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Help');
@@ -145,77 +147,35 @@ classdef MainView < symphonyui.ui.View
 
             obj.protocolPropertyGrid = uiextras.jide.PropertyGrid(mainLayout, ...
                 'Callback', @(h,d)notify(obj, 'SetProtocolProperty', d));
-
+            
             controlsLayout = uiextras.HBox( ...
-                'Parent', mainLayout);
+                'Parent', mainLayout, ...
+                'Spacing', 2);
             
-            label = javax.swing.JLabel(['<html><img src="' [iconsUrl 'warning.png'] '" align="right"/></html>']);
-            label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-            label.setVisible(false);
-            obj.warningIcon = javacomponent(label, [], controlsLayout);
-            
-            uiextras.Empty('Parent', controlsLayout);
-            
-            label = javax.swing.JLabel(['<html><img src="' [iconsUrl 'control_panel_left.png'] '"/></html>']);
-            %label.setVisible(false);
-            javacomponent(label, [], controlsLayout);
-            
-            controlsPanel = uix.Panel( ...
-                'Parent', controlsLayout, ...
-                'BorderType', 'none');
-            panelLayout = uiextras.HBox( ...
-                'Parent', controlsPanel);
             obj.recordButton = uicontrol( ...
-                'Parent', panelLayout, ...
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'record_big.png'] '"/></html>'], ...
                 'TooltipString', 'Record', ...
                 'Callback', @(h,d)notify(obj, 'Record'));
             obj.previewButton = uicontrol( ...
-                'Parent', panelLayout, ...
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'preview_big.png'] '"/></html>'], ...
                 'TooltipString', 'Preview', ...
                 'Callback', @(h,d)notify(obj, 'Preview'));
             obj.pauseButton = uicontrol( ...
-                'Parent', panelLayout, ...
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'pause_big.png'] '"/></html>'], ...
                 'TooltipString', 'Pause', ...
                 'Callback', @(h,d)notify(obj, 'Pause'));
             obj.stopButton = uicontrol( ...
-                'Parent', panelLayout, ...
+                'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' [iconsUrl 'stop_big.png'] '"/></html>'], ...
                 'TooltipString', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
-            set(panelLayout, 'Sizes', [34 34 34 34]);
-            
-            label = javax.swing.JLabel(['<html><img src="' [iconsUrl 'control_panel_right.png'] '"/></html>']);
-            %label.setVisible(false);
-            javacomponent(label, [], controlsLayout);
-            
-            uiextras.Empty('Parent', controlsLayout);
-            
-            label = javax.swing.JLabel(['<html><img src="' [iconsUrl 'progress_indicator.gif'] '"/></html>']);
-            label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-            %label.setVisible(false);
-            obj.progressIndicatorIcon = javacomponent(label, [], controlsLayout);
-            
-            % Avoid using findjobj (extremely slow).
-            try %#ok<TRYNC>
-                drawnow;
-                layout = obj.progressIndicatorIcon.getParent().getParent().getParent();
-                panel = layout.getComponent(2).getComponent(0);
-                panel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 1, 0, java.awt.Color(160/255,160/255,160/255)));
-                container = panel.getComponent(0).getComponent(0).getComponent(0).getComponent(0);
-                container.getComponent(0).getComponent(0).setFlyOverAppearance(true);
-                container.getComponent(1).getComponent(0).setFlyOverAppearance(true);
-                container.getComponent(2).getComponent(0).setFlyOverAppearance(true);
-                container.getComponent(3).getComponent(0).setFlyOverAppearance(true);
-            end
-
-            set(controlsLayout, 'Sizes', [36 -1 18 34*4 18 -1 36]);
 
             set(mainLayout, 'Sizes', [25 -1 36]);
         end
@@ -237,10 +197,6 @@ classdef MainView < symphonyui.ui.View
             set(obj.fileMenu.closeExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
-        function enableAddSource(obj, tf)
-            set(obj.experimentMenu.addSource, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-
         function enableBeginEpochGroup(obj, tf)
             set(obj.experimentMenu.beginEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
         end
@@ -248,17 +204,9 @@ classdef MainView < symphonyui.ui.View
         function enableEndEpochGroup(obj, tf)
             set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
         end
-
-        function enableViewExperiment(obj, tf)
-            set(obj.experimentMenu.viewExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-
-        function enableLoadRig(obj, tf)
-            set(obj.toolsMenu.loadRig, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-
-        function enableSettings(obj, tf)
-            set(obj.toolsMenu.settings, 'Enable', symphonyui.ui.util.onOff(tf));
+        
+        function enableAddSource(obj, tf)
+            set(obj.experimentMenu.addSource, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableSelectProtocol(obj, tf)
@@ -295,38 +243,50 @@ classdef MainView < symphonyui.ui.View
 
         function enableRecord(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
-            set(obj.acquisitionMenu.record, 'Enable', enable);
+            set(obj.acquireMenu.record, 'Enable', enable);
             set(obj.recordButton, 'Enable', enable);
         end
 
         function enablePreview(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
-            set(obj.acquisitionMenu.preview, 'Enable', enable);
+            set(obj.acquireMenu.preview, 'Enable', enable);
             set(obj.previewButton, 'Enable', enable);
         end
 
         function enablePause(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
-            set(obj.acquisitionMenu.pause, 'Enable', enable);
+            set(obj.acquireMenu.pause, 'Enable', enable);
             set(obj.pauseButton, 'Enable', enable);
         end
 
         function enableStop(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
-            set(obj.acquisitionMenu.stop, 'Enable', enable);
+            set(obj.acquireMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
+        end
+        
+        function enableLoadRig(obj, tf)
+            set(obj.configureMenu.loadRig, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+
+        function enableSettings(obj, tf)
+            set(obj.configureMenu.settings, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
+        function enableShowExperiment(obj, tf)
+            set(obj.viewMenu.viewExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableProgressIndicator(obj, tf)
-            obj.progressIndicatorIcon.setVisible(tf);
+            %obj.progressIndicatorIcon.setVisible(tf);
         end
 
         function enableWarning(obj, tf)
-            obj.warningIcon.setVisible(tf);
+            %obj.warningIcon.setVisible(tf);
         end
 
         function setWarning(obj, s)
-            obj.warningIcon.setToolTipText(s);
+            %obj.warningIcon.setToolTipText(s);
         end
 
         function setStatus(obj, s)
@@ -336,7 +296,7 @@ classdef MainView < symphonyui.ui.View
                 title = sprintf('Symphony (%s)', s);
             end
             set(obj.figureHandle, 'Name', title);
-            obj.progressIndicatorIcon.setToolTipText(s);
+            %obj.progressIndicatorIcon.setToolTipText(s);
         end
 
     end

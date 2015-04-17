@@ -4,6 +4,11 @@ classdef MultiClampDevice < symphonyui.core.Device
     end
     
     methods
+        
+        function obj = MultiClampDevice(name)
+            obj@symphonyui.core.Device(name);
+        end
+        
     end
     
 end

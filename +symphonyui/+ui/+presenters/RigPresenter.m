@@ -19,7 +19,7 @@ classdef RigPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
-            
+            obj.populateDeviceList();
         end
         
         function onBind(obj)
@@ -31,13 +31,16 @@ classdef RigPresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
-        function onViewKeyPress(obj, ~, event)
-            switch event.key
-%                 case 'return'
-%                     obj.onViewSelectedLoad();
-%                 case 'escape'
-%                     obj.onViewSelectedCancel();
+        function populateDeviceList(obj)
+            devices = obj.rig.devices;
+            for i = 1:numel(devices)
+                obj.addDevice(devices{i});
             end
+        end
+        
+        function addDevice(obj, device)
+            d = device;
+            obj.view.addDevice(d.name, 'in', 'out', 'back');
         end
         
     end

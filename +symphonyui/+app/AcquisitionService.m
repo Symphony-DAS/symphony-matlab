@@ -121,7 +121,7 @@ classdef AcquisitionService < handle
         %% Acquisition
 
         function record(obj)
-            if ~isempty(obj.getCurrentExperiment())
+            if isempty(obj.getCurrentExperiment())
                 error('No experiment open');
             end
             rig = obj.getCurrentRig();

@@ -2,8 +2,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
         acquisitionService
-        experimentPresenter
         rigPresenter
+        experimentPresenter
         protocolIdToName
         eventManagers
     end
@@ -28,7 +28,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
-            obj.showRigLoader();
+            obj.showLoadRig();
             obj.populateProtocolList();
             obj.selectCurrentProtocol();
         end
@@ -42,10 +42,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'NewExperiment', @obj.onViewSelectedNewExperiment);
             obj.addListener(v, 'OpenExperiment', @obj.onViewSelectedOpenExperiment);
             obj.addListener(v, 'CloseExperiment', @obj.onViewSelectedCloseExperiment);
-            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
+            obj.addListener(v, 'Exit', @obj.onViewSelectedExit);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
-            obj.addListener(v, 'ViewExperiment', @obj.onViewSelectedViewExperiment);
+            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(v, 'SetProtocolProperty', @obj.onViewSetProtocolProperty);
             obj.addListener(v, 'Record', @obj.onViewSelectedRecord);
@@ -53,12 +53,12 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
             obj.addListener(v, 'LoadRig', @obj.onViewSelectedLoadRig);
-            obj.addListener(v, 'ViewRig', @obj.onViewSelectedViewRig);
             obj.addListener(v, 'Settings', @obj.onViewSelectedSettings);
+            obj.addListener(v, 'ShowRig', @obj.onViewSelectedShowRig);
+            obj.addListener(v, 'ShowExperiment', @obj.onViewSelectedShowExperiment);
             obj.addListener(v, 'Documentation', @obj.onViewSelectedDocumentation);
             obj.addListener(v, 'UserGroup', @obj.onViewSelectedUserGroup);
             obj.addListener(v, 'AboutSymphony', @obj.onViewSelectedAboutSymphony);
-            obj.addListener(v, 'Exit', @obj.onViewSelectedExit);
             
             s = obj.acquisitionService;
             obj.addListener(s, 'OpenedExperiment', @obj.onServiceOpenedExperiment);
@@ -118,14 +118,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
         end
         
-        function onViewSelectedAddSource(obj, ~, ~)
-            experiment = obj.acquisitionService.getCurrentExperiment();
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(experiment, obj.app);
-            presenter.goWaitStop();
-        end
-        
-        function onExperimentAddedSource(obj, ~, ~)
-            obj.updateViewState();
+        function onViewSelectedExit(obj, ~, ~)
+            obj.stop();
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -147,76 +141,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateViewState();
         end
         
-        function onViewSelectedViewExperiment(obj, ~, ~)
-            obj.showExperiment();
-        end
-        
-        function showExperiment(obj)
-            if isempty(obj.experimentPresenter) || obj.experimentPresenter.isStopped
-                experiment = obj.acquisitionService.getCurrentExperiment();
-                obj.experimentPresenter = symphonyui.ui.presenters.ExperimentPresenter(experiment, obj.app);
-                obj.experimentPresenter.hideOnViewSelectedClose = true;
-                obj.experimentPresenter.go();
-            else
-                obj.experimentPresenter.show();
-            end
-        end
-        
-        function onViewSelectedLoadRig(obj, ~, ~)
-            obj.showRigLoader();
-        end
-        
-        function showRigLoader(obj)
-            presenter = symphonyui.ui.presenters.LoadRigPresenter(obj.acquisitionService, obj.app);
+        function onViewSelectedAddSource(obj, ~, ~)
+            experiment = obj.acquisitionService.getCurrentExperiment();
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(experiment, obj.app);
             presenter.goWaitStop();
         end
         
-        function onServiceLoadedRig(obj, ~, ~)
-            obj.removeRigListeners();
-            obj.addRigListeners();
-            obj.updateViewState();
-        end
-        
-        function addRigListeners(obj)
-            rig = obj.acquisitionService.getCurrentRig();
-            manager = obj.eventManagers.rig;
-            manager.addListener(rig, 'Initialized', @obj.onRigInitialized);
-            manager.addListener(rig, 'Closed', @obj.onRigClosed);
-            manager.addListener(rig, 'state', 'PostSet', @obj.onRigSetState);
-        end
-        
-        function removeRigListeners(obj)
-            obj.eventManagers.rig.removeAllListeners();
-        end
-        
-        function onViewSelectedViewRig(obj, ~, ~)
-            obj.showRig();
-        end
-        
-        function showRig(obj)
-            if isempty(obj.rigPresenter) || obj.rigPresenter.isStopped
-                rig = obj.acquisitionService.getCurrentRig();
-                obj.rigPresenter = symphonyui.ui.presenters.RigPresenter(rig, obj.app);
-                obj.rigPresenter.go();
-            else
-                obj.rigPresenter.show();
-            end
-        end
-        
-        function onRigInitialized(obj, ~, ~)
-            obj.updateViewState();
-        end
-        
-        function onRigClosed(obj, ~, ~)
-            obj.updateViewState();
-            
-            if ~isempty(obj.rigPresenter)
-                obj.rigPresenter.stop();
-                obj.rigPresenter = [];
-            end
-        end
-        
-        function onRigSetState(obj, ~, ~)
+        function onExperimentAddedSource(obj, ~, ~)
             obj.updateViewState();
         end
         
@@ -351,21 +282,18 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableNewExperiment = ~hasExperiment && isStopped && rig.isValid();
             enableOpenExperiment = enableNewExperiment;
             enableCloseExperiment = hasExperiment && isStopped;
-            enableAddSource = hasExperiment;
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasCurrentEpochGroup;
-            enableViewExperiment = hasExperiment;
-            enableLoadRig = ~hasExperiment && isStopped;
-            enableSettings = ~hasExperiment && isStopped;
+            enableAddSource = hasExperiment;
             enableSelectProtocol = isStopped;
             enableProtocolProperties = isStopped;
             enableRecord = false;
             enablePreview = false;
             enablePause = false;
             enableStop = false;
-            enableProgressIndicator = false;
-            enableWarning = false;
-            warning = '';
+            enableLoadRig = ~hasExperiment && isStopped;
+            enableSettings = ~hasExperiment && isStopped;
+            enableShowExperiment = hasExperiment;
             status = '';
             
             canRecord = hasCurrentEpochGroup;
@@ -374,7 +302,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
                     enableRecord = canRecord;
                     enablePreview = true;
                 case RigState.STOPPING
-                    enableProgressIndicator = true;
                     status = 'Stopping...';
                 case RigState.PAUSED
                     enableRecord = canRecord;
@@ -383,17 +310,14 @@ classdef MainPresenter < symphonyui.ui.Presenter
                     status = 'Paused';
                 case RigState.PAUSING
                     enableStop = true;
-                    enableProgressIndicator = true;
                     status = 'Pausing...';
                 case RigState.PREVIEWING
                     enablePause = true;
                     enableStop = true;
-                    enableProgressIndicator = true;
                     status = 'Previewing...';
                 case RigState.RECORDING
                     enablePause = true;
                     enableStop = true;
-                    enableProgressIndicator = true;
                     status = 'Recording...';
             end
             
@@ -403,34 +327,103 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 enablePreview = false;
                 enablePause = false;
                 enableStop = false;
-                enableWarning = true;
-                warning = msg;
+                status = msg;
             end
             
             obj.view.enableNewExperiment(enableNewExperiment);
             obj.view.enableOpenExperiment(enableOpenExperiment);
-            obj.view.enableAddSource(enableAddSource);
             obj.view.enableCloseExperiment(enableCloseExperiment);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
-            obj.view.enableViewExperiment(enableViewExperiment);
-            obj.view.enableLoadRig(enableLoadRig);
-            obj.view.enableSettings(enableSettings);
+            obj.view.enableAddSource(enableAddSource);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolProperties(enableProtocolProperties);
             obj.view.enableRecord(enableRecord);
             obj.view.enablePreview(enablePreview);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
-            obj.view.enableProgressIndicator(enableProgressIndicator);
-            obj.view.enableWarning(enableWarning);
-            obj.view.setWarning(warning);
+            obj.view.enableLoadRig(enableLoadRig);
+            obj.view.enableSettings(enableSettings);
+            obj.view.enableShowExperiment(enableShowExperiment);
             obj.view.setStatus(status);
+        end
+        
+        function onViewSelectedLoadRig(obj, ~, ~)
+            obj.showLoadRig();
+        end
+        
+        function showLoadRig(obj)
+            presenter = symphonyui.ui.presenters.LoadRigPresenter(obj.acquisitionService, obj.app);
+            presenter.goWaitStop();
+        end
+        
+        function onServiceLoadedRig(obj, ~, ~)
+            obj.removeRigListeners();
+            obj.addRigListeners();
+            obj.updateViewState();
+        end
+        
+        function addRigListeners(obj)
+            rig = obj.acquisitionService.getCurrentRig();
+            manager = obj.eventManagers.rig;
+            manager.addListener(rig, 'Initialized', @obj.onRigInitialized);
+            manager.addListener(rig, 'Closed', @obj.onRigClosed);
+            manager.addListener(rig, 'state', 'PostSet', @obj.onRigSetState);
+        end
+        
+        function removeRigListeners(obj)
+            obj.eventManagers.rig.removeAllListeners();
+        end
+        
+        function onRigInitialized(obj, ~, ~)
+            obj.updateViewState();
+        end
+        
+        function onRigClosed(obj, ~, ~)
+            obj.updateViewState();
+            
+            if ~isempty(obj.rigPresenter)
+                obj.rigPresenter.stop();
+                obj.rigPresenter = [];
+            end
+        end
+        
+        function onRigSetState(obj, ~, ~)
+            obj.updateViewState();
         end
         
         function onViewSelectedSettings(obj, ~, ~)
             presenter = symphonyui.ui.presenters.SettingsPresenter(obj.app);
             presenter.goWaitStop();
+        end
+        
+        function onViewSelectedShowExperiment(obj, ~, ~)
+            obj.showExperiment();
+        end
+        
+        function showExperiment(obj)
+            if isempty(obj.experimentPresenter) || obj.experimentPresenter.isStopped
+                experiment = obj.acquisitionService.getCurrentExperiment();
+                obj.experimentPresenter = symphonyui.ui.presenters.ExperimentPresenter(experiment, obj.app);
+                obj.experimentPresenter.hideOnViewSelectedClose = true;
+                obj.experimentPresenter.go();
+            else
+                obj.experimentPresenter.show();
+            end
+        end
+        
+        function onViewSelectedShowRig(obj, ~, ~)
+            obj.showRig();
+        end
+        
+        function showRig(obj)
+            if isempty(obj.rigPresenter) || obj.rigPresenter.isStopped
+                rig = obj.acquisitionService.getCurrentRig();
+                obj.rigPresenter = symphonyui.ui.presenters.RigPresenter(rig, obj.app);
+                obj.rigPresenter.go();
+            else
+                obj.rigPresenter.show();
+            end
         end
         
         function onViewSelectedDocumentation(obj, ~, ~)
@@ -447,10 +440,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 sprintf('Version %s', obj.app.getVersion()), ...
                 sprintf('%c %s Symphony-DAS', 169, datestr(now, 'YYYY'))};
             obj.view.showMessage(message, 'About Symphony');
-        end
-        
-        function onViewSelectedExit(obj, ~, ~)
-            obj.stop();
         end
         
     end
