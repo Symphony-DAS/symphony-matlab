@@ -3,8 +3,11 @@ classdef ExperimentView < symphonyui.ui.View
     events
         SelectedNode
         AddProperty
+        RemoveProperty
         AddKeyword
+        RemoveKeyword
         AddNote
+        RemoveNote
     end
 
     properties (Access = private)
@@ -125,74 +128,50 @@ classdef ExperimentView < symphonyui.ui.View
             
             % Tab panel.
             obj.tabPanel = uix.TabPanel( ...
-                'Parent', experimentLayout, ...
+                'Parent', obj.experimentCard.tabPanelParent, ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
             
             % Properties tab.
             propertiesLayout = uiextras.VBox( ...
-                'Parent', obj.tabPanel, ...
-                'Spacing', 7);
+                'Parent', obj.tabPanel);
             obj.propertyGrid = uiextras.jide.PropertyGrid(propertiesLayout);
-            propertiesControlsLayout = uiextras.HBox( ...
-                'Parent', propertiesLayout, ...
-                'Spacing', 7);
-            uiextras.Empty('Parent', propertiesControlsLayout);
-            uicontrol( ...
-                'Parent', propertiesControlsLayout, ...
-                'String', 'Add', ...
-                'Callback', @(h,d)notify(obj, 'AddProperty'));
-            set(propertiesControlsLayout, 'Sizes', [-1 75]);
+            obj.createAddRemoveButtons(propertiesLayout, @(h,d)notify(obj, 'AddProperty'), @(h,d)notify(obj, 'RemoveProperty'));
             set(propertiesLayout, 'Sizes', [-1 25]);
             
             % Keywords tab.
             keywordsLayout = uiextras.VBox( ...
-                'Parent', obj.tabPanel, ...
-                'Spacing', 7);
+                'Parent', obj.tabPanel);
             obj.keywordsTable = createTable( ...
                 'Parent', keywordsLayout, ...
                 'Container', keywordsLayout, ...
                 'Headers', {'Keywords'}, ...
                 'Editable', false, ...
+                'SelectionMode', javax.swing.ListSelectionModel.SINGLE_SELECTION, ...
                 'Buttons', 'off');
             obj.keywordsTable.getTableScrollPane.getRowHeader.setVisible(0);
-            keywordsControlsLayout = uiextras.HBox( ...
-                'Parent', keywordsLayout, ...
-                'Spacing', 7);
-            uiextras.Empty('Parent', keywordsControlsLayout);
-            uicontrol( ...
-                'Parent', keywordsControlsLayout, ...
-                'String', 'Add', ...
-                'Callback', @(h,d)notify(obj, 'AddKeyword'));
-            set(keywordsControlsLayout, 'Sizes', [-1 75]);
+            obj.createAddRemoveButtons(keywordsLayout, @(h,d)notify(obj, 'AddKeyword'), @(h,d)notify(obj, 'RemoveKeyword'));
             set(keywordsLayout, 'Sizes', [-1 25]);
             
             % Notes tab.
             notesLayout = uiextras.VBox( ...
-                'Parent', obj.tabPanel, ...
-                'Spacing', 7);
+                'Parent', obj.tabPanel);
             obj.notesTable = createTable( ...
                 'Parent', notesLayout, ...
                 'Container', notesLayout, ...
                 'Headers', {'Time', 'Text'}, ...
                 'Editable', false, ...
+                'SelectionMode', javax.swing.ListSelectionModel.SINGLE_SELECTION, ...
                 'Buttons', 'off');
             obj.notesTable.getTableScrollPane.getRowHeader.setVisible(0);
             obj.notesTable.getTable.getColumnModel.getColumn(0).setMaxWidth(80);
-            notesControlsLayout = uiextras.HBox( ...
-                'Parent', notesLayout, ...
-                'Spacing', 7);
-            uiextras.Empty('Parent', notesControlsLayout);
-            uicontrol( ...
-                'Parent', notesControlsLayout, ...
-                'String', 'Add', ...
-                'Callback', @(h,d)notify(obj, 'AddNote'));
-            set(notesControlsLayout, 'Sizes', [-1 75]);
+            [~, removeButton] = obj.createAddRemoveButtons(notesLayout, @(h,d)notify(obj, 'AddNote'), @(h,d)notify(obj, 'RemoveNote'));
+            set(removeButton, 'Enable', 'off');
             set(notesLayout, 'Sizes', [-1 25]);
             
             set(obj.tabPanel, 'TabTitles', {'Properties', 'Keywords', 'Notes'});
             set(obj.tabPanel, 'TabWidth', 70);
-
+            
             set(obj.cardPanel, 'Selection', 1);
 
             set(mainLayout, 'Sizes', [-1 -2]);
@@ -320,19 +299,36 @@ classdef ExperimentView < symphonyui.ui.View
             obj.experimentTree.SelectedNodes = node;
         end
         
-        function clearProperties(obj)
-            set(obj.propertyGrid, 'Properties', uiextras.jide.PropertyGridField.empty(0, 1));
+        function setProperties(obj, properties)
+            set(obj.propertyGrid, 'Properties', properties);
         end
         
-        function addProperty(obj, key, value)
+        function addProperty(obj, property)
             properties = get(obj.propertyGrid, 'Properties');
-            p = uiextras.jide.PropertyGridField(key, value, 'ReadOnly', true);
-            set(obj.propertyGrid, 'Properties', [properties, p]);
+            set(obj.propertyGrid, 'Properties', [properties, property]);
         end
         
-        function clearKeywords(obj)
+        function removeProperty(obj, property)
+            properties = get(obj.propertyGrid, 'Properties');
+            for i = 1:numel(properties)
+                if strcmp(properties(i).Name, property)
+                    properties(i) = [];
+                    break;
+                end
+            end
+            set(obj.propertyGrid, 'Properties', properties);
+        end
+        
+        function p = getSelectedProperty(obj)
+            p = obj.propertyGrid.GetSelectedProperty();
+        end
+        
+        function setKeywords(obj, keywords)
             jtable = obj.keywordsTable.getTable();
             jtable.getModel().setRowCount(0);
+            for i = 1:numel(keywords)
+                obj.addKeyword(keywords{i});
+            end
         end
         
         function addKeyword(obj, keyword)
@@ -342,18 +338,53 @@ classdef ExperimentView < symphonyui.ui.View
             jtable.scrollRectToVisible(jtable.getCellRect(jtable.getRowCount()-1, 0, true));
         end
         
-        function clearNotes(obj)
-            jtable = obj.notesTable.getTable();
-            jtable.getModel().setRowCount(0);
+        function removeKeyword(obj, keyword)
+            symphonyui.ui.util.removeRowValue(obj.keywordsTable, keyword);
         end
         
-        function addNote(obj, date, text)
+        function k = getSelectedKeyword(obj)
+            k = symphonyui.ui.util.getSelectedRowValue(obj.keywordsTable);
+        end
+        
+        function setNotes(obj, notes)
             jtable = obj.notesTable.getTable();
-            jtable.getModel().addRow({datestr(date, 14), text});
+            jtable.getModel().setRowCount(0);
+            for i = 1:numel(notes)
+                obj.addNote(notes{i});
+            end
+        end
+        
+        function addNote(obj, note)
+            jtable = obj.notesTable.getTable();
+            jtable.getModel().addRow({datestr(note.date, 14), note.text});
             jtable.clearSelection();
             jtable.scrollRectToVisible(jtable.getCellRect(jtable.getRowCount()-1, 0, true));
         end
 
+    end
+    
+    methods (Access = private)
+        
+        function [addButton, removeButton] = createAddRemoveButtons(obj, parent, addCallback, removeCallback)
+            layout = uiextras.HBox( ...
+                'Parent', parent, ...
+                'Spacing', 0);
+            uiextras.Empty('Parent', layout);
+            addButton = uicontrol( ...
+                'Parent', layout, ...
+                'Style', 'pushbutton', ...
+                'String', '+', ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
+                'Callback', addCallback);
+            removeButton = uicontrol( ...
+                'Parent', layout, ...
+                'Style', 'pushbutton', ...
+                'String', '-', ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
+                'Callback', removeCallback);
+            set(layout, 'Sizes', [-1 25 25]);
+        end
+        
     end
 
 end

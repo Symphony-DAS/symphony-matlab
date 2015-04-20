@@ -19,6 +19,7 @@ classdef RigPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
+            obj.view.setDaqController('PLACE_HOLDER');
             obj.populateDeviceList();
         end
         
@@ -40,7 +41,7 @@ classdef RigPresenter < symphonyui.ui.Presenter
         
         function addDevice(obj, device)
             d = device;
-            obj.view.addDevice(d.name, 'in', 'out', 'back');
+            obj.view.addDevice(d.name, 'IN', 'OUT', 'BACKGROUND');
         end
         
     end

@@ -47,6 +47,7 @@ classdef RigView < symphonyui.ui.View
         function addDevice(obj, name, input, output, background)
             jtable = obj.devicesTable.getTable();
             jtable.getModel().addRow({name, input, output, background});
+            jtable.clearSelection();
         end
 
     end
