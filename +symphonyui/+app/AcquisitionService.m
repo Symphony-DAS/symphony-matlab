@@ -75,6 +75,8 @@ classdef AcquisitionService < handle
         %% Rig
         
         function loadRig(obj, path)
+            obj.getCurrentRig().close();
+            
             rig = obj.rigFactory.load(path);
             rig.initialize();
             

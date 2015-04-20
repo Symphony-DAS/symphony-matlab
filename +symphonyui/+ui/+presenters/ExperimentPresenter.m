@@ -25,10 +25,14 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         function onGoing(obj)
             obj.populateExperimentTree();
             obj.selectExperiment();
+            obj.updateViewState();
         end
         
         function onBind(obj)
             v = obj.view;
+            obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
+            obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
+            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
@@ -76,10 +80,16 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.selectEntity(obj.experiment);
         end
         
+        function onViewSelectedAddSource(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.experiment, obj.app);
+            presenter.goWaitStop();
+        end
+        
         function onExperimentAddedSource(obj, ~, event)
             source = event.data;
             obj.addSource(source);
             obj.selectSource(source);
+            obj.updateViewState();
         end
         
         function addSource(obj, source)
@@ -110,11 +120,21 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.selectEntity(source);
         end
         
+        function onViewSelectedBeginEpochGroup(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.experiment, obj.app);
+            presenter.goWaitStop();
+        end
+        
         function onExperimentBeganEpochGroup(obj, ~, event)
             group = event.data;
             obj.addEpochGroup(group);
             obj.selectEpochGroup(group);
             obj.view.setEpochGroupNodeCurrent(obj.entityToId(group));
+            obj.updateViewState();
+        end
+        
+        function onViewSelectedEndEpochGroup(obj, ~, ~)
+            obj.experiment.endEpochGroup();
         end
         
         function onExperimentEndedEpochGroup(obj, ~, event)
@@ -122,6 +142,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.selectEpochGroup(group);
             obj.view.collapseNode(obj.entityToId(group));
             obj.view.setEpochGroupNodeNormal(obj.entityToId(group));
+            obj.updateViewState();
         end
         
         function addEpochGroup(obj, group)
@@ -283,6 +304,11 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             index = cellfun(@(n)isequal(n.entity, entity), nodes);
             ids = obj.idToNode.keys;
             i = ids{index};
+        end
+        
+        function updateViewState(obj)
+            obj.view.enableBeginEpochGroup(~isempty(obj.experiment.sources));
+            obj.view.enableEndEpochGroup(~isempty(obj.experiment.currentEpochGroup));
         end
         
     end

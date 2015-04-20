@@ -1,6 +1,9 @@
 classdef ExperimentView < symphonyui.ui.View
 
     events
+        BeginEpochGroup
+        EndEpochGroup
+        AddSource
         SelectedNode
         AddProperty
         RemoveProperty
@@ -11,6 +14,9 @@ classdef ExperimentView < symphonyui.ui.View
     end
 
     properties (Access = private)
+        beginEpochGroupTool
+        endEpochGroupTool
+        addSourceTool
         experimentTree
         cardPanel
         emptyCard
@@ -45,7 +51,27 @@ classdef ExperimentView < symphonyui.ui.View
             
             set(obj.figureHandle, 'Name', 'Experiment');
             set(obj.figureHandle, 'Position', screenCenter(500, 410));
-
+            
+            % Toolbar.
+            toolbar = uitoolbar( ...
+                'Parent', obj.figureHandle);
+            obj.beginEpochGroupTool = uipushtool( ...
+                'Parent', toolbar, ...
+                'TooltipString', 'Begin Epoch Group', ...
+                'ClickedCallback', @(h,d)notify(obj, 'BeginEpochGroup'));
+            setIconImage(obj.beginEpochGroupTool, fullfile(symphonyui.app.App.getIconsPath(), 'group_begin.png'));
+            obj.endEpochGroupTool = uipushtool( ...
+                'Parent', toolbar, ...
+                'TooltipString', 'End Epoch Group', ...
+                'ClickedCallback', @(h,d)notify(obj, 'EndEpochGroup'));
+            setIconImage(obj.endEpochGroupTool, fullfile(symphonyui.app.App.getIconsPath(), 'group_end.png'));
+            obj.addSourceTool = uipushtool( ...
+                'Parent', toolbar, ...
+                'TooltipString', 'Add Source...', ...
+                'Separator', 'on', ...
+                'ClickedCallback', @(h,d)notify(obj, 'AddSource'));
+            setIconImage(obj.addSourceTool, fullfile(symphonyui.app.App.getIconsPath(), 'source_add.png'));
+            
             mainLayout = uiextras.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
@@ -176,7 +202,15 @@ classdef ExperimentView < symphonyui.ui.View
 
             set(mainLayout, 'Sizes', [-1 -2]);
         end
+        
+        function enableBeginEpochGroup(obj, tf)
+            set(obj.beginEpochGroupTool, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
 
+        function enableEndEpochGroup(obj, tf)
+            set(obj.endEpochGroupTool, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
         function setSelectedCard(obj, index)
             set(obj.cardPanel, 'Selection', index);
             
@@ -232,7 +266,7 @@ classdef ExperimentView < symphonyui.ui.View
         function setSourceLabel(obj, l)
             set(obj.sourceCard.labelField, 'String', l);
         end
-
+        
         function addEpochGroupNode(obj, parentId, name, id)
             parent = obj.idToNode(parentId);
             node = uiextras.jTree.TreeNode( ...

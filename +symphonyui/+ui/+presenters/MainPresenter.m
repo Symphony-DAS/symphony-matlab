@@ -31,6 +31,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.showLoadRig();
             obj.populateProtocolList();
             obj.selectCurrentProtocol();
+            obj.updateViewState();
         end
         
         function onStopping(obj)
@@ -179,13 +180,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.removeProtocolListeners();
             obj.addProtocolListeners();
             obj.selectCurrentProtocol();
+            obj.updateViewState();
         end
         
         function selectCurrentProtocol(obj)
             name = obj.protocolIdToName.get(obj.acquisitionService.getCurrentProtocolId());
             obj.view.setSelectedProtocol(name);
             obj.populateProtocolProperties();
-            obj.updateViewState();
         end
         
         function addProtocolListeners(obj)
