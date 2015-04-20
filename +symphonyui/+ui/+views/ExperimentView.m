@@ -309,14 +309,7 @@ classdef ExperimentView < symphonyui.ui.View
         end
         
         function removeProperty(obj, property)
-            properties = get(obj.propertyGrid, 'Properties');
-            for i = 1:numel(properties)
-                if strcmp(properties(i).Name, property)
-                    properties(i) = [];
-                    break;
-                end
-            end
-            set(obj.propertyGrid, 'Properties', properties);
+            obj.propertyGrid.RemoveProperty(property);
         end
         
         function p = getSelectedProperty(obj)

@@ -177,6 +177,17 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
 
             self.Model.refresh();
         end
+        
+        function RemoveProperty(self, propertyName)
+            properties = self.Properties;
+            for i = 1:numel(properties)
+                if strcmp(properties(i).Name, propertyName)
+                    properties(i) = [];
+                    break;
+                end
+            end
+            set(self, 'Properties', properties);
+        end
 
         function item = get.Item(self)
         % Retrieves the object bound to the property grid.
