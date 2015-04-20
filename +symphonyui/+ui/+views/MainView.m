@@ -14,10 +14,10 @@ classdef MainView < symphonyui.ui.View
         Preview
         Pause
         Stop
-        LoadRig
-        Settings
         ShowRig
         ShowExperiment
+        LoadRig
+        Settings
         Documentation
         UserGroup
         AboutSymphony
@@ -95,17 +95,6 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
             
-            % Configure menu.
-            obj.configureMenu.root = uimenu(obj.figureHandle, ...
-                'Label', 'Configure');
-            obj.configureMenu.loadRig = uimenu(obj.configureMenu.root, ...
-                'Label', 'Load Rig...', ...
-                'Callback', @(h,d)notify(obj, 'LoadRig'));
-            obj.configureMenu.settings = uimenu(obj.configureMenu.root, ...
-                'Label', 'Settings...', ...
-                'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'Settings'));
-
             % View menu.
             obj.viewMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'View');
@@ -120,6 +109,17 @@ classdef MainView < symphonyui.ui.View
             obj.viewMenu.modulesMenu.root = uimenu(obj.viewMenu.root, ...
                 'Label', 'Modules', ...
                 'Separator', 'on');
+            
+            % Configure menu.
+            obj.configureMenu.root = uimenu(obj.figureHandle, ...
+                'Label', 'Configure');
+            obj.configureMenu.loadRig = uimenu(obj.configureMenu.root, ...
+                'Label', 'Load Rig...', ...
+                'Callback', @(h,d)notify(obj, 'LoadRig'));
+            obj.configureMenu.settings = uimenu(obj.configureMenu.root, ...
+                'Label', 'Settings...', ...
+                'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'Settings'));
             
             % Help menu.
             obj.helpMenu.root = uimenu(obj.figureHandle, ...
@@ -265,28 +265,16 @@ classdef MainView < symphonyui.ui.View
             set(obj.stopButton, 'Enable', enable);
         end
         
+        function enableShowExperiment(obj, tf)
+            set(obj.viewMenu.viewExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
         function enableLoadRig(obj, tf)
             set(obj.configureMenu.loadRig, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableSettings(obj, tf)
             set(obj.configureMenu.settings, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-        
-        function enableShowExperiment(obj, tf)
-            set(obj.viewMenu.viewExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-
-        function enableProgressIndicator(obj, tf)
-            %obj.progressIndicatorIcon.setVisible(tf);
-        end
-
-        function enableWarning(obj, tf)
-            %obj.warningIcon.setVisible(tf);
-        end
-
-        function setWarning(obj, s)
-            %obj.warningIcon.setToolTipText(s);
         end
 
         function setStatus(obj, s)
@@ -296,7 +284,6 @@ classdef MainView < symphonyui.ui.View
                 title = sprintf('Symphony (%s)', s);
             end
             set(obj.figureHandle, 'Name', title);
-            %obj.progressIndicatorIcon.setToolTipText(s);
         end
 
     end
