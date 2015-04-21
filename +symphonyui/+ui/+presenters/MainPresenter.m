@@ -56,10 +56,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'ShowRig', @obj.onViewSelectedShowRig);
             obj.addListener(v, 'ShowExperiment', @obj.onViewSelectedShowExperiment);
             obj.addListener(v, 'LoadRig', @obj.onViewSelectedLoadRig);
-            obj.addListener(v, 'Settings', @obj.onViewSelectedSettings);
-            obj.addListener(v, 'Documentation', @obj.onViewSelectedDocumentation);
-            obj.addListener(v, 'UserGroup', @obj.onViewSelectedUserGroup);
-            obj.addListener(v, 'AboutSymphony', @obj.onViewSelectedAboutSymphony);
+            obj.addListener(v, 'ShowDeviceBackgrounds', @obj.onViewSelectedShowDeviceBackgrounds);
+            obj.addListener(v, 'ShowSettings', @obj.onViewSelectedShowSettings);
+            obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
+            obj.addListener(v, 'ShowUserGroup', @obj.onViewSelectedShowUserGroup);
+            obj.addListener(v, 'ShowAbout', @obj.onViewSelectedShowAbout);
             
             s = obj.acquisitionService;
             obj.addListener(s, 'OpenedExperiment', @obj.onServiceOpenedExperiment);
@@ -278,23 +279,25 @@ classdef MainPresenter < symphonyui.ui.Presenter
             hasExperiment = ~isempty(experiment);
             hasSource = hasExperiment && ~isempty(experiment.sources);
             hasCurrentEpochGroup = hasExperiment && ~isempty(experiment.currentEpochGroup);
-            isStopped = rig.state == RigState.STOPPED;
+            isRigStopped = rig.state == RigState.STOPPED;
+            isRigValid = rig.isValid() == true;
             
-            enableNewExperiment = ~hasExperiment && isStopped && rig.isValid();
+            enableNewExperiment = ~hasExperiment && isRigStopped && isRigValid;
             enableOpenExperiment = enableNewExperiment;
-            enableCloseExperiment = hasExperiment && isStopped;
+            enableCloseExperiment = hasExperiment && isRigStopped;
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasCurrentEpochGroup;
             enableAddSource = hasExperiment;
-            enableSelectProtocol = isStopped;
-            enableProtocolProperties = isStopped;
+            enableSelectProtocol = isRigStopped;
+            enableProtocolProperties = isRigStopped;
             enableRecord = false;
             enablePreview = false;
             enablePause = false;
             enableStop = false;
             enableShowExperiment = hasExperiment;
-            enableLoadRig = ~hasExperiment && isStopped;
-            enableSettings = ~hasExperiment && isStopped;
+            enableLoadRig = ~hasExperiment && isRigStopped;
+            enableShowDeviceBackgrounds = isRigStopped;
+            enableShowSettings = ~hasExperiment && isRigStopped;
             status = '';
             
             canRecord = hasCurrentEpochGroup;
@@ -345,7 +348,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableStop(enableStop);
             obj.view.enableShowExperiment(enableShowExperiment);
             obj.view.enableLoadRig(enableLoadRig);
-            obj.view.enableSettings(enableSettings);
+            obj.view.enableShowDeviceBackgrounds(enableShowDeviceBackgrounds);
+            obj.view.enableShowSettings(enableShowSettings);
             obj.view.setStatus(status);
         end
         
@@ -422,20 +426,26 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateViewState();
         end
         
-        function onViewSelectedSettings(obj, ~, ~)
+        function onViewSelectedShowDeviceBackgrounds(obj, ~, ~)
+            rig = obj.acquisitionService.getCurrentRig();
+            presenter = symphonyui.ui.presenters.DeviceBackgroundsPresenter(rig, obj.app);
+            presenter.goWaitStop();
+        end
+        
+        function onViewSelectedShowSettings(obj, ~, ~)
             presenter = symphonyui.ui.presenters.SettingsPresenter(obj.app);
             presenter.goWaitStop();
         end
         
-        function onViewSelectedDocumentation(obj, ~, ~)
+        function onViewSelectedShowDocumentation(obj, ~, ~)
             obj.view.showWeb(obj.app.getDocumentationUrl);
         end
         
-        function onViewSelectedUserGroup(obj, ~, ~)
+        function onViewSelectedShowUserGroup(obj, ~, ~)
             obj.view.showWeb(obj.app.getUserGroupUrl);
         end
         
-        function onViewSelectedAboutSymphony(obj, ~, ~)
+        function onViewSelectedShowAbout(obj, ~, ~)
             message = { ...
                 sprintf('Symphony Data Acquisition System'), ...
                 sprintf('Version %s', obj.app.getVersion()), ...
