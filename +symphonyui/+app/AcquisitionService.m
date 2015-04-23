@@ -30,7 +30,7 @@ classdef AcquisitionService < handle
             obj.session = struct( ...
                 'experiment', [], ...
                 'rig', rig, ...
-                'protocol', symphonyui.app.nulls.NullProtocol());
+                'protocol', symphonyui.app.NullProtocol());
         end
 
         function delete(obj)
@@ -105,7 +105,7 @@ classdef AcquisitionService < handle
 
         function selectProtocol(obj, id)
             if strcmp(id, '(None)')
-                protocol = symphonyui.app.nulls.NullProtocol();
+                protocol = symphonyui.app.NullProtocol();
             else
                 protocol = obj.protocolRepository.get(id);
             end
@@ -120,7 +120,7 @@ classdef AcquisitionService < handle
         
         function i = getCurrentProtocolId(obj)
             protocol = obj.session.protocol;
-            if isa(protocol, 'symphonyui.app.nulls.NullProtocol')
+            if isa(protocol, 'symphonyui.app.NullProtocol')
                 i = '(None)';
                 return;
             end
