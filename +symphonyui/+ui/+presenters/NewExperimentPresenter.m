@@ -36,11 +36,11 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateFromConfig(obj)
-            import symphonyui.app.Settings;
+            import symphonyui.app.Options;
             
             config = obj.app.config;
-            name = config.get(Settings.EXPERIMENT_DEFAULT_NAME);
-            location = config.get(Settings.EXPERIMENT_DEFAULT_LOCATION);
+            name = config.get(Options.EXPERIMENT_DEFAULT_NAME);
+            location = config.get(Options.EXPERIMENT_DEFAULT_LOCATION);
             try
                 obj.view.setName(name());
                 obj.view.setLocation(location());

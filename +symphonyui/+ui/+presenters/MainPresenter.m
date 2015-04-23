@@ -28,7 +28,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
-            obj.showLoadRig();
             obj.populateProtocolList();
             obj.selectCurrentProtocol();
             obj.updateViewState();
@@ -53,11 +52,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Preview', @obj.onViewSelectedPreview);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
+            obj.addListener(v, 'ConfigureRig', @obj.onViewSelectedConfigureRig);
+            obj.addListener(v, 'LoadRigConfiguration', @obj.onViewSelectedLoadRigConfiguration);
+            obj.addListener(v, 'SaveRigConfiguration', @obj.onViewSelectedSaveRigConfiguration);
+            obj.addListener(v, 'ShowOptions', @obj.onViewSelectedShowOptions);
             obj.addListener(v, 'ShowRig', @obj.onViewSelectedShowRig);
+            obj.addListener(v, 'ShowProtocol', @obj.onViewSelectedShowProtocol);
             obj.addListener(v, 'ShowExperiment', @obj.onViewSelectedShowExperiment);
-            obj.addListener(v, 'LoadRig', @obj.onViewSelectedLoadRig);
-            obj.addListener(v, 'ShowDeviceBackgrounds', @obj.onViewSelectedShowDeviceBackgrounds);
-            obj.addListener(v, 'ShowSettings', @obj.onViewSelectedShowSettings);
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
             obj.addListener(v, 'ShowUserGroup', @obj.onViewSelectedShowUserGroup);
             obj.addListener(v, 'ShowAbout', @obj.onViewSelectedShowAbout);
@@ -65,7 +66,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             s = obj.acquisitionService;
             obj.addListener(s, 'OpenedExperiment', @obj.onServiceOpenedExperiment);
             obj.addListener(s, 'ClosedExperiment', @obj.onServiceClosedExperiment);
-            obj.addListener(s, 'LoadedRig', @obj.onServiceLoadedRig);
+            obj.addListener(s, 'LoadedRigConfiguration', @obj.onServiceLoadedRigConfiguration);
             obj.addListener(s, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             
             obj.addRigListeners();
@@ -294,10 +295,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enablePreview = false;
             enablePause = false;
             enableStop = false;
+            enableConfigureRig = ~hasExperiment && isRigStopped;
+            enableLoadRigConfiguration = ~hasExperiment && isRigStopped;
             enableShowExperiment = hasExperiment;
-            enableLoadRig = ~hasExperiment && isRigStopped;
-            enableShowDeviceBackgrounds = isRigStopped;
-            enableShowSettings = ~hasExperiment && isRigStopped;
             status = '';
             
             canRecord = hasCurrentEpochGroup;
@@ -346,55 +346,48 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enablePreview(enablePreview);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
+            obj.view.enableConfigureRig(enableConfigureRig);
+            obj.view.enableLoadRigConfiguration(enableLoadRigConfiguration);
             obj.view.enableShowExperiment(enableShowExperiment);
-            obj.view.enableLoadRig(enableLoadRig);
-            obj.view.enableShowDeviceBackgrounds(enableShowDeviceBackgrounds);
-            obj.view.enableShowSettings(enableShowSettings);
             obj.view.setStatus(status);
         end
         
-        function onViewSelectedShowRig(obj, ~, ~)
-            obj.showRig();
+        function onViewSelectedConfigureRig(obj, ~, ~)
+            disp('Configure rig');
         end
         
-        function showRig(obj)
-            if isempty(obj.rigPresenter) || obj.rigPresenter.isStopped
-                rig = obj.acquisitionService.getCurrentRig();
-                obj.rigPresenter = symphonyui.ui.presenters.RigPresenter(rig, obj.app);
-                obj.rigPresenter.go();
-            else
-                obj.rigPresenter.show();
+        function onViewSelectedLoadRigConfiguration(obj, ~, ~)
+            path = obj.view.showGetFile('Load Rig Configuration', '*.mat');
+            if isempty(path)
+                return;
+            end
+            try
+                obj.acquisitionService.loadRigConfiguration(path);
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
             end
         end
         
-        function onViewSelectedShowExperiment(obj, ~, ~)
-            obj.showExperiment();
-        end
-        
-        function showExperiment(obj)
-            if isempty(obj.experimentPresenter) || obj.experimentPresenter.isStopped
-                experiment = obj.acquisitionService.getCurrentExperiment();
-                obj.experimentPresenter = symphonyui.ui.presenters.ExperimentPresenter(experiment, obj.app);
-                obj.experimentPresenter.hideOnViewSelectedClose = true;
-                obj.experimentPresenter.go();
-            else
-                obj.experimentPresenter.show();
-            end
-        end
-        
-        function onViewSelectedLoadRig(obj, ~, ~)
-            obj.showLoadRig();
-        end
-        
-        function showLoadRig(obj)
-            presenter = symphonyui.ui.presenters.LoadRigPresenter(obj.acquisitionService, obj.app);
-            presenter.goWaitStop();
-        end
-        
-        function onServiceLoadedRig(obj, ~, ~)
+        function onServiceLoadedRigConfiguration(obj, ~, ~)
             obj.removeRigListeners();
             obj.addRigListeners();
             obj.updateViewState();
+        end
+        
+        function onViewSelectedSaveRigConfiguration(obj, ~, ~)
+            path = obj.view.showPutFile('Save Rig Configuration', '*.mat', 'config.mat');
+            if isempty(path)
+                return;
+            end
+            try
+                obj.acquisitionService.saveRigConfiguration(path);
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
         end
         
         function addRigListeners(obj)
@@ -426,15 +419,46 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateViewState();
         end
         
-        function onViewSelectedShowDeviceBackgrounds(obj, ~, ~)
-            rig = obj.acquisitionService.getCurrentRig();
-            presenter = symphonyui.ui.presenters.DeviceBackgroundsPresenter(rig, obj.app);
+        function onViewSelectedShowOptions(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.OptionsPresenter(obj.app);
             presenter.goWaitStop();
         end
         
-        function onViewSelectedShowSettings(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.SettingsPresenter(obj.app);
-            presenter.goWaitStop();
+        function onViewSelectedShowRig(obj, ~, ~)
+            obj.showRig();
+        end
+        
+        function showRig(obj)
+            if isempty(obj.rigPresenter) || obj.rigPresenter.isStopped
+                rig = obj.acquisitionService.getCurrentRig();
+                obj.rigPresenter = symphonyui.ui.presenters.RigPresenter(rig, obj.app);
+                obj.rigPresenter.go();
+            else
+                obj.rigPresenter.show();
+            end
+        end
+        
+        function onViewSelectedShowProtocol(obj, ~, ~)
+            obj.showProtocol();
+        end
+        
+        function showProtocol(obj)
+            disp('Show protocol');
+        end
+        
+        function onViewSelectedShowExperiment(obj, ~, ~)
+            obj.showExperiment();
+        end
+        
+        function showExperiment(obj)
+            if isempty(obj.experimentPresenter) || obj.experimentPresenter.isStopped
+                experiment = obj.acquisitionService.getCurrentExperiment();
+                obj.experimentPresenter = symphonyui.ui.presenters.ExperimentPresenter(experiment, obj.app);
+                obj.experimentPresenter.hideOnViewSelectedClose = true;
+                obj.experimentPresenter.go();
+            else
+                obj.experimentPresenter.show();
+            end
         end
         
         function onViewSelectedShowDocumentation(obj, ~, ~)

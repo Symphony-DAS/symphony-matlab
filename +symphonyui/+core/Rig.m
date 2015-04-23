@@ -24,7 +24,6 @@ classdef Rig < handle
             obj.state = symphonyui.core.RigState.STOPPED;
             obj.isInitialized = false;
             obj.devices = {};
-            obj.configure();
         end
         
         function initialize(obj)
@@ -42,6 +41,10 @@ classdef Rig < handle
         
         function addDevice(obj, device)
             obj.devices{end + 1} = device;
+        end
+        
+        function c = getConfiguration(obj)
+            c = [];
         end
         
         function record(obj, protocol, experiment)
@@ -73,10 +76,6 @@ classdef Rig < handle
             msg = [];
         end
         
-    end
-    
-    methods (Abstract)
-        configure(obj);
     end
     
 end

@@ -1,4 +1,4 @@
-classdef Settings < handle
+classdef Options < handle
     
     properties (Constant)
         

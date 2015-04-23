@@ -81,7 +81,7 @@
       <file>${PROJECT_ROOT}\+symphonyui\+preferences\ProtocolPreferences.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+preferences\RigPreferences.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+presenters\BeginEpochGroupPresenter.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+presenters\SettingsPresenter.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+presenters\OptionsPresenter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+presenters\EndEpochGroupPresenter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+presenters\MainPresenter.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+presenters\MessageBoxPresenter.m</file>
@@ -112,7 +112,7 @@
       <file>${PROJECT_ROOT}\+symphonyui\+util\search.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+util\strToCell.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+views\BeginEpochGroupView.m</file>
-      <file>${PROJECT_ROOT}\+symphonyui\+views\SettingsView.m</file>
+      <file>${PROJECT_ROOT}\+symphonyui\+views\OptionsView.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+views\EndEpochGroupView.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+views\MainView.m</file>
       <file>${PROJECT_ROOT}\+symphonyui\+views\MessageBoxView.m</file>

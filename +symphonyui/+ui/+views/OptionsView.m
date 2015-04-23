@@ -1,4 +1,4 @@
-classdef SettingsView < symphonyui.ui.View
+classdef OptionsView < symphonyui.ui.View
 
     events
         SelectedNode
@@ -21,7 +21,7 @@ classdef SettingsView < symphonyui.ui.View
         function createUi(obj)
             import symphonyui.ui.util.*;
 
-            set(obj.figureHandle, 'Name', 'Settings');
+            set(obj.figureHandle, 'Name', 'Options');
             set(obj.figureHandle, 'Position', screenCenter(467, 356));
             set(obj.figureHandle, 'WindowStyle', 'modal');
 

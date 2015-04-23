@@ -3,7 +3,7 @@ classdef AcquisitionService < handle
     events (NotifyAccess = private)
         OpenedExperiment
         ClosedExperiment
-        LoadedRig
+        LoadedRigConfiguration
         SelectedProtocol
     end
 
@@ -74,7 +74,7 @@ classdef AcquisitionService < handle
 
         %% Rig
         
-        function loadRig(obj, path)
+        function loadRigConfiguration(obj, path)
             obj.getCurrentRig().close();
             
             rig = obj.rigFactory.load(path);
@@ -83,7 +83,11 @@ classdef AcquisitionService < handle
             obj.session.rig = rig;
             obj.session.protocol.setRig(rig);
             
-            notify(obj, 'LoadedRig');
+            notify(obj, 'LoadedRigConfiguration');
+        end
+        
+        function saveRigConfiguration(obj, path)
+            disp(['Save to: ' path]);
         end
         
         function r = getCurrentRig(obj)

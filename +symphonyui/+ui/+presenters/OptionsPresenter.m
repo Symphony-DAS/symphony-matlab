@@ -1,10 +1,10 @@
-classdef SettingsPresenter < symphonyui.ui.Presenter
+classdef OptionsPresenter < symphonyui.ui.Presenter
 
     methods
 
-        function obj = SettingsPresenter(app, view)
+        function obj = OptionsPresenter(app, view)
             if nargin < 2
-                view = symphonyui.ui.views.SettingsView();
+                view = symphonyui.ui.views.OptionsView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
         end
