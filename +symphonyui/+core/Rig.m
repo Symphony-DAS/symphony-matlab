@@ -5,6 +5,10 @@ classdef Rig < handle
         Closed
     end
     
+    properties
+        daqController
+    end
+    
     properties (SetObservable, SetAccess = private)
         state
     end
@@ -12,10 +16,6 @@ classdef Rig < handle
     properties (SetAccess = private)
         isInitialized
         devices
-    end
-    
-    properties (Access = private)
-        controller
     end
     
     methods
@@ -41,10 +41,6 @@ classdef Rig < handle
         
         function addDevice(obj, device)
             obj.devices{end + 1} = device;
-        end
-        
-        function c = getConfiguration(obj)
-            c = [];
         end
         
         function record(obj, protocol, experiment)

@@ -24,9 +24,12 @@ classdef AcquisitionService < handle
             obj.rigFactory = rigFactory;
             obj.protocolRepository = protocolRepository;
             
+            rig = rigFactory.create();
+            rig.initialize();
+            
             obj.session = struct( ...
                 'experiment', [], ...
-                'rig', symphonyui.app.nulls.NullRig(), ...
+                'rig', rig, ...
                 'protocol', symphonyui.app.nulls.NullProtocol());
         end
 
