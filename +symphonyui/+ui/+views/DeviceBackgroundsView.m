@@ -6,7 +6,8 @@ classdef DeviceBackgroundsView < symphonyui.ui.View
     end
 
     properties (Access = private)
-        deviceGrid
+        backgroundsLayout
+        textFields
         applyButton
         cancelButton
     end
@@ -17,7 +18,7 @@ classdef DeviceBackgroundsView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Device Backgrounds');
-            set(obj.figureHandle, 'Position', screenCenter(300, 200));
+            set(obj.figureHandle, 'Position', screenCenter(260, 200));
             set(obj.figureHandle, 'WindowStyle', 'modal');
 
             mainLayout = uiextras.VBox( ...
@@ -25,7 +26,11 @@ classdef DeviceBackgroundsView < symphonyui.ui.View
                 'Padding', 11, ...
                 'Spacing', 7);
             
-            obj.deviceGrid = uiextras.jide.PropertyGrid(mainLayout);
+            obj.backgroundsLayout = uiextras.VBox( ...
+                'Parent', mainLayout, ...
+                'Spacing', 7);
+            
+            obj.textFields = struct();
 
             % Apply/Cancel controls.
             controlsLayout = uiextras.HBox( ...
@@ -53,11 +58,32 @@ classdef DeviceBackgroundsView < symphonyui.ui.View
             end
         end
         
-        function addDeviceBackground(obj, name, quantity, units)
-            key = [name ' (' units ')'];
-            property = uiextras.jide.PropertyGridField(key, quantity);
-            properties = get(obj.deviceGrid, 'Properties');
-            set(obj.deviceGrid, 'Properties', [properties, property]);
+        function pack(obj)
+            sizes = get(obj.backgroundsLayout, 'Sizes');
+            sizes(:) = 25;
+            set(obj.backgroundsLayout, 'Sizes', sizes);
+            
+            height = (25 + 7) * numel(fieldnames(obj.textFields)) + 11 * 2 + 25 + 7;
+            position = get(obj.figureHandle, 'Position');
+            position(4) = height;
+            set(obj.figureHandle, 'Position', position);
+        end
+        
+        function addBackground(obj, name, quantity, units)
+            layout = uiextras.HBox( ...
+                'Parent', obj.backgroundsLayout, ...
+                'Spacing', 7);
+            label = symphonyui.ui.util.createLabel(layout, [name ' (' units '):']);
+            set(label, 'HorizontalAlignment', 'right');
+            obj.textFields.(name) = uicontrol( ...
+                'Parent', layout, ...
+                'Style', 'edit', ...
+                'String', quantity, ...
+                'HorizontalAlignment', 'left');
+        end
+        
+        function q = getBackground(obj, name)
+            q = get(obj.textFields.(name), 'String');
         end
 
     end

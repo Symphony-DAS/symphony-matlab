@@ -1,11 +1,6 @@
 classdef RigView < symphonyui.ui.View
-
-    events
-        ShowDeviceBackgrounds
-    end
     
     properties (Access = private)
-        showDeviceBackgroundsTool
         daqControllerField
         devicesTable
     end
@@ -16,16 +11,7 @@ classdef RigView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Rig');
-            set(obj.figureHandle, 'Position', screenCenter(450, 250));
-            
-            % Toolbar.
-            toolbar = uitoolbar( ...
-                'Parent', obj.figureHandle);
-            obj.showDeviceBackgroundsTool = uipushtool( ...
-                'Parent', toolbar, ...
-                'TooltipString', 'Device Backgrounds...', ...
-                'ClickedCallback', @(h,d)notify(obj, 'ShowDeviceBackgrounds'));
-            setIconImage(obj.showDeviceBackgroundsTool, fullfile(symphonyui.app.App.getIconsPath(), 'device_backgrounds.png'));
+            set(obj.figureHandle, 'Position', screenCenter(400, 220));
             
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...

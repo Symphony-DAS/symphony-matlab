@@ -19,7 +19,8 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj, ~, ~)
-            obj.populateDeviceBackgrounds();
+            obj.populateBackgrounds();
+            obj.view.pack();
         end
         
         function onBind(obj)
@@ -33,11 +34,11 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
-        function populateDeviceBackgrounds(obj)
+        function populateBackgrounds(obj)
             for i = 1:numel(obj.devices)
                 d = obj.devices{i};
                 [quantity, units] = d.getBackground();
-                obj.view.addDeviceBackground(d.name, quantity, units);
+                obj.view.addBackground(d.name, quantity, units);
             end
         end
         
@@ -54,7 +55,7 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
             obj.view.update();
             
             try
-                
+                obj.applyBackgrounds();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -62,6 +63,14 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
             end
             
             obj.view.hide();
+        end
+        
+        function applyBackgrounds(obj)
+            for i = 1:numel(obj.devices)
+                d = obj.devices{i};
+                quantity = str2double(obj.view.getBackground(d.name));
+                d.setBackground(quantity);
+            end
         end
         
         function onViewSelectedCancel(obj, ~, ~)

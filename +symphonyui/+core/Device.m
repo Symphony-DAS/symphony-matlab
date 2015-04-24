@@ -21,6 +21,9 @@ classdef Device < handle
         end
         
         function setBackground(obj, quantity, units)
+            if nargin < 3
+                units = obj.background.units;
+            end
             obj.background.quantity = quantity;
             obj.background.units = units;
         end
