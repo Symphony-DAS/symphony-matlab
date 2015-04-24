@@ -25,7 +25,7 @@ classdef ExperimentView < symphonyui.ui.View
         epochCard
         sourceCard
         tabPanel
-        propertyGrid
+        propertiesTable
         keywordsTable
         notesTable
         idToNode
@@ -161,7 +161,14 @@ classdef ExperimentView < symphonyui.ui.View
             % Properties tab.
             propertiesLayout = uiextras.VBox( ...
                 'Parent', obj.tabPanel);
-            obj.propertyGrid = uiextras.jide.PropertyGrid(propertiesLayout);
+            obj.propertiesTable = createTable( ...
+                'Parent', propertiesLayout, ...
+                'Container', propertiesLayout, ...
+                'Headers', {'Key', 'Value'}, ...
+                'Editable', false, ...
+                'SelectionMode', javax.swing.ListSelectionModel.SINGLE_SELECTION, ...
+                'Buttons', 'off');
+            obj.propertiesTable.getTableScrollPane.getRowHeader.setVisible(0);
             obj.createAddRemoveButtons(propertiesLayout, @(h,d)notify(obj, 'AddProperty'), @(h,d)notify(obj, 'RemoveProperty'));
             set(propertiesLayout, 'Sizes', [-1 25]);
             
@@ -333,36 +340,28 @@ classdef ExperimentView < symphonyui.ui.View
             obj.experimentTree.SelectedNodes = node;
         end
         
-        function setProperties(obj, properties)
-            set(obj.propertyGrid, 'Properties', properties);
+        function setProperties(obj, values)
+            symphonyui.ui.util.setRowValues(obj.propertiesTable, values);
         end
         
-        function addProperty(obj, property)
-            properties = get(obj.propertyGrid, 'Properties');
-            set(obj.propertyGrid, 'Properties', [properties, property]);
+        function addProperty(obj, key, value)
+            symphonyui.ui.util.addRowValue(obj.propertiesTable, {key, value});
         end
         
         function removeProperty(obj, property)
-            obj.propertyGrid.RemoveProperty(property);
+            symphonyui.ui.util.removeRowValue(obj.propertiesTable, property);
         end
         
         function p = getSelectedProperty(obj)
-            p = obj.propertyGrid.GetSelectedProperty();
+            p = symphonyui.ui.util.getSelectedRowValue(obj.propertiesTable);
         end
         
         function setKeywords(obj, keywords)
-            jtable = obj.keywordsTable.getTable();
-            jtable.getModel().setRowCount(0);
-            for i = 1:numel(keywords)
-                obj.addKeyword(keywords{i});
-            end
+            symphonyui.ui.util.setRowValues(obj.keywordsTable, keywords);
         end
         
         function addKeyword(obj, keyword)
-            jtable = obj.keywordsTable.getTable();
-            jtable.getModel().addRow({keyword});
-            jtable.clearSelection();
-            jtable.scrollRectToVisible(jtable.getCellRect(jtable.getRowCount()-1, 0, true));
+            symphonyui.ui.util.addRowValue(obj.keywordsTable, keyword);
         end
         
         function removeKeyword(obj, keyword)
@@ -373,19 +372,15 @@ classdef ExperimentView < symphonyui.ui.View
             k = symphonyui.ui.util.getSelectedRowValue(obj.keywordsTable);
         end
         
-        function setNotes(obj, notes)
-            jtable = obj.notesTable.getTable();
-            jtable.getModel().setRowCount(0);
-            for i = 1:numel(notes)
-                obj.addNote(notes{i});
+        function setNotes(obj, values)
+            for i = 1:numel(values)
+                values{i}{1} = datestr(values{i}{1}, 14);
             end
+            symphonyui.ui.util.setRowValues(obj.notesTable, values);
         end
         
-        function addNote(obj, note)
-            jtable = obj.notesTable.getTable();
-            jtable.getModel().addRow({datestr(note.date, 14), note.text});
-            jtable.clearSelection();
-            jtable.scrollRectToVisible(jtable.getCellRect(jtable.getRowCount()-1, 0, true));
+        function addNote(obj, date, text)
+            symphonyui.ui.util.addRowValue(obj.notesTable, {datestr(date, 14), text});
         end
 
     end

@@ -52,10 +52,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Preview', @obj.onViewSelectedPreview);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
-            obj.addListener(v, 'ConfigureRig', @obj.onViewSelectedConfigureRig);
+            obj.addListener(v, 'ConfigureDeviceBackgrounds', @obj.onViewSelectedConfigureDeviceBackgrounds);
             obj.addListener(v, 'LoadRigConfiguration', @obj.onViewSelectedLoadRigConfiguration);
-            obj.addListener(v, 'SaveRigConfiguration', @obj.onViewSelectedSaveRigConfiguration);
-            obj.addListener(v, 'ShowOptions', @obj.onViewSelectedShowOptions);
+            obj.addListener(v, 'CreateRigConfiguration', @obj.onViewSelectedCreateRigConfiguration);
+            obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
             obj.addListener(v, 'ShowRig', @obj.onViewSelectedShowRig);
             obj.addListener(v, 'ShowProtocol', @obj.onViewSelectedShowProtocol);
             obj.addListener(v, 'ShowExperiment', @obj.onViewSelectedShowExperiment);
@@ -295,8 +295,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enablePreview = false;
             enablePause = false;
             enableStop = false;
-            enableConfigureRig = ~hasExperiment && isRigStopped;
+            enableConfigureDeviceBackgrounds = isRigStopped;
             enableLoadRigConfiguration = ~hasExperiment && isRigStopped;
+            enableCreateRigConfiguration = ~hasExperiment && isRigStopped;
             enableShowExperiment = hasExperiment;
             status = '';
             
@@ -346,14 +347,17 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enablePreview(enablePreview);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
-            obj.view.enableConfigureRig(enableConfigureRig);
+            obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);
             obj.view.enableLoadRigConfiguration(enableLoadRigConfiguration);
+            obj.view.enableCreateRigConfiguration(enableCreateRigConfiguration);
             obj.view.enableShowExperiment(enableShowExperiment);
             obj.view.setStatus(status);
         end
         
-        function onViewSelectedConfigureRig(obj, ~, ~)
-            disp('Configure rig');
+        function onViewSelectedConfigureDeviceBackgrounds(obj, ~, ~)
+            devices = obj.acquisitionService.getCurrentRig().devices;
+            presenter = symphonyui.ui.presenters.DeviceBackgroundsPresenter(devices, obj.app);
+            presenter.goWaitStop();
         end
         
         function onViewSelectedLoadRigConfiguration(obj, ~, ~)
@@ -376,18 +380,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateViewState();
         end
         
-        function onViewSelectedSaveRigConfiguration(obj, ~, ~)
-            path = obj.view.showPutFile('Save Rig Configuration', '*.mat', 'config.mat');
-            if isempty(path)
-                return;
-            end
-            try
-                obj.acquisitionService.saveRigConfiguration(path);
-            catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-                return;
-            end
+        function onViewSelectedCreateRigConfiguration(obj, ~, ~)
+            disp('Create rig config');
         end
         
         function addRigListeners(obj)
@@ -419,7 +413,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateViewState();
         end
         
-        function onViewSelectedShowOptions(obj, ~, ~)
+        function onViewSelectedConfigureOptions(obj, ~, ~)
             presenter = symphonyui.ui.presenters.OptionsPresenter(obj.app);
             presenter.goWaitStop();
         end

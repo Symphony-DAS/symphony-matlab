@@ -14,10 +14,10 @@ classdef MainView < symphonyui.ui.View
         Preview
         Pause
         Stop
-        ConfigureRig
+        ConfigureDeviceBackgrounds
         LoadRigConfiguration
-        SaveRigConfiguration
-        ShowOptions
+        CreateRigConfiguration
+        ConfigureOptions
         ShowRig
         ShowProtocol
         ShowExperiment
@@ -47,7 +47,7 @@ classdef MainView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, 'Name', 'Symphony');
-            set(obj.figureHandle, 'Position', screenCenter(380, 300));
+            set(obj.figureHandle, 'Position', screenCenter(370, 300));
 
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
@@ -101,20 +101,21 @@ classdef MainView < symphonyui.ui.View
             % Configure menu.
             obj.configureMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Configure');
-            obj.configureMenu.configureRig = uimenu(obj.configureMenu.root, ...
-                'Label', 'Rig...', ...
-                'Callback', @(h,d)notify(obj, 'ConfigureRig'));
+            obj.configureMenu.configureDeviceBackgrounds = uimenu(obj.configureMenu.root, ...
+                'Label', 'Device Backgrounds...', ...
+                'Accelerator', 'B', ...
+                'Callback', @(h,d)notify(obj, 'ConfigureDeviceBackgrounds'));
             obj.configureMenu.loadRigConfiguration = uimenu(obj.configureMenu.root, ...
                 'Label', 'Load Rig Configuration...', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'LoadRigConfiguration'));
-            obj.configureMenu.saveRigConfiguration = uimenu(obj.configureMenu.root, ...
-                'Label', 'Save Rig Configuration...', ...
-                'Callback', @(h,d)notify(obj, 'SaveRigConfiguration'));
-            obj.configureMenu.showOptions = uimenu(obj.configureMenu.root, ...
+            obj.configureMenu.createRigConfiguration = uimenu(obj.configureMenu.root, ...
+                'Label', 'Create Rig Configuration...', ...
+                'Callback', @(h,d)notify(obj, 'CreateRigConfiguration'));
+            obj.configureMenu.configureOptions = uimenu(obj.configureMenu.root, ...
                 'Label', 'Options...', ...
                 'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'ShowOptions'));
+                'Callback', @(h,d)notify(obj, 'ConfigureOptions'));
             
             % Window menu.
             obj.windowMenu.root = uimenu(obj.figureHandle, ...
@@ -278,16 +279,20 @@ classdef MainView < symphonyui.ui.View
             set(obj.stopButton, 'Enable', enable);
         end
         
-        function enableConfigureRig(obj, tf)
-            set(obj.configureMenu.configureRig, 'Enable', symphonyui.ui.util.onOff(tf));
+        function enableConfigureDeviceBackgrounds(obj, tf)
+            set(obj.configureMenu.configureDeviceBackgrounds, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
         function enableLoadRigConfiguration(obj, tf)
             set(obj.configureMenu.loadRigConfiguration, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
-        function enableShowOptions(obj, tf)
-            set(obj.configureMenu.showOptions, 'Enable', symphonyui.ui.util.onOff(tf));
+        function enableCreateRigConfiguration(obj, tf)
+            set(obj.configureMenu.createRigConfiguration, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
+        function enableConfigureOptions(obj, tf)
+            set(obj.configureMenu.configureOptions, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
         function enableShowExperiment(obj, tf)

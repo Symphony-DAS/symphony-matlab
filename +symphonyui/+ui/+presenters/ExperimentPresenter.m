@@ -216,19 +216,17 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function populateEntityAttributes(obj, entity)
             obj.populateEntityProperties(entity);
-            obj.view.setKeywords(entity.keywords);
-            obj.view.setNotes(entity.notes);
+            obj.populateEntityKeywords(entity);
+            obj.populateEntityNotes(entity);
         end
         
         function populateEntityProperties(obj, entity)
-            propertyMap = entity.propertyMap;
-            keys = propertyMap.keys;
-            values = propertyMap.values;
-            properties = uiextras.jide.PropertyGridField.empty(0, numel(keys) + 1);
+            keys = entity.propertyMap.keys;
+            values = cell(1, numel(keys));
             for i = 1:numel(keys)
-                properties(i) = uiextras.jide.PropertyGridField(keys{i}, values{i}, 'ReadOnly', true);
+                values{i} = {keys{i}, entity.propertyMap(keys{i})};
             end
-            obj.view.setProperties(properties);
+            obj.view.setProperties(values);
         end
         
         function onViewSelectedAddProperty(obj, ~, ~)
@@ -241,8 +239,7 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function onEntityAddedProperty(obj, ~, event)
             p = event.data;
-            property = uiextras.jide.PropertyGridField(p.key, p.value, 'ReadOnly', true);
-            obj.view.addProperty(property);
+            obj.view.addProperty(p.key, p.value);
         end
         
         function onViewSelectedRemoveProperty(obj, ~, ~)
@@ -255,6 +252,10 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function onEntityRemovedProperty(obj, ~, event)
             obj.view.removeProperty(event.data.key);
+        end
+        
+        function populateEntityKeywords(obj, entity)
+            obj.view.setKeywords(entity.keywords);
         end
         
         function onViewSelectedAddKeyword(obj, ~, ~)
@@ -281,6 +282,15 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.removeKeyword(event.data);
         end
         
+        function populateEntityNotes(obj, entity)
+            notes = entity.notes;
+            values = cell(1, numel(notes));
+            for i = 1:numel(notes)
+                values{i} = {notes{i}.date, notes{i}.text};
+            end
+            obj.view.setNotes(values);
+        end
+        
         function onViewSelectedAddNote(obj, ~, ~)
             node = obj.idToNode(obj.view.getSelectedNode());
             entity = node.entity;
@@ -290,7 +300,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function onEntityAddedNote(obj, ~, event)
-            obj.view.addNote(event.data);
+            note = event.data;
+            obj.view.addNote(note.date, note.text);
         end
         
         function e = getSelectedEntity(obj)
