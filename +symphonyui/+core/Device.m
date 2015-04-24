@@ -1,5 +1,9 @@
 classdef Device < handle
     
+    events (NotifyAccess = private)
+        SetBackground
+    end
+    
     properties (SetAccess = private)
         name
     end
@@ -26,6 +30,7 @@ classdef Device < handle
             end
             obj.background.quantity = quantity;
             obj.background.units = units;
+            notify(obj, 'SetBackground');
         end
         
     end

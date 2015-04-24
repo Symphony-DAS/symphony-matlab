@@ -26,6 +26,10 @@ classdef RigPresenter < symphonyui.ui.Presenter
         function onBind(obj)
             v = obj.view;
             
+            r = obj.rig;
+            for i = 1:numel(r.devices)
+                obj.addListener(r.devices{i}, 'SetBackground', @obj.onDeviceSetBackground);
+            end
         end
         
     end
@@ -35,13 +39,17 @@ classdef RigPresenter < symphonyui.ui.Presenter
         function populateDeviceList(obj)
             devices = obj.rig.devices;
             for i = 1:numel(devices)
-                obj.addDevice(devices{i});
+                d = devices{i};
+                [background, units] = d.getBackground();
+                obj.view.addDevice(d.name, 'IN', 'OUT');
+                obj.view.setDeviceBackground(d.name, background, units);
             end
         end
         
-        function addDevice(obj, device)
-            d = device;
-            obj.view.addDevice(d.name, 'IN', 'OUT', 'BACKGROUND');
+        function onDeviceSetBackground(obj, ~, event)
+            d = event.Source;
+            [background, units] = d.getBackground();
+            obj.view.setDeviceBackground(d.name, background, units);
         end
         
     end

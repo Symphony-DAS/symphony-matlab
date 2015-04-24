@@ -349,11 +349,11 @@ classdef ExperimentView < symphonyui.ui.View
         end
         
         function removeProperty(obj, property)
-            symphonyui.ui.util.removeRowValue(obj.propertiesTable, property);
+            symphonyui.ui.util.removeRow(obj.propertiesTable, property);
         end
         
         function p = getSelectedProperty(obj)
-            p = symphonyui.ui.util.getSelectedRowValue(obj.propertiesTable);
+            p = symphonyui.ui.util.getSelectedRowKey(obj.propertiesTable);
         end
         
         function setKeywords(obj, keywords)
@@ -365,11 +365,11 @@ classdef ExperimentView < symphonyui.ui.View
         end
         
         function removeKeyword(obj, keyword)
-            symphonyui.ui.util.removeRowValue(obj.keywordsTable, keyword);
+            symphonyui.ui.util.removeRow(obj.keywordsTable, keyword);
         end
         
         function k = getSelectedKeyword(obj)
-            k = symphonyui.ui.util.getSelectedRowValue(obj.keywordsTable);
+            k = symphonyui.ui.util.getSelectedRowKey(obj.keywordsTable);
         end
         
         function setNotes(obj, values)

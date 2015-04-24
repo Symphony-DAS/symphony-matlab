@@ -30,6 +30,8 @@ classdef RigView < symphonyui.ui.View
                 'Container', rigLayout, ...
                 'Headers', {'Name', 'Input', 'Output', 'Background'}, ...
                 'Editable', false, ...
+                'RowSelectionAllowed', false, ...
+                'ColumnSelectionAllowed', false, ...
                 'Buttons', 'off');
             obj.devicesTable.getTableScrollPane.getRowHeader.setVisible(0);
             
@@ -40,10 +42,15 @@ classdef RigView < symphonyui.ui.View
             set(obj.daqControllerField, 'String', c);
         end
         
-        function addDevice(obj, name, input, output, background)
+        function addDevice(obj, name, input, output)
+            symphonyui.ui.util.addRowValue(obj.devicesTable, {name, input, output});
+        end
+        
+        function setDeviceBackground(obj, name, background, units)
+            i = symphonyui.ui.util.getRowIndex(obj.devicesTable, name);
             jtable = obj.devicesTable.getTable();
-            jtable.getModel().addRow({name, input, output, background});
-            jtable.clearSelection();
+            jmodel = jtable.getModel();
+            jmodel.setValueAt([num2str(background) ' ' units], i, 3);
         end
 
     end
