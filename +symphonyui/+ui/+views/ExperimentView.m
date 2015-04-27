@@ -24,7 +24,7 @@ classdef ExperimentView < symphonyui.ui.View
         epochGroupCard
         epochCard
         sourceCard
-        tabPanel
+        tabGroup
         propertiesTable
         keywordsTable
         notesTable
@@ -121,7 +121,7 @@ classdef ExperimentView < symphonyui.ui.View
             obj.experimentCard.locationField = createLabeledTextField(experimentLayout, 'Location:', experimentLabelSize, 'Enable', 'off');
             obj.experimentCard.startTimeField = createLabeledTextField(experimentLayout, 'Start time:', experimentLabelSize, 'Enable', 'off');
             obj.experimentCard.purposeField = createLabeledTextField(experimentLayout, 'Purpose:', experimentLabelSize, 'Enable', 'off');
-            obj.experimentCard.tabPanelParent = uix.Panel('Parent', experimentLayout, 'BorderType', 'none');
+            obj.experimentCard.tabGroupParent = uix.Panel('Parent', experimentLayout, 'BorderType', 'none');
             set(experimentLayout, 'Sizes', [25 25 25 25 -1]);
             
             % Source card.
@@ -130,7 +130,7 @@ classdef ExperimentView < symphonyui.ui.View
                 'Spacing', 7);
             sourceLabelSize = 60;
             obj.sourceCard.labelField = createLabeledTextField(sourceLayout, 'Label:', sourceLabelSize, 'Enable', 'off');
-            obj.sourceCard.tabPanelParent = uix.Panel('Parent', sourceLayout, 'BorderType', 'none');
+            obj.sourceCard.tabGroupParent = uix.Panel('Parent', sourceLayout, 'BorderType', 'none');
             set(sourceLayout, 'Sizes', [25 -1]);
 
             % Epoch group card.
@@ -142,25 +142,26 @@ classdef ExperimentView < symphonyui.ui.View
             obj.epochGroupCard.startTimeField = createLabeledTextField(epochGroupLayout, 'Start time:', epochGroupLabelSize, 'Enable', 'off');
             obj.epochGroupCard.endTimeField = createLabeledTextField(epochGroupLayout, 'End time:', epochGroupLabelSize, 'Enable', 'off');
             obj.epochGroupCard.sourceField = createLabeledTextField(epochGroupLayout, 'Source:', epochGroupLabelSize, 'Enable', 'off');
-            obj.epochGroupCard.tabPanelParent = uix.Panel('Parent', epochGroupLayout, 'BorderType', 'none');
+            obj.epochGroupCard.tabGroupParent = uix.Panel('Parent', epochGroupLayout, 'BorderType', 'none');
             set(epochGroupLayout, 'Sizes', [25 25 25 25 -1]);
             
             % Epoch card.
             epochLayout = uiextras.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
-            obj.epochCard.tabPanelParent = uix.Panel('Parent', epochLayout, 'BorderType', 'none');
+            obj.epochCard.tabGroupParent = uix.Panel('Parent', epochLayout, 'BorderType', 'none');
             set(epochLayout, 'Sizes', [-1]);
             
             % Tab panel.
-            obj.tabPanel = uix.TabPanel( ...
-                'Parent', obj.experimentCard.tabPanelParent, ...
-                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
-                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
+            obj.tabGroup = uitabgroup( ...
+                'Parent', obj.experimentCard.tabGroupParent);
             
             % Properties tab.
+            propertiesTab = uitab( ...
+                'Parent', obj.tabGroup, ...
+                'Title', 'Properties');
             propertiesLayout = uiextras.VBox( ...
-                'Parent', obj.tabPanel);
+                'Parent', propertiesTab);
             obj.propertiesTable = createTable( ...
                 'Parent', propertiesLayout, ...
                 'Container', propertiesLayout, ...
@@ -169,12 +170,16 @@ classdef ExperimentView < symphonyui.ui.View
                 'SelectionMode', javax.swing.ListSelectionModel.SINGLE_SELECTION, ...
                 'Buttons', 'off');
             obj.propertiesTable.getTableScrollPane.getRowHeader.setVisible(0);
+            obj.propertiesTable.getTableScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
             obj.createAddRemoveButtons(propertiesLayout, @(h,d)notify(obj, 'AddProperty'), @(h,d)notify(obj, 'RemoveProperty'));
             set(propertiesLayout, 'Sizes', [-1 25]);
             
             % Keywords tab.
+            keywordsTab = uitab( ...
+                'Parent', obj.tabGroup, ...
+                'Title', 'Keywords');
             keywordsLayout = uiextras.VBox( ...
-                'Parent', obj.tabPanel);
+                'Parent', keywordsTab);
             obj.keywordsTable = createTable( ...
                 'Parent', keywordsLayout, ...
                 'Container', keywordsLayout, ...
@@ -183,12 +188,16 @@ classdef ExperimentView < symphonyui.ui.View
                 'SelectionMode', javax.swing.ListSelectionModel.SINGLE_SELECTION, ...
                 'Buttons', 'off');
             obj.keywordsTable.getTableScrollPane.getRowHeader.setVisible(0);
+            obj.keywordsTable.getTableScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
             obj.createAddRemoveButtons(keywordsLayout, @(h,d)notify(obj, 'AddKeyword'), @(h,d)notify(obj, 'RemoveKeyword'));
             set(keywordsLayout, 'Sizes', [-1 25]);
             
             % Notes tab.
+            notesTab = uitab( ...
+                'Parent', obj.tabGroup, ...
+                'Title', 'Notes');
             notesLayout = uiextras.VBox( ...
-                'Parent', obj.tabPanel);
+                'Parent', notesTab);
             obj.notesTable = createTable( ...
                 'Parent', notesLayout, ...
                 'Container', notesLayout, ...
@@ -197,13 +206,11 @@ classdef ExperimentView < symphonyui.ui.View
                 'SelectionMode', javax.swing.ListSelectionModel.SINGLE_SELECTION, ...
                 'Buttons', 'off');
             obj.notesTable.getTableScrollPane.getRowHeader.setVisible(0);
+            obj.notesTable.getTableScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
             obj.notesTable.getTable.getColumnModel.getColumn(0).setMaxWidth(80);
             [~, removeButton] = obj.createAddRemoveButtons(notesLayout, @(h,d)notify(obj, 'AddNote'), @(h,d)notify(obj, 'RemoveNote'));
             set(removeButton, 'Enable', 'off');
             set(notesLayout, 'Sizes', [-1 25]);
-            
-            set(obj.tabPanel, 'TabTitles', {'Properties', 'Keywords', 'Notes'});
-            set(obj.tabPanel, 'TabWidth', 70);
             
             set(obj.cardPanel, 'Selection', 1);
 
@@ -225,15 +232,15 @@ classdef ExperimentView < symphonyui.ui.View
                 case obj.EMPTY_CARD
                     return;
                 case obj.EXPERIMENT_CARD
-                    parent = obj.experimentCard.tabPanelParent;
+                    parent = obj.experimentCard.tabGroupParent;
                 case obj.SOURCE_CARD
-                    parent = obj.sourceCard.tabPanelParent;
+                    parent = obj.sourceCard.tabGroupParent;
                 case obj.EPOCH_GROUP_CARD
-                    parent = obj.epochGroupCard.tabPanelParent;
+                    parent = obj.epochGroupCard.tabGroupParent;
                 case obj.EPOCH_CARD
-                    parent = obj.epochCard.tabPanelParent;
+                    parent = obj.epochCard.tabGroupParent;
             end
-            set(obj.tabPanel, 'Parent', parent);
+            set(obj.tabGroup, 'Parent', parent);
         end
 
         function setExperimentTreeRootNode(obj, name, id)
