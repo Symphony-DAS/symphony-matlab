@@ -22,7 +22,7 @@ classdef App < handle
         end
         
         function p = getRootPath()
-            p = fullfile(mfilename('fullpath'), '..', '..', '..');
+            p = fileparts(fileparts(fileparts(mfilename('fullpath'))));
         end
         
         function p = getIconsPath()
