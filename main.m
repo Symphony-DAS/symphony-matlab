@@ -28,7 +28,8 @@ function setupJavaPath()
     
     jpath = { ...
         fullfile(App.getRootPath(), 'dependencies', 'JavaTreeWrapper_20150126', 'JavaTreeWrapper', '+uiextras', '+jTree', 'UIExtrasTree.jar'), ...
-        fullfile(App.getRootPath(), 'dependencies', 'PropertyGrid', '+uiextras', '+jide', 'UIExtrasPropertyGrid.jar')};
+        fullfile(App.getRootPath(), 'dependencies', 'PropertyGrid', '+uiextras', '+jide', 'UIExtrasPropertyGrid.jar'), ...
+        fullfile(App.getRootPath(), 'dependencies', 'swingx', 'swingx-all-1.6.4.jar')};
     
     if ~any(ismember(javaclasspath, jpath))
         javaaddpath(jpath);

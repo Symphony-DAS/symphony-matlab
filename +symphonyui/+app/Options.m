@@ -14,6 +14,8 @@ classdef Options < handle
         
         SOURCE_LABEL_LIST = 'SOURCE_LABEL_LIST'
         
+        KEYWORD_LIST = 'KEYWORD_LIST'
+        
     end
     
 end

@@ -34,15 +34,6 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
     end
     
     methods (Access = private)
-
-        function onViewKeyPress(obj, ~, event)
-            switch event.key
-                case 'return'
-                    obj.onViewSelectedAdd();
-                case 'escape'
-                    obj.onViewSelectedCancel();
-            end
-        end
         
         function populateParentList(obj)
             sourceIds = obj.experiment.getAllSourceIds();
@@ -50,6 +41,15 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             obj.view.setParentList(list);
             if isempty(sourceIds)
                 obj.view.enableSelectParent(false);
+            end
+        end
+        
+        function onViewKeyPress(obj, ~, event)
+            switch event.key
+                case 'return'
+                    obj.onViewSelectedAdd();
+                case 'escape'
+                    obj.onViewSelectedCancel();
             end
         end
         

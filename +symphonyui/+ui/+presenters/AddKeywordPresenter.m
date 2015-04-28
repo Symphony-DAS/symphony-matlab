@@ -19,6 +19,7 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGo(obj)
+            obj.populateTextCompletionList();
             obj.view.requestTextFocus();
         end
 
@@ -29,8 +30,20 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
     end
-
+    
     methods (Access = private)
+        
+        function populateTextCompletionList(obj)
+            list = obj.app.config.get(symphonyui.app.Options.KEYWORD_LIST);
+            if isempty(list)
+                return;
+            end
+            try
+                obj.view.setTextCompletionList(list());
+            catch x
+                obj.log.debug(['Unable to populate completion list from config: ' x.message], x);
+            end
+        end
 
         function onViewKeyPress(obj, ~, event)
             switch event.key

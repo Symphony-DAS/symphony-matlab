@@ -64,6 +64,11 @@ classdef AddKeywordView < symphonyui.ui.View
             t = get(obj.textField, 'String');
         end
         
+        function setTextCompletionList(obj, l)
+            j = findjobj(obj.textField);
+            org.jdesktop.swingx.autocomplete.AutoCompleteDecorator.decorate(j, java.util.Arrays.asList(l), false);
+        end
+        
         function requestTextFocus(obj)
             obj.requestFocus(obj.textField);
         end

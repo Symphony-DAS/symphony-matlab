@@ -21,8 +21,10 @@ classdef Config < handle
         function v = get(obj, key)
             if ispref(obj.GROUP, key)
                 v = getpref(obj.GROUP, key);
-            else
+            elseif obj.defaults.isKey(key)
                 v = obj.defaults(key);
+            else
+                v = [];
             end
         end
         

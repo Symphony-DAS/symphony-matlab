@@ -36,15 +36,6 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
-        function onViewKeyPress(obj, ~, event)
-            switch event.key
-                case 'return'
-                    obj.onViewSelectedBegin();
-                case 'escape'
-                    obj.onViewSelectedCancel();
-            end
-        end
-        
         function populateParent(obj)
             if isempty(obj.experiment.currentEpochGroup)
                 parent = '(None)';
@@ -57,6 +48,15 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         function populateSourceList(obj)
             list = obj.experiment.getAllSourceIds();
             obj.view.setSourceList(list);
+        end
+        
+        function onViewKeyPress(obj, ~, event)
+            switch event.key
+                case 'return'
+                    obj.onViewSelectedBegin();
+                case 'escape'
+                    obj.onViewSelectedCancel();
+            end
         end
         
         function onViewSelectedBegin(obj, ~, ~)

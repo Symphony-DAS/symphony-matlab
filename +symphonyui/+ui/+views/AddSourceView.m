@@ -32,6 +32,7 @@ classdef AddSourceView < symphonyui.ui.View
             sourceLabelSize = 40;
             obj.parentDropDown = createLabeledDropDownMenu(sourceLayout, 'Parent:', sourceLabelSize);
             obj.labelField = createLabeledTextField(sourceLayout, 'Label:', sourceLabelSize);
+            
             set(sourceLayout, 'Sizes', [25 25]);
 
             % Add/Cancel controls.
@@ -79,7 +80,7 @@ classdef AddSourceView < symphonyui.ui.View
         function setParentList(obj, l)
             symphonyui.ui.util.setStringList(obj.parentDropDown, l);
         end
-
+        
         function l = getLabel(obj)
             l = get(obj.labelField, 'String');
         end
