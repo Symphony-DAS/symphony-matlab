@@ -28,8 +28,7 @@ function setupJavaPath()
     
     jpath = { ...
         fullfile(App.getRootPath(), 'dependencies', 'JavaTreeWrapper_20150126', 'JavaTreeWrapper', '+uiextras', '+jTree', 'UIExtrasTree.jar'), ...
-        fullfile(App.getRootPath(), 'dependencies', 'PropertyGrid', '+uiextras', '+jide', 'UIExtrasPropertyGrid.jar'), ...
-        fullfile(App.getRootPath(), 'dependencies', 'swingx', 'swingx-all-1.6.4.jar')};
+        fullfile(App.getRootPath(), 'dependencies', 'PropertyGrid', '+uiextras', '+jide', 'UIExtrasPropertyGrid.jar')};
     
     if ~any(ismember(javaclasspath, jpath))
         javaaddpath(jpath);
@@ -48,4 +47,5 @@ function d = getDefaultOptions()
     d(Options.EXPERIMENT_DEFAULT_LOCATION) = @()pwd();
     d(Options.EPOCH_GROUP_LABEL_LIST) = {'Control', 'Drug', 'Wash'};
     d(Options.SOURCE_LABEL_LIST) = {'Animal', 'Tissue', 'Cell'};
+    d(Options.KEYWORD_LIST) = {'Keyword1', 'Keyword2'};
 end
