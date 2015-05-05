@@ -16,29 +16,29 @@ classdef AddKeywordView < symphonyui.ui.View
         function createUi(obj)
             import symphonyui.ui.util.*;
             
-            set(obj.figureHandle, 'Name', 'Add Keyword');
-            set(obj.figureHandle, 'Position', screenCenter(300, 79));
-            set(obj.figureHandle, 'WindowStyle', 'modal');
+            set(obj.figureHandle, ...
+                'Name', 'Add Keyword', ...
+                'Position', screenCenter(300, 79), ...
+                'WindowStyle', 'modal');
             
-            mainLayout = uiextras.VBox( ...
+            mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
             
-            keywordLayout = uiextras.VBox( ...
+            keywordLayout = uix.VBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
-            
-            obj.textField = uicontrol( ...
+            obj.textField = AutoCompletionTextField( ...
                 'Parent', keywordLayout, ...
-                'Style', 'edit', ...
                 'HorizontalAlignment', 'left');
+            set(keywordLayout, 'Heights', 25);
             
             % Add/Cancel controls.
-            controlsLayout = uiextras.HBox( ...
+            controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
-            uiextras.Empty('Parent', controlsLayout);
+            uix.Empty('Parent', controlsLayout);
             obj.addButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
@@ -49,9 +49,9 @@ classdef AddKeywordView < symphonyui.ui.View
                 'Style', 'pushbutton', ...
                 'String', 'Cancel', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
-            set(controlsLayout, 'Sizes', [-1 75 75]);
+            set(controlsLayout, 'Widths', [-1 75 75]);
             
-            set(mainLayout, 'Sizes', [25 25]);
+            set(mainLayout, 'Heights', [-1 25]);
             
             % Set add button to appear as the default button.
             try %#ok<TRYNC>
@@ -61,18 +61,16 @@ classdef AddKeywordView < symphonyui.ui.View
         end
         
         function t = getText(obj)
-            j = findjobj(obj.textField);
-            t = char(j.getText());
+            t = get(obj.textField, 'String');
         end
         
-        function setTextCompletionList(obj, l)
-            j = findjobj(obj.textField);
-            auto = com.jidesoft.swing.AutoCompletion(j, java.util.Arrays.asList(l));
-            auto.setStrict(false);
+        function setTextAutoCompletion(obj, list)
+            set(obj.textField, 'AutoCompletion', list);
         end
         
         function requestTextFocus(obj)
-            obj.requestFocus(obj.textField);
+            obj.update();
+            uicontrol(obj.textField);
         end
         
     end

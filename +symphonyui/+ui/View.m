@@ -71,12 +71,6 @@ classdef View < handle
             drawnow;
         end
 
-        function requestFocus(obj, control)
-            obj.show();
-            obj.update();
-            uicontrol(control);
-        end
-
         function showError(obj, msg)
             obj.showMessage(msg, 'Error');
         end

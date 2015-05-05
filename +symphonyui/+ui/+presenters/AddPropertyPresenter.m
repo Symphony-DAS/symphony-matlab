@@ -46,11 +46,9 @@ classdef AddPropertyPresenter < symphonyui.ui.Presenter
             
             key = obj.view.getKey();
             value = obj.view.getValue();
-            
             try
                 obj.entity.addProperty(key, value);
             catch x
-                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

@@ -20,6 +20,9 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
         
         function onGoing(obj)
             obj.populateFromConfig();
+        end
+        
+        function onGo(obj)
             obj.view.requestPurposeFocus();
         end
         

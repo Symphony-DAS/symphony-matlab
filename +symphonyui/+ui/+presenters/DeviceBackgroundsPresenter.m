@@ -20,7 +20,6 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
 
         function onGoing(obj, ~, ~)
             obj.populateBackgrounds();
-            obj.view.pack();
         end
         
         function onBind(obj)
@@ -35,6 +34,7 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateBackgrounds(obj)
+            backgrounds = cell(1, numel(obj.devices));
             for i = 1:numel(obj.devices)
                 d = obj.devices{i};
                 [quantity, units] = d.getBackground();

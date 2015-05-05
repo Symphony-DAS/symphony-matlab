@@ -21,7 +21,9 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         function onGoing(obj, ~, ~)
             obj.populateParent();
             obj.populateSourceList();
-            obj.view.setSelectedSource(obj.view.getSourceList{end});
+        end
+        
+        function onGo(obj, ~, ~)
             obj.view.requestLabelFocus();
         end
         
@@ -46,8 +48,11 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         end
         
         function populateSourceList(obj)
-            list = obj.experiment.getAllSourceIds();
-            obj.view.setSourceList(list);
+            ids = obj.experiment.getAllSourceIds();
+            names = ids;
+            values = ids;
+            obj.view.setSourceList(names, values);
+            obj.view.setSelectedSource(values{end});
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -64,11 +69,9 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             
             label = obj.view.getLabel();
             source = obj.view.getSelectedSource();
-            
             try
                 obj.experiment.beginEpochGroup(label, source);
             catch x
-                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

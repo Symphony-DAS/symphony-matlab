@@ -20,7 +20,9 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
         
         function onGoing(obj, ~, ~)
             obj.populateParentList();
-            obj.view.setSelectedParent(obj.view.getParentList{end});
+        end
+        
+        function onGo(obj, ~, ~)
             obj.view.requestLabelFocus();
         end
         
@@ -36,10 +38,12 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateParentList(obj)
-            sourceIds = obj.experiment.getAllSourceIds();
-            list = [{'(None)'}, sourceIds];
-            obj.view.setParentList(list);
-            if isempty(sourceIds)
+            ids = obj.experiment.getAllSourceIds();
+            names = [{'(None)'}, ids];
+            values = [{[]}, ids];
+            obj.view.setParentList(names, values);
+            obj.view.setSelectedParent(values{end});
+            if isempty(ids)
                 obj.view.enableSelectParent(false);
             end
         end
@@ -57,15 +61,10 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             obj.view.update();
             
             parent = obj.view.getSelectedParent();
-            if strcmp(parent, '(None)')
-                parent = [];
-            end
             label = obj.view.getLabel();
-            
             try
                 obj.experiment.addSource(label, parent);
             catch x
-                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

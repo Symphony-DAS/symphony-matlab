@@ -4,7 +4,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         acquisitionService
         rigPresenter
         experimentPresenter
-        protocolIdToName
         eventManagers
     end
     
@@ -16,7 +15,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
             obj = obj@symphonyui.ui.Presenter(app, view); 
             obj.acquisitionService = acquisitionService;
-            obj.protocolIdToName = symphonyui.ui.util.BiMap();
             obj.eventManagers = struct( ...
                 'experiment', symphonyui.ui.util.EventManager(), ...
                 'rig', symphonyui.ui.util.EventManager(), ...
@@ -29,7 +27,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onGoing(obj)
             obj.populateProtocolList();
-            obj.selectCurrentProtocol();
+            obj.populateProtocolProperties();
             obj.updateViewState();
         end
         
@@ -155,22 +153,20 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function populateProtocolList(obj)
-            obj.protocolIdToName.clear();
-            
             ids = obj.acquisitionService.getAvailableProtocolIds();
+            names = cell(1, numel(ids));
             for i = 1:numel(ids)
                 split = strsplit(ids{i}, '.');
-                name = symphonyui.ui.util.humanize(split{end});
-                obj.protocolIdToName.put(ids{i}, name);
+                names{i} = symphonyui.ui.util.humanize(split{end});
             end
-            
-            obj.view.setProtocolList(obj.protocolIdToName.values);
+            values = ids;
+            obj.view.setProtocolList(names, values);
+            obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocolId());
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
-            id = obj.protocolIdToName.getKey(obj.view.getSelectedProtocol());
             try
-                obj.acquisitionService.selectProtocol(id);
+                obj.acquisitionService.selectProtocol(obj.view.getSelectedProtocol());
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -181,14 +177,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onServiceSelectedProtocol(obj, ~, ~)
             obj.removeProtocolListeners();
             obj.addProtocolListeners();
-            obj.selectCurrentProtocol();
-            obj.updateViewState();
-        end
-        
-        function selectCurrentProtocol(obj)
-            name = obj.protocolIdToName.get(obj.acquisitionService.getCurrentProtocolId());
-            obj.view.setSelectedProtocol(name);
+            obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocolId());
             obj.populateProtocolProperties();
+            obj.updateViewState();
         end
         
         function addProtocolListeners(obj)

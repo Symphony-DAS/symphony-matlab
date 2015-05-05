@@ -4,9 +4,9 @@ classdef AddSourceView < symphonyui.ui.View
         Add
         Cancel
     end
-
+    
     properties (Access = private)
-        parentDropDown
+        parentPopupMenu
         labelField
         addButton
         cancelButton
@@ -17,29 +17,42 @@ classdef AddSourceView < symphonyui.ui.View
         function createUi(obj)
             import symphonyui.ui.util.*;
 
-            set(obj.figureHandle, 'Name', 'Add Source');
-            set(obj.figureHandle, 'Position', screenCenter(300, 111));
-            set(obj.figureHandle, 'WindowStyle', 'modal');
+            set(obj.figureHandle, ...
+                'Name', 'Add Source', ...
+                'Position', screenCenter(300, 111), ...
+                'WindowStyle', 'modal');
 
-            mainLayout = uiextras.VBox( ...
+            mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
 
-            sourceLayout = uiextras.VBox( ...
+            sourceLayout = uix.Grid( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
-            sourceLabelSize = 40;
-            obj.parentDropDown = createLabeledDropDownMenu(sourceLayout, 'Parent:', sourceLabelSize);
-            obj.labelField = createLabeledTextField(sourceLayout, 'Label:', sourceLabelSize);
-            
-            set(sourceLayout, 'Sizes', [25 25]);
+            Label( ...
+                'Parent', sourceLayout, ...
+                'String', 'Parent:');
+            Label( ...
+                'Parent', sourceLayout, ...
+                'String', 'Label:');
+            obj.parentPopupMenu = MappedPopupMenu( ...
+                'Parent', sourceLayout, ...
+                'String', {' '}, ...
+                'HorizontalAlignment', 'left');
+            obj.labelField = uicontrol( ...
+                'Parent', sourceLayout, ...
+                'Style', 'edit', ...
+                'HorizontalAlignment', 'left');
+            set(sourceLayout, ...
+                'Widths', [40 -1], ...
+                'Heights', [25 25]);
 
             % Add/Cancel controls.
-            controlsLayout = uiextras.HBox( ...
+            controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
-            uiextras.Empty('Parent', controlsLayout);
+            uix.Empty('Parent', controlsLayout);
             obj.addButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
@@ -50,9 +63,9 @@ classdef AddSourceView < symphonyui.ui.View
                 'Style', 'pushbutton', ...
                 'String', 'Cancel', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
-            set(controlsLayout, 'Sizes', [-1 75 75]);
+            set(controlsLayout, 'Widths', [-1 75 75]);
 
-            set(mainLayout, 'Sizes', [-1 25]);
+            set(mainLayout, 'Heights', [-1 25]);
 
             % Set add button to appear as the default button.
             try %#ok<TRYNC>
@@ -62,23 +75,20 @@ classdef AddSourceView < symphonyui.ui.View
         end
         
         function enableSelectParent(obj, tf)
-            set(obj.parentDropDown, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.parentPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
-        function p = getSelectedParent(obj)
-            p = symphonyui.ui.util.getSelectedValue(obj.parentDropDown);
+        function v = getSelectedParent(obj)
+            v = get(obj.parentPopupMenu, 'Value');
         end
 
         function setSelectedParent(obj, p)
-            symphonyui.ui.util.setSelectedValue(obj.parentDropDown, p);
+            set(obj.parentPopupMenu, 'Value', p);
         end
-
-        function l = getParentList(obj)
-            l = get(obj.parentDropDown, 'String');
-        end
-
-        function setParentList(obj, l)
-            symphonyui.ui.util.setStringList(obj.parentDropDown, l);
+        
+        function setParentList(obj, names, values)
+            set(obj.parentPopupMenu, 'String', names);
+            set(obj.parentPopupMenu, 'Values', values);
         end
         
         function l = getLabel(obj)
@@ -86,7 +96,8 @@ classdef AddSourceView < symphonyui.ui.View
         end
         
         function requestLabelFocus(obj)
-            obj.requestFocus(obj.labelField);
+            obj.update();
+            uicontrol(obj.labelField);
         end
 
     end

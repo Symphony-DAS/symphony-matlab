@@ -43,11 +43,11 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
 
         function onViewSelectedAdd(obj, ~, ~)
             obj.view.update();
-
+            
+            note = obj.view.getText();
             try
-                obj.entity.addNote(obj.view.getText());
+                obj.entity.addNote(note);
             catch x
-                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

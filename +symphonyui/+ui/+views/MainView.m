@@ -33,7 +33,7 @@ classdef MainView < symphonyui.ui.View
         configureMenu
         windowMenu
         helpMenu
-        protocolDropDown
+        protocolPopupMenu
         protocolPropertyGrid
         recordButton
         previewButton
@@ -46,8 +46,9 @@ classdef MainView < symphonyui.ui.View
         function createUi(obj)
             import symphonyui.ui.util.*;
 
-            set(obj.figureHandle, 'Name', 'Symphony');
-            set(obj.figureHandle, 'Position', screenCenter(370, 300));
+            set(obj.figureHandle, ...
+                'Name', 'Symphony', ...
+            	'Position', screenCenter(370, 300));
 
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
@@ -148,16 +149,23 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'About Symphony', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'ShowAbout'));
-
-            iconsUrl = pathToUrl(symphonyui.app.App.getIconsPath());
+            
+            iconsPath = symphonyui.app.App.getIconsPath();
+            if iconsPath(1) == filesep
+                iconsPath(1) = [];
+            end
+            iconsUrl = strrep(['file:/' iconsPath '/'],'\','/');
 
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
 
-            obj.protocolDropDown = createDropDownMenu(mainLayout, {''});
-            set(obj.protocolDropDown, 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
+            obj.protocolPopupMenu = MappedPopupMenu( ...
+                'Parent', mainLayout, ...
+                'String', {' '}, ...
+                'HorizontalAlignment', 'left', ...
+                'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
 
             obj.protocolPropertyGrid = uiextras.jide.PropertyGrid(mainLayout, ...
                 'Callback', @(h,d)notify(obj, 'SetProtocolProperty', d));
@@ -224,19 +232,20 @@ classdef MainView < symphonyui.ui.View
         end
 
         function enableSelectProtocol(obj, tf)
-            set(obj.protocolDropDown, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.protocolPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function p = getSelectedProtocol(obj)
-            p = symphonyui.ui.util.getSelectedValue(obj.protocolDropDown);
+            p = get(obj.protocolPopupMenu, 'Value');
         end
 
         function setSelectedProtocol(obj, p)
-            symphonyui.ui.util.setSelectedValue(obj.protocolDropDown, p);
+            set(obj.protocolPopupMenu, 'Value', p);
         end
 
-        function setProtocolList(obj, p)
-            symphonyui.ui.util.setStringList(obj.protocolDropDown, p);
+        function setProtocolList(obj, names, values)
+            set(obj.protocolPopupMenu, 'String', names);
+            set(obj.protocolPopupMenu, 'Values', values);
         end
 
         function enableProtocolProperties(obj, tf)
