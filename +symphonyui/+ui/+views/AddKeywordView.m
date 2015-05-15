@@ -29,7 +29,7 @@ classdef AddKeywordView < symphonyui.ui.View
             keywordLayout = uix.VBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
-            obj.textField = AutoCompletionTextField( ...
+            obj.textField = IntelliHintsTextField( ...
                 'Parent', keywordLayout, ...
                 'HorizontalAlignment', 'left');
             set(keywordLayout, 'Heights', 25);
@@ -64,8 +64,8 @@ classdef AddKeywordView < symphonyui.ui.View
             t = get(obj.textField, 'String');
         end
         
-        function setTextAutoCompletion(obj, list)
-            set(obj.textField, 'AutoCompletion', list);
+        function setTextCompletionList(obj, list)
+            set(obj.textField, 'CompletionList', list);
         end
         
         function requestTextFocus(obj)
