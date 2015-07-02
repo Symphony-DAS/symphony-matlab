@@ -2,6 +2,7 @@ function main()
     import symphonyui.app.*;
     import symphonyui.infra.*;
 
+    setupDotNetPath();
     setupJavaPath();
     
     config = Config();
@@ -23,6 +24,18 @@ function main()
     presenter.go();
 end
 
+function setupDotNetPath()
+    import symphonyui.app.App;
+
+    npath = { ...
+        fullfile(App.getRootPath(), 'dependencies', 'Core Framework', 'Symphony.Core.dll'), ...
+        fullfile(App.getRootPath(), 'dependencies', 'Core Framework', 'Symphony.ExternalDevices.dll')};
+    
+    for i = 1:numel(npath)
+        NET.addAssembly(npath{i});
+    end
+end
+
 function setupJavaPath()
     import symphonyui.app.App;
     
@@ -30,8 +43,10 @@ function setupJavaPath()
         fullfile(App.getRootPath(), 'dependencies', 'JavaTreeWrapper_20150126', 'JavaTreeWrapper', '+uiextras', '+jTree', 'UIExtrasTree.jar'), ...
         fullfile(App.getRootPath(), 'dependencies', 'PropertyGrid', '+uiextras', '+jide', 'UIExtrasPropertyGrid.jar')};
     
-    if ~any(ismember(javaclasspath, jpath))
-        javaaddpath(jpath);
+    for i = 1:numel(jpath)
+        if ~ismember(javaclasspath, jpath{i})
+            javaaddpath(jpath{i});
+        end
     end
 end
 
