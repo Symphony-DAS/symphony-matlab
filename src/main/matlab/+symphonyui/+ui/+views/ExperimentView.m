@@ -34,7 +34,7 @@ classdef ExperimentView < symphonyui.ui.View
     properties (Constant)
         SOURCES_NODE_ID         = 'SOURCES_NODE_ID'
         EPOCH_GROUPS_NODE_ID    = 'EPOCH_GROUPS_NODE_ID'
-        
+
         EMPTY_CARD          = 1
         EXPERIMENT_CARD     = 2
         SOURCE_CARD         = 3
@@ -43,15 +43,15 @@ classdef ExperimentView < symphonyui.ui.View
     end
 
     methods
-        
+
         function createUi(obj)
             import symphonyui.ui.util.*;
-            
+
             obj.idToNode = containers.Map();
-            
+
             set(obj.figureHandle, 'Name', 'Experiment');
             set(obj.figureHandle, 'Position', screenCenter(500, 410));
-            
+
             % Toolbar.
             toolbar = uitoolbar( ...
                 'Parent', obj.figureHandle);
@@ -59,19 +59,19 @@ classdef ExperimentView < symphonyui.ui.View
                 'Parent', toolbar, ...
                 'TooltipString', 'Begin Epoch Group...', ...
                 'ClickedCallback', @(h,d)notify(obj, 'BeginEpochGroup'));
-            setIconImage(obj.beginEpochGroupTool, fullfile(symphonyui.app.App.getIconsPath(), 'group_begin.png'));
+            setIconImage(obj.beginEpochGroupTool, symphonyui.app.App.getResource('icons/group_begin.png'));
             obj.endEpochGroupTool = uipushtool( ...
                 'Parent', toolbar, ...
                 'TooltipString', 'End Epoch Group', ...
                 'ClickedCallback', @(h,d)notify(obj, 'EndEpochGroup'));
-            setIconImage(obj.endEpochGroupTool, fullfile(symphonyui.app.App.getIconsPath(), 'group_end.png'));
+            setIconImage(obj.endEpochGroupTool, symphonyui.app.App.getResource('icons/group_end.png'));
             obj.addSourceTool = uipushtool( ...
                 'Parent', toolbar, ...
                 'TooltipString', 'Add Source...', ...
                 'Separator', 'on', ...
                 'ClickedCallback', @(h,d)notify(obj, 'AddSource'));
-            setIconImage(obj.addSourceTool, fullfile(symphonyui.app.App.getIconsPath(), 'source_add.png'));
-            
+            setIconImage(obj.addSourceTool, symphonyui.app.App.getResource('icons/source_add.png'));
+
             mainLayout = uix.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
@@ -87,20 +87,20 @@ classdef ExperimentView < symphonyui.ui.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'SelectionChangeFcn', @(h,d)notify(obj, 'SelectedNode'));
             root = obj.experimentTree.Root;
-            root.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'experiment.png'));
-            
+            root.setIcon(symphonyui.app.App.getResource('icons/experiment.png'));
+
             sources = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
                 'Name', 'Sources', ...
                 'Value', obj.SOURCES_NODE_ID);
-            sources.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'folder.png'));
+            sources.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
             obj.idToNode(obj.SOURCES_NODE_ID) = sources;
-            
+
             groups = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
                 'Name', 'Epoch Groups', ...
                 'Value', obj.EPOCH_GROUPS_NODE_ID);
-            groups.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'folder.png'));
+            groups.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
             obj.idToNode(obj.EPOCH_GROUPS_NODE_ID) = groups;
 
             detailLayout = uix.VBox( ...
@@ -108,10 +108,10 @@ classdef ExperimentView < symphonyui.ui.View
 
             obj.cardPanel = uix.CardPanel( ...
                 'Parent', detailLayout);
-            
+
             % Empty card.
             emptyLayout = uix.VBox('Parent', obj.cardPanel); %#ok<NASGU>
-            
+
             % Experiment card.
             experimentLayout = uix.VBox( ...
                 'Parent', obj.cardPanel, ...
@@ -158,7 +158,7 @@ classdef ExperimentView < symphonyui.ui.View
                 'Parent', experimentLayout, ...
                 'BorderType', 'none');
             set(experimentLayout, 'Heights', [25*4+7*3 -1]);
-            
+
             % Source card.
             sourceLayout = uix.VBox( ...
                 'Parent', obj.cardPanel, ...
@@ -228,18 +228,18 @@ classdef ExperimentView < symphonyui.ui.View
                 'Parent', epochGroupLayout, ...
                 'BorderType', 'none');
             set(epochGroupLayout, 'Heights', [25*4+7*3 -1]);
-            
+
             % Epoch card.
             epochLayout = uix.VBox( ...
                 'Parent', obj.cardPanel, ...
                 'Spacing', 7);
             obj.epochCard.tabGroupParent = uix.Panel('Parent', epochLayout, 'BorderType', 'none');
             set(epochLayout, 'Heights', [-1]);
-            
+
             % Tab panel.
             obj.tabGroup = uitabgroup( ...
                 'Parent', obj.experimentCard.tabGroupParent);
-            
+
             % Properties tab.
             propertiesTab = uitab( ...
                 'Parent', obj.tabGroup, ...
@@ -252,7 +252,7 @@ classdef ExperimentView < symphonyui.ui.View
                 'Enable', 'off');
             obj.createAddRemoveButtons(propertiesLayout, @(h,d)notify(obj, 'AddProperty'), @(h,d)notify(obj, 'RemoveProperty'));
             set(propertiesLayout, 'Heights', [-1 25]);
-            
+
             % Keywords tab.
             keywordsTab = uitab( ...
                 'Parent', obj.tabGroup, ...
@@ -265,7 +265,7 @@ classdef ExperimentView < symphonyui.ui.View
                 'Enable', 'off');
             obj.createAddRemoveButtons(keywordsLayout, @(h,d)notify(obj, 'AddKeyword'), @(h,d)notify(obj, 'RemoveKeyword'));
             set(keywordsLayout, 'Heights', [-1 25]);
-            
+
             % Notes tab.
             notesTab = uitab( ...
                 'Parent', obj.tabGroup, ...
@@ -280,12 +280,12 @@ classdef ExperimentView < symphonyui.ui.View
             [~, removeButton] = obj.createAddRemoveButtons(notesLayout, @(h,d)notify(obj, 'AddNote'), @(h,d)notify(obj, 'RemoveNote'));
             set(removeButton, 'Enable', 'off');
             set(notesLayout, 'Heights', [-1 25]);
-            
+
             set(obj.cardPanel, 'Selection', 1);
 
             set(mainLayout, 'Widths', [-1 -2]);
         end
-        
+
         function enableBeginEpochGroup(obj, tf)
             set(obj.beginEpochGroupTool, 'Enable', symphonyui.ui.util.onOff(tf));
         end
@@ -293,10 +293,10 @@ classdef ExperimentView < symphonyui.ui.View
         function enableEndEpochGroup(obj, tf)
             set(obj.endEpochGroupTool, 'Enable', symphonyui.ui.util.onOff(tf));
         end
-        
+
         function setSelectedCard(obj, index)
             set(obj.cardPanel, 'Selection', index);
-            
+
             switch index
                 case obj.EMPTY_CARD
                     return;
@@ -319,71 +319,71 @@ classdef ExperimentView < symphonyui.ui.View
                 'Value', id);
             obj.idToNode(id) = root;
         end
-        
+
         function setExperimentName(obj, n)
             set(obj.experimentCard.nameField, 'String', n);
         end
-        
+
         function setExperimentLocation(obj, l)
             set(obj.experimentCard.locationField, 'String', l);
         end
-        
+
         function setExperimentStartTime(obj, t)
             set(obj.experimentCard.startTimeField, 'String', datestr(t, 14));
         end
-        
+
         function setExperimentPurpose(obj, p)
             set(obj.experimentCard.purposeField, 'String', p);
         end
-        
+
         function addSourceNode(obj, parentId, name, id)
             parent = obj.idToNode(parentId);
             node = uiextras.jTree.TreeNode( ...
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', id);
-            node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'source.png'));
+            node.setIcon(symphonyui.app.App.getResource('icons/source.png'));
             obj.idToNode(id) = node;
         end
-        
+
         function setSourceLabel(obj, l)
             set(obj.sourceCard.labelField, 'String', l);
         end
-        
+
         function addEpochGroupNode(obj, parentId, name, id)
             parent = obj.idToNode(parentId);
             node = uiextras.jTree.TreeNode( ...
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', id);
-            node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'group.png'));
+            node.setIcon(symphonyui.app.App.getResource('icons/group.png'));
             obj.idToNode(id) = node;
         end
-        
+
         function setEpochGroupLabel(obj, l)
             set(obj.epochGroupCard.labelField, 'String', l);
         end
-        
+
         function setEpochGroupStartTime(obj, t)
             set(obj.epochGroupCard.startTimeField, 'String', datestr(t, 14));
         end
-        
+
         function setEpochGroupEndTime(obj, t)
             set(obj.epochGroupCard.endTimeField, 'String', datestr(t, 14));
         end
-        
+
         function setEpochGroupSource(obj, s)
             set(obj.epochGroupCard.sourceField, 'String', s);
         end
 
         function setEpochGroupNodeCurrent(obj, id)
             node = obj.idToNode(id);
-            node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'group_current.png'));
+            node.setIcon(symphonyui.app.App.getResource('icons/group_current.png'));
         end
 
         function setEpochGroupNodeNormal(obj, id)
             node = obj.idToNode(id);
-            node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'group.png'));
+            node.setIcon(symphonyui.app.App.getResource('icons/group.png'));
         end
 
         function addEpochNode(obj, parentId, name, id)
@@ -392,7 +392,7 @@ classdef ExperimentView < symphonyui.ui.View
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', id);
-            node.setIcon(fullfile(symphonyui.app.App.getIconsPath(), 'epoch.png'));
+            node.setIcon(symphonyui.app.App.getResource('icons/epoch.png'));
             obj.idToNode(id) = node;
         end
 
@@ -415,60 +415,60 @@ classdef ExperimentView < symphonyui.ui.View
             node = obj.idToNode(id);
             obj.experimentTree.SelectedNodes = node;
         end
-        
+
         function setProperties(obj, data)
             set(obj.propertiesTable, 'Data', data);
         end
-        
+
         function addProperty(obj, key, value)
             obj.propertiesTable.addRow({key, value});
         end
-        
+
         function removeProperty(obj, property)
             properties = obj.propertiesTable.getColumnData(1);
             index = find(cellfun(@(c)strcmp(c, property), properties));
             obj.propertiesTable.removeRow(index); %#ok<FNDSB>
         end
-        
+
         function p = getSelectedProperty(obj)
             row = get(obj.propertiesTable, 'SelectedRow');
             p = obj.propertiesTable.getValueAt(row, 1);
         end
-        
+
         function setKeywords(obj, data)
             set(obj.keywordsTable, 'Data', data);
         end
-        
+
         function addKeyword(obj, keyword)
             obj.keywordsTable.addRow(keyword);
         end
-        
+
         function removeKeyword(obj, keyword)
             keywords = obj.keywordsTable.getColumnData(1);
             index = find(cellfun(@(c)strcmp(c, keyword), keywords));
             obj.keywordsTable.removeRow(index); %#ok<FNDSB>
         end
-        
+
         function k = getSelectedKeyword(obj)
             row = get(obj.keywordsTable, 'SelectedRow');
             k = obj.keywordsTable.getValueAt(row, 1);
         end
-        
+
         function setNotes(obj, data)
             for i = 1:numel(data)
                 data{i}{1} = datestr(data{i}{1}, 14);
             end
             set(obj.notesTable, 'Data', data);
         end
-        
+
         function addNote(obj, date, text)
             obj.notesTable.addRow({datestr(date, 14), text});
         end
 
     end
-    
+
     methods (Access = private)
-        
+
         function [addButton, removeButton] = createAddRemoveButtons(obj, parent, addCallback, removeCallback)
             layout = uix.HBox( ...
                 'Parent', parent, ...
@@ -488,7 +488,7 @@ classdef ExperimentView < symphonyui.ui.View
                 'Callback', removeCallback);
             set(layout, 'Widths', [-1 25 25]);
         end
-        
+
     end
 
 end

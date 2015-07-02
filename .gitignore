@@ -6,4 +6,6 @@
 
 # Binary
 *.mlappinstall
-*.dll
+
+/lib/Core Framework/
+target/

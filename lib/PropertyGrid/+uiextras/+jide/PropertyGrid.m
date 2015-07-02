@@ -82,7 +82,7 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
                 parent = figure;
             end
 
-            path = fullfile(fileparts(mfilename('fullpath')), 'UIExtrasPropertyGrid.jar');
+            path = which('UIExtrasPropertyGrid.jar');
             if ~any(ismember(javaclasspath, path))
                 javaaddpath(path);
             end
@@ -212,11 +212,11 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
         function set.Enable(self, tf)
             self.Table.setEnabled(tf);
         end
-        
+
         function tf = get.ShowDescription(self)
             tf = self.Pane.getShowDescription();
         end
-        
+
         function set.ShowDescription(self, tf)
             self.Pane.setShowDescription(tf);
         end

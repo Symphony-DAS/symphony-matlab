@@ -21,12 +21,9 @@ classdef App < handle
             v = '2.0.0-preview';
         end
         
-        function p = getRootPath()
-            p = fileparts(fileparts(fileparts(mfilename('fullpath'))));
-        end
-        
-        function p = getIconsPath()
-            p = fullfile(symphonyui.app.App.getRootPath(), 'resources', 'icons');
+        function p = getResource(name)
+            resourcesPath = fullfile(fileparts(fileparts(fileparts(fileparts(mfilename('fullpath'))))), 'resources');
+            p = fullfile(resourcesPath, name);
         end
         
         function url = getDocumentationUrl()

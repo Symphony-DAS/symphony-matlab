@@ -28,7 +28,7 @@ function loadJavaCustomizations()
 
 % Define the jar file
 JarFile = 'UIExtrasTree.jar';
-JarPath = fullfile(fileparts(mfilename('fullpath')), JarFile);
+JarPath = which(JarFile);
 
 % Check if the jar is loaded
 JavaInMem = javaclasspath('-dynamic');
