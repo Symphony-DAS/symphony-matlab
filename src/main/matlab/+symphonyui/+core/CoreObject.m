@@ -38,8 +38,13 @@ classdef (Abstract) CoreObject < handle
         end
         
         function t = datetimeFromDateTimeOffset(~, dto)
-            t = datetime(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, dto.Second);
-            t.TimeZone = char(dto.Offset.ToString());
+            second = double(dto.Second) + (double(dto.Millisecond) / 1000);
+            t = datetime(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, second);
+            tz = char(dto.Offset.ToString());
+            if tz(1) ~= '-'
+                tz = ['+' tz];
+            end
+            t.TimeZone = tz;
         end
         
         function dto = dateTimeOffsetFromDatetime(~, t)
@@ -47,8 +52,12 @@ classdef (Abstract) CoreObject < handle
                 error('Datetime ''TimeZone'' must be set');
             end
             t.Format = 'ZZZZZ';
-            offset = System.TimeSpan.Parse(char(t));
-            dto = System.DateTimeOffset(t.Year, t.Month, t.Day, t.Hour, t.Minute, t.Second, offset);
+            tz = char(t);
+            if tz(1) == '+'
+                tz(1) = [];
+            end
+            offset = System.TimeSpan.Parse(tz);
+            dto = System.DateTimeOffset(t.Year, t.Month, t.Day, t.Hour, t.Minute, floor(t.Second), round(1000*rem(t.Second, 1)), offset);
         end
         
     end
