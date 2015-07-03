@@ -24,6 +24,7 @@ classdef (Abstract) CoreObject < handle
             end
             
             c = {};
+            enum = Symphony.Core.EnumerableExtensions.Wrap(enum);
             e = enum.GetEnumerator();
             i = 1;
             while e.MoveNext()
@@ -38,6 +39,7 @@ classdef (Abstract) CoreObject < handle
             end
             
             m = containers.Map();
+            enum = Symphony.Core.EnumerableExtensions.Wrap(enum);
             e = enum.GetEnumerator();
             while e.MoveNext()
                 kv = e.Current();

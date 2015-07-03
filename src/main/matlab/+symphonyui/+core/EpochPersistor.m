@@ -44,11 +44,17 @@ classdef EpochPersistor < symphonyui.core.CoreObject
         end
         
         function b = beginEpochBlock(obj, protocolId, startTime)
+            if nargin < 3
+                startTime = datetime('now', 'TimeZone', 'local');
+            end
             dto = obj.dateTimeOffsetFromDatetime(startTime);
             b = symphonyui.core.persistent.EpochBlock(obj.cobj.BeginEpochBlock(protocolId, dto));
         end
         
         function b = endEpochBlock(obj, endTime)
+            if nargin < 2
+                endTime = datetime('now', 'TimeZone', 'local');
+            end
             dto = obj.dateTimeOffsetFromDatetime(endTime);
             b = symphonyui.core.persistent.EpochBlock(obj.cobj.EndEpochBlock(dto));
         end

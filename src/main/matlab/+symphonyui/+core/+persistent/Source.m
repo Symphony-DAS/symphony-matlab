@@ -26,7 +26,7 @@ classdef Source < symphonyui.core.persistent.Entity
         end
         
         function g = get.allEpochGroups(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
+            g = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
         
     end
