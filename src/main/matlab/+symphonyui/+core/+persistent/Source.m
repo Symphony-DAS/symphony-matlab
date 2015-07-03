@@ -18,27 +18,15 @@ classdef Source < symphonyui.core.persistent.Entity
         end
         
         function s = get.sources(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.Sources);
-            s = cell(1, numel(c));
-            for i = 1:numel(c)
-                s{i} = symphonyui.core.persistent.Source(c{i});
-            end
+            s = obj.cellArrayFromEnumerable(obj.cobj.Sources, @symphonyui.core.persistent.Source);
         end
         
         function g = get.epochGroups(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups);
-            g = cell(1, numel(c));
-            for i = 1:numel(c)
-                g{i} = symphonyui.core.persistent.EpochGroup(c{i});
-            end
+            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
         
         function g = get.allEpochGroups(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups);
-            g = cell(1, numel(c));
-            for i = 1:numel(c)
-                g{i} = symphonyui.core.persistent.EpochGroup(c{i});
-            end
+            c = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
         
     end

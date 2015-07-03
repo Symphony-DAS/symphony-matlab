@@ -17,28 +17,16 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
             p = obj.mapFromKeyValueEnumerable(obj.cobj.ProtocolParameters);
         end
         
-        function g = get.responses(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.Responses);
-            g = cell(1, numel(c));
-            for i = 1:numel(c)
-                g{i} = symphonyui.core.persistent.Response(c{i});
-            end
+        function r = get.responses(obj)
+            r = obj.cellArrayFromEnumerable(obj.cobj.Responses, @symphonyui.core.persistent.Response);
         end
         
-        function g = get.stimuli(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.Stimuli);
-            g = cell(1, numel(c));
-            for i = 1:numel(c)
-                g{i} = symphonyui.core.persistent.Stimulus(c{i});
-            end
+        function s = get.stimuli(obj)
+            s = obj.cellArrayFromEnumerable(obj.cobj.Stimuli, @symphonyui.core.persistent.Stimulus);
         end
         
-        function g = get.backgrounds(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.Backgrounds);
-            g = cell(1, numel(c));
-            for i = 1:numel(c)
-                g{i} = symphonyui.core.persistent.Background(c{i});
-            end
+        function b = get.backgrounds(obj)
+            b = obj.cellArrayFromEnumerable(obj.cobj.Backgrounds, @symphonyui.core.persistent.Background);
         end
         
     end

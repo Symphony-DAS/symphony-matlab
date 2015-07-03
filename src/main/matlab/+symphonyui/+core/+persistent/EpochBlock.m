@@ -15,12 +15,8 @@ classdef EpochBlock < symphonyui.core.persistent.TimelineEntity
             p = char(obj.cobj.ProtocolID);
         end
         
-        function g = get.epochs(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.Epochs);
-            g = cell(1, numel(c));
-            for i = 1:numel(c)
-                g{i} = symphonyui.core.persistent.Epoch(c{i});
-            end
+        function e = get.epochs(obj)
+            c = obj.cellArrayFromEnumerable(obj.cobj.Epochs, @symphonyui.core.persistent.Epoch);
         end
         
     end

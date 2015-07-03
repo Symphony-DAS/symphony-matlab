@@ -22,19 +22,11 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         end
         
         function g = get.epochGroups(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups);
-            g = cell(1, numel(c));
-            for i = 1:numel(c)
-                g{i} = symphonyui.core.persistent.EpochGroup(c{i});
-            end
+            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
         
-        function g = get.epochBlocks(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.EpochBlocks);
-            g = cell(1, numel(c));
-            for i = 1:numel(c)
-                g{i} = symphonyui.core.persistent.EpochBlock(c{i});
-            end
+        function b = get.epochBlocks(obj)
+            b = obj.cellArrayFromEnumerable(obj.cobj.EpochBlocks, @symphonyui.core.persistent.EpochBlock);
         end
         
     end

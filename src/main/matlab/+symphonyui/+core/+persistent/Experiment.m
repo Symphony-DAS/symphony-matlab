@@ -18,27 +18,15 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
         
         function d = get.devices(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.Devices);
-            d = cell(1, numel(c));
-            for i = 1:numel(c)
-                d{i} = symphonyui.core.persistent.Device(c{i});
-            end
+            d = obj.cellArrayFromEnumerable(obj.cobj.Devices, @symphonyui.core.persistent.Device);
         end
         
         function s = get.sources(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.Sources);
-            s = cell(1, numel(c));
-            for i = 1:numel(c)
-                s{i} = symphonyui.core.persistent.Source(c{i});
-            end
+            s = obj.cellArrayFromEnumerable(obj.cobj.Sources, @symphonyui.core.persistent.Source);
         end
         
         function g = get.epochGroups(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups);
-            g = cell(1, numel(c));
-            for i = 1:numel(c)
-                g{i} = symphonyui.core.persistent.EpochGroup(c{i});
-            end
+            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
         
     end

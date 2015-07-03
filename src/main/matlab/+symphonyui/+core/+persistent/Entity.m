@@ -30,7 +30,7 @@ classdef Entity < symphonyui.core.CoreObject
         end
         
         function k = get.keywords(obj)
-            k = obj.cellArrayFromEnumerable(obj.cobj.Keywords);
+            k = obj.cellArrayFromEnumerable(obj.cobj.Keywords, @char);
         end
         
         function addKeyword(obj, keyword)
@@ -42,11 +42,7 @@ classdef Entity < symphonyui.core.CoreObject
         end
         
         function n = get.notes(obj)
-            c = obj.cellArrayFromEnumerable(obj.cobj.Notes);
-            n = cell(1, numel(c));
-            for i = 1:numel(c)
-                n{i} = symphonyui.core.persistent.Note(c{i});
-            end
+            n = obj.cellArrayFromEnumerable(obj.cobj.Notes, @symphonyui.core.persistent.Note);
         end
         
         function addNote(obj, text, time)

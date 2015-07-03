@@ -18,22 +18,30 @@ classdef (Abstract) CoreObject < handle
             obj.cobj = cobj;
         end
         
-        function c = cellArrayFromEnumerable(~, enum)
+        function c = cellArrayFromEnumerable(~, enum, wrap)
+            if nargin < 3
+                wrap = @(e)e;
+            end
+            
             c = {};
             e = enum.GetEnumerator();
             i = 1;
             while e.MoveNext()
-                c{i} = convert(e.Current());
+                c{i} = wrap(e.Current());
                 i = i + 1;
             end
         end
         
-        function m = mapFromKeyValueEnumerable(~, enum)
+        function m = mapFromKeyValueEnumerable(~, enum, wrap)
+            if nargin < 3
+                wrap = @(e)convert(e);
+            end
+            
             m = containers.Map();
             e = enum.GetEnumerator();
             while e.MoveNext()
                 kv = e.Current();
-                m(char(kv.Key)) = convert(kv.Value);
+                m(char(kv.Key)) = wrap(kv.Value);
             end
         end
         
