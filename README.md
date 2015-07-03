@@ -2,6 +2,11 @@
 
 Symphony data acquisition Matlab interface, version 2. This is a work-in-progress.
 
+## Requirements
+
+- Matlab 2015a+
+- Windows 7
+
 ## Build
 
 Matlab functions in the root directory are used to build the project. The scripts are named according to the build phase they execute. The phases include:
