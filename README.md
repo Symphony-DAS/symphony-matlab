@@ -2,6 +2,10 @@
 
 Symphony data acquisition Matlab interface, version 2. This is a work-in-progress.
 
+## Directory Structure
+
+The project directory structure generally follows [Maven's Standard Directory Layout](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html).
+
 ## License
 
 The Janelia Farm Research Campus Software Copyright 1.1
