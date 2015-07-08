@@ -127,7 +127,7 @@ classdef AcquisitionService < handle
 
         %% Acquisition
 
-        function record(obj)
+        function recordProtocol(obj)
             if isempty(obj.getCurrentPersistor())
                 error('No persistor open');
             end
@@ -137,18 +137,18 @@ classdef AcquisitionService < handle
             rig.record(protocol, persistor);
         end
 
-        function preview(obj)
+        function viewOnlyProtocol(obj)
             rig = obj.getCurrentRig();
             protocol = obj.getCurrentProtocol();
-            rig.preview(protocol);
+            rig.viewOnly(protocol);
         end
 
-        function pause(obj)
+        function pauseProtocol(obj)
             rig = obj.getCurrentRig();
             rig.pause();
         end
 
-        function stop(obj)
+        function stopProtocol(obj)
             rig = obj.getCurrentRig();
             rig.stop();
         end

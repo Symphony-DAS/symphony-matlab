@@ -6,6 +6,7 @@
 
 # Binary
 *.mlappinstall
+*.h5
 
 /lib/Core Framework/
 target/

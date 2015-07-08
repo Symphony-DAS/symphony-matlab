@@ -49,13 +49,9 @@ classdef Rig < handle
             disp(experiment);
         end
         
-        function preview(obj, protocol)
-            obj.state = symphonyui.core.RigState.PREVIEWING;
+        function viewOnly(obj, protocol)
+            obj.state = symphonyui.core.RigState.VIEWING;
             disp(protocol);
-        end
-        
-        function pause(obj)
-            obj.state = symphonyui.core.RigState.PAUSED;
         end
         
         function stop(obj)

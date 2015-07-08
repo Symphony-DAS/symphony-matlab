@@ -3,9 +3,7 @@ classdef RigState
     enumeration
         STOPPED
         STOPPING
-        PAUSED
-        PAUSING
-        PREVIEWING
+        VIEWING
         RECORDING
     end
     
