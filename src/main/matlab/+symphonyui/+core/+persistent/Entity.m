@@ -1,5 +1,13 @@
 classdef Entity < symphonyui.core.CoreObject
     
+    events
+        AddedProperty
+        RemovedProperty
+        AddedKeyword
+        RemovedKeyword
+        AddedNote
+    end
+    
     properties (SetAccess = private)
         uuid
         propertiesMap
@@ -7,10 +15,15 @@ classdef Entity < symphonyui.core.CoreObject
         notes
     end
     
+    properties (Access = protected)
+        entityFactory
+    end
+    
     methods
         
-        function obj = Entity(cobj)
+        function obj = Entity(cobj, entityFactory)
             obj@symphonyui.core.CoreObject(cobj);
+            obj.entityFactory = entityFactory;
         end
         
         function i = get.uuid(obj)
@@ -23,10 +36,16 @@ classdef Entity < symphonyui.core.CoreObject
         
         function addProperty(obj, key, value)
             obj.cobj.AddProperty(key, value);
+            p.key = key;
+            p.value = value;
+            notify(obj, 'AddedProperty', symphonyui.core.util.DomainEventData(p));
         end
         
         function tf = removeProperty(obj, key)
             tf = obj.cobj.RemoveProperty(key);
+            if tf
+                notify(obj, 'RemovedProperty', symphonyui.core.util.DomainEventData(key));
+            end
         end
         
         function k = get.keywords(obj)
@@ -35,10 +54,14 @@ classdef Entity < symphonyui.core.CoreObject
         
         function addKeyword(obj, keyword)
             obj.cobj.AddKeyword(keyword);
+            notify(obj, 'AddedKeyword', symphonyui.core.util.DomainEventData(keyword));
         end
         
         function tf = removeKeyword(obj, keyword)
             tf = obj.cobj.RemoveKeyword(keyword);
+            if tf
+                notify(obj, 'RemovedKeyword', symphonyui.core.util.DomainEventData(keyword));
+            end
         end
         
         function n = get.notes(obj)
@@ -50,10 +73,10 @@ classdef Entity < symphonyui.core.CoreObject
                 time = datetime('now', 'TimeZone', 'local');
             end
             dto = obj.dateTimeOffsetFromDatetime(time);
-            obj.cobj.AddNote(dto, text);
+            cnote = obj.cobj.AddNote(dto, text);
+            notify(obj, 'AddedNote', symphonyui.core.util.DomainEventData(symphonyui.core.persistent.Note(cnote)));
         end
         
     end
     
 end
-

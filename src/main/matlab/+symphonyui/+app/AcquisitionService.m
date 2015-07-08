@@ -1,14 +1,14 @@
 classdef AcquisitionService < handle
 
     events (NotifyAccess = private)
-        OpenedExperiment
-        ClosedExperiment
+        OpenedFile
+        ClosedFile
         LoadedRigConfiguration
         SelectedProtocol
     end
 
     properties (Access = private)
-        experimentFactory
+        persistorFactory
         rigFactory
         protocolRepository
     end
@@ -19,8 +19,8 @@ classdef AcquisitionService < handle
 
     methods
 
-        function obj = AcquisitionService(experimentFactory, rigFactory, protocolRepository)
-            obj.experimentFactory = experimentFactory;
+        function obj = AcquisitionService(persistorFactory, rigFactory, protocolRepository)
+            obj.persistorFactory = persistorFactory;
             obj.rigFactory = rigFactory;
             obj.protocolRepository = protocolRepository;
             
@@ -28,51 +28,49 @@ classdef AcquisitionService < handle
             rig.initialize();
             
             obj.session = struct( ...
-                'experiment', [], ...
+                'persistor', [], ...
                 'rig', rig, ...
                 'protocol', symphonyui.app.NullProtocol());
         end
 
         function delete(obj)
-            if ~isempty(obj.getCurrentExperiment())
-                obj.closeExperiment();
+            if ~isempty(obj.getCurrentPersistor())
+                obj.closeFile();
             end
             obj.getCurrentRig().close();
         end
 
-        %% Experiment
+        %% Persistor
 
-        function createExperiment(obj, name, location, purpose)
-            if ~isempty(obj.getCurrentExperiment())
-                error('An experiment is already open');
+        function createFile(obj, name, location)
+            if ~isempty(obj.getCurrentPersistor())
+                error('A file is already open');
             end
-            experiment = obj.experimentFactory.create(name, location, purpose);
-            experiment.open();
-            obj.session.experiment = experiment;
-            notify(obj, 'OpenedExperiment');
+            persistor = obj.persistorFactory.create(name, location);
+            obj.session.persistor = persistor;
+            notify(obj, 'OpenedFile');
         end
 
-        function openExperiment(obj, path)
-            if ~isempty(obj.getCurrentExperiment())
-                error('An experiment is already open');
+        function openFile(obj, path)
+            if ~isempty(obj.getCurrentPersistor())
+                error('A file is already open');
             end
-            experiment = obj.experimentFactory.load(path);
-            experiment.open();
-            obj.session.experiment = experiment;
-            notify(obj, 'OpenedExperiment');
+            persistor = obj.persistorFactory.load(path);
+            obj.session.persistor = persistor;
+            notify(obj, 'OpenedFile');
         end
         
-        function closeExperiment(obj)
-            if isempty(obj.getCurrentExperiment())
-                error('No experiment open');
+        function closeFile(obj)
+            if isempty(obj.getCurrentPersistor())
+                error('No file open');
             end
-            obj.session.experiment.close();
-            obj.session.experiment = [];
-            notify(obj, 'ClosedExperiment');
+            obj.session.persistor.close();
+            obj.session.persistor = [];
+            notify(obj, 'ClosedFile');
         end
 
-        function e = getCurrentExperiment(obj)
-            e = obj.session.experiment;
+        function e = getCurrentPersistor(obj)
+            e = obj.session.persistor;
         end
 
         %% Rig
@@ -130,13 +128,13 @@ classdef AcquisitionService < handle
         %% Acquisition
 
         function record(obj)
-            if isempty(obj.getCurrentExperiment())
-                error('No experiment open');
+            if isempty(obj.getCurrentPersistor())
+                error('No persistor open');
             end
             rig = obj.getCurrentRig();
             protocol = obj.getCurrentProtocol();
-            experiment = obj.getCurrentExperiment();
-            rig.record(protocol, experiment);
+            persistor = obj.getCurrentPersistor();
+            rig.record(protocol, persistor);
         end
 
         function preview(obj)

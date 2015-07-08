@@ -1,4 +1,4 @@
-classdef NewExperimentPresenter < symphonyui.ui.Presenter
+classdef NewFilePresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
         acquisitionService
@@ -6,9 +6,9 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
     
     methods
         
-        function obj = NewExperimentPresenter(acquisitionService, app, view)
+        function obj = NewFilePresenter(acquisitionService, app, view)
             if nargin < 3
-                view = symphonyui.ui.views.NewExperimentView();
+                view = symphonyui.ui.views.NewFileView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
             obj.acquisitionService = acquisitionService;
@@ -20,10 +20,6 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
         
         function onGoing(obj)
             obj.populateFromConfig();
-        end
-        
-        function onGo(obj)
-            obj.view.requestPurposeFocus();
         end
         
         function onBind(obj)
@@ -42,8 +38,8 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             import symphonyui.app.Options;
             
             config = obj.app.config;
-            name = config.get(Options.EXPERIMENT_DEFAULT_NAME);
-            location = config.get(Options.EXPERIMENT_DEFAULT_LOCATION);
+            name = config.get(Options.FILE_DEFAULT_NAME);
+            location = config.get(Options.FILE_DEFAULT_LOCATION);
             try
                 obj.view.setName(name());
                 obj.view.setLocation(location());
@@ -64,7 +60,7 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedBrowseLocation(obj, ~, ~)
-            location = uigetdir(pwd, 'Experiment Location');
+            location = uigetdir(pwd, 'File Location');
             if location ~= 0
                 obj.view.setLocation(location);
             end
@@ -75,10 +71,9 @@ classdef NewExperimentPresenter < symphonyui.ui.Presenter
             
             name = obj.view.getName();            
             location = obj.view.getLocation();
-            purpose = obj.view.getPurpose();
             
             try
-                obj.acquisitionService.createExperiment(name, location, purpose);
+                obj.acquisitionService.createFile(name, location);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

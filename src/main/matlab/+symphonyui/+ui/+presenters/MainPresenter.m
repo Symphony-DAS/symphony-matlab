@@ -3,7 +3,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
     properties (Access = private)
         acquisitionService
         rigPresenter
-        experimentPresenter
+        dataManagerPresenter
         eventManagers
     end
     
@@ -16,7 +16,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj = obj@symphonyui.ui.Presenter(app, view); 
             obj.acquisitionService = acquisitionService;
             obj.eventManagers = struct( ...
-                'experiment', symphonyui.ui.util.EventManager(), ...
+                'persistor', symphonyui.ui.util.EventManager(), ...
                 'rig', symphonyui.ui.util.EventManager(), ...
                 'protocol', symphonyui.ui.util.EventManager());
         end
@@ -37,9 +37,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onBind(obj)
             v = obj.view;
-            obj.addListener(v, 'NewExperiment', @obj.onViewSelectedNewExperiment);
-            obj.addListener(v, 'OpenExperiment', @obj.onViewSelectedOpenExperiment);
-            obj.addListener(v, 'CloseExperiment', @obj.onViewSelectedCloseExperiment);
+            obj.addListener(v, 'NewFile', @obj.onViewSelectedNewFile);
+            obj.addListener(v, 'OpenFile', @obj.onViewSelectedOpenFile);
+            obj.addListener(v, 'CloseFile', @obj.onViewSelectedCloseFile);
             obj.addListener(v, 'Exit', @obj.onViewSelectedExit);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
@@ -56,21 +56,21 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
             obj.addListener(v, 'ShowRig', @obj.onViewSelectedShowRig);
             obj.addListener(v, 'ShowProtocol', @obj.onViewSelectedShowProtocol);
-            obj.addListener(v, 'ShowExperiment', @obj.onViewSelectedShowExperiment);
+            obj.addListener(v, 'ShowPersistor', @obj.onViewSelectedShowPersistor);
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
             obj.addListener(v, 'ShowUserGroup', @obj.onViewSelectedShowUserGroup);
             obj.addListener(v, 'ShowAbout', @obj.onViewSelectedShowAbout);
             
             s = obj.acquisitionService;
-            obj.addListener(s, 'OpenedExperiment', @obj.onServiceOpenedExperiment);
-            obj.addListener(s, 'ClosedExperiment', @obj.onServiceClosedExperiment);
+            obj.addListener(s, 'OpenedFile', @obj.onServiceOpenedFile);
+            obj.addListener(s, 'ClosedFile', @obj.onServiceClosedFile);
             obj.addListener(s, 'LoadedRigConfiguration', @obj.onServiceLoadedRigConfiguration);
             obj.addListener(s, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             
             obj.addRigListeners();
             obj.addProtocolListeners();
-            if ~isempty(obj.acquisitionService.getCurrentExperiment())
-                obj.addExperimentListeners();
+            if ~isempty(obj.acquisitionService.getCurrentPersistor())
+                obj.addPersistorListeners();
             end
         end
         
@@ -78,44 +78,45 @@ classdef MainPresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
-        function onViewSelectedNewExperiment(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.NewExperimentPresenter(obj.acquisitionService, obj.app);
+        function onViewSelectedNewFile(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.NewFilePresenter(obj.acquisitionService, obj.app);
             presenter.goWaitStop();
         end
         
-        function onViewSelectedOpenExperiment(obj, ~, ~)
-            disp('View Selected Open Experiment');
+        function onViewSelectedOpenFile(obj, ~, ~)
+            [filename, path] = uigetfile('*.h5');
+            obj.acquisitionService.openFile(fullfile(path, filename));
         end
         
-        function onServiceOpenedExperiment(obj, ~, ~)   
-            obj.addExperimentListeners();
+        function onServiceOpenedFile(obj, ~, ~)   
+            obj.addPersistorListeners();
             obj.updateViewState();
-            obj.showExperiment();
+            obj.showPersistor();
         end
         
-        function addExperimentListeners(obj)
-            experiment = obj.acquisitionService.getCurrentExperiment();
-            manager = obj.eventManagers.experiment;
-            manager.addListener(experiment, 'AddedSource', @obj.onExperimentAddedSource);
-            manager.addListener(experiment, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
-            manager.addListener(experiment, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
+        function addPersistorListeners(obj)
+            persistor = obj.acquisitionService.getCurrentPersistor();
+            manager = obj.eventManagers.persistor;
+            manager.addListener(persistor, 'AddedSource', @obj.onPersistorAddedSource);
+            manager.addListener(persistor, 'BeganEpochGroup', @obj.onPersistorBeganEpochGroup);
+            manager.addListener(persistor, 'EndedEpochGroup', @obj.onPersistorEndedEpochGroup);
         end
         
-        function removeExperimentListeners(obj)
-            obj.eventManagers.experiment.removeAllListeners();
+        function removePersistorListeners(obj)
+            obj.eventManagers.persistor.removeAllListeners();
         end
         
-        function onViewSelectedCloseExperiment(obj, ~, ~)
-            obj.acquisitionService.closeExperiment();
+        function onViewSelectedCloseFile(obj, ~, ~)
+            obj.acquisitionService.closeFile();
         end
         
-        function onServiceClosedExperiment(obj, ~, ~)
-            obj.removeExperimentListeners();
+        function onServiceClosedFile(obj, ~, ~)
+            obj.removePersistorListeners();
             obj.updateViewState();
             
-            if ~isempty(obj.experimentPresenter)
-                obj.experimentPresenter.stop();
-                obj.experimentPresenter = [];
+            if ~isempty(obj.dataManagerPresenter)
+                obj.dataManagerPresenter.stop();
+                obj.dataManagerPresenter = [];
             end
         end
         
@@ -124,31 +125,31 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
-            experiment = obj.acquisitionService.getCurrentExperiment();
-            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(experiment, obj.app);
+            persistor = obj.acquisitionService.getCurrentPersistor();
+            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(persistor, obj.app);
             presenter.goWaitStop();
         end
         
-        function onExperimentBeganEpochGroup(obj, ~, ~)
+        function onPersistorBeganEpochGroup(obj, ~, ~)
             obj.updateViewState();
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
-            experiment = obj.acquisitionService.getCurrentExperiment();
-            experiment.endEpochGroup();
+            persistor = obj.acquisitionService.getCurrentPersistor();
+            persistor.endEpochGroup();
         end
         
-        function onExperimentEndedEpochGroup(obj, ~, ~)
+        function onPersistorEndedEpochGroup(obj, ~, ~)
             obj.updateViewState();
         end
         
         function onViewSelectedAddSource(obj, ~, ~)
-            experiment = obj.acquisitionService.getCurrentExperiment();
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(experiment, obj.app);
+            persistor = obj.acquisitionService.getCurrentPersistor();
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(persistor, obj.app);
             presenter.goWaitStop();
         end
         
-        function onExperimentAddedSource(obj, ~, ~)
+        function onPersistorAddedSource(obj, ~, ~)
             obj.updateViewState();
         end
         
@@ -266,20 +267,20 @@ classdef MainPresenter < symphonyui.ui.Presenter
             import symphonyui.core.RigState;
             
             rig = obj.acquisitionService.getCurrentRig();
-            experiment = obj.acquisitionService.getCurrentExperiment();
+            persistor = obj.acquisitionService.getCurrentPersistor();
             
-            hasExperiment = ~isempty(experiment);
-            hasSource = hasExperiment && ~isempty(experiment.sources);
-            hasCurrentEpochGroup = hasExperiment && ~isempty(experiment.currentEpochGroup);
+            hasPersistor = ~isempty(persistor);
+            hasSource = hasPersistor && ~isempty(persistor.experiment.sources);
+            hasCurrentEpochGroup = hasPersistor && ~isempty(persistor.currentEpochGroup);
             isRigStopped = rig.state == RigState.STOPPED;
             isRigValid = rig.isValid() == true;
             
-            enableNewExperiment = ~hasExperiment && isRigStopped && isRigValid;
-            enableOpenExperiment = enableNewExperiment;
-            enableCloseExperiment = hasExperiment && isRigStopped;
+            enableNewFile = ~hasPersistor && isRigStopped && isRigValid;
+            enableOpenFile = enableNewFile;
+            enableCloseFile = hasPersistor && isRigStopped;
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasCurrentEpochGroup;
-            enableAddSource = hasExperiment;
+            enableAddSource = hasPersistor;
             enableSelectProtocol = isRigStopped;
             enableProtocolProperties = isRigStopped;
             enableRecord = false;
@@ -287,9 +288,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enablePause = false;
             enableStop = false;
             enableConfigureDeviceBackgrounds = isRigStopped;
-            enableLoadRigConfiguration = ~hasExperiment && isRigStopped;
-            enableCreateRigConfiguration = ~hasExperiment && isRigStopped;
-            enableShowExperiment = hasExperiment;
+            enableLoadRigConfiguration = ~hasPersistor && isRigStopped;
+            enableCreateRigConfiguration = ~hasPersistor && isRigStopped;
+            enableShowPersistor = hasPersistor;
             status = '';
             
             canRecord = hasCurrentEpochGroup;
@@ -326,9 +327,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 status = msg;
             end
             
-            obj.view.enableNewExperiment(enableNewExperiment);
-            obj.view.enableOpenExperiment(enableOpenExperiment);
-            obj.view.enableCloseExperiment(enableCloseExperiment);
+            obj.view.enableNewFile(enableNewFile);
+            obj.view.enableOpenFile(enableOpenFile);
+            obj.view.enableCloseFile(enableCloseFile);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
             obj.view.enableAddSource(enableAddSource);
@@ -341,7 +342,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);
             obj.view.enableLoadRigConfiguration(enableLoadRigConfiguration);
             obj.view.enableCreateRigConfiguration(enableCreateRigConfiguration);
-            obj.view.enableShowExperiment(enableShowExperiment);
+            obj.view.enableShowPersistor(enableShowPersistor);
             obj.view.setStatus(status);
         end
         
@@ -431,18 +432,18 @@ classdef MainPresenter < symphonyui.ui.Presenter
             disp('Show protocol');
         end
         
-        function onViewSelectedShowExperiment(obj, ~, ~)
-            obj.showExperiment();
+        function onViewSelectedShowPersistor(obj, ~, ~)
+            obj.showPersistor();
         end
         
-        function showExperiment(obj)
-            if isempty(obj.experimentPresenter) || obj.experimentPresenter.isStopped
-                experiment = obj.acquisitionService.getCurrentExperiment();
-                obj.experimentPresenter = symphonyui.ui.presenters.ExperimentPresenter(experiment, obj.app);
-                obj.experimentPresenter.hideOnViewSelectedClose = true;
-                obj.experimentPresenter.go();
+        function showPersistor(obj)
+            if isempty(obj.dataManagerPresenter) || obj.dataManagerPresenter.isStopped
+                persistor = obj.acquisitionService.getCurrentPersistor();
+                obj.dataManagerPresenter = symphonyui.ui.presenters.DataManagerPresenter(persistor, obj.app);
+                obj.dataManagerPresenter.hideOnViewSelectedClose = true;
+                obj.dataManagerPresenter.go();
             else
-                obj.experimentPresenter.show();
+                obj.dataManagerPresenter.show();
             end
         end
         

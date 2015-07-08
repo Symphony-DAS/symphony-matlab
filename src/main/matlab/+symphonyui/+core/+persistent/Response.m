@@ -6,8 +6,8 @@ classdef Response < symphonyui.core.persistent.IoBase
     
     methods
         
-        function obj = Response(cobj)
-            obj@symphonyui.core.persistent.IoBase(cobj);
+        function obj = Response(cobj, entityFactory)
+            obj@symphonyui.core.persistent.IoBase(cobj, entityFactory);
         end
         
         function t = get.inputTime(obj)

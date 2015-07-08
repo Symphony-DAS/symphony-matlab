@@ -1,9 +1,9 @@
 classdef MainView < symphonyui.ui.View
 
     events
-        NewExperiment
-        OpenExperiment
-        CloseExperiment
+        NewFile
+        OpenFile
+        CloseFile
         Exit
         BeginEpochGroup
         EndEpochGroup
@@ -20,7 +20,7 @@ classdef MainView < symphonyui.ui.View
         ConfigureOptions
         ShowRig
         ShowProtocol
-        ShowExperiment
+        ShowPersistor
         ShowDocumentation
         ShowUserGroup
         ShowAbout
@@ -28,7 +28,7 @@ classdef MainView < symphonyui.ui.View
 
     properties (Access = private)
         fileMenu
-        experimentMenu
+        documentMenu
         acquireMenu
         configureMenu
         windowMenu
@@ -54,30 +54,30 @@ classdef MainView < symphonyui.ui.View
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'File');
-            obj.fileMenu.newExperiment = uimenu(obj.fileMenu.root, ...
-                'Label', 'New Experiment...', ...
-                'Callback', @(h,d)notify(obj, 'NewExperiment'));
-            obj.fileMenu.openExperiment = uimenu(obj.fileMenu.root, ...
-                'Label', 'Open Experiment...', ...
-                'Callback', @(h,d)notify(obj, 'OpenExperiment'));
-            obj.fileMenu.closeExperiment = uimenu(obj.fileMenu.root, ...
+            obj.fileMenu.newPersistor = uimenu(obj.fileMenu.root, ...
+                'Label', 'New...', ...
+                'Callback', @(h,d)notify(obj, 'NewFile'));
+            obj.fileMenu.openPersistor = uimenu(obj.fileMenu.root, ...
+                'Label', 'Open...', ...
+                'Callback', @(h,d)notify(obj, 'OpenFile'));
+            obj.fileMenu.closePersistor = uimenu(obj.fileMenu.root, ...
                 'Label', 'Close', ...
-                'Callback', @(h,d)notify(obj, 'CloseExperiment'));
+                'Callback', @(h,d)notify(obj, 'CloseFile'));
             obj.fileMenu.exit = uimenu(obj.fileMenu.root, ...
                 'Label', 'Exit', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'Exit'));
 
-            % Experiment menu.
-            obj.experimentMenu.root = uimenu(obj.figureHandle, ...
-                'Label', 'Experiment');
-            obj.experimentMenu.beginEpochGroup = uimenu(obj.experimentMenu.root, ...
+            % Document menu.
+            obj.documentMenu.root = uimenu(obj.figureHandle, ...
+                'Label', 'Document');
+            obj.documentMenu.beginEpochGroup = uimenu(obj.documentMenu.root, ...
                 'Label', 'Begin Epoch Group...', ...
                 'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
-            obj.experimentMenu.endEpochGroup = uimenu(obj.experimentMenu.root, ...
+            obj.documentMenu.endEpochGroup = uimenu(obj.documentMenu.root, ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
-            obj.experimentMenu.addSource = uimenu(obj.experimentMenu.root, ...
+            obj.documentMenu.addSource = uimenu(obj.documentMenu.root, ...
                 'Label', 'Add Source...', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'AddSource'));
@@ -129,10 +129,10 @@ classdef MainView < symphonyui.ui.View
             obj.windowMenu.showProtocol = uimenu(obj.windowMenu.root, ...
                 'Label', 'Protocol', ...
                 'Accelerator', '2');
-            obj.windowMenu.showExperiment = uimenu(obj.windowMenu.root, ...
-                'Label', 'Experiment', ...
+            obj.windowMenu.showPersistor = uimenu(obj.windowMenu.root, ...
+                'Label', 'Persistor', ...
                 'Accelerator', '3', ...
-                'Callback', @(h,d)notify(obj, 'ShowExperiment'));
+                'Callback', @(h,d)notify(obj, 'ShowPersistor'));
             obj.windowMenu.modulesMenu.root = uimenu(obj.windowMenu.root, ...
                 'Label', 'Modules', ...
                 'Separator', 'on');
@@ -204,28 +204,28 @@ classdef MainView < symphonyui.ui.View
             obj.protocolPropertyGrid.Close();
         end
 
-        function enableNewExperiment(obj, tf)
-            set(obj.fileMenu.newExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
+        function enableNewFile(obj, tf)
+            set(obj.fileMenu.newPersistor, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
-        function enableOpenExperiment(obj, tf)
-            set(obj.fileMenu.openExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
+        function enableOpenFile(obj, tf)
+            set(obj.fileMenu.openPersistor, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
-        function enableCloseExperiment(obj, tf)
-            set(obj.fileMenu.closeExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
+        function enableCloseFile(obj, tf)
+            set(obj.fileMenu.closePersistor, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableBeginEpochGroup(obj, tf)
-            set(obj.experimentMenu.beginEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.documentMenu.beginEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableEndEpochGroup(obj, tf)
-            set(obj.experimentMenu.endEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.documentMenu.endEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
         function enableAddSource(obj, tf)
-            set(obj.experimentMenu.addSource, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.documentMenu.addSource, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableSelectProtocol(obj, tf)
@@ -301,8 +301,8 @@ classdef MainView < symphonyui.ui.View
             set(obj.configureMenu.configureOptions, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
-        function enableShowExperiment(obj, tf)
-            set(obj.windowMenu.showExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
+        function enableShowPersistor(obj, tf)
+            set(obj.windowMenu.showPersistor, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function setStatus(obj, s)

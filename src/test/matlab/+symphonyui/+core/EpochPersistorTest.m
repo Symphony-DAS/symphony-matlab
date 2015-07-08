@@ -33,7 +33,7 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
         
         function methodSetup(obj)
             cobj = Symphony.Core.H5EpochPersistor.Create(obj.TEST_FILE, obj.TEST_PURPOSE);
-            obj.persistor = symphonyui.core.EpochPersistor(cobj);
+            obj.persistor = symphonyui.core.Persistor(cobj);
         end
         
     end
@@ -110,6 +110,7 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
             
             obj.verifyEqual(dev.name, 'dev');
             obj.verifyEqual(dev.manufacturer, 'man');
+            obj.verifyEqual(dev.experiment, obj.persistor.experiment);
         end
         
         function testSource(obj)
@@ -117,13 +118,21 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
             
             obj.verifyEqual(src.label, 'src');
             obj.verifyEmpty(src.sources);
+            obj.verifyEmpty(src.allSources);
             obj.verifyEmpty(src.epochGroups);
             obj.verifyEmpty(src.allEpochGroups);
+            obj.verifyEmpty(src.parent);
+            obj.verifyEqual(src.experiment, obj.persistor.experiment);
             
             src1 = obj.persistor.addSource('src1', src);
             src2 = obj.persistor.addSource('src2', src);
+            src3 = obj.persistor.addSource('src3', src2);
             
+            obj.verifyEqual(src1.parent, src);
+            obj.verifyEqual(src2.parent, src);
+            obj.verifyEqual(src3.parent, src2);
             obj.verifyCellsAreEquivalent(src.sources, {src1, src2});
+            obj.verifyCellsAreEquivalent(src.allSources, {src1, src2, src3});
             
             grp1 = obj.persistor.beginEpochGroup('grp1', src);
             grp2 = obj.persistor.beginEpochGroup('grp2', src);
@@ -139,6 +148,7 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
             obj.verifyEqual(exp.purpose, obj.TEST_PURPOSE);
             obj.verifyEmpty(exp.devices);
             obj.verifyEmpty(exp.sources);
+            obj.verifyEmpty(exp.allSources);
             obj.verifyEmpty(exp.epochGroups);
             
             dev1 = obj.persistor.addDevice('dev1', 'man1');
@@ -148,8 +158,10 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
             
             src1 = obj.persistor.addSource('src1');
             src2 = obj.persistor.addSource('src2');
+            src3 = obj.persistor.addSource('src3', src1);
             
             obj.verifyCellsAreEquivalent(exp.sources, {src1, src2});
+            obj.verifyCellsAreEquivalent(exp.allSources, {src1, src2, src3});
             
             grp1 = obj.persistor.beginEpochGroup('grp1', src1);
             obj.persistor.endEpochGroup();
@@ -159,19 +171,26 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
         end
         
         function testEpochGroup(obj)
+            obj.verifyEmpty(obj.persistor.currentEpochGroup);
+            
             src = obj.persistor.addSource('src');
             grp = obj.persistor.beginEpochGroup('grp', src);
             
+            obj.verifyEqual(obj.persistor.currentEpochGroup, grp);
             obj.verifyEqual(grp.label, 'grp');
             obj.verifyEqual(grp.source, src);
             obj.verifyEmpty(grp.epochGroups);
             obj.verifyEmpty(grp.epochBlocks);
+            obj.verifyEmpty(grp.parent);
+            obj.verifyEqual(grp.experiment, obj.persistor.experiment);
             
             grp1 = obj.persistor.beginEpochGroup('grp1', src);
             obj.persistor.endEpochGroup();
             grp2 = obj.persistor.beginEpochGroup('grp2', src);
             obj.persistor.endEpochGroup();
             
+            obj.verifyEqual(grp1.parent, grp);
+            obj.verifyEqual(grp2.parent, grp);
             obj.verifyCellsAreEquivalent(grp.epochGroups, {grp1, grp2});
             
             blk1 = obj.persistor.beginEpochBlock('blk1', obj.TEST_START_TIME);
@@ -182,12 +201,16 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
         end
         
         function testEpochBlock(obj)
+            obj.verifyEmpty(obj.persistor.currentEpochBlock);
+            
             src = obj.persistor.addSource('src');
             grp = obj.persistor.beginEpochGroup('grp', src);
             blk = obj.persistor.beginEpochBlock('blk', obj.TEST_START_TIME);
             
+            obj.verifyEqual(obj.persistor.currentEpochBlock, blk);
             obj.verifyEqual(blk.protocolId, 'blk');
             obj.verifyEmpty(blk.epochs);
+            obj.verifyEqual(blk.epochGroup, grp);
             obj.verifyDatetimesEqual(blk.startTime, obj.TEST_START_TIME);
             obj.verifyEmpty(blk.endTime);
             

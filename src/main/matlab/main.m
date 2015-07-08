@@ -8,11 +8,11 @@ function main()
     config = Config();
     config.setDefaults(getDefaultOptions());
 
-    experimentFactory = ExperimentFactory();
+    persistorFactory = PersistorFactory();
     rigFactory = RigFactory();
     protocolRepository = ClassRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
 
-    acquisitionService = AcquisitionService(experimentFactory, rigFactory, protocolRepository);
+    acquisitionService = AcquisitionService(persistorFactory, rigFactory, protocolRepository);
     try %#ok<TRYNC>
         ids = acquisitionService.getAvailableProtocolIds();
         acquisitionService.selectProtocol(ids{2});
@@ -62,8 +62,8 @@ function d = getDefaultOptions()
 
     d(Options.GENERAL_RIG_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+rigs')};
     d(Options.GENERAL_PROTOCOL_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+protocols')};
-    d(Options.EXPERIMENT_DEFAULT_NAME) = @()datestr(now, 'yyyy-mm-dd');
-    d(Options.EXPERIMENT_DEFAULT_LOCATION) = @()pwd();
+    d(Options.FILE_DEFAULT_NAME) = @()datestr(now, 'yyyy-mm-dd');
+    d(Options.FILE_DEFAULT_LOCATION) = @()pwd();
     d(Options.EPOCH_GROUP_LABEL_LIST) = {'Control', 'Drug', 'Wash'};
     d(Options.SOURCE_LABEL_LIST) = {'Animal', 'Tissue', 'Cell'};
     d(Options.KEYWORD_LIST) = {'Keyword1', 'Keyword2'};

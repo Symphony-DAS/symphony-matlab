@@ -7,8 +7,8 @@ classdef TimelineEntity < symphonyui.core.persistent.Entity
     
     methods
         
-        function obj = TimelineEntity(cobj)
-            obj@symphonyui.core.persistent.Entity(cobj);
+        function obj = TimelineEntity(cobj, entityFactory)
+            obj@symphonyui.core.persistent.Entity(cobj, entityFactory);
         end
         
         function t = get.startTime(obj)

@@ -1,17 +1,17 @@
 classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        experiment
+        persistor
     end
     
     methods
         
-        function obj = BeginEpochGroupPresenter(experiment, app, view)
+        function obj = BeginEpochGroupPresenter(persistor, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.BeginEpochGroupView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.experiment = experiment;
+            obj.persistor = persistor;
         end
         
     end
@@ -39,20 +39,22 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateParent(obj)
-            if isempty(obj.experiment.currentEpochGroup)
+            if isempty(obj.persistor.currentEpochGroup)
                 parent = '(None)';
             else
-                parent = obj.experiment.currentEpochGroup.label;
+                parent = obj.persistor.currentEpochGroup.label;
             end
             obj.view.setParent(parent);
         end
         
         function populateSourceList(obj)
-            ids = obj.experiment.getAllSourceIds();
-            names = ids;
-            values = ids;
-            obj.view.setSourceList(names, values);
-            obj.view.setSelectedSource(values{end});
+            sources = obj.persistor.experiment.allSources();
+            names = cell(1, numel(sources));
+            for i = 1:numel(sources)
+                names{i} = sources{i}.label;
+            end
+            obj.view.setSourceList(names, sources);
+            obj.view.setSelectedSource(sources{end});
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -70,7 +72,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             label = obj.view.getLabel();
             source = obj.view.getSelectedSource();
             try
-                obj.experiment.beginEpochGroup(label, source);
+                obj.persistor.beginEpochGroup(label, source);
             catch x
                 obj.view.showError(x.message);
                 return;

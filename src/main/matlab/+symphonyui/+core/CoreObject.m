@@ -7,6 +7,11 @@ classdef (Abstract) CoreObject < handle
     methods
         
         function tf = isequal(obj, other)
+            if isempty(obj) || isempty(other) || ~isa(obj, 'symphonyui.core.CoreObject') || ~isa(other, 'symphonyui.core.CoreObject')
+                tf = false;
+                return;
+            end
+            
             tf = obj.cobj.Equals(other.cobj);
         end
         

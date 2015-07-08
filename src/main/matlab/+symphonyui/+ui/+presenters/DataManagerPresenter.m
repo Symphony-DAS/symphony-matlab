@@ -1,20 +1,20 @@
-classdef ExperimentPresenter < symphonyui.ui.Presenter
+classdef DataManagerPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        experiment
-        idToNode
+        persistor
+        uuidToNode
         entityEventManager
     end
     
     methods
 
-        function obj = ExperimentPresenter(experiment, app, view)
+        function obj = DataManagerPresenter(persistor, app, view)
             if nargin < 3
-                view = symphonyui.ui.views.ExperimentView();
+                view = symphonyui.ui.views.DataManagerView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.experiment = experiment;
-            obj.idToNode = containers.Map();
+            obj.persistor = persistor;
+            obj.uuidToNode = containers.Map();
             obj.entityEventManager = symphonyui.ui.util.EventManager();
         end
 
@@ -33,17 +33,18 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
             obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
-            obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
+            obj.addListener(v, 'SelectedNodes', @obj.onViewSelectedNodes);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
             obj.addListener(v, 'AddKeyword', @obj.onViewSelectedAddKeyword);
             obj.addListener(v, 'RemoveKeyword', @obj.onViewSelectedRemoveKeyword);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             
-            e = obj.experiment;
-            obj.addListener(e, 'AddedSource', @obj.onExperimentAddedSource);
-            obj.addListener(e, 'BeganEpochGroup', @obj.onExperimentBeganEpochGroup);
-            obj.addListener(e, 'EndedEpochGroup', @obj.onExperimentEndedEpochGroup);
+            p = obj.persistor;
+            obj.addListener(p, 'AddedDevice', @obj.onPersistorAddedDevice);
+            obj.addListener(p, 'AddedSource', @obj.onPersistorAddedSource);
+            obj.addListener(p, 'BeganEpochGroup', @obj.onPersistorBeganEpochGroup);
+            obj.addListener(p, 'EndedEpochGroup', @obj.onPersistorEndedEpochGroup);
         end
 
     end
@@ -51,41 +52,73 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateExperimentTree(obj)
-            nodeId = char(java.util.UUID.randomUUID);
-            obj.view.setExperimentTreeRootNode(obj.experiment.name, nodeId);
+            experiment = obj.persistor.experiment;
             
-            node.entity = obj.experiment;
-            node.selectFcn = @()obj.selectExperiment();
-            obj.idToNode(nodeId) = node;
+            value.entity = experiment;
+            value.selectFcn = @()obj.selectExperiment();
             
-            sources = obj.experiment.sources;
+            obj.view.setExperimentNode(experiment.purpose, value);
+            obj.uuidToNode(experiment.uuid) = obj.view.getExperimentNode();
+            
+            devices = experiment.devices;
+            for i = 1:numel(devices)
+                obj.addDevice(devices{i});
+            end
+            obj.view.expandNode(obj.view.getDevicesRootNode());
+            
+            sources = experiment.sources;
             for i = 1:numel(sources)
                 obj.addSource(sources{i});
             end
+            obj.view.expandNode(obj.view.getSourcesRootNode());
             
-            groups = obj.experiment.epochGroups;
+            groups = experiment.epochGroups;
             for i = 1:numel(groups)
                 obj.addEpochGroup(groups{i});
             end
+            obj.view.expandNode(obj.view.getEpochGroupsRootNode());
         end
         
         function selectExperiment(obj)
-            obj.view.setExperimentName(obj.experiment.name);
-            obj.view.setExperimentLocation(obj.experiment.location);
-            obj.view.setExperimentStartTime(obj.experiment.startTime);
-            obj.view.setExperimentPurpose(obj.experiment.purpose);
-            obj.view.setSelectedNode(obj.entityToId(obj.experiment));
-            obj.view.setSelectedCard(obj.view.EXPERIMENT_CARD);
+            experiment = obj.persistor.experiment;
             
-            obj.selectEntity(obj.experiment);
+            obj.view.setExperimentPurpose(experiment.purpose);
+            obj.view.setExperimentStartTime(experiment.startTime);
+            obj.view.setExperimentEndTime(experiment.endTime);
+            obj.view.setSelectedDataCard(obj.view.EXPERIMENT_DATA_CARD);
+            
+            obj.selectEntity(experiment);
+        end
+        
+        function onPersistorAddedDevice(obj, ~, event)
+            device = event.data;
+            obj.addDevice(device);
+            obj.selectDevice(device);
+            obj.updateViewState();
+        end
+        
+        function addDevice(obj, device)
+            value.entity = device;
+            value.selectFcn = @()obj.selectDevice(device);
+            
+            node = obj.view.addDeviceNode(obj.view.getDevicesRootNode(), device.name, value);
+            obj.uuidToNode(device.uuid) = node;
+        end
+        
+        function selectDevice(obj, device)
+            obj.view.setDeviceName(device.name);
+            obj.view.setDeviceManufacturer(device.manufacturer);
+            obj.view.setSelectedDataCard(obj.view.DEVICE_DATA_CARD);
+            
+            obj.selectEntity(device);
         end
         
         function onViewSelectedAddSource(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.experiment, obj.app);
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.persistor, obj.app);
             presenter.goWaitStop();
         end
         
-        function onExperimentAddedSource(obj, ~, event)
+        function onPersistorAddedSource(obj, ~, event)
             source = event.data;
             obj.addSource(source);
             obj.selectSource(source);
@@ -94,74 +127,72 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function addSource(obj, source)
             if isempty(source.parent)
-                parentId = obj.view.SOURCES_NODE_ID;
+                parent = obj.view.getSourcesRootNode();
             else
-                parentId = obj.entityToId(source.parent);
+                parent = obj.uuidToNode(source.parent.uuid);
             end
             
-            nodeId = char(java.util.UUID.randomUUID);
-            obj.view.addSourceNode(parentId, source.id, nodeId);
+            value.entity = source;
+            value.selectFcn = @()obj.selectSource(source);
             
-            node.entity = source;
-            node.selectFcn = @()obj.selectSource(source);
-            obj.idToNode(nodeId) = node;
+            node = obj.view.addSourceNode(parent, source.label, value);
+            obj.uuidToNode(source.uuid) = node;
             
-            sources = source.children;
+            sources = source.sources;
             for i = 1:numel(sources)
-                obj.addSource(sources(i));
+                obj.addSource(sources{i});
             end
         end
         
         function selectSource(obj, source)
             obj.view.setSourceLabel(source.label);
-            obj.view.setSelectedNode(obj.entityToId(source));
-            obj.view.setSelectedCard(obj.view.SOURCE_CARD);
+            obj.view.setSelectedDataCard(obj.view.SOURCE_DATA_CARD);
             
             obj.selectEntity(source);
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.experiment, obj.app);
+            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.persistor, obj.app);
             presenter.goWaitStop();
         end
         
-        function onExperimentBeganEpochGroup(obj, ~, event)
+        function onPersistorBeganEpochGroup(obj, ~, event)
             group = event.data;
             obj.addEpochGroup(group);
             obj.selectEpochGroup(group);
-            obj.view.setEpochGroupNodeCurrent(obj.entityToId(group));
+            obj.view.setEpochGroupNodeCurrent(obj.uuidToNode(group.uuid));
             obj.updateViewState();
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
-            obj.experiment.endEpochGroup();
+            obj.persistor.endEpochGroup();
         end
         
-        function onExperimentEndedEpochGroup(obj, ~, event)
+        function onPersistorEndedEpochGroup(obj, ~, event)
             group = event.data;
             obj.selectEpochGroup(group);
-            obj.view.collapseNode(obj.entityToId(group));
-            obj.view.setEpochGroupNodeNormal(obj.entityToId(group));
+            obj.view.collapseNode(obj.uuidToNode(group.uuid));
+            obj.view.setEpochGroupNodeNormal(obj.uuidToNode(group.uuid));
             obj.updateViewState();
         end
         
         function addEpochGroup(obj, group)
             if isempty(group.parent)
-                parentId = obj.view.EPOCH_GROUPS_NODE_ID;
+                parent = obj.view.getEpochGroupsRootNode();
             else
-                parentId = obj.entityToId(group.parent);
+                parent = obj.uuidToNode(group.parent.uuid);
             end
             
-            nodeId = char(java.util.UUID.randomUUID);
-            obj.view.addEpochGroupNode(parentId, group.label, nodeId);
+            name = [group.label ' (' group.source.label ')'];
+            value.entity = group;
+            value.selectFcn = @()obj.selectEpochGroup(group);
+            node = obj.view.addEpochGroupNode(parent, name, value);
             
-            node.entity = group;
-            node.selectFcn = @()obj.selectEpochGroup(group);
-            obj.idToNode(nodeId) = node;
+            obj.uuidToNode(group.uuid) = node;
             
-            groups = group.children;
+            groups = group.epochGroups;
             for i = 1:numel(groups)
-                obj.addEpochGroup(groups(i));
+                obj.addEpochGroup(groups{i});
             end
         end
         
@@ -169,9 +200,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             obj.view.setEpochGroupLabel(group.label);
             obj.view.setEpochGroupStartTime(group.startTime);
             obj.view.setEpochGroupEndTime(group.endTime);
-            obj.view.setEpochGroupSource(group.source.id);
-            obj.view.setSelectedNode(obj.entityToId(group));
-            obj.view.setSelectedCard(obj.view.EPOCH_GROUP_CARD);
+            obj.view.setEpochGroupSource(group.source.label);
+            obj.view.setSelectedDataCard(obj.view.EPOCH_GROUP_DATA_CARD);
             
             obj.selectEntity(group);
         end
@@ -181,23 +211,24 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function selectEpoch(obj, epoch)
-            obj.view.setSelectedNode(obj.entityToId(epoch));
+            
         end
         
-        function onViewSelectedNode(obj, ~, ~)            
-            nodeId = obj.view.getSelectedNode();
-            if ~obj.idToNode.isKey(nodeId)
-                obj.view.setSelectedCard(obj.view.EMPTY_CARD);
-                return;
+        function onViewSelectedNodes(obj, ~, ~)            
+            nodes = obj.view.getSelectedNodes();
+            if isfield(nodes.Value, 'selectFcn')
+                nodes.Value.selectFcn();
+            else
+                obj.view.setSelectedDataCard(obj.view.EMPTY_DATA_CARD);
             end
-            
-            node = obj.idToNode(nodeId);
-            node.selectFcn();
         end
         
         function selectEntity(obj, entity)
+            obj.view.setSelectedNodes(obj.uuidToNode(entity.uuid));
+            
             obj.removeEntityListeners();
             obj.addEntityListeners(entity);
+            
             obj.populateEntityAttributes(entity);
         end
         
@@ -221,17 +252,17 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function populateEntityProperties(obj, entity)
-            keys = entity.propertyMap.keys;
+            keys = entity.propertiesMap.keys;
             values = cell(1, numel(keys));
             for i = 1:numel(keys)
-                values{i} = {keys{i}, entity.propertyMap(keys{i})};
+                values{i} = {keys{i}, entity.propertiesMap(keys{i})};
             end
             obj.view.setProperties(values);
         end
         
         function onViewSelectedAddProperty(obj, ~, ~)
-            node = obj.idToNode(obj.view.getSelectedNode());
-            entity = node.entity;
+            node = obj.view.getSelectedNodes();
+            entity = node.Value.entity;
             
             presenter = symphonyui.ui.presenters.AddPropertyPresenter(entity, obj.app);
             presenter.goWaitStop();
@@ -243,15 +274,17 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedRemoveProperty(obj, ~, ~)
-            property = obj.view.getSelectedProperty();
-            if isempty(property)
+            key = obj.view.getSelectedProperty();
+            if isempty(key)
                 return;
             end
-            obj.getSelectedEntity().removeProperty(property);
+            node = obj.getSelectedNodess();
+            entity = node.Value.entity;
+            entity.removeProperty(key);
         end
         
         function onEntityRemovedProperty(obj, ~, event)
-            obj.view.removeProperty(event.data.key);
+            obj.view.removeProperty(event.data);
         end
         
         function populateEntityKeywords(obj, entity)
@@ -259,8 +292,8 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddKeyword(obj, ~, ~)
-            node = obj.idToNode(obj.view.getSelectedNode());
-            entity = node.entity;
+            node = obj.view.getSelectedNodes();
+            entity = node.Value.entity;
             
             presenter = symphonyui.ui.presenters.AddKeywordPresenter(entity, obj.app);
             presenter.goWaitStop();
@@ -275,7 +308,9 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             if isempty(keyword)
                 return;
             end
-            obj.getSelectedEntity().removeKeyword(keyword);            
+            node = obj.getSelectedNodess();
+            entity = node.Value.entity;
+            entity.removeKeyword(keyword);
         end
         
         function onEntityRemovedKeyword(obj, ~, event)
@@ -286,14 +321,14 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
             notes = entity.notes;
             values = cell(1, numel(notes));
             for i = 1:numel(notes)
-                values{i} = {notes{i}.date, notes{i}.text};
+                values{i} = {datestr(notes{i}.time, 14), notes{i}.text};
             end
             obj.view.setNotes(values);
         end
         
         function onViewSelectedAddNote(obj, ~, ~)
-            node = obj.idToNode(obj.view.getSelectedNode());
-            entity = node.entity;
+            node = obj.view.getSelectedNodes();
+            entity = node.Value.entity;
             
             presenter = symphonyui.ui.presenters.AddNotePresenter(entity, obj.app);
             presenter.goWaitStop();
@@ -301,25 +336,12 @@ classdef ExperimentPresenter < symphonyui.ui.Presenter
         
         function onEntityAddedNote(obj, ~, event)
             note = event.data;
-            obj.view.addNote(note.date, note.text);
-        end
-        
-        function e = getSelectedEntity(obj)
-            node = obj.idToNode(obj.view.getSelectedNode());
-            e = node.entity;
-        end
-        
-        function i = entityToId(obj, entity)
-            % Performance could be improved here.
-            nodes = obj.idToNode.values;
-            index = cellfun(@(n)isequal(n.entity, entity), nodes);
-            ids = obj.idToNode.keys;
-            i = ids{index};
+            obj.view.addNote(datestr(note.time, 14), note.text);
         end
         
         function updateViewState(obj)
-            obj.view.enableBeginEpochGroup(~isempty(obj.experiment.sources));
-            obj.view.enableEndEpochGroup(~isempty(obj.experiment.currentEpochGroup));
+            obj.view.enableBeginEpochGroup(~isempty(obj.persistor.experiment.sources));
+            obj.view.enableEndEpochGroup(~isempty(obj.persistor.currentEpochGroup));
         end
         
     end
