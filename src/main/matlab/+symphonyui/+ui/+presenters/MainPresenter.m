@@ -48,9 +48,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'ShowDataManager', @obj.onViewSelectedShowDataManager);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(v, 'SetProtocolProperty', @obj.onViewSetProtocolProperty);
-            obj.addListener(v, 'ViewOnlyProtocol', @obj.onViewSelectedViewOnlyProtocol);
+            obj.addListener(v, 'ViewProtocol', @obj.onViewSelectedViewProtocol);
             obj.addListener(v, 'RecordProtocol', @obj.onViewSelectedRecordProtocol);
             obj.addListener(v, 'StopProtocol', @obj.onViewSelectedStopProtocol);
+            obj.addListener(v, 'ShowProtocolPreview', @obj.onViewSelectedShowProtocolPreview);
             obj.addListener(v, 'ConfigureDeviceBackgrounds', @obj.onViewSelectedConfigureDeviceBackgrounds);
             obj.addListener(v, 'LoadRigConfiguration', @obj.onViewSelectedLoadRigConfiguration);
             obj.addListener(v, 'CreateRigConfiguration', @obj.onViewSelectedCreateRigConfiguration);
@@ -133,6 +134,12 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onPersistorAddedSource(obj, ~, ~)
             obj.updateViewState();
+        end
+        
+        function onViewSelectedAddNoteToExperiment(obj, ~, ~)
+            persistor = obj.acquisitionService.getCurrentPersistor();
+            presenter = symphonyui.ui.presenters.AddNotePresenter(persistor.experiment, obj.app);
+            presenter.goWaitStop();
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -220,9 +227,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateViewState();
         end
         
-        function onViewSelectedViewOnlyProtocol(obj, ~, ~)
+        function onViewSelectedViewProtocol(obj, ~, ~)
             try
-                obj.acquisitionService.viewOnlyProtocol();
+                obj.acquisitionService.viewProtocol();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -292,25 +299,28 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableNewFile = ~hasPersistor && isRigStopped && isRigValid;
             enableOpenFile = enableNewFile;
             enableCloseFile = hasPersistor && isRigStopped;
+            enableAddSource = hasPersistor;
+            enableAddNoteToExperiment = hasPersistor;
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasCurrentEpochGroup;
-            enableAddSource = hasPersistor;
+            enableShowDataManager = hasPersistor;
             enableSelectProtocol = isRigStopped;
             enableProtocolProperties = isRigStopped;
+            enableViewProtocol = false;
             enableRecordProtocol = false;
-            enableViewOnlyProtocol = false;
             enableStopProtocol = false;
+            enableShowProtocolPreview = false;
             enableConfigureDeviceBackgrounds = isRigStopped;
             enableLoadRigConfiguration = ~hasPersistor && isRigStopped;
             enableCreateRigConfiguration = ~hasPersistor && isRigStopped;
-            enableShowDataManager = hasPersistor;
             status = '';
             
             canRecord = hasCurrentEpochGroup;
             switch rig.state
                 case RigState.STOPPED
+                    enableViewProtocol = true;
                     enableRecordProtocol = canRecord;
-                    enableViewOnlyProtocol = true;
+                    enableShowProtocolPreview = true;
                 case RigState.STOPPING
                     status = 'Stopping...';
                 case RigState.VIEWING
@@ -323,24 +333,27 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             [valid, msg] = obj.acquisitionService.validate();
             if ~valid
+                enableViewProtocol = false;
                 enableRecordProtocol = false;
-                enableViewOnlyProtocol = false;
                 enableStopProtocol = false;
+                enableShowProtocolPreview = false;
                 status = msg;
             end
             
             obj.view.enableNewFile(enableNewFile);
             obj.view.enableOpenFile(enableOpenFile);
             obj.view.enableCloseFile(enableCloseFile);
-            obj.view.enableShowDataManager(enableShowDataManager);
+            obj.view.enableAddSource(enableAddSource);
+            obj.view.enableAddNoteToExperiment(enableAddNoteToExperiment);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
-            obj.view.enableAddSource(enableAddSource);
+            obj.view.enableShowDataManager(enableShowDataManager);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolProperties(enableProtocolProperties);
+            obj.view.enableViewProtocol(enableViewProtocol);
             obj.view.enableRecordProtocol(enableRecordProtocol);
-            obj.view.enableViewOnlyProtocol(enableViewOnlyProtocol);
             obj.view.enableStopProtocol(enableStopProtocol);
+            obj.view.enableShowProtocolPreview(enableShowProtocolPreview);
             obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);
             obj.view.enableLoadRigConfiguration(enableLoadRigConfiguration);
             obj.view.enableCreateRigConfiguration(enableCreateRigConfiguration);
