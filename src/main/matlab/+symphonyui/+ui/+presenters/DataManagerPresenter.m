@@ -1,19 +1,19 @@
 classdef DataManagerPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        persistor
+        documentationService
         uuidToNode
         entityEventManager
     end
     
     methods
 
-        function obj = DataManagerPresenter(persistor, app, view)
+        function obj = DataManagerPresenter(documentationService, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.DataManagerView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.persistor = persistor;
+            obj.documentationService = documentationService;
             obj.uuidToNode = containers.Map();
             obj.entityEventManager = symphonyui.ui.util.EventManager();
         end
@@ -40,11 +40,11 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'RemoveKeyword', @obj.onViewSelectedRemoveKeyword);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             
-            p = obj.persistor;
-            obj.addListener(p, 'AddedDevice', @obj.onPersistorAddedDevice);
-            obj.addListener(p, 'AddedSource', @obj.onPersistorAddedSource);
-            obj.addListener(p, 'BeganEpochGroup', @obj.onPersistorBeganEpochGroup);
-            obj.addListener(p, 'EndedEpochGroup', @obj.onPersistorEndedEpochGroup);
+            d = obj.documentationService;
+            obj.addListener(d, 'AddedDevice', @obj.onServiceAddedDevice);
+            obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
+            obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
+            obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
         end
 
     end
@@ -52,7 +52,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateExperimentTree(obj)
-            experiment = obj.persistor.experiment;
+            experiment = obj.documentationService.getExperiment();
             
             value.entity = experiment;
             value.selectFcn = @()obj.selectExperiment();
@@ -80,7 +80,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function selectExperiment(obj)
-            experiment = obj.persistor.experiment;
+            experiment = obj.documentationService.getExperiment();
             
             obj.view.setExperimentPurpose(experiment.purpose);
             obj.view.setExperimentStartTime(experiment.startTime);
@@ -90,7 +90,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.selectEntity(experiment);
         end
         
-        function onPersistorAddedDevice(obj, ~, event)
+        function onServiceAddedDevice(obj, ~, event)
             device = event.data;
             obj.addDevice(device);
             obj.selectDevice(device);
@@ -114,11 +114,11 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddSource(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.persistor, obj.app);
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.documentationService, obj.app);
             presenter.goWaitStop();
         end
         
-        function onPersistorAddedSource(obj, ~, event)
+        function onServiceAddedSource(obj, ~, event)
             source = event.data;
             obj.addSource(source);
             obj.selectSource(source);
@@ -152,11 +152,11 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.persistor, obj.app);
+            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.documentationService, obj.app);
             presenter.goWaitStop();
         end
         
-        function onPersistorBeganEpochGroup(obj, ~, event)
+        function onServiceBeganEpochGroup(obj, ~, event)
             group = event.data;
             obj.addEpochGroup(group);
             obj.selectEpochGroup(group);
@@ -165,10 +165,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
-            obj.persistor.endEpochGroup();
+            obj.documentationService.endEpochGroup();
         end
         
-        function onPersistorEndedEpochGroup(obj, ~, event)
+        function onServiceEndedEpochGroup(obj, ~, event)
             group = event.data;
             obj.selectEpochGroup(group);
             obj.view.collapseNode(obj.uuidToNode(group.uuid));
@@ -340,8 +340,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function updateViewState(obj)
-            obj.view.enableBeginEpochGroup(~isempty(obj.persistor.experiment.sources));
-            obj.view.enableEndEpochGroup(~isempty(obj.persistor.currentEpochGroup));
+            obj.view.enableBeginEpochGroup(~isempty(obj.documentationService.getExperiment().sources));
+            obj.view.enableEndEpochGroup(~isempty(obj.documentationService.getCurrentEpochGroup()));
         end
         
     end

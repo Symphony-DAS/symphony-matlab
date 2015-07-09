@@ -1,17 +1,17 @@
 classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        persistor
+        documentationService
     end
     
     methods
         
-        function obj = BeginEpochGroupPresenter(persistor, app, view)
+        function obj = BeginEpochGroupPresenter(documentationService, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.BeginEpochGroupView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.persistor = persistor;
+            obj.documentationService = documentationService;
         end
         
     end
@@ -39,20 +39,23 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateParent(obj)
-            if isempty(obj.persistor.currentEpochGroup)
+            group = obj.documentationService.getCurrentEpochGroup();
+            if isempty(group)
                 parent = '(None)';
             else
-                parent = obj.persistor.currentEpochGroup.label;
+                parent = group.label;
             end
             obj.view.setParent(parent);
         end
         
         function populateSourceList(obj)
-            sources = obj.persistor.experiment.allSources();
+            sources = obj.documentationService.getExperiment().allSources();
+            
             names = cell(1, numel(sources));
             for i = 1:numel(sources)
                 names{i} = sources{i}.label;
             end
+            
             obj.view.setSourceList(names, sources);
             obj.view.setSelectedSource(sources{end});
         end
@@ -72,7 +75,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             label = obj.view.getLabel();
             source = obj.view.getSelectedSource();
             try
-                obj.persistor.beginEpochGroup(label, source);
+                obj.documentationService.beginEpochGroup(label, source);
             catch x
                 obj.view.showError(x.message);
                 return;

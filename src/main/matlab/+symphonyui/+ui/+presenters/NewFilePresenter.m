@@ -1,17 +1,17 @@
 classdef NewFilePresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        acquisitionService
+        documentationService
     end
     
     methods
         
-        function obj = NewFilePresenter(acquisitionService, app, view)
+        function obj = NewFilePresenter(documentationService, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.NewFileView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.acquisitionService = acquisitionService;
+            obj.documentationService = documentationService;
         end
         
     end
@@ -73,7 +73,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             location = obj.view.getLocation();
             
             try
-                obj.acquisitionService.createFile(name, location);
+                obj.documentationService.createFile(name, location);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

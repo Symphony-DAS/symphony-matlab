@@ -1,18 +1,16 @@
-classdef ClassRepository < handle
+classdef ObjectRepository < handle
 
     properties (Access = private)
         subtype
         searchPaths
-        objectCache
-        classNames
+        objects
     end
 
     methods
         
-        function obj = ClassRepository(subtype, searchPaths)
+        function obj = ObjectRepository(subtype, searchPaths)
             obj.subtype = subtype;
             obj.setSearchPaths(searchPaths);
-            obj.objectCache = containers.Map();
             obj.loadAll();
         end
         
@@ -27,41 +25,19 @@ classdef ClassRepository < handle
         end
 
         function loadAll(obj)
-            obj.classNames = discover(obj.subtype, obj.searchPaths);
+            obj.objects = discover(obj.subtype, obj.searchPaths);
         end
         
-        function i = getId(obj, object)
-            className = class(object);
-            if ~any(strcmp(className, obj.classNames))
-                error('Object does not exist is repository');
-            end
-            i = className;
-        end
-        
-        function i = getAllIds(obj)
-            i = obj.classNames;
-        end
-
-        function o = get(obj, id)
-            if ~any(strcmp(id, obj.classNames))
-                error(['''' id ''' does not exist is repository']);
-            end
-            if obj.objectCache.isKey(id)
-                o = obj.objectCache(id);
-                return;
-            end
-            className = id;
-            constructor = str2func(className);
-            o = constructor();
-            obj.objectCache(id) = o;
+        function o = getAll(obj)
+            o = obj.objects;
         end
 
     end
 
 end
 
-function names = discover(type, paths)
-    names = {};
+function objects = discover(type, paths)
+    objects = {};
 
     for i = 1:numel(paths)
         package = packageName(paths{i});
@@ -82,7 +58,12 @@ function names = discover(type, paths)
                 continue;
             end
             
-            names{end + 1} = className;
+            try
+                constructor = str2func(className);
+                objects{end + 1} = constructor(); %#ok<AGROW>
+            catch
+                continue;
+            end
         end
     end
 end

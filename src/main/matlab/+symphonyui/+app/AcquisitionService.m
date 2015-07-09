@@ -1,167 +1,77 @@
 classdef AcquisitionService < handle
-
+    
     events (NotifyAccess = private)
-        OpenedFile
-        ClosedFile
-        LoadedRigConfiguration
         SelectedProtocol
+        SetProtocolProperty
     end
-
+    
     properties (Access = private)
-        persistorFactory
-        rigFactory
+        sessionData
         protocolRepository
     end
-
-    properties (Access = private)
-        session
-    end
-
+    
     methods
-
-        function obj = AcquisitionService(persistorFactory, rigFactory, protocolRepository)
-            obj.persistorFactory = persistorFactory;
-            obj.rigFactory = rigFactory;
+        
+        function obj = AcquisitionService(sessionData, protocolRepository)
+            obj.sessionData = sessionData;
             obj.protocolRepository = protocolRepository;
-            
-            rig = rigFactory.create();
-            rig.initialize();
-            
-            obj.session = struct( ...
-                'persistor', [], ...
-                'rig', rig, ...
-                'protocol', symphonyui.app.NullProtocol());
-        end
-
-        function delete(obj)
-            if ~isempty(obj.getCurrentPersistor())
-                obj.closeFile();
-            end
-            obj.getCurrentRig().close();
-        end
-
-        %% Persistor
-
-        function createFile(obj, name, location)
-            if ~isempty(obj.getCurrentPersistor())
-                error('A file is already open');
-            end
-            persistor = obj.persistorFactory.create(name, location);
-            obj.session.persistor = persistor;
-            notify(obj, 'OpenedFile');
-        end
-
-        function openFile(obj, path)
-            if ~isempty(obj.getCurrentPersistor())
-                error('A file is already open');
-            end
-            persistor = obj.persistorFactory.load(path);
-            obj.session.persistor = persistor;
-            notify(obj, 'OpenedFile');
         end
         
-        function closeFile(obj)
-            if isempty(obj.getCurrentPersistor())
-                error('No file open');
-            end
-            obj.session.persistor.close();
-            obj.session.persistor = [];
-            notify(obj, 'ClosedFile');
+        function p = getAvailableProtocols(obj)
+            p = obj.protocolRepository.getAll();
         end
 
-        function e = getCurrentPersistor(obj)
-            e = obj.session.persistor;
-        end
-
-        %% Rig
-        
-        function loadRigConfiguration(obj, path)
-            obj.getCurrentRig().close();
-            
-            rig = obj.rigFactory.load(path);
-            rig.initialize();
-            
-            obj.session.rig = rig;
-            obj.session.protocol.setRig(rig);
-            
-            notify(obj, 'LoadedRigConfiguration');
-        end
-        
-        function saveRigConfiguration(obj, path)
-            disp(['Save to: ' path]);
-        end
-        
-        function r = getCurrentRig(obj)
-            r = obj.session.rig;
-        end
-        
-        %% Protocol
-
-        function i = getAvailableProtocolIds(obj)
-            i = [{'(None)'}, obj.protocolRepository.getAllIds()];
-        end
-
-        function selectProtocol(obj, id)
-            if strcmp(id, '(None)')
-                protocol = symphonyui.app.NullProtocol();
-            else
-                protocol = obj.protocolRepository.get(id);
-            end
-            obj.session.protocol = protocol;
-            obj.session.protocol.setRig(obj.getCurrentRig());
+        function selectProtocol(obj, protocol)
+            obj.setProtocol(protocol);
             notify(obj, 'SelectedProtocol');
         end
         
         function p = getCurrentProtocol(obj)
-            p = obj.session.protocol;
+            p = obj.getProtocol();
         end
         
-        function i = getCurrentProtocolId(obj)
-            protocol = obj.session.protocol;
-            if isa(protocol, 'symphonyui.app.NullProtocol')
-                i = '(None)';
-                return;
-            end
-            i = obj.protocolRepository.getId(protocol);
-        end
-
-        %% Acquisition
-
-        function viewProtocol(obj)
-            rig = obj.getCurrentRig();
-            protocol = obj.getCurrentProtocol();
-            rig.viewOnly(protocol);
+        function setProtocolProperty(obj, name, value)
+            obj.getProtocol().(name) = value;
         end
         
-        function recordProtocol(obj)
-            if isempty(obj.getCurrentPersistor())
-                error('No persistor open');
-            end
-            rig = obj.getCurrentRig();
-            protocol = obj.getCurrentProtocol();
-            persistor = obj.getCurrentPersistor();
-            rig.record(protocol, persistor);
+        function p = getProtocolProperties(obj)
+            p = struct();
         end
 
-        function pauseProtocol(obj)
-            rig = obj.getCurrentRig();
-            rig.pause();
+        function viewCurrentProtocol(obj)
+            obj.getProtocol().viewOnly();
+        end
+        
+        function recordCurrentProtocol(obj)
+            obj.getProtocol().record();
         end
 
-        function stopProtocol(obj)
-            rig = obj.getCurrentRig();
-            rig.stop();
+        function stopCurrentProtocol(obj)
+            obj.getProtocol().stop();
         end
 
         function [tf, msg] = validate(obj)
-            rig = obj.getCurrentRig();
-            protocol = obj.getCurrentProtocol();
-            [tf, msg] = rig.isValid();
-            if tf
-                [tf, msg] = protocol.isValid();
-            end
+            tf = true;
+            msg = '';
+            %[tf, msg] = obj.getProtocol().isValid();
         end
 
+    end
+    
+    methods (Access = private)
+        
+        function p = getProtocol(obj)
+            p = obj.sessionData.protocol;
+        end
+        
+        function setProtocol(obj, protocol)
+            obj.sessionData.protocol = protocol;
+        end
+        
+        function tf = hasProtocol(obj)
+            tf = ~isempty(obj.sessionData.protocol);
+        end
+        
     end
 
 end

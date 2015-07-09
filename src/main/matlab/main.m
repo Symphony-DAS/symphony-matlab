@@ -7,12 +7,14 @@ function main()
 
     config = Config();
     config.setDefaults(getDefaultOptions());
-
+    
+    sessionData = SessionData();
     persistorFactory = PersistorFactory();
     rigFactory = RigFactory();
-    protocolRepository = ClassRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
-
-    acquisitionService = AcquisitionService(persistorFactory, rigFactory, protocolRepository);
+    protocolRepository = ObjectRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
+    
+    documentationService = DocumentationService(sessionData, persistorFactory);
+    acquisitionService = AcquisitionService(sessionData, protocolRepository);
     try %#ok<TRYNC>
         ids = acquisitionService.getAvailableProtocolIds();
         acquisitionService.selectProtocol(ids{2});
@@ -20,7 +22,7 @@ function main()
 
     app = App(config);
 
-    presenter = symphonyui.ui.presenters.MainPresenter(acquisitionService, app);
+    presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, app);
     presenter.go();
 end
 

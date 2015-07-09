@@ -1,17 +1,17 @@
 classdef AddSourcePresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
-        persistor
+        documentationService
     end
     
     methods
         
-        function obj = AddSourcePresenter(persistor, app, view)
+        function obj = AddSourcePresenter(documentationService, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.AddSourceView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.persistor = persistor;
+            obj.documentationService = documentationService;
         end
         
     end
@@ -38,15 +38,18 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateParentList(obj)
-            sources = obj.persistor.experiment.allSources();
+            sources = obj.documentationService.getExperiment().allSources();
+            
             names = cell(1, numel(sources));
             for i = 1:numel(sources)
                 names{i} = sources{i}.label;
             end
             names = [{'(None)'}, names];
             values = [{[]}, sources];
+            
             obj.view.setParentList(names, values);
             obj.view.setSelectedParent(values{end});
+            
             if numel(names) <= 1
                 obj.view.enableSelectParent(false);
             end
@@ -67,7 +70,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             parent = obj.view.getSelectedParent();
             label = obj.view.getLabel();
             try
-                obj.persistor.addSource(label, parent);
+                obj.documentationService.addSource(label, parent);
             catch x
                 obj.view.showError(x.message);
                 return;
