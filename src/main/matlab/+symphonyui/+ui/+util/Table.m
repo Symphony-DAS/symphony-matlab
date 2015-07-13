@@ -7,6 +7,7 @@ classdef Table < matlab.mixin.SetGet %#ok<*MCSUP>
         ColumnName
         ColumnWidth
         Enable
+        Editable
     end
     
     properties (SetAccess = private)
@@ -41,11 +42,13 @@ classdef Table < matlab.mixin.SetGet %#ok<*MCSUP>
             jmodel = jtable.getModel();
             nRows = jmodel.getRowCount();
             nColumns = jmodel.getColumnCount();
-            d = cell(nRows, nColumns);
+            d = cell(1, nRows);
             for row = 1:nRows
+                value = cell(1, nColumns);
                 for col = 1:nColumns
-                    d{row, col} = jmodel.getValueAt(row - 1, col - 1);
+                    value{col} = jmodel.getValueAt(row - 1, col - 1);
                 end
+                d{row} = value;
             end
         end
         
@@ -89,19 +92,25 @@ classdef Table < matlab.mixin.SetGet %#ok<*MCSUP>
         end
         
         function e = get.Enable(obj)
-            if get(obj.Control, 'Editable')
-                e = 'on';
-            else
-                e = 'off';
-            end
+            jtable = obj.Control.getTable();
+            e = symphonyui.ui.util.onOff(jtable.getEnabled());
         end
         
         function set.Enable(obj, e)
+            jtable = obj.Control.getTable();
             if strcmpi(e, 'on')
-                set(obj.Control, 'Editable', true);
+                jtable.setEnabled(true);
             else
-                set(obj.Control, 'Editable', false);
+                jtable.setEnabled(false);
             end
+        end
+        
+        function tf = get.Editable(obj)
+            tf = get(obj.Control, 'Editable');
+        end
+        
+        function set.Editable(obj, tf)
+            set(obj.Control, 'Editable', tf);
         end
         
         function addRow(obj, rowData)

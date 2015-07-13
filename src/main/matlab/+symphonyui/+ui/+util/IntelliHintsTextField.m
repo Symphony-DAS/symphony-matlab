@@ -26,6 +26,11 @@ classdef IntelliHintsTextField < symphonyui.ui.util.UIControl %#ok<*MCSUP>
             obj.IntelliHints.showHints();
         end
         
+        function s = getString(obj)
+            s = char(obj.JControl.getText());
+            %s = get(obj.Control, 'String');
+        end
+        
     end
     
 end

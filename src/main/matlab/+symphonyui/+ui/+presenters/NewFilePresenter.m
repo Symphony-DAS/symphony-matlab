@@ -53,17 +53,19 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
         function onViewKeyPress(obj, ~, event)
             switch event.key
                 case 'return'
-                    obj.onViewSelectedOpen();
+                    % FIXME: Not sure why this is being called twice when return is hit.
+                    %obj.onViewSelectedOpen();
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
         end
         
         function onViewSelectedBrowseLocation(obj, ~, ~)
-            location = uigetdir(pwd, 'File Location');
-            if location ~= 0
-                obj.view.setLocation(location);
+            location = obj.view.showGetFile(pwd, 'File Location');
+            if location == 0
+                return;
             end
+            obj.view.setLocation(location);
         end
         
         function onViewSelectedOpen(obj, ~, ~)
@@ -71,11 +73,9 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             
             name = obj.view.getName();            
             location = obj.view.getLocation();
-            
             try
                 obj.documentationService.createFile(name, location);
             catch x
-                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

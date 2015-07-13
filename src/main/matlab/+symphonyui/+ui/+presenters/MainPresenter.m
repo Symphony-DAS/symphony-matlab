@@ -3,19 +3,21 @@ classdef MainPresenter < symphonyui.ui.Presenter
     properties (Access = private)
         documentationService
         acquisitionService
+        configurationService
         rigPresenter
         dataManagerPresenter
     end
     
     methods
         
-        function obj = MainPresenter(documentationService, acquisitionService, app, view)            
-            if nargin < 4
+        function obj = MainPresenter(documentationService, acquisitionService, configurationService, app, view)            
+            if nargin < 5
                 view = symphonyui.ui.views.MainView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
+            obj.configurationService = configurationService;
         end
         
     end
@@ -29,7 +31,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onStopping(obj)
-            %delete(obj.acquisitionService);
+            obj.documentationService.close();
+            obj.acquisitionService.close();
         end
         
         function onBind(obj)
@@ -81,11 +84,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedOpenFile(obj, ~, ~)
-            [filename, path] = uigetfile('*', 'File Location');
-            if filename == 0
+            path = obj.view.showGetFile('File Location');
+            if path == 0
                 return;
             end
-            obj.documentationService.openFile(fullfile(path, filename));
+            obj.documentationService.openFile(path);
         end
         
         function onServiceOpenedFile(obj, ~, ~)
@@ -160,24 +163,15 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             names = cell(1, numel(protocols));
             for i = 1:numel(protocols)
-                split = strsplit(class(protocols{i}), '.');
-                names{i} = symphonyui.ui.util.humanize(split{end});
+                names{i} = protocols{i}.getDisplayName();
             end
-            names = [{'(None)'}, names];
-            values = [{[]}, protocols];
             
-            obj.view.setProtocolList(names, values);
+            obj.view.setProtocolList(names, protocols);
             obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocol());
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
-            try
-                obj.acquisitionService.selectProtocol(obj.view.getSelectedProtocol());
-            catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-                return;
-            end
+            obj.acquisitionService.selectProtocol(obj.view.getSelectedProtocol());
         end
         
         function onServiceSelectedProtocol(obj, ~, ~)
@@ -185,16 +179,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.populateProtocolProperties();
             obj.updateViewState();
         end
-        
-%         function addProtocolListeners(obj)
-%             protocol = obj.acquisitionService.getCurrentProtocol();
-%             manager = obj.eventManagers.protocol;
-%             manager.addListener(protocol, 'SetProperty', @obj.onServiceSetProtocolProperty);
-%         end
-%         
-%         function removeProtocolListeners(obj)
-%             obj.eventManagers.protocol.removeAllListeners();
-%         end
         
         function onViewSetProtocolProperty(obj, ~, event)
             p = event.Property;
@@ -208,7 +192,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedViewProtocol(obj, ~, ~)
             try
-                obj.acquisitionService.viewCurrentProtocol();
+                obj.acquisitionService.viewProtocol();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -218,7 +202,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedRecordProtocol(obj, ~, ~)
             try
-                obj.acquisitionService.recordCurrentProtocol();
+                obj.acquisitionService.recordProtocol();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -228,7 +212,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedStopProtocol(obj, ~, ~)
             try
-                obj.acquisitionService.stopCurrentProtocol();
+                obj.acquisitionService.stopProtocol();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -268,7 +252,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             %rig = obj.acquisitionService.getCurrentRig();
             
             hasOpenFile = obj.documentationService.hasOpenFile();
-            hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
+            hasSource = hasOpenFile && ~isempty(obj.documentationService.getCurrentExperiment().sources);
             hasCurrentEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             isRigStopped = true; %rig.state == RigState.STOPPED;
             isRigValid = true; %rig.isValid() == true;

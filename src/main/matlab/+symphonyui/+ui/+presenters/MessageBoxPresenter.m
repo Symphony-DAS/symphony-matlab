@@ -27,12 +27,22 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
         
         function onBind(obj)
             v = obj.view;
+            obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Ok', @obj.onViewSelectedOk);
         end
         
     end
     
     methods (Access = private)
+        
+        function onViewKeyPress(obj, ~, event)
+            switch event.key
+                case 'return'
+                    obj.onViewSelectedOk();
+                case 'escape'
+                    obj.onViewSelectedOk();
+            end
+        end
         
         function onViewSelectedOk(obj, ~, ~)
             obj.view.hide();

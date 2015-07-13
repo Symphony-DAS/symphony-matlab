@@ -1,28 +1,30 @@
 function main()
     import symphonyui.app.*;
     import symphonyui.infra.*;
-
+    
     setupDotNetPath();
     setupJavaPath();
-
+    
     config = Config();
     config.setDefaults(getDefaultOptions());
     
-    sessionData = SessionData();
     persistorFactory = PersistorFactory();
-    rigFactory = RigFactory();
     protocolRepository = ObjectRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
+    
+    sessionData = SessionData();
+    sessionData.protocol = symphonyui.app.NullProtocol.get();
     
     documentationService = DocumentationService(sessionData, persistorFactory);
     acquisitionService = AcquisitionService(sessionData, protocolRepository);
-    try %#ok<TRYNC>
-        ids = acquisitionService.getAvailableProtocolIds();
-        acquisitionService.selectProtocol(ids{2});
-    end
+    configurationService = ConfigurationService();
+%     try %#ok<TRYNC>
+%         ids = acquisitionService.getAvailableProtocolIds();
+%         acquisitionService.selectProtocol(ids{2});
+%     end
 
     app = App(config);
 
-    presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, app);
+    presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, app);
     presenter.go();
 end
 

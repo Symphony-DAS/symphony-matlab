@@ -17,10 +17,10 @@ classdef DataManagerView < symphonyui.ui.View
         beginEpochGroupTool
         endEpochGroupTool
         addSourceTool
-        experimentTree
-        devicesRootNode
-        sourcesRootNode
-        epochGroupsRootNode
+        entityTree
+        devicesFolderNode
+        sourcesFolderNode
+        epochGroupsFolderNode
         tabGroup
         dataCardPanel
         emptyCard
@@ -29,24 +29,26 @@ classdef DataManagerView < symphonyui.ui.View
         experimentCard
         epochGroupCard
         epochCard
-        propertiesTable
-        keywordsTable
-        notesTable
+        propertiesTab
+        keywordsTab
+        notesTab
     end
-
+    
     properties (Constant)
-        EMPTY_DATA_CARD          = 1
-        DEVICE_DATA_CARD         = 2
-        SOURCE_DATA_CARD         = 3
-        EXPERIMENT_DATA_CARD     = 4
-        EPOCH_GROUP_DATA_CARD    = 5
-        EPOCH_DATA_CARD          = 6
+        EMPTY_DATA_CARD         = 1
+        DEVICE_DATA_CARD        = 2
+        SOURCE_DATA_CARD        = 3
+        EXPERIMENT_DATA_CARD    = 4
+        EPOCH_GROUP_DATA_CARD   = 5
+        EPOCH_BLOCK_DATA_CARD   = 6
+        EPOCH_DATA_CARD         = 7
     end
-
+    
     methods
 
         function createUi(obj)
             import symphonyui.ui.util.*;
+            import symphonyui.ui.views.EntityNodeType;
 
             set(obj.figureHandle, 'Name', 'Data Manager');
             set(obj.figureHandle, 'Position', screenCenter(559, 350));
@@ -80,43 +82,46 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', mainLayout, ...
                 'Spacing', 7);
 
-            obj.experimentTree = uiextras.jTree.Tree( ...
+            obj.entityTree = uiextras.jTree.Tree( ...
                 'Parent', masterLayout, ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'SelectionChangeFcn', @(h,d)notify(obj, 'SelectedNodes'), ...
                 'SelectionType', 'discontiguous');
-            root = obj.experimentTree.Root;
+            root = obj.entityTree.Root;
+            set(root, 'Value', struct('entity', [], 'type', EntityNodeType.EXPERIMENT));
             root.setIcon(symphonyui.app.App.getResource('icons/experiment.png'));
             
             devices = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
-                'Name', 'Devices');
+                'Name', 'Devices', ...
+                'Value', struct('entity', [], 'type', EntityNodeType.FOLDER));
             devices.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
-            obj.devicesRootNode = devices;
+            obj.devicesFolderNode = devices;
 
             sources = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
-                'Name', 'Sources');
+                'Name', 'Sources', ...
+                'Value', struct('entity', [], 'type', EntityNodeType.FOLDER));
             sources.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
-            obj.sourcesRootNode = sources;
+            obj.sourcesFolderNode = sources;
 
             groups = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
-                'Name', 'Epoch Groups');
+                'Name', 'Epoch Groups', ...
+                'Value', struct('entity', [], 'type', EntityNodeType.FOLDER));
             groups.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
-            obj.epochGroupsRootNode = groups;
+            obj.epochGroupsFolderNode = groups;
 
             detailLayout = uix.VBox( ...
                 'Parent', mainLayout);
 
-            % Tab panel.
-            obj.tabGroup = uitabgroup( ...
+            % Tab group.
+            obj.tabGroup = TabGroup( ...
                 'Parent', detailLayout);
             
             % Data tab.
-            dataTab = uitab( ...
-                'Parent', obj.tabGroup, ...
+            dataTab = obj.tabGroup.addTab( ...
                 'Title', 'Data');
             
             obj.dataCardPanel = uix.CardPanel( ...
@@ -165,7 +170,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'HorizontalAlignment', 'left');
             set(sourceLayout, ...
                 'Widths', [60 -1], ...
-                'Heights', [25]);
+                'Heights', 25);
 
             % Experiment card.
             experimentLayout = uix.Grid( ...
@@ -248,52 +253,55 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', obj.dataCardPanel, ...
                 'Spacing', 7);
             obj.epochCard.tabGroupParent = uix.Panel('Parent', epochLayout, 'BorderType', 'none');
-            set(epochLayout, 'Heights', [-1]);
+            set(epochLayout, 'Heights', -1);
 
             % Properties tab.
-            propertiesTab = uitab( ...
-                'Parent', obj.tabGroup, ...
+            obj.propertiesTab.tab = obj.tabGroup.addTab( ...
                 'Title', 'Properties');
-            propertiesLayout = uix.VBox( ...
-                'Parent', propertiesTab);
-            obj.propertiesTable = Table( ...
-                'Parent', propertiesLayout, ...
+            obj.propertiesTab.layout = uix.VBox( ...
+                'Parent', obj.propertiesTab.tab);
+            obj.propertiesTab.table = Table( ...
+                'Parent', obj.propertiesTab.layout, ...
                 'ColumnName', {'Key', 'Value'}, ...
-                'Enable', 'off');
-            obj.createAddRemoveButtons(propertiesLayout, @(h,d)notify(obj, 'AddProperty'), @(h,d)notify(obj, 'RemoveProperty'));
-            set(propertiesLayout, 'Heights', [-1 25]);
+                'Editable', false);
+            [a, r] = obj.createAddRemoveButtons(obj.propertiesTab.layout, @(h,d)notify(obj, 'AddProperty'), @(h,d)notify(obj, 'RemoveProperty'));
+            obj.propertiesTab.addButton = a;
+            obj.propertiesTab.removeButton = r;
+            set(obj.propertiesTab.layout, 'Heights', [-1 25]);
 
             % Keywords tab.
-            keywordsTab = uitab( ...
-                'Parent', obj.tabGroup, ...
+            obj.keywordsTab.tab = obj.tabGroup.addTab( ...
                 'Title', 'Keywords');
-            keywordsLayout = uix.VBox( ...
-                'Parent', keywordsTab);
-            obj.keywordsTable = Table( ...
-                'Parent', keywordsLayout, ...
+            obj.keywordsTab.layout = uix.VBox( ...
+                'Parent', obj.keywordsTab.tab);
+            obj.keywordsTab.table = Table( ...
+                'Parent', obj.keywordsTab.layout, ...
                 'ColumnName', {'Keywords'}, ...
-                'Enable', 'off');
-            obj.createAddRemoveButtons(keywordsLayout, @(h,d)notify(obj, 'AddKeyword'), @(h,d)notify(obj, 'RemoveKeyword'));
-            set(keywordsLayout, 'Heights', [-1 25]);
+                'Editable', false);
+            [a, r] = obj.createAddRemoveButtons(obj.keywordsTab.layout, @(h,d)notify(obj, 'AddKeyword'), @(h,d)notify(obj, 'RemoveKeyword'));
+            obj.keywordsTab.addButton = a;
+            obj.keywordsTab.removeButton = r;
+            set(obj.keywordsTab.layout, 'Heights', [-1 25]);
 
             % Notes tab.
-            notesTab = uitab( ...
-                'Parent', obj.tabGroup, ...
+            obj.notesTab.tab = obj.tabGroup.addTab( ...
                 'Title', 'Notes');
-            notesLayout = uix.VBox( ...
-                'Parent', notesTab);
-            obj.notesTable = Table( ...
-                'Parent', notesLayout, ...
+            obj.notesTab.layout = uix.VBox( ...
+                'Parent', obj.notesTab.tab);
+            obj.notesTab.table = Table( ...
+                'Parent', obj.notesTab.layout, ...
                 'ColumnName', {'Time', 'Text'}, ...
                 'ColumnWidth', {80}, ...
-                'Enable', 'off');
-            [~, removeButton] = obj.createAddRemoveButtons(notesLayout, @(h,d)notify(obj, 'AddNote'), @(h,d)notify(obj, 'RemoveNote'));
-            set(removeButton, 'Enable', 'off');
-            set(notesLayout, 'Heights', [-1 25]);
+                'Editable', false);
+            [a, r] = obj.createAddRemoveButtons(obj.notesTab.layout, @(h,d)notify(obj, 'AddNote'), @(h,d)notify(obj, 'RemoveNote'));
+            obj.notesTab.addButton = a;
+            obj.notesTab.removeButton = r;
+            set(obj.notesTab.removeButton, 'Enable', 'off');
+            set(obj.notesTab.layout, 'Heights', [-1 25]);
 
             set(mainLayout, 'Widths', [-1 -2]);
         end
-
+        
         function enableBeginEpochGroup(obj, tf)
             set(obj.beginEpochGroupTool, 'Enable', symphonyui.ui.util.onOff(tf));
         end
@@ -302,15 +310,17 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.endEpochGroupTool, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
-        function setSelectedDataCard(obj, index)
+        function setDataCardSelection(obj, index)
             set(obj.dataCardPanel, 'Selection', index);
         end
         
-        function n = getDevicesRootNode(obj)
-            n = obj.devicesRootNode;
+        function n = getDevicesFolderNode(obj)
+            n = obj.devicesFolderNode;
         end
 
-        function n = addDeviceNode(obj, parent, name, value)
+        function n = addDeviceNode(obj, parent, name, entity) %#ok<INUSL>
+            value.entity = entity;
+            value.type = symphonyui.ui.views.EntityNodeType.DEVICE;
             n = uiextras.jTree.TreeNode( ...
                 'Parent', parent, ...
                 'Name', name, ...
@@ -326,11 +336,13 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.deviceCard.manufacturerField, 'String', m);
         end
         
-        function n = getSourcesRootNode(obj)
-            n = obj.sourcesRootNode;
+        function n = getSourcesFolderNode(obj)
+            n = obj.sourcesFolderNode;
         end
 
-        function n = addSourceNode(obj, parent, name, value)
+        function n = addSourceNode(obj, parent, name, entity) %#ok<INUSL>
+            value.entity = entity;
+            value.type = symphonyui.ui.views.EntityNodeType.SOURCE;
             n = uiextras.jTree.TreeNode( ...
                 'Parent', parent, ...
                 'Name', name, ...
@@ -342,14 +354,16 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.sourceCard.labelField, 'String', l);
         end
 
-        function setExperimentNode(obj, name, value)
-            set(obj.experimentTree.Root, ...
+        function setExperimentNode(obj, name, entity)
+            value = get(obj.entityTree.Root, 'Value');
+            value.entity = entity;
+            set(obj.entityTree.Root, ...
                 'Name', name, ...
                 'Value', value);
         end
         
         function n = getExperimentNode(obj)
-            n = obj.experimentTree.Root;
+            n = obj.entityTree.Root;
         end
 
         function setExperimentPurpose(obj, p)
@@ -364,11 +378,13 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.experimentCard.endTimeField, 'String', datestr(t, 14));
         end
         
-        function n = getEpochGroupsRootNode(obj)
-            n = obj.epochGroupsRootNode;
+        function n = getEpochGroupsFolderNode(obj)
+            n = obj.epochGroupsFolderNode;
         end
 
-        function n = addEpochGroupNode(obj, parent, name, value)
+        function n = addEpochGroupNode(obj, parent, name, entity) %#ok<INUSL>
+            value.entity = entity;
+            value.type = symphonyui.ui.views.EntityNodeType.EPOCH_GROUP;
             n = uiextras.jTree.TreeNode( ...
                 'Parent', parent, ...
                 'Name', name, ...
@@ -400,7 +416,9 @@ classdef DataManagerView < symphonyui.ui.View
             node.setIcon(symphonyui.app.App.getResource('icons/group.png'));
         end
 
-        function n = addEpochNode(obj, parent, name, value)
+        function n = addEpochNode(obj, parent, name, entity)
+            value.entity = entity;
+            value.type = symphonyui.ui.views.EntityNodeType.EPOCH;
             n = uiextras.jTree.TreeNode( ...
                 'Parent', parent, ...
                 'Name', name, ...
@@ -417,57 +435,77 @@ classdef DataManagerView < symphonyui.ui.View
         end
 
         function nodes = getSelectedNodes(obj)
-            nodes = obj.experimentTree.SelectedNodes;
+            nodes = obj.entityTree.SelectedNodes;
         end
 
         function setSelectedNodes(obj, nodes)
-            obj.experimentTree.SelectedNodes = nodes;
+            obj.entityTree.SelectedNodes = nodes;
+        end
+        
+        function enableProperties(obj, tf)
+            enable = symphonyui.ui.util.onOff(tf);
+            set(obj.propertiesTab.addButton, 'Enable', enable);
+            set(obj.propertiesTab.removeButton, 'Enable', enable);
         end
 
         function setProperties(obj, data)
-            set(obj.propertiesTable, 'Data', data);
+            set(obj.propertiesTab.table, 'Data', data);
+        end
+        
+        function d = getProperties(obj)
+            d = get(obj.propertiesTab.table, 'Data');
         end
 
         function addProperty(obj, key, value)
-            obj.propertiesTable.addRow({key, value});
+            obj.propertiesTab.table.addRow({key, value});
         end
 
         function removeProperty(obj, property)
-            properties = obj.propertiesTable.getColumnData(1);
+            properties = obj.propertiesTab.table.getColumnData(1);
             index = find(cellfun(@(c)strcmp(c, property), properties));
-            obj.propertiesTable.removeRow(index); %#ok<FNDSB>
+            obj.propertiesTab.table.removeRow(index); %#ok<FNDSB>
         end
 
         function p = getSelectedProperty(obj)
-            row = get(obj.propertiesTable, 'SelectedRow');
-            p = obj.propertiesTable.getValueAt(row, 1);
+            row = get(obj.propertiesTab.table, 'SelectedRow');
+            p = obj.propertiesTab.table.getValueAt(row, 1);
+        end
+        
+        function enableKeywords(obj, tf)
+            enable = symphonyui.ui.util.onOff(tf);
+            set(obj.keywordsTab.addButton, 'Enable', enable);
+            set(obj.keywordsTab.removeButton, 'Enable', enable);
         end
 
         function setKeywords(obj, data)
-            set(obj.keywordsTable, 'Data', data);
+            set(obj.keywordsTab.table, 'Data', data);
         end
 
         function addKeyword(obj, keyword)
-            obj.keywordsTable.addRow(keyword);
+            obj.keywordsTab.table.addRow(keyword);
         end
 
         function removeKeyword(obj, keyword)
-            keywords = obj.keywordsTable.getColumnData(1);
+            keywords = obj.keywordsTab.table.getColumnData(1);
             index = find(cellfun(@(c)strcmp(c, keyword), keywords));
-            obj.keywordsTable.removeRow(index); %#ok<FNDSB>
+            obj.keywordsTab.table.removeRow(index); %#ok<FNDSB>
         end
 
         function k = getSelectedKeyword(obj)
-            row = get(obj.keywordsTable, 'SelectedRow');
-            k = obj.keywordsTable.getValueAt(row, 1);
+            row = get(obj.keywordsTab.table, 'SelectedRow');
+            k = obj.keywordsTab.table.getValueAt(row, 1);
+        end
+        
+        function enableNotes(obj, tf)
+            set(obj.notesTab.addButton, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function setNotes(obj, data)
-            set(obj.notesTable, 'Data', data);
+            set(obj.notesTab.table, 'Data', data);
         end
 
         function addNote(obj, date, text)
-            obj.notesTable.addRow({date, text});
+            obj.notesTab.table.addRow({date, text});
         end
 
     end

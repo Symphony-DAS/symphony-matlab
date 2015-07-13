@@ -40,6 +40,12 @@ classdef MessageBoxView < symphonyui.ui.View
             set(controlsLayout, 'Widths', [-1 75 -1]);
             
             set(mainLayout, 'Heights', [-1 25]);
+            
+            % Set Ok button to appear as the default button.
+            try %#ok<TRYNC>
+                h = handle(obj.figureHandle);
+                h.setDefaultButton(obj.okButton);
+            end
         end
         
         function setTitle(obj, t)

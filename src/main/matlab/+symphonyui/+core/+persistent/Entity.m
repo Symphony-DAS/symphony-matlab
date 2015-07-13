@@ -35,6 +35,12 @@ classdef Entity < symphonyui.core.CoreObject
         end
         
         function addProperty(obj, key, value)
+            if isempty(key)
+                error('Key cannot be empty');
+            end
+            if isempty(value)
+                error('Value cannot be empty');
+            end
             obj.cobj.AddProperty(key, value);
             p.key = key;
             p.value = value;
@@ -52,9 +58,14 @@ classdef Entity < symphonyui.core.CoreObject
             k = obj.cellArrayFromEnumerable(obj.cobj.Keywords, @char);
         end
         
-        function addKeyword(obj, keyword)
-            obj.cobj.AddKeyword(keyword);
-            notify(obj, 'AddedKeyword', symphonyui.core.util.DomainEventData(keyword));
+        function tf = addKeyword(obj, keyword)
+            if isempty(keyword)
+                error('Keyword cannot be empty');
+            end
+            tf = obj.cobj.AddKeyword(keyword);
+            if tf
+                notify(obj, 'AddedKeyword', symphonyui.core.util.DomainEventData(keyword));
+            end
         end
         
         function tf = removeKeyword(obj, keyword)

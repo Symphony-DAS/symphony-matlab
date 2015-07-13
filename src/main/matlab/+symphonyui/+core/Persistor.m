@@ -8,9 +8,11 @@ classdef Persistor < symphonyui.core.CoreObject
         BeganEpochBlock
         EndedEpochBlock
         DeletedEntity
+        Closed
     end
 
     properties (SetAccess = private)
+        isClosed
         experiment
         currentEpochGroup
         currentEpochBlock
@@ -33,6 +35,11 @@ classdef Persistor < symphonyui.core.CoreObject
 
         function close(obj)
             obj.cobj.Close();
+            notify(obj, 'Closed');
+        end
+        
+        function tf = get.isClosed(obj)
+            tf = obj.cobj.IsClosed;
         end
 
         function e = get.experiment(obj)
@@ -40,12 +47,21 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function d = addDevice(obj, name, manufacturer)
+            if isempty(name)
+                error('Name cannot be empty');
+            end
+            if isempty(manufacturer)
+                error('Manufacturer cannot be empty');
+            end
             cdev = obj.cobj.AddDevice(name, manufacturer);
             d = obj.entityFactory.fromCoreEntity(cdev);
             notify(obj, 'AddedDevice', symphonyui.core.util.DomainEventData(d));
         end
 
         function s = addSource(obj, label, parent)
+            if isempty(label)
+                error('Label cannot be empty');
+            end
             if nargin < 3 || isempty(parent)
                 cparent = [];
             else
@@ -57,6 +73,9 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function g = beginEpochGroup(obj, label, source)
+            if isempty(label)
+                error('Label cannot be empty');
+            end
             cgrp = obj.cobj.BeginEpochGroup(label, source.cobj);
             g = obj.entityFactory.fromCoreEntity(cgrp);
             notify(obj, 'BeganEpochGroup', symphonyui.core.util.DomainEventData(g));
@@ -78,6 +97,9 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function b = beginEpochBlock(obj, protocolId, startTime)
+            if isempty(protocolId)
+                error('Protocol ID cannot be empty');
+            end
             if nargin < 3
                 startTime = datetime('now', 'TimeZone', 'local');
             end

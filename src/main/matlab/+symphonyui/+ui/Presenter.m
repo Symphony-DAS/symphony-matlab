@@ -15,7 +15,7 @@ classdef Presenter < handle
     end
     
     properties (Access = private)
-        eventManager
+        listeners
     end
     
     methods
@@ -26,7 +26,7 @@ classdef Presenter < handle
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.app = app;
             obj.view = view;
-            obj.eventManager = symphonyui.ui.util.EventManager();
+            obj.listeners = {};
         end
         
         function delete(obj)
@@ -41,6 +41,9 @@ classdef Presenter < handle
         end
         
         function stop(obj)
+            if obj.isStopped
+                return;
+            end
             obj.onStopping();
             obj.unbind();
             obj.view.close();
@@ -91,11 +94,15 @@ classdef Presenter < handle
         end
         
         function l = addListener(obj, varargin)
-            l = obj.eventManager.addListener(varargin{:});
+            l = addlistener(varargin{:});
+            obj.listeners{end + 1} = l;
         end
         
         function removeAllListeners(obj)
-            obj.eventManager.removeAllListeners();
+            while ~isempty(obj.listeners)
+                delete(obj.listeners{1});
+                obj.listeners(1) = [];
+            end
         end
         
         function onViewSelectedClose(obj, ~, ~)

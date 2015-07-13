@@ -7,112 +7,131 @@ classdef DocumentationService < handle
         AddedSource
         BeganEpochGroup
         EndedEpochGroup
+        BeganEpochBlock
+        EndedEpochBlock
     end
     
     properties (Access = private)
         sessionData
         persistorFactory
-        persistorEventManager
+        persistorListeners
     end
 
     methods
-
+        
         function obj = DocumentationService(sessionData, persistorFactory)
             obj.sessionData = sessionData;
             obj.persistorFactory = persistorFactory;
-            obj.persistorEventManager = symphonyui.ui.util.EventManager();
+            
+            persistor = obj.sessionData.persistor;
+            if ~isempty(persistor)
+                obj.bindPersistor(persistor);
+            end
+            
+            addlistener(obj.sessionData, 'persistor', 'PostSet', @obj.onSessionSetPersistor);
         end
-
-        function delete(obj)
+        
+        function close(obj)
             if obj.hasOpenFile()
                 obj.closeFile();
             end
         end
-
+        
+        function tf = hasOpenFile(obj)
+            tf = obj.hasCurrentPersistor();
+        end
+        
         function createFile(obj, name, location)
             if obj.hasOpenFile()
-                error('A file is already open');
+                error('File already open');
             end
-            persistor = obj.persistorFactory.create(name, location);
-            obj.setPersistor(persistor);
-            notify(obj, 'OpenedFile');
+            obj.sessionData.persistor = obj.persistorFactory.create(name, location);
         end
-
+        
         function openFile(obj, path)
             if obj.hasOpenFile()
-                error('A file is already open');
+                error('File already open');
             end
-            persistor = obj.persistorFactory.load(path);
-            obj.setPersistor(persistor);
-            notify(obj, 'OpenedFile');
+            obj.sessionData.persistor = obj.persistorFactory.load(path);
         end
         
         function closeFile(obj)
-            obj.getPersistor().close();
-            obj.unsetPersistor();
-            notify(obj, 'ClosedFile');
+            obj.getCurrentPersistor().close();
+            obj.sessionData.persistor = [];
         end
         
-        function tf = hasOpenFile(obj)
-            tf = obj.hasPersistor();
+        function tf = hasCurrentPersistor(obj)
+            p = obj.sessionData.persistor;
+            tf = ~isempty(p) && ~p.isClosed;
         end
         
-        function e = getExperiment(obj)
-            e = obj.getPersistor().experiment;
+        function p = getCurrentPersistor(obj)
+            if ~obj.hasCurrentPersistor()
+                error('No current persistor');
+            end
+            p = obj.sessionData.persistor;
+        end
+        
+        function e = getCurrentExperiment(obj)
+            e = obj.getCurrentPersistor().experiment;
         end
         
         function d = addDevice(obj, name, manufacturer)
-            d = obj.getPersistor().addDevice(name, manufacturer);
+            d = obj.getCurrentPersistor().addDevice(name, manufacturer);
         end
         
         function s = addSource(obj, label, parent)
-            s = obj.getPersistor().addSource(label, parent);
+            s = obj.getCurrentPersistor().addSource(label, parent);
         end
         
         function g = beginEpochGroup(obj, label, source)
-            g = obj.getPersistor().beginEpochGroup(label, source);
+            g = obj.getCurrentPersistor().beginEpochGroup(label, source);
         end
         
         function g = endEpochGroup(obj)
-            g = obj.getPersistor().endEpochGroup();
+            g = obj.getCurrentPersistor().endEpochGroup();
         end
         
         function g = getCurrentEpochGroup(obj)
-            g = obj.getPersistor().currentEpochGroup;
+            g = obj.getCurrentPersistor().currentEpochGroup;
         end
         
     end
     
     methods (Access = private)
         
-        function p = getPersistor(obj)
-            if ~obj.hasPersistor()
-                error('No persistor');
+        function onSessionSetPersistor(obj, ~, ~)
+            obj.unbindPersistor();
+            
+            persistor = obj.sessionData.persistor;
+            if isempty(persistor)
+                return;
             end
-            p = obj.sessionData.persistor;
+            
+            obj.bindPersistor(persistor);
+            notify(obj, 'OpenedFile');
         end
         
-        function setPersistor(obj, persistor)
-            m = obj.persistorEventManager;
-            try
-                m.addListener(persistor, 'AddedDevice', @(s,d)notify(obj, 'AddedDevice', symphonyui.core.util.DomainEventData(d.data)));
-                m.addListener(persistor, 'AddedSource', @(s,d)notify(obj, 'AddedSource', symphonyui.core.util.DomainEventData(d.data)));
-                m.addListener(persistor, 'BeganEpochGroup', @(s,d)notify(obj, 'BeganEpochGroup', symphonyui.core.util.DomainEventData(d.data)));
-                m.addListener(persistor, 'EndedEpochGroup', @(s,d)notify(obj, 'EndedEpochGroup', symphonyui.core.util.DomainEventData(d.data)));
-            catch x
-                m.removeAllListeners();
-                rethrow(x);
+        function onPersistorClosed(obj, ~, ~)
+            obj.unbindPersistor();
+            notify(obj, 'ClosedFile');
+        end
+        
+        function bindPersistor(obj, persistor)
+            l = {};
+            l{end + 1} = addlistener(persistor, 'AddedDevice', @(s,d)notify(obj, 'AddedDevice', symphonyui.core.util.DomainEventData(d.data)));
+            l{end + 1} = addlistener(persistor, 'AddedSource', @(s,d)notify(obj, 'AddedSource', symphonyui.core.util.DomainEventData(d.data)));
+            l{end + 1} = addlistener(persistor, 'BeganEpochGroup', @(s,d)notify(obj, 'BeganEpochGroup', symphonyui.core.util.DomainEventData(d.data)));
+            l{end + 1} = addlistener(persistor, 'EndedEpochGroup', @(s,d)notify(obj, 'EndedEpochGroup', symphonyui.core.util.DomainEventData(d.data)));
+            l{end + 1} = addlistener(persistor, 'Closed', @obj.onPersistorClosed);
+            obj.persistorListeners = l;
+        end
+        
+        function unbindPersistor(obj)
+            while ~isempty(obj.persistorListeners)
+                delete(obj.persistorListeners{1});
+                obj.persistorListeners(1) = [];
             end
-            obj.sessionData.persistor = persistor;
-        end
-        
-        function unsetPersistor(obj)
-            obj.persistorEventManager.removeAllListeners();
-            obj.sessionData.persistor = [];
-        end
-        
-        function tf = hasPersistor(obj)
-            tf = ~isempty(obj.sessionData.persistor);
         end
         
     end
