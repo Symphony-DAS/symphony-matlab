@@ -371,11 +371,11 @@ classdef DataManagerView < symphonyui.ui.View
         end
         
         function setExperimentStartTime(obj, t)
-            set(obj.experimentCard.startTimeField, 'String', datestr(t, 14));
+            set(obj.experimentCard.startTimeField, 'String', t);
         end
         
         function setExperimentEndTime(obj, t)
-            set(obj.experimentCard.endTimeField, 'String', datestr(t, 14));
+            set(obj.experimentCard.endTimeField, 'String', t);
         end
         
         function n = getEpochGroupsFolderNode(obj)
@@ -397,11 +397,11 @@ classdef DataManagerView < symphonyui.ui.View
         end
 
         function setEpochGroupStartTime(obj, t)
-            set(obj.epochGroupCard.startTimeField, 'String', datestr(t, 14));
+            set(obj.epochGroupCard.startTimeField, 'String', t);
         end
 
         function setEpochGroupEndTime(obj, t)
-            set(obj.epochGroupCard.endTimeField, 'String', datestr(t, 14));
+            set(obj.epochGroupCard.endTimeField, 'String', t);
         end
 
         function setEpochGroupSource(obj, s)

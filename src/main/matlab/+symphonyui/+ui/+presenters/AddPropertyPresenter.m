@@ -1,17 +1,17 @@
 classdef AddPropertyPresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
-        entity
+        entities
     end
 
     methods
 
-        function obj = AddPropertyPresenter(entity, app, view)
+        function obj = AddPropertyPresenter(entities, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.AddPropertyView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.entity = entity;
+            obj.entities = entities;
         end
 
     end
@@ -47,7 +47,9 @@ classdef AddPropertyPresenter < symphonyui.ui.Presenter
             key = obj.view.getKey();
             value = obj.view.getValue();
             try
-                obj.entity.addProperty(key, value);
+                for i = 1:numel(obj.entities)
+                    obj.entities{i}.addProperty(key, value);
+                end
             catch x
                 obj.view.showError(x.message);
                 return;

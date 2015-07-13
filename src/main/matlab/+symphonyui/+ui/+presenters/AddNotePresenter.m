@@ -1,17 +1,17 @@
 classdef AddNotePresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
-        entity
+        entities
     end
 
     methods
 
-        function obj = AddNotePresenter(entity, app, view)
+        function obj = AddNotePresenter(entities, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.AddNoteView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.entity = entity;
+            obj.entities = entities;
         end
 
     end
@@ -44,9 +44,12 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
         function onViewSelectedAdd(obj, ~, ~)
             obj.view.update();
             
-            note = obj.view.getText();
+            text = obj.view.getText();
+            time = datetime('now', 'TimeZone', 'local');
             try
-                obj.entity.addNote(note);
+                for i = 1:numel(obj.entities)
+                    obj.entities{i}.addNote(text, time);
+                end
             catch x
                 obj.view.showError(x.message);
                 return;

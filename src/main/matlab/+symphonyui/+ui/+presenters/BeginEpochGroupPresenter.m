@@ -49,7 +49,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         end
         
         function populateSourceList(obj)
-            sources = obj.documentationService.getExperiment().allSources();
+            sources = obj.documentationService.getCurrentExperiment().allSources();
             
             names = cell(1, numel(sources));
             for i = 1:numel(sources)

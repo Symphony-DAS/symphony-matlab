@@ -1,17 +1,17 @@
 classdef AddKeywordPresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
-        entity
+        entities
     end
 
     methods
 
-        function obj = AddKeywordPresenter(entity, app, view)
+        function obj = AddKeywordPresenter(entities, app, view)
             if nargin < 3
                 view = symphonyui.ui.views.AddKeywordView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
-            obj.entity = entity;
+            obj.entities = entities;
         end
 
     end
@@ -59,7 +59,9 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
             
             keyword = obj.view.getText();
             try
-                obj.entity.addKeyword(keyword);
+                for i = 1:numel(obj.entities)
+                    obj.entities{i}.addKeyword(keyword);
+                end
             catch x
                 obj.view.showError(x.message);
                 return;

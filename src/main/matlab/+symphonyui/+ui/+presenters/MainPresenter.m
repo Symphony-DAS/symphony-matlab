@@ -122,7 +122,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddNoteToExperiment(obj, ~, ~)
-            experiment = obj.documentationService.getExperiment();
+            experiment = obj.documentationService.getCurrentExperiment();
             presenter = symphonyui.ui.presenters.AddNotePresenter(experiment, obj.app);
             presenter.goWaitStop();
         end
