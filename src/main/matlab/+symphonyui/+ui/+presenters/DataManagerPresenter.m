@@ -28,7 +28,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onGo(obj)
-            obj.selectExperiments(obj.documentationService.getCurrentExperiment());
+            obj.selectExperiments({obj.documentationService.getCurrentExperiment()});
         end
         
         function onStopping(obj)
@@ -102,7 +102,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setDeviceManufacturer(mergeFields({deviceArray.manufacturer}));
             obj.view.setDataCardSelection(obj.view.DEVICE_DATA_CARD);
             
-            obj.selectEntities(devices);
+            obj.commonSelect(devices);
         end
         
         function onViewSelectedAddSource(obj, ~, ~)
@@ -139,7 +139,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setSourceLabel(mergeFields({sourceArray.label}));
             obj.view.setDataCardSelection(obj.view.SOURCE_DATA_CARD);
             
-            obj.selectEntities(sources);
+            obj.commonSelect(sources);
         end
         
         function selectExperiments(obj, experiments)
@@ -150,7 +150,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setExperimentEndTime(mergeTimes([experimentArray.endTime]));
             obj.view.setDataCardSelection(obj.view.EXPERIMENT_DATA_CARD);
             
-            obj.selectEntities(experiments);
+            obj.commonSelect(experiments);
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -204,11 +204,17 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setEpochGroupSource(mergeFields({sourceArray.label}));
             obj.view.setDataCardSelection(obj.view.EPOCH_GROUP_DATA_CARD);
             
-            obj.selectEntities(groups);
+            obj.commonSelect(groups);
         end
         
         function addEpoch(obj, epoch)
             
+        end
+        
+        function selectEntities(obj, entities)
+            obj.view.setDataCardSelection(obj.view.EMPTY_DATA_CARD);
+            
+            obj.commonSelect(entities);
         end
         
         function onViewSelectedNodes(obj, ~, ~)
@@ -222,41 +228,45 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             entities = {values(:).entity};
             type = unique([values(:).type]);
             
-            if numel(type) > 1
+            if any(type == EntityNodeType.NON_ENTITY)
                 obj.selectNodes(nodes);
                 return;
             end
             
-            switch type
-                case EntityNodeType.DEVICE
-                    obj.selectDevices(entities);
-                case EntityNodeType.SOURCE
-                    obj.selectSources(entities);
-                case EntityNodeType.EXPERIMENT
-                    obj.selectExperiments(entities);
-                case EntityNodeType.EPOCH_GROUP
-                    obj.selectEpochGroups(entities);
-                case EntityNodeType.EPOCH_BLOCK
-                    obj.selectEpochBlocks(entities);
-                case EntityNodeType.EPOCH
-                    obj.selectEpochs(entities);
-                otherwise
-                    obj.selectNodes(nodes);
-                    return;
+            if numel(type) > 1
+                obj.selectEntities(entities);
+            else
+                switch type
+                    case EntityNodeType.DEVICE
+                        obj.selectDevices(entities);
+                    case EntityNodeType.SOURCE
+                        obj.selectSources(entities);
+                    case EntityNodeType.EXPERIMENT
+                        obj.selectExperiments(entities);
+                    case EntityNodeType.EPOCH_GROUP
+                        obj.selectEpochGroups(entities);
+                    case EntityNodeType.EPOCH_BLOCK
+                        obj.selectEpochBlocks(entities);
+                    case EntityNodeType.EPOCH
+                        obj.selectEpochs(entities);
+                    otherwise
+                        obj.selectEntities(entities);
+                        return;
+                end
             end
             
             obj.bindEntities(entities);
         end
         
-        function selectEntities(obj, entities)
+        function commonSelect(obj, entities)
+            obj.populateAttributes(entities);
+            obj.enableAttributes(true);
+            
             nodes = uiextras.jTree.TreeNode.empty(0, numel(entities));
             for i = 1:numel(entities)
                 nodes(i) = obj.uuidToNode(entities{i}.uuid);
             end
-            
             obj.view.setSelectedNodes(nodes);
-            obj.populateAttributes(entities);
-            obj.enableAttributes(true);
         end
         
         function bindEntities(obj, entities)
@@ -407,12 +417,12 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function selectNodes(obj, nodes)
-            obj.view.setSelectedNodes(nodes);
             obj.view.setDataCardSelection(obj.view.EMPTY_DATA_CARD);
             obj.view.setProperties({});
             obj.view.setKeywords({});
             obj.view.setNotes({});
             obj.enableAttributes(false);
+            obj.view.setSelectedNodes(nodes);
         end
         
         function updateViewState(obj)
@@ -431,7 +441,7 @@ end
 function f = mergeTimes(times)
     fields = cell(1, numel(times));
     for i = 1:numel(times)
-        fields{i} = datestr(times(i), 14);
+        fields{i} = strtrim(datestr(times(i), 14));
     end
     f = mergeFields(fields);
 end

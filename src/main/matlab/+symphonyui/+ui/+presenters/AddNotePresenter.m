@@ -10,6 +10,9 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
             if nargin < 3
                 view = symphonyui.ui.views.AddNoteView();
             end
+            if ~iscell(entities)
+                entities = {entities};
+            end
             obj = obj@symphonyui.ui.Presenter(app, view);
             obj.entities = entities;
         end

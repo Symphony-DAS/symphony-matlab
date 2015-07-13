@@ -7,7 +7,7 @@ classdef EntityNodeType
         EPOCH_GROUP
         EPOCH_BLOCK
         EPOCH
-        FOLDER
+        NON_ENTITY
     end
     
 end
