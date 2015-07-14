@@ -122,9 +122,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             node = obj.view.addSourceNode(parent, source.label, source);
             obj.uuidToNode(source.uuid) = node;
             
-            sources = source.sources;
-            for i = 1:numel(sources)
-                obj.addSource(sources{i});
+            children = source.sources;
+            for i = 1:numel(children)
+                obj.addSource(children{i});
             end
         end
         
@@ -164,9 +164,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             node = obj.view.addEpochGroupNode(parent, [group.label ' (' group.source.label ')'], group);
             obj.uuidToNode(group.uuid) = node;
             
-            groups = group.epochGroups;
-            for i = 1:numel(groups)
-                obj.addEpochGroup(groups{i});
+            children = group.epochGroups;
+            for i = 1:numel(children)
+                obj.addEpochGroup(children{i});
             end
         end
         
@@ -199,19 +199,24 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             end
         end
         
-        function enableAttributes(obj, tf)
+        function enableAllAttributes(obj, tf)
             obj.view.enableProperties(tf);
             obj.view.enableKeywords(tf);
             obj.view.enableNotes(tf);
         end
         
-        function populateAttributes(obj, entities)
+        function populateAllAttributes(obj, entities)
             obj.populateProperties(entities);
             obj.populateKeywords(entities);
             obj.populateNotes(entities);
         end
         
         function populateProperties(obj, entities)
+            if isempty(entities)
+                obj.view.setProperties({});
+                return;
+            end
+            
             keys = entities{1}.propertiesMap.keys;
             for i = 2:numel(entities)
                 keys = intersect(keys, entities{i}.propertiesMap.keys);
@@ -263,6 +268,11 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateKeywords(obj, entities)
+            if isempty(entities)
+                obj.view.setKeywords({});
+                return;
+            end
+            
             keywords = entities{1}.keywords;
             for i = 2:numel(entities)
                 keywords = intersect(keywords, entities{i}.keywords);
@@ -297,6 +307,11 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateNotes(obj, entities)
+            if isempty(entities)
+                obj.view.setNotes({});
+                return;
+            end
+            
             notes = entities{1}.notes;
             if numel(entities) > 1
                 % TODO: merge notes
@@ -453,8 +468,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function commonSelect(obj, entities)
-            obj.populateAttributes(entities);
-            obj.enableAttributes(true);
+            obj.populateAllAttributes(entities);
+            obj.enableAllAttributes(true);
             
             nodes = uiextras.jTree.TreeNode.empty(0, numel(entities));
             for i = 1:numel(entities)
@@ -467,10 +482,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         
         function selectNodes(obj, nodes)
             obj.view.setDataCardSelection(obj.view.EMPTY_DATA_CARD);
-            obj.view.setProperties({});
-            obj.view.setKeywords({});
-            obj.view.setNotes({});
-            obj.enableAttributes(false);
+            obj.populateAllAttributes({});
+            obj.enableAllAttributes(false);
             obj.view.setSelectedNodes(nodes);
         end
         
