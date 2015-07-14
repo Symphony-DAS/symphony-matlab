@@ -302,13 +302,19 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateProperties(obj, entities)
-            % TODO: merge properties
-            entities = entities{1};
+            keys = entities{1}.propertiesMap.keys;
+            for i = 2:numel(entities)
+                keys = intersect(keys, entities{i}.propertiesMap.keys);
+            end
             
-            keys = entities.propertiesMap.keys;
             values = cell(1, numel(keys));
             for i = 1:numel(keys)
-                values{i} = {keys{i}, entities.propertiesMap(keys{i})};
+                k = keys{i};
+                v = cell(1, numel(entities));
+                for j = 1:numel(entities)
+                    v{j} = entities{j}.propertiesMap(k);
+                end
+                values{i} = {k, mergeFields(v)};
             end
             obj.view.setProperties(values);
         end
@@ -353,10 +359,12 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateKeywords(obj, entities)
-            % TODO: merge keywords
-            entities = entities{1};
+            keywords = entities{1}.keywords;
+            for i = 2:numel(entities)
+                keywords = intersect(keywords, entities{i}.keywords);
+            end
             
-            obj.view.setKeywords(entities.keywords);
+            obj.view.setKeywords(keywords);
         end
         
         function onViewSelectedAddKeyword(obj, ~, ~)
@@ -391,10 +399,12 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateNotes(obj, entities)
-            % TODO: merge notes
-            entities = entities{1};
+            notes = entities{1}.notes;
+            if numel(entities) > 1
+                % TODO: merge notes
+                notes = {};
+            end
             
-            notes = entities.notes;
             values = cell(1, numel(notes));
             for i = 1:numel(notes)
                 values{i} = {datestr(notes{i}.time, 14), notes{i}.text};
