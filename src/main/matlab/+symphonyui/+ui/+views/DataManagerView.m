@@ -11,12 +11,14 @@ classdef DataManagerView < symphonyui.ui.View
         RemoveKeyword
         AddNote
         RemoveNote
+        SendToWorkspace
+        DeleteEntity
     end
 
     properties (Access = private)
-        addSourceTool
-        beginEpochGroupTool
-        endEpochGroupTool
+        addSourceButtons
+        beginEpochGroupButtons
+        endEpochGroupButtons
         entityTree
         devicesFolderNode
         sourcesFolderNode
@@ -61,22 +63,22 @@ classdef DataManagerView < symphonyui.ui.View
             % Toolbar.
             toolbar = uitoolbar( ...
                 'Parent', obj.figureHandle);
-            obj.addSourceTool = uipushtool( ...
+            obj.addSourceButtons.tool = uipushtool( ...
                 'Parent', toolbar, ...
                 'TooltipString', 'Add Source...', ...
                 'ClickedCallback', @(h,d)notify(obj, 'AddSource'));
-            setIconImage(obj.addSourceTool, symphonyui.app.App.getResource('icons/source_add.png'));
-            obj.beginEpochGroupTool = uipushtool( ...
+            setIconImage(obj.addSourceButtons.tool, symphonyui.app.App.getResource('icons/source_add.png'));
+            obj.beginEpochGroupButtons.tool = uipushtool( ...
                 'Parent', toolbar, ...
                 'TooltipString', 'Begin Epoch Group...', ...
                 'Separator', 'on', ...
                 'ClickedCallback', @(h,d)notify(obj, 'BeginEpochGroup'));
-            setIconImage(obj.beginEpochGroupTool, symphonyui.app.App.getResource('icons/group_begin.png'));
-            obj.endEpochGroupTool = uipushtool( ...
+            setIconImage(obj.beginEpochGroupButtons.tool, symphonyui.app.App.getResource('icons/group_begin.png'));
+            obj.endEpochGroupButtons.tool = uipushtool( ...
                 'Parent', toolbar, ...
                 'TooltipString', 'End Epoch Group', ...
                 'ClickedCallback', @(h,d)notify(obj, 'EndEpochGroup'));
-            setIconImage(obj.endEpochGroupTool, symphonyui.app.App.getResource('icons/group_end.png'));
+            setIconImage(obj.endEpochGroupButtons.tool, symphonyui.app.App.getResource('icons/group_end.png'));
 
             mainLayout = uix.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
@@ -93,6 +95,23 @@ classdef DataManagerView < symphonyui.ui.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'SelectionChangeFcn', @(h,d)notify(obj, 'SelectedNodes'), ...
                 'SelectionType', 'discontiguous');
+            
+            treeMenu = uicontextmenu('Parent', obj.figureHandle);
+            obj.addSourceButtons.menu = uimenu( ...
+                'Parent', treeMenu, ...
+                'Label', 'Add Source...', ...
+                'Callback', @(h,d)notify(obj, 'AddSource'));
+            obj.beginEpochGroupButtons.menu = uimenu( ...
+                'Parent', treeMenu, ...
+                'Label', 'Begin Epoch Group...', ...
+                'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
+            obj.endEpochGroupButtons.menu = uimenu( ...
+                'Parent', treeMenu, ...
+                'Label', 'End Epoch Group', ...
+                'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
+            set(obj.entityTree, 'UIContextMenu', treeMenu);
+            
             root = obj.entityTree.Root;
             set(root, 'Value', struct('entity', [], 'type', EntityNodeType.EXPERIMENT));
             root.setIcon(symphonyui.app.App.getResource('icons/experiment.png'));
@@ -324,11 +343,15 @@ classdef DataManagerView < symphonyui.ui.View
         end
         
         function enableBeginEpochGroup(obj, tf)
-            set(obj.beginEpochGroupTool, 'Enable', symphonyui.ui.util.onOff(tf));
+            enable = symphonyui.ui.util.onOff(tf);
+            set(obj.beginEpochGroupButtons.tool, 'Enable', enable);
+            set(obj.beginEpochGroupButtons.menu, 'Enable', enable);
         end
 
         function enableEndEpochGroup(obj, tf)
-            set(obj.endEpochGroupTool, 'Enable', symphonyui.ui.util.onOff(tf));
+            enable = symphonyui.ui.util.onOff(tf);
+            set(obj.endEpochGroupButtons.tool, 'Enable', enable);
+            set(obj.endEpochGroupButtons.menu, 'Enable', enable);
         end
 
         function setDataCardSelection(obj, index)
@@ -339,7 +362,7 @@ classdef DataManagerView < symphonyui.ui.View
             n = obj.devicesFolderNode;
         end
 
-        function n = addDeviceNode(obj, parent, name, entity) %#ok<INUSL>
+        function n = addDeviceNode(obj, parent, name, entity)
             value.entity = entity;
             value.type = symphonyui.ui.views.EntityNodeType.DEVICE;
             n = uiextras.jTree.TreeNode( ...
@@ -347,6 +370,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Name', name, ...
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/device.png'));
+            set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
 
         function setDeviceName(obj, n)
@@ -361,7 +385,7 @@ classdef DataManagerView < symphonyui.ui.View
             n = obj.sourcesFolderNode;
         end
 
-        function n = addSourceNode(obj, parent, name, entity) %#ok<INUSL>
+        function n = addSourceNode(obj, parent, name, entity)
             value.entity = entity;
             value.type = symphonyui.ui.views.EntityNodeType.SOURCE;
             n = uiextras.jTree.TreeNode( ...
@@ -369,6 +393,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Name', name, ...
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/source.png'));
+            set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
 
         function setSourceLabel(obj, l)
@@ -403,7 +428,7 @@ classdef DataManagerView < symphonyui.ui.View
             n = obj.epochGroupsFolderNode;
         end
 
-        function n = addEpochGroupNode(obj, parent, name, entity) %#ok<INUSL>
+        function n = addEpochGroupNode(obj, parent, name, entity)
             value.entity = entity;
             value.type = symphonyui.ui.views.EntityNodeType.EPOCH_GROUP;
             n = uiextras.jTree.TreeNode( ...
@@ -411,6 +436,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Name', name, ...
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/group.png'));
+            set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
 
         function setEpochGroupLabel(obj, l)
@@ -445,6 +471,12 @@ classdef DataManagerView < symphonyui.ui.View
                 'Name', name, ...
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/epoch.png'));
+            set(n, 'UIContextMenu', obj.createEntityContextMenu());
+        end
+        
+        function removeNode(obj, node)
+            %obj.entityTree.removeNode(node);
+            node.delete();
         end
 
         function collapseNode(obj, node)
@@ -551,6 +583,18 @@ classdef DataManagerView < symphonyui.ui.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
                 'Callback', removeCallback);
             set(layout, 'Widths', [-1 25 25]);
+        end
+        
+        function menu = createEntityContextMenu(obj)
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', menu, ...
+                'Label', 'Send to Workspace', ...
+                'Callback', @(h,d)notify(obj, 'SendToWorkspace'));
+            uimenu( ...
+                'Parent', menu, ...
+                'Label', 'Delete', ...
+                'Callback', @(h,d)notify(obj, 'DeleteEntity'));
         end
 
     end

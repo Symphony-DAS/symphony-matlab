@@ -9,6 +9,7 @@ classdef DocumentationService < handle
         EndedEpochGroup
         BeganEpochBlock
         EndedEpochBlock
+        DeletedEntity
     end
     
     properties (Access = private)
@@ -96,6 +97,10 @@ classdef DocumentationService < handle
             g = obj.getCurrentPersistor().currentEpochGroup;
         end
         
+        function deleteEntity(obj, entity)
+            obj.getCurrentPersistor().deleteEntity(entity);
+        end
+        
     end
     
     methods (Access = private)
@@ -123,6 +128,7 @@ classdef DocumentationService < handle
             l{end + 1} = addlistener(persistor, 'AddedSource', @(s,d)notify(obj, 'AddedSource', symphonyui.core.util.DomainEventData(d.data)));
             l{end + 1} = addlistener(persistor, 'BeganEpochGroup', @(s,d)notify(obj, 'BeganEpochGroup', symphonyui.core.util.DomainEventData(d.data)));
             l{end + 1} = addlistener(persistor, 'EndedEpochGroup', @(s,d)notify(obj, 'EndedEpochGroup', symphonyui.core.util.DomainEventData(d.data)));
+            l{end + 1} = addlistener(persistor, 'DeletedEntity', @(s,d)notify(obj, 'DeletedEntity', symphonyui.core.util.DomainEventData(d.data)));
             l{end + 1} = addlistener(persistor, 'Closed', @obj.onPersistorClosed);
             obj.persistorListeners = l;
         end

@@ -35,20 +35,14 @@ classdef Entity < symphonyui.core.CoreObject
         end
         
         function addProperty(obj, key, value)
-            if isempty(key)
-                error('Key cannot be empty');
-            end
-            if isempty(value)
-                error('Value cannot be empty');
-            end
-            obj.cobj.AddProperty(key, value);
+            obj.tryCore(@()obj.cobj.AddProperty(key, value));
             p.key = key;
             p.value = value;
             notify(obj, 'AddedProperty', symphonyui.core.util.DomainEventData(p));
         end
         
         function tf = removeProperty(obj, key)
-            tf = obj.cobj.RemoveProperty(key);
+            tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(key));
             if tf
                 notify(obj, 'RemovedProperty', symphonyui.core.util.DomainEventData(key));
             end
@@ -59,17 +53,14 @@ classdef Entity < symphonyui.core.CoreObject
         end
         
         function tf = addKeyword(obj, keyword)
-            if isempty(keyword)
-                error('Keyword cannot be empty');
-            end
-            tf = obj.cobj.AddKeyword(keyword);
+            tf = obj.tryCoreWithReturn(@()obj.cobj.AddKeyword(keyword));
             if tf
                 notify(obj, 'AddedKeyword', symphonyui.core.util.DomainEventData(keyword));
             end
         end
         
         function tf = removeKeyword(obj, keyword)
-            tf = obj.cobj.RemoveKeyword(keyword);
+            tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveKeyword(keyword));
             if tf
                 notify(obj, 'RemovedKeyword', symphonyui.core.util.DomainEventData(keyword));
             end
@@ -84,7 +75,7 @@ classdef Entity < symphonyui.core.CoreObject
                 time = datetime('now', 'TimeZone', 'local');
             end
             dto = obj.dateTimeOffsetFromDatetime(time);
-            cnote = obj.cobj.AddNote(dto, text);
+            cnote = obj.tryCoreWithReturn(@()obj.cobj.AddNote(dto, text));
             notify(obj, 'AddedNote', symphonyui.core.util.DomainEventData(symphonyui.core.persistent.Note(cnote)));
         end
         

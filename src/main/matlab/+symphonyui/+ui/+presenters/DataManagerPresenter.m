@@ -46,12 +46,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'AddKeyword', @obj.onViewSelectedAddKeyword);
             obj.addListener(v, 'RemoveKeyword', @obj.onViewSelectedRemoveKeyword);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
+            obj.addListener(v, 'SendToWorkspace', @obj.onViewSelectedSendToWorkspace);
+            obj.addListener(v, 'DeleteEntity', @obj.onViewSelectedDeleteEntity);
             
             d = obj.documentationService;
             obj.addListener(d, 'AddedDevice', @obj.onServiceAddedDevice);
             obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
+            obj.addListener(d, 'DeletedEntity', @obj.onServiceDeletedEntity);
         end
 
     end
@@ -215,7 +218,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         
         function selectEntities(obj, entities)
             obj.view.setDataCardSelection(obj.view.EMPTY_DATA_CARD);
-            
             obj.commonSelect(entities);
         end
         
@@ -224,21 +226,17 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.unbindEntities();
             
-            nodes = obj.view.getSelectedNodes();
+            [entities, types] = obj.getSelectedEntities();
             
-            values = [nodes(:).Value];
-            entities = {values(:).entity};
-            type = unique([values(:).type]);
-            
-            if any(type == EntityNodeType.NON_ENTITY)
-                obj.selectNodes(nodes);
+            if any(types == EntityNodeType.NON_ENTITY)
+                obj.selectNodes(obj.view.getSelectedNodes());
                 return;
             end
             
-            if numel(type) > 1
+            if numel(types) > 1
                 obj.selectEntities(entities);
             else
-                switch type
+                switch types
                     case EntityNodeType.DEVICE
                         obj.selectDevices(entities);
                     case EntityNodeType.SOURCE
@@ -322,10 +320,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddProperty(obj, ~, ~)
-            nodes = obj.view.getSelectedNodes();
-            values = [nodes(:).Value];
-            entities = {values(:).entity};
-            
+            entities = obj.getSelectedEntities();
             presenter = symphonyui.ui.presenters.AddPropertyPresenter(entities, obj.app);
             presenter.goWaitStop();
         end
@@ -347,10 +342,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             if isempty(key)
                 return;
             end
-            nodes = obj.view.getSelectedNodes();
-            values = [nodes(:).Value];
-            entities = {values(:).entity};
-            
+            entities = obj.getSelectedEntities();
             for i = 1:numel(entities)
                 entities{i}.removeProperty(key);
             end
@@ -370,10 +362,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddKeyword(obj, ~, ~)
-            nodes = obj.view.getSelectedNodes();
-            values = [nodes(:).Value];
-            entities = {values(:).entity};
-            
+            entities = obj.getSelectedEntities();
             presenter = symphonyui.ui.presenters.AddKeywordPresenter(entities, obj.app);
             presenter.goWaitStop();
         end
@@ -387,10 +376,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             if isempty(keyword)
                 return;
             end
-            nodes = obj.view.getSelectedNodes();
-            values = [nodes(:).Value];
-            entities = {values(:).entity};
-            
+            entities = obj.getSelectedEntities();
             for i = 1:numel(entities)
                 entities{i}.removeKeyword(keyword);
             end
@@ -415,10 +401,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddNote(obj, ~, ~)
-            nodes = obj.view.getSelectedNodes();
-            values = [nodes(:).Value];
-            entities = {values(:).entity};
-            
+            entities = obj.getSelectedEntities();
             presenter = symphonyui.ui.presenters.AddNotePresenter(entities, obj.app);
             presenter.goWaitStop();
         end
@@ -437,9 +420,45 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedNodes(nodes);
         end
         
+        function onViewSelectedSendToWorkspace(obj, ~, ~)
+            entities = obj.getSelectedEntities();
+            if numel(entities) > 1
+                obj.view.showError('Only one entity may be sent to the workspace at a time');
+                return;
+            end
+            assignin('base', 'entity', entities{1});
+            evalin('base', 'disp([''entity = '' class(entity)])');
+        end
+        
+        function onViewSelectedDeleteEntity(obj, ~, ~)
+            entities = obj.getSelectedEntities();
+            try
+                for i = 1:numel(entities)
+                    obj.documentationService.deleteEntity(entities{i});
+                end
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
+        end
+        
+        function onServiceDeletedEntity(obj, ~, event)
+            uuid = event.data;
+            node = obj.uuidToNode(uuid);
+            obj.view.removeNode(node);
+            obj.uuidToNode.remove(uuid);
+        end
+        
         function updateViewState(obj)
             obj.view.enableBeginEpochGroup(~isempty(obj.documentationService.getCurrentExperiment().sources));
             obj.view.enableEndEpochGroup(~isempty(obj.documentationService.getCurrentEpochGroup()));
+        end
+        
+        function [e, t] = getSelectedEntities(obj)
+            nodes = obj.view.getSelectedNodes();
+            values = [nodes(:).Value];
+            e = {values(:).entity};
+            t = unique([values(:).type]);
         end
         
     end

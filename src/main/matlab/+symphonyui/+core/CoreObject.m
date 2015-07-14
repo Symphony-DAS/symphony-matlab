@@ -23,6 +23,22 @@ classdef (Abstract) CoreObject < handle
             obj.cobj = cobj;
         end
         
+        function tryCore(obj, call)
+            try
+                call();
+            catch x
+                error(char(x.ExceptionObject.Message));
+            end
+        end
+        
+        function r = tryCoreWithReturn(obj, call)
+            try
+                r = call();
+            catch x
+                error(char(x.ExceptionObject.Message));
+            end
+        end
+        
         function c = cellArrayFromEnumerable(~, enum, wrap)
             if nargin < 3
                 wrap = @(e)e;
