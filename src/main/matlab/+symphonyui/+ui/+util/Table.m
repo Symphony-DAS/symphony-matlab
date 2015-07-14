@@ -34,6 +34,7 @@ classdef Table < matlab.mixin.SetGet %#ok<*MCSUP>
                 'Buttons', 'off');
             obj.Control.getTableScrollPane.getRowHeader.setVisible(0);
             obj.Control.getTableScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+            obj.Control.getTable.getTableHeader.setToolTipText([]);
             obj.set(p.Unmatched);
         end
         
