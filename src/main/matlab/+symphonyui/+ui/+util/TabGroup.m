@@ -4,6 +4,7 @@ classdef TabGroup < matlab.mixin.SetGet %#ok<*MCSUP>
     
     properties
         Enable
+        SelectedTab
     end
     
     properties (Access = private)
@@ -32,6 +33,14 @@ classdef TabGroup < matlab.mixin.SetGet %#ok<*MCSUP>
             else
                 obj.JControl.setEnabled(false);
             end
+        end
+        
+        function t = get.SelectedTab(obj)
+            t = get(obj.Control, 'SelectedTab');
+        end
+        
+        function set.SelectedTab(obj, t)
+            set(obj.Control, 'SelectedTab', t);
         end
         
         function c = get.JControl(obj)

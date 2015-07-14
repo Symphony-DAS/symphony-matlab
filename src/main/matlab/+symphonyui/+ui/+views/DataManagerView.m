@@ -42,6 +42,11 @@ classdef DataManagerView < symphonyui.ui.View
         EPOCH_GROUP_DATA_CARD   = 5
         EPOCH_BLOCK_DATA_CARD   = 6
         EPOCH_DATA_CARD         = 7
+        
+        DATA_TAB                = 1
+        PROPERTIES_TAB          = 2
+        KEYWORDS_TAB            = 3
+        NOTES_TAB               = 4
     end
     
     methods
@@ -300,6 +305,22 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.notesTab.layout, 'Heights', [-1 25]);
 
             set(mainLayout, 'Widths', [-1 -2]);
+        end
+        
+        function setSelectedTab(obj, t)
+            switch t
+                case obj.DATA_TAB
+                    tab = obj.dataTab.tab;
+                case obj.PROPERTIES_TAB
+                    tab = obj.propertiesTab.tab;
+                case obj.KEYWORDS_TAB
+                    tab = obj.keywordsTab.tab;
+                case obj.NOTES_TAB
+                    tab = obj.notesTab.tab;
+                otherwise
+                    error('Invalid tab');
+            end
+            set(obj.tabGroup, 'SelectedTab', tab);
         end
         
         function enableBeginEpochGroup(obj, tf)

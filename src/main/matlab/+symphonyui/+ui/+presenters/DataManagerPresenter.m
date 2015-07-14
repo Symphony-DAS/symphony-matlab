@@ -114,6 +114,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             source = event.data;
             obj.addSource(source);
             obj.selectSources({source});
+            obj.view.setSelectedTab(obj.view.PROPERTIES_TAB);
             obj.updateViewState();
         end
         
@@ -163,6 +164,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addEpochGroup(group);
             obj.selectEpochGroups({group});
             obj.view.setEpochGroupNodeCurrent(obj.uuidToNode(group.uuid));
+            obj.view.setSelectedTab(obj.view.PROPERTIES_TAB);
             obj.updateViewState();
         end
         
