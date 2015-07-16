@@ -10,8 +10,8 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
 
     methods
 
-        function obj = Epoch(cobj, entityFactory)
-            obj@symphonyui.core.persistent.TimelineEntity(cobj, entityFactory);
+        function obj = Epoch(cobj)
+            obj@symphonyui.core.persistent.TimelineEntity(cobj);
         end
 
         function p = get.protocolParameters(obj)
@@ -19,19 +19,19 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
         end
 
         function r = get.responses(obj)
-            r = obj.entityFactory.fromCoreEntityEnumerable(obj.cobj.Responses);
+            r = obj.cellArrayFromEnumerable(obj.cobj.Responses, @symphonyui.core.persistent.Response);
         end
 
         function s = get.stimuli(obj)
-            s = obj.entityFactory.fromCoreEntityEnumerable(obj.cobj.Stimuli);
+            s = obj.cellArrayFromEnumerable(obj.cobj.Stimuli, @symphonyui.core.persistent.Stimulus);
         end
 
         function b = get.backgrounds(obj)
-            b = obj.entityFactory.fromCoreEntityEnumerable(obj.cobj.Backgrounds);
+            b = obj.cellArrayFromEnumerable(obj.cobj.Backgrounds, @symphonyui.core.persistent.Background);
         end
 
         function b = get.epochBlock(obj)
-            b = obj.entityFactory.fromCoreEntity(obj.cobj.EpochBlock);
+            b = obj.cellArrayFromEnumerable(obj.cobj.EpochBlock, @symphonyui.core.persistent.EpochBlock);
         end
 
     end

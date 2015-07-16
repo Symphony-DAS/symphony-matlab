@@ -6,12 +6,12 @@ classdef Background < symphonyui.core.persistent.Entity
     
     methods
         
-        function obj = Background(cobj, entityFactory)
-            obj@symphonyui.core.persistent.Entity(cobj, entityFactory);
+        function obj = Background(cobj)
+            obj@symphonyui.core.persistent.Entity(cobj);
         end
         
         function d = get.device(obj)            
-            d = obj.entityFactory.fromCoreEntity(obj.cobj.Device);
+            d = symphonyui.core.persistent.Device(obj.cobj.Device);
         end
         
         function [q, u] = getValue(obj)

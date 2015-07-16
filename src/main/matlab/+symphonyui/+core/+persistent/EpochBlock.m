@@ -8,8 +8,8 @@ classdef EpochBlock < symphonyui.core.persistent.TimelineEntity
 
     methods
 
-        function obj = EpochBlock(cobj, entityFactory)
-            obj@symphonyui.core.persistent.TimelineEntity(cobj, entityFactory);
+        function obj = EpochBlock(cobj)
+            obj@symphonyui.core.persistent.TimelineEntity(cobj);
         end
 
         function p = get.protocolId(obj)
@@ -17,11 +17,11 @@ classdef EpochBlock < symphonyui.core.persistent.TimelineEntity
         end
 
         function e = get.epochs(obj)
-            e = obj.entityFactory.fromCoreEntityEnumerable(obj.cobj.Epochs);
+            e = obj.cellArrayFromEnumerable(obj.cobj.Epochs, @symphonyui.core.persistent.Epoch);
         end
 
         function g = get.epochGroup(obj)
-            g = obj.entityFactory.fromCoreEntity(obj.cobj.EpochGroup);
+            g = symphonyui.core.persistent.EpochGroup(obj.cobj.EpochGroup);
         end
 
     end

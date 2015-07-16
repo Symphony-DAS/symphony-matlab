@@ -8,8 +8,8 @@ classdef Device < symphonyui.core.persistent.Entity
 
     methods
 
-        function obj = Device(cobj, entityFactory)
-            obj@symphonyui.core.persistent.Entity(cobj, entityFactory);
+        function obj = Device(cobj)
+            obj@symphonyui.core.persistent.Entity(cobj);
         end
 
         function n = get.name(obj)
@@ -21,7 +21,7 @@ classdef Device < symphonyui.core.persistent.Entity
         end
 
         function e = get.experiment(obj)
-            e = obj.entityFactory.fromCoreEntity(obj.cobj.Experiment);
+            e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
         end
 
     end

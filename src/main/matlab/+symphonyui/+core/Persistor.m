@@ -7,15 +7,10 @@ classdef Persistor < symphonyui.core.CoreObject
         currentEpochBlock
     end
 
-    properties (Access = private)
-        entityFactory
-    end
-
     methods
 
         function obj = Persistor(cobj)
             obj@symphonyui.core.CoreObject(cobj);
-            obj.entityFactory = symphonyui.core.EntityFactory();
         end
 
         function delete(obj)
@@ -31,12 +26,12 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function e = get.experiment(obj)
-            e = obj.entityFactory.fromCoreEntity(obj.cobj.Experiment);
+            e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
         end
 
         function d = addDevice(obj, name, manufacturer)
             cdev = obj.tryCoreWithReturn(@()obj.cobj.AddDevice(name, manufacturer));
-            d = obj.entityFactory.fromCoreEntity(cdev);
+            d = symphonyui.core.persistent.Device(cdev);
         end
 
         function s = addSource(obj, label, parent)
@@ -46,17 +41,17 @@ classdef Persistor < symphonyui.core.CoreObject
                 cparent = parent.cobj;
             end
             csrc = obj.tryCoreWithReturn(@()obj.cobj.AddSource(label, cparent));
-            s = obj.entityFactory.fromCoreEntity(csrc);
+            s = symphonyui.core.persistent.Source(csrc);
         end
 
         function g = beginEpochGroup(obj, label, source)
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochGroup(label, source.cobj));
-            g = obj.entityFactory.fromCoreEntity(cgrp);
+            g = symphonyui.core.persistent.EpochGroup(cgrp);
         end
 
         function g = endEpochGroup(obj)
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.EndEpochGroup());
-            g = obj.entityFactory.fromCoreEntity(cgrp);
+            g = symphonyui.core.persistent.EpochGroup(cgrp);
         end
 
         function g = get.currentEpochGroup(obj)
@@ -64,7 +59,7 @@ classdef Persistor < symphonyui.core.CoreObject
             if isempty(cgrp)
                 g = [];
             else
-                g = obj.entityFactory.fromCoreEntity(cgrp);
+                g = symphonyui.core.persistent.EpochGroup(cgrp);
             end
         end
 
@@ -74,7 +69,7 @@ classdef Persistor < symphonyui.core.CoreObject
             end
             dto = obj.dateTimeOffsetFromDatetime(startTime);
             cblk = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochBlock(protocolId, dto));
-            b = obj.entityFactory.fromCoreEntity(cblk);
+            b = symphonyui.core.persistent.EpochBlock(cblk);
         end
 
         function b = endEpochBlock(obj, endTime)
@@ -83,7 +78,7 @@ classdef Persistor < symphonyui.core.CoreObject
             end
             dto = obj.dateTimeOffsetFromDatetime(endTime);
             cblk = obj.tryCoreWithReturn(@()obj.cobj.EndEpochBlock(dto));
-            b = obj.entityFactory.fromCoreEntity(cblk);
+            b = symphonyui.core.persistent.EpochBlock(cblk);
         end
 
         function b = get.currentEpochBlock(obj)
@@ -91,7 +86,7 @@ classdef Persistor < symphonyui.core.CoreObject
             if isempty(cblk)
                 b = [];
             else
-                b = obj.entityFactory.fromCoreEntity(cblk);
+                b = symphonyui.core.persistent.EpochBlock(cblk);
             end
         end
 
@@ -100,7 +95,6 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function deleteEntity(obj, entity)
-            uuid = entity.uuid;
             obj.tryCore(@()obj.cobj.Delete(entity.cobj));
         end
 

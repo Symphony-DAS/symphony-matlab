@@ -12,8 +12,8 @@ classdef Source < symphonyui.core.persistent.Entity
 
     methods
 
-        function obj = Source(cobj, entityFactory)
-            obj@symphonyui.core.persistent.Entity(cobj, entityFactory);
+        function obj = Source(cobj)
+            obj@symphonyui.core.persistent.Entity(cobj);
         end
 
         function n = get.label(obj)
@@ -21,19 +21,19 @@ classdef Source < symphonyui.core.persistent.Entity
         end
 
         function s = get.sources(obj)
-            s = obj.entityFactory.fromCoreEntityEnumerable(obj.cobj.Sources);
+            s = obj.cellArrayFromEnumerable(obj.cobj.Sources, @symphonyui.core.persistent.Source);
         end
 
         function s = get.allSources(obj)
-            s = obj.entityFactory.fromCoreEntityEnumerable(obj.cobj.AllSources);
+            s = obj.cellArrayFromEnumerable(obj.cobj.AllSources, @symphonyui.core.persistent.Source);
         end
 
         function g = get.epochGroups(obj)
-            g = obj.entityFactory.fromCoreEntityEnumerable(obj.cobj.EpochGroups);
+            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
 
         function g = get.allEpochGroups(obj)
-            g = obj.entityFactory.fromCoreEntityEnumerable(obj.cobj.AllEpochGroups);
+            g = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
 
         function s = get.parent(obj)
@@ -41,12 +41,12 @@ classdef Source < symphonyui.core.persistent.Entity
             if isempty(csrc)
                 s = [];
             else
-                s = obj.entityFactory.fromCoreEntity(csrc);
+                s = symphonyui.core.persistent.Source(csrc);
             end
         end
 
         function e = get.experiment(obj)
-            e = obj.entityFactory.fromCoreEntity(obj.cobj.Experiment);
+            e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
         end
 
     end

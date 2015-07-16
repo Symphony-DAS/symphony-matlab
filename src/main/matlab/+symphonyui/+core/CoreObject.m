@@ -11,8 +11,19 @@ classdef (Abstract) CoreObject < handle
                 tf = false;
                 return;
             end
-            
             tf = obj.cobj.Equals(other.cobj);
+        end
+        
+        function tf = eq(obj, other)
+            if isempty(obj) || isempty(other) || ~isa(obj, 'symphonyui.core.CoreObject') || ~isa(other, 'symphonyui.core.CoreObject')
+                tf = false;
+                return;
+            end
+            tf = obj.cobj == other.cobj;
+        end
+        
+        function tf = ne(obj, other)
+            tf = ~eq(obj, other);
         end
         
     end

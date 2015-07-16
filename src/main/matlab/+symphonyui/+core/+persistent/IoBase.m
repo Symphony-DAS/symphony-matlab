@@ -6,12 +6,12 @@ classdef IoBase < symphonyui.core.persistent.Entity
 
     methods
 
-        function obj = IoBase(cobj, entityFactory)
-            obj@symphonyui.core.persistent.Entity(cobj, entityFactory);
+        function obj = IoBase(cobj)
+            obj@symphonyui.core.persistent.Entity(cobj);
         end
 
         function d = get.device(obj)
-            d = obj.entityFactory.fromCoreEntity(obj.cobj.Device);
+            d = symphonyui.core.persistent.Device(obj.cobj.Device);
         end
 
     end
