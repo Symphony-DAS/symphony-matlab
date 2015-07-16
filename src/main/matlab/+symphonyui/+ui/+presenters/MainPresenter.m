@@ -31,8 +31,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onStopping(obj)
-            obj.documentationService.close();
-            obj.acquisitionService.close();
+            if obj.documentationService.hasOpenFile()
+                obj.documentationService.closeFile();
+            end
         end
         
         function onBind(obj)
@@ -85,10 +86,15 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedOpenFile(obj, ~, ~)
             path = obj.view.showGetFile('File Location');
-            if path == 0
+            if isempty(path)
                 return;
             end
-            obj.documentationService.openFile(path);
+            try
+                obj.documentationService.openFile(path);
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
         end
         
         function onServiceOpenedFile(obj, ~, ~)
@@ -97,7 +103,12 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedCloseFile(obj, ~, ~)
-            obj.documentationService.closeFile();
+            try
+                obj.documentationService.closeFile();
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
         end
         
         function onServiceClosedFile(obj, ~, ~)
@@ -137,7 +148,12 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
-            obj.documentationService.endEpochGroup();
+            try
+                obj.documentationService.endEpochGroup();
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
         end
         
         function onServiceEndedEpochGroup(obj, ~, ~)
@@ -159,30 +175,34 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function populateProtocolList(obj)
-            protocols = obj.acquisitionService.getAvailableProtocols();
-            
-            names = cell(1, numel(protocols));
-            for i = 1:numel(protocols)
-                names{i} = protocols{i}.getDisplayName();
-            end
-            
-            obj.view.setProtocolList(names, protocols);
-            obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocol());
+            [classNames, displayNames] = obj.acquisitionService.getAvailableProtocols();
+            obj.view.setProtocolList(displayNames, classNames);
+            obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
-            obj.acquisitionService.selectProtocol(obj.view.getSelectedProtocol());
+            try
+                obj.acquisitionService.selectProtocol(obj.view.getSelectedProtocol());
+            catch
+                obj.view.showError(x.message);
+                return;
+            end
         end
         
         function onServiceSelectedProtocol(obj, ~, ~)
-            obj.view.setSelectedProtocol(obj.acquisitionService.getCurrentProtocol());
+            obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
             obj.populateProtocolProperties();
             obj.updateViewState();
         end
         
         function onViewSetProtocolProperty(obj, ~, event)
             p = event.Property;
-            obj.acquisitionService.setProtocolProperty(p.Name, p.Value);
+            try
+                obj.acquisitionService.setProtocolProperty(p.Name, p.Value);
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
         end
         
         function onServiceSetProtocolProperty(obj, ~, ~)

@@ -70,13 +70,14 @@ classdef Entity < symphonyui.core.CoreObject
             n = obj.cellArrayFromEnumerable(obj.cobj.Notes, @symphonyui.core.persistent.Note);
         end
         
-        function addNote(obj, text, time)
+        function n = addNote(obj, text, time)
             if nargin < 3
                 time = datetime('now', 'TimeZone', 'local');
             end
             dto = obj.dateTimeOffsetFromDatetime(time);
             cnote = obj.tryCoreWithReturn(@()obj.cobj.AddNote(dto, text));
-            notify(obj, 'AddedNote', symphonyui.core.util.DomainEventData(symphonyui.core.persistent.Note(cnote)));
+            n = symphonyui.core.persistent.Note(cnote);
+            notify(obj, 'AddedNote', symphonyui.core.util.DomainEventData(n));
         end
         
     end

@@ -12,7 +12,8 @@ function main()
     protocolRepository = ObjectRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
     
     sessionData = SessionData();
-    sessionData.protocol = symphonyui.app.NullProtocol.get();
+    protocols = protocolRepository.getAll();
+    sessionData.protocol = protocols{1};
     
     documentationService = DocumentationService(sessionData, persistorFactory);
     acquisitionService = AcquisitionService(sessionData, protocolRepository);

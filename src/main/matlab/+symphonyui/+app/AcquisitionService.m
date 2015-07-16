@@ -8,7 +8,6 @@ classdef AcquisitionService < handle
     properties (Access = private)
         sessionData
         protocolRepository
-        protocolListeners
     end
     
     methods
@@ -16,59 +15,52 @@ classdef AcquisitionService < handle
         function obj = AcquisitionService(sessionData, protocolRepository)
             obj.sessionData = sessionData;
             obj.protocolRepository = protocolRepository;
+        end
+        
+        function [cn, dn] = getAvailableProtocols(obj)
+            protocols = obj.protocolRepository.getAll();
             
-            protocol = obj.sessionData.protocol;
-            if ~isempty(protocol)
-                obj.bindProtocol(protocol);
+            cn = cell(1, numel(protocols));
+            dn = cell(1, numel(protocols));
+            for i = 1:numel(protocols)
+                cn{i} = class(protocols{i});
+                dn{i} = protocols{i}.getDisplayName();
             end
-            
-            addlistener(obj.sessionData, 'protocol', 'PostSet', @obj.onSessionSetProtocol);
         end
         
-        function close(obj)
-            obj.unbindProtocol();
-        end
-        
-        function p = getAvailableProtocols(obj)
-            p = [{symphonyui.app.NullProtocol.get()}, obj.protocolRepository.getAll()];
-        end
-        
-        function selectProtocol(obj, protocol)
-            if ~any(cellfun(@(p)p == protocol, obj.getAvailableProtocols()))
-                error('Protocol is not a member of available protocols');
+        function selectProtocol(obj, className)
+            if ~any(strcmp(className, obj.getAvailableProtocols))
+                error([className ' is not a member of available protocols']);
             end
-            obj.sessionData.protocol = protocol;
+            protocols = obj.protocolRepository.getAll();
+            index = cellfun(@(p)strcmp(class(p), className), protocols);
+            obj.sessionData.protocol = protocols{index};
+            notify(obj, 'SelectedProtocol');
         end
         
-        function tf = hasCurrentProtocol(obj)
-            tf = ~isempty(obj.sessionData.protocol);
-        end
-        
-        function p = getCurrentProtocol(obj)
-            if ~obj.hasCurrentProtocol()
-                error('No current protocol');
-            end
-            p = obj.sessionData.protocol;
+        function cn = getSelectedProtocol(obj)
+            cn = class(obj.getSessionProtocol());
         end
         
         function setProtocolProperty(obj, name, value)
-            obj.getCurrentProtocol().(name) = value;
+            obj.getSessionProtocol().(name) = value;
+            notify(obj, 'SetProtocolProperty');
         end
         
         function p = getProtocolProperties(obj)
-            p = obj.getCurrentProtocol().getParameters();
+            p = obj.getSessionProtocol().getParameters();
         end
 
         function viewProtocol(obj)
-            obj.getCurrentProtocol().viewOnly();
+            obj.getSessionProtocol().viewOnly();
         end
         
         function recordProtocol(obj)
-            obj.getCurrentProtocol().record();
+            obj.getSessionProtocol().record();
         end
 
         function stopProtocol(obj)
-            obj.getCurrentProtocol().stop();
+            obj.getSessionProtocol().stop();
         end
 
         function [tf, msg] = validate(obj)
@@ -81,29 +73,15 @@ classdef AcquisitionService < handle
     
     methods (Access = private)
         
-        function onSessionSetProtocol(obj, ~, ~)
-            obj.unbindProtocol();
-            
-            protocol = obj.sessionData.protocol;
-            if isempty(protocol)
-                return;
+        function p = getSessionProtocol(obj)
+            if ~obj.hasSessionProtocol()
+                error('No session protocol');
             end
-            
-            obj.bindProtocol(protocol);
-            notify(obj, 'SelectedProtocol');
+            p = obj.sessionData.protocol;
         end
         
-        function bindProtocol(obj, protocol)
-            l = {};
-            l{end + 1} = addlistener(protocol, 'SetProperty', @(s,d)notify(obj, 'SetProtocolProperty'));
-            obj.protocolListeners = l;
-        end
-        
-        function unbindProtocol(obj)
-            while ~isempty(obj.protocolListeners)
-                delete(obj.protocolListeners{1});
-                obj.protocolListeners(1) = [];
-            end
+        function tf = hasSessionProtocol(obj)
+            tf = ~isempty(obj.sessionData.protocol);
         end
         
     end

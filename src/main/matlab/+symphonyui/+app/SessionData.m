@@ -1,6 +1,6 @@
 classdef SessionData < handle
     
-    properties (SetObservable)
+    properties
         rig
         protocol
         persistor

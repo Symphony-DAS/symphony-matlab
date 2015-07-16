@@ -1,16 +1,15 @@
 classdef DataManagerView < symphonyui.ui.View
 
     events
+        AddSource
         BeginEpochGroup
         EndEpochGroup
-        AddSource
         SelectedNodes
         AddProperty
         RemoveProperty
         AddKeyword
         RemoveKeyword
         AddNote
-        RemoveNote
         SendToWorkspace
         DeleteEntity
     end
@@ -115,6 +114,7 @@ classdef DataManagerView < symphonyui.ui.View
             root = obj.entityTree.Root;
             set(root, 'Value', struct('entity', [], 'type', EntityNodeType.EXPERIMENT));
             root.setIcon(symphonyui.app.App.getResource('icons/experiment.png'));
+            set(root, 'UIContextMenu', obj.createEntityContextMenu());
             
             devices = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
@@ -317,7 +317,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'ColumnName', {'Time', 'Text'}, ...
                 'ColumnWidth', {80}, ...
                 'Editable', false);
-            [a, r] = obj.createAddRemoveButtons(obj.notesTab.layout, @(h,d)notify(obj, 'AddNote'), @(h,d)notify(obj, 'RemoveNote'));
+            [a, r] = obj.createAddRemoveButtons(obj.notesTab.layout, @(h,d)notify(obj, 'AddNote'), []);
             obj.notesTab.addButton = a;
             obj.notesTab.removeButton = r;
             set(obj.notesTab.removeButton, 'Enable', 'off');
@@ -475,7 +475,6 @@ classdef DataManagerView < symphonyui.ui.View
         end
         
         function removeNode(obj, node)
-            %obj.entityTree.removeNode(node);
             node.delete();
         end
 
@@ -587,14 +586,15 @@ classdef DataManagerView < symphonyui.ui.View
         
         function menu = createEntityContextMenu(obj)
             menu = uicontextmenu('Parent', obj.figureHandle);
-            uimenu( ...
+            m.sendToWorkspaceMenu = uimenu( ...
                 'Parent', menu, ...
                 'Label', 'Send to Workspace', ...
                 'Callback', @(h,d)notify(obj, 'SendToWorkspace'));
-            uimenu( ...
+            m.deleteMenu = uimenu( ...
                 'Parent', menu, ...
                 'Label', 'Delete', ...
                 'Callback', @(h,d)notify(obj, 'DeleteEntity'));
+            set(menu, 'UserData', m);
         end
 
     end

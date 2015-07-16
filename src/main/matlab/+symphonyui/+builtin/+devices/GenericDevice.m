@@ -1,14 +1,9 @@
-classdef GenericDevice < symphonyui.core.Device
+classdef GenericDevice
     
     properties
     end
     
     methods
-        
-        function obj = GenericDevice(name)
-            obj@symphonyui.core.Device(name);
-        end
-        
     end
     
 end

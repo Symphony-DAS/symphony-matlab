@@ -53,7 +53,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
         function onViewKeyPress(obj, ~, event)
             switch event.key
                 case 'return'
-                    % FIXME: Not sure why this is being called twice when return is hit.
+                    % FIXME: not sure why this is sometimes called twice on return
                     %obj.onViewSelectedOpen();
                 case 'escape'
                     obj.onViewSelectedCancel();
