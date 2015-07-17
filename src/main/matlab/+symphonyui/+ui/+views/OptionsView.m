@@ -23,7 +23,6 @@ classdef OptionsView < symphonyui.ui.View
 
             set(obj.figureHandle, 'Name', 'Options');
             set(obj.figureHandle, 'Position', screenCenter(467, 356));
-            set(obj.figureHandle, 'WindowStyle', 'modal');
 
             mainLayout = uiextras.VBox( ...
                 'Parent', obj.figureHandle, ...

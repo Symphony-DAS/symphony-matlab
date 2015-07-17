@@ -11,6 +11,8 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
                 view = symphonyui.ui.views.AddKeywordView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
+            obj.view.setWindowStyle('modal');
+            
             obj.entitySet = entitySet;
         end
 

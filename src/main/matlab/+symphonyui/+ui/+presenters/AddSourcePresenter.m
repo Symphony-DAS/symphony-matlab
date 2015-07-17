@@ -11,6 +11,8 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
                 view = symphonyui.ui.views.AddSourceView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
+            obj.view.setWindowStyle('modal');
+            
             obj.documentationService = documentationService;
         end
         

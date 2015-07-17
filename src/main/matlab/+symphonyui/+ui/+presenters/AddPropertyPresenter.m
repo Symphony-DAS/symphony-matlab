@@ -11,6 +11,8 @@ classdef AddPropertyPresenter < symphonyui.ui.Presenter
                 view = symphonyui.ui.views.AddPropertyView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
+            obj.view.setWindowStyle('modal');
+            
             obj.entitySet = entitySet;
         end
 

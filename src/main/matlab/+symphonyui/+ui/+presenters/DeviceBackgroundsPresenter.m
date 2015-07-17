@@ -11,6 +11,8 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
                 view = symphonyui.ui.views.DeviceBackgroundsView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
+            obj.view.setWindowStyle('modal');
+            
             obj.devices = devices;
         end
         

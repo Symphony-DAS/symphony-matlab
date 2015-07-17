@@ -11,6 +11,8 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
                 view = symphonyui.ui.views.NewFileView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
+            obj.view.setWindowStyle('modal');
+            
             obj.documentationService = documentationService;
         end
         
@@ -54,7 +56,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             switch event.key
                 case 'return'
                     % FIXME: not sure why this is sometimes called twice on return
-                    %obj.onViewSelectedOpen();
+                    obj.onViewSelectedOpen();
                 case 'escape'
                     obj.onViewSelectedCancel();
             end

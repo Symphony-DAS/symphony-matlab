@@ -7,6 +7,7 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
                 view = symphonyui.ui.views.OptionsView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
+            obj.view.setWindowStyle('modal');
         end
 
     end

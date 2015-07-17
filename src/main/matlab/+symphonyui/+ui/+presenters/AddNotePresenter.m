@@ -11,6 +11,8 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
                 view = symphonyui.ui.views.AddNoteView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
+            obj.view.setWindowStyle('modal');
+            
             obj.entitySet = entitySet;
         end
 

@@ -43,7 +43,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'CloseFile', @obj.onViewSelectedCloseFile);
             obj.addListener(v, 'Exit', @obj.onViewSelectedExit);
             obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
-            obj.addListener(v, 'AddNoteToExperiment', @obj.onViewSelectedAddNoteToExperiment);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
             obj.addListener(v, 'ShowDataManager', @obj.onViewSelectedShowDataManager);
@@ -130,12 +129,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onServiceAddedSource(obj, ~, ~)
             obj.updateViewState();
-        end
-        
-        function onViewSelectedAddNoteToExperiment(obj, ~, ~)
-            experiment = obj.documentationService.getCurrentExperiment();
-            presenter = symphonyui.ui.presenters.AddNotePresenter(experiment, obj.app);
-            presenter.goWaitStop();
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -281,7 +274,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableOpenFile = enableNewFile;
             enableCloseFile = hasOpenFile && isRigStopped;
             enableAddSource = hasOpenFile;
-            enableAddNoteToExperiment = hasOpenFile;
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasCurrentEpochGroup;
             enableShowDataManager = hasOpenFile;
@@ -325,7 +317,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableOpenFile(enableOpenFile);
             obj.view.enableCloseFile(enableCloseFile);
             obj.view.enableAddSource(enableAddSource);
-            obj.view.enableAddNoteToExperiment(enableAddNoteToExperiment);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
             obj.view.enableShowDataManager(enableShowDataManager);

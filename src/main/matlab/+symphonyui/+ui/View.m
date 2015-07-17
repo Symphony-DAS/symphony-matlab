@@ -45,6 +45,10 @@ classdef View < handle
         function delete(obj)
             obj.close();
         end
+        
+        function setWindowStyle(obj, s)
+            set(obj.figureHandle, 'WindowStyle', s);
+        end
 
         function show(obj)
             figure(obj.figureHandle);
