@@ -31,7 +31,7 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
         end
 
         function b = get.epochBlock(obj)
-            b = obj.cellArrayFromEnumerable(obj.cobj.EpochBlock, @symphonyui.core.persistent.EpochBlock);
+            b = symphonyui.core.persistent.EpochBlock(obj.cobj.EpochBlock);
         end
 
     end

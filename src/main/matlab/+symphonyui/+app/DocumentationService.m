@@ -65,7 +65,7 @@ classdef DocumentationService < handle
         end
         
         function tf = canBeginEpochGroup(obj)
-            tf = ~isempty(obj.getCurrentExperiment().sources);
+            tf = obj.hasOpenFile() && ~isempty(obj.getCurrentExperiment().sources);
         end
         
         function g = beginEpochGroup(obj, label, source)
@@ -74,7 +74,7 @@ classdef DocumentationService < handle
         end
         
         function tf = canEndEpochGroup(obj)
-            tf = ~isempty(obj.getCurrentEpochGroup());
+            tf = obj.hasOpenFile() && ~isempty(obj.getCurrentEpochGroup());
         end
         
         function g = endEpochGroup(obj)

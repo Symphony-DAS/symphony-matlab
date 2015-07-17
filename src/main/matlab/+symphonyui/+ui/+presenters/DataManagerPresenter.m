@@ -49,6 +49,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
+            obj.addListener(d, 'BeganEpochBlock', @obj.onServiceBeganEpochBlock);
+            obj.addListener(d, 'EndedEpochBlock', @obj.onServiceEndedEpochBlock);
             obj.addListener(d, 'DeletedEntity', @obj.onServiceDeletedEntity);
         end
 
@@ -92,7 +94,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function n = addDeviceNode(obj, device)
-            n = obj.view.addDeviceNodeNode(obj.view.getDevicesFolderNode(), device.name, device);
+            n = obj.view.addDeviceNode(obj.view.getDevicesFolderNode(), device.name, device);
             obj.uuidToNode(device.uuid) = n;
         end
         
@@ -218,6 +220,11 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             n = obj.view.addEpochGroupNode(parent, [group.label ' (' group.source.label ')'], group);
             obj.uuidToNode(group.uuid) = n;
             
+            blocks = group.epochBlocks;
+            for i = 1:numel(blocks)
+                obj.addEpochBlockNode(blocks{i});
+            end
+            
             children = group.epochGroups;
             for i = 1:numel(children)
                 obj.addEpochGroupNode(children{i});
@@ -241,8 +248,56 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.enableAnnotations(true);
         end
         
-        function addEpochNode(obj, epoch)
+        function onServiceAddedEpochBlock(obj, ~, event)
+            block = event.data;
+            obj.addEpochBlockNode(block);
+        end
+        
+        function n = addEpochBlockNode(obj, block)
+            parent = obj.uuidToNode(block.epochGroup.uuid);
+            n = obj.view.addEpochBlockNode(parent, block.protocolId, block);
+            obj.uuidToNode(block.uuid) = n;
             
+            epochs = block.epochs;
+            for i = 1:numel(epochs)
+                obj.addEpochNode(epochs{i});
+            end
+        end
+        
+        function populateDetailsWithEpochBlocks(obj, blocks)
+            if ~iscell(blocks)
+                blocks = {blocks};
+            end
+            blockArray = [blocks{:}];
+            
+            obj.view.setEpochBlockProtocolId(mergeFields({blockArray.protocolId}));
+            obj.view.setDataCardSelection(obj.view.EPOCH_BLOCK_DATA_CARD);
+            
+            obj.populateAnnotations(blocks);
+            obj.enableAnnotations(true);
+        end
+        
+        function onServiceAddedEpoch(obj, ~, event)
+            epoch = event.data;
+            obj.addEpochNode(epoch);
+        end
+        
+        function n = addEpochNode(obj, epoch)
+            parent = obj.uuidToNode(epoch.epochBlock.uuid);
+            n = obj.view.addEpochNode(parent, datestr(epoch.startTime, 'HH:MM:SS:FFF'), epoch);
+            obj.uuidToNode(epoch.uuid) = n;
+        end
+        
+        function populateDetailsWithEpochs(obj, epochs)
+            if ~iscell(epochs)
+                epochs = {epochs};
+            end
+            epochArray = [epochs{:}];
+            
+            obj.view.setDataCardSelection(obj.view.EPOCH_DATA_CARD);
+            
+            obj.populateAnnotations(epochs);
+            obj.enableAnnotations(true);
         end
         
         function populateDetailsWithEntities(obj, entities)
