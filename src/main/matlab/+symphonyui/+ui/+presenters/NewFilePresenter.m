@@ -74,7 +74,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             name = obj.view.getName();            
             location = obj.view.getLocation();
             try
-                obj.documentationService.createFile(name, location);
+                obj.documentationService.newFile(name, location);
             catch x
                 obj.view.showError(x.message);
                 return;

@@ -6,7 +6,6 @@ classdef MainView < symphonyui.ui.View
         CloseFile
         Exit
         AddSource
-        AddNoteToExperiment
         BeginEpochGroup
         EndEpochGroup
         ShowDataManager
@@ -73,10 +72,6 @@ classdef MainView < symphonyui.ui.View
             obj.documentMenu.addSource = uimenu(obj.documentMenu.root, ...
                 'Label', 'Add Source...', ...
                 'Callback', @(h,d)notify(obj, 'AddSource'));
-            obj.documentMenu.addNoteToExperiment = uimenu(obj.documentMenu.root, ...
-                'Label', 'Add Note to Experiment...', ...
-                'Accelerator', 'T', ...
-                'Callback', @(h,d)notify(obj, 'AddNoteToExperiment'));
             obj.documentMenu.beginEpochGroup = uimenu(obj.documentMenu.root, ...
                 'Label', 'Begin Epoch Group...', ...
                 'Separator', 'on', ...
@@ -204,10 +199,6 @@ classdef MainView < symphonyui.ui.View
         
         function enableAddSource(obj, tf)
             set(obj.documentMenu.addSource, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-        
-        function enableAddNoteToExperiment(obj, tf)
-            set(obj.documentMenu.addNoteToExperiment, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableBeginEpochGroup(obj, tf)

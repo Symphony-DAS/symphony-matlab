@@ -28,11 +28,11 @@ classdef DocumentationService < handle
             tf = obj.hasSessionPersistor();
         end
         
-        function createFile(obj, name, location)
+        function newFile(obj, name, location)
             if obj.hasOpenFile()
                 error('File already open');
             end
-            obj.sessionData.persistor = obj.persistorFactory.create(name, location);
+            obj.sessionData.persistor = obj.persistorFactory.new(name, location);
             notify(obj, 'OpenedFile');
         end
         
@@ -40,7 +40,7 @@ classdef DocumentationService < handle
             if obj.hasOpenFile()
                 error('File already open');
             end
-            obj.sessionData.persistor = obj.persistorFactory.load(path);
+            obj.sessionData.persistor = obj.persistorFactory.open(path);
             notify(obj, 'OpenedFile');
         end
         
