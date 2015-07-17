@@ -24,6 +24,10 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             obj.populateFromConfig();
         end
         
+        function onGo(obj)
+            obj.view.requestNameFocus();
+        end
+        
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);

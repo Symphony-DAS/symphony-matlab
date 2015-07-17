@@ -88,6 +88,11 @@ classdef NewFileView < symphonyui.ui.View
         function setName(obj, n)
             set(obj.nameField, 'String', n);
         end
+        
+        function requestNameFocus(obj)
+            obj.update();
+            uicontrol(obj.nameField);
+        end
 
         function l = getLocation(obj)
             l = get(obj.locationField, 'String');

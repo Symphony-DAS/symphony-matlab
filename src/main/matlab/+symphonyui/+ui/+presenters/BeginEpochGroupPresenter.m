@@ -21,8 +21,8 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj, ~, ~)
-            obj.populateParent();
             obj.populateSourceList();
+            obj.updateShouldEndCurrentEpochGroupState();
         end
         
         function onGo(obj, ~, ~)
@@ -40,16 +40,6 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
-        function populateParent(obj)
-            group = obj.documentationService.getCurrentEpochGroup();
-            if isempty(group)
-                parent = '(None)';
-            else
-                parent = group.label;
-            end
-            obj.view.setParent(parent);
-        end
-        
         function populateSourceList(obj)
             sources = obj.documentationService.getCurrentExperiment().allSources();
             
@@ -60,6 +50,11 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             
             obj.view.setSourceList(names, sources);
             obj.view.setSelectedSource(sources{end});
+        end
+        
+        function updateShouldEndCurrentEpochGroupState(obj)
+            obj.view.enableShouldEndCurrentEpochGroup(obj.documentationService.canEndEpochGroup());
+            obj.view.setShouldEndCurrentEpochGroup(obj.documentationService.canEndEpochGroup() && true);
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -76,7 +71,11 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             
             label = obj.view.getLabel();
             source = obj.view.getSelectedSource();
+            shouldEndCurrentEpochGroup = obj.view.getShouldEndCurrentEpochGroup();
             try
+                if shouldEndCurrentEpochGroup
+                    obj.documentationService.endEpochGroup();
+                end
                 obj.documentationService.beginEpochGroup(label, source);
             catch x
                 obj.view.showError(x.message);
