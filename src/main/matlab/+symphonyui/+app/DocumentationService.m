@@ -64,9 +64,17 @@ classdef DocumentationService < handle
             notify(obj, 'AddedSource', symphonyui.app.util.AppEventData(s));
         end
         
+        function tf = canBeginEpochGroup(obj)
+            tf = ~isempty(obj.getCurrentExperiment().sources);
+        end
+        
         function g = beginEpochGroup(obj, label, source)
             g = obj.getSessionPersistor().beginEpochGroup(label, source);
             notify(obj, 'BeganEpochGroup', symphonyui.app.util.AppEventData(g));
+        end
+        
+        function tf = canEndEpochGroup(obj)
+            tf = ~isempty(obj.getCurrentEpochGroup());
         end
         
         function g = endEpochGroup(obj)
