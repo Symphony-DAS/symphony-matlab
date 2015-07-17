@@ -27,7 +27,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onGoing(obj)
             obj.populateProtocolList();
             obj.populateProtocolProperties();
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onStopping(obj)
@@ -97,7 +97,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceOpenedFile(obj, ~, ~)
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
             obj.showDataManager();
         end
         
@@ -111,7 +111,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceClosedFile(obj, ~, ~)
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
             if ~isempty(obj.dataManagerPresenter)
                 obj.dataManagerPresenter.stop();
                 obj.dataManagerPresenter = [];
@@ -128,7 +128,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceAddedSource(obj, ~, ~)
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -137,7 +137,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceBeganEpochGroup(obj, ~, ~)
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
@@ -150,7 +150,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceEndedEpochGroup(obj, ~, ~)
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onViewSelectedShowDataManager(obj, ~, ~)
@@ -185,7 +185,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onServiceSelectedProtocol(obj, ~, ~)
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
             obj.populateProtocolProperties();
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onViewSetProtocolProperty(obj, ~, event)
@@ -200,7 +200,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onServiceSetProtocolProperty(obj, ~, ~)
             obj.populateProtocolProperties(true);
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onViewSelectedViewProtocol(obj, ~, ~)
@@ -259,14 +259,14 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
         end
         
-        function updateViewState(obj)
+        function updateEnableStateOfControls(obj)
             import symphonyui.core.RigState;
             
             %rig = obj.acquisitionService.getCurrentRig();
             
             hasOpenFile = obj.documentationService.hasOpenFile();
-            hasSource = hasOpenFile && ~isempty(obj.documentationService.getCurrentExperiment().sources);
-            hasCurrentEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
+            canBegingEpochGroup = obj.documentationService.canBeginEpochGroup();
+            canEndEpochGroup = obj.documentationService.canEndEpochGroup();
             isRigStopped = true; %rig.state == RigState.STOPPED;
             isRigValid = true; %rig.isValid() == true;
             
@@ -274,8 +274,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableOpenFile = enableNewFile;
             enableCloseFile = hasOpenFile && isRigStopped;
             enableAddSource = hasOpenFile;
-            enableBeginEpochGroup = hasSource;
-            enableEndEpochGroup = hasCurrentEpochGroup;
+            enableBeginEpochGroup = canBegingEpochGroup;
+            enableEndEpochGroup = canEndEpochGroup;
             enableShowDataManager = hasOpenFile;
             enableSelectProtocol = isRigStopped;
             enableProtocolProperties = isRigStopped;
@@ -288,7 +288,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableCreateRigConfiguration = ~hasOpenFile && isRigStopped;
             status = '';
             
-            canRecord = hasCurrentEpochGroup;
+            canRecord = canEndEpochGroup;
 %             switch rig.state
 %                 case RigState.STOPPED
 %                     enableViewProtocol = true;
@@ -355,7 +355,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onServiceLoadedRigConfiguration(obj, ~, ~)
             obj.removeRigListeners();
             obj.addRigListeners();
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onViewSelectedCreateRigConfiguration(obj, ~, ~)
@@ -375,11 +375,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
 %         end
         
         function onRigInitialized(obj, ~, ~)
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onRigClosed(obj, ~, ~)
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
             
             if ~isempty(obj.rigPresenter)
                 obj.rigPresenter.stop();
@@ -388,7 +388,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onRigSetState(obj, ~, ~)
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onViewSelectedConfigureOptions(obj, ~, ~)

@@ -27,7 +27,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedNodes(obj.uuidToNode(experiment.uuid));
             obj.populateDetailsWithExperiments(experiment);
             
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onBind(obj)
@@ -88,7 +88,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedNodes(node);
             
             obj.populateDetailsWithDevices(device);
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function n = addDeviceNode(obj, device)
@@ -123,7 +123,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedTab(obj.view.PROPERTIES_TAB);
             
             obj.populateDetailsWithSources(source);
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function n = addSourceNode(obj, source)
@@ -184,7 +184,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedTab(obj.view.PROPERTIES_TAB);
             
             obj.populateDetailsWithEpochGroups(group);
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
@@ -205,7 +205,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setEpochGroupNodeNormal(node);
             
             obj.populateDetailsWithEpochGroups(group);
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
         function n = addEpochGroupNode(obj, group)
@@ -452,10 +452,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.uuidToNode.remove(uuid);
             
             obj.populateDetails();
-            obj.updateViewState();
+            obj.updateEnableStateOfControls();
         end
         
-        function updateViewState(obj)
+        function updateEnableStateOfControls(obj)
             obj.view.enableBeginEpochGroup(obj.documentationService.canBeginEpochGroup());
             obj.view.enableEndEpochGroup(obj.documentationService.canEndEpochGroup());
         end
