@@ -2,7 +2,7 @@ classdef Entity < symphonyui.core.CoreObject
     
     properties (SetAccess = private)
         uuid
-        propertiesMap
+        propertyMap
         keywords
         notes
     end
@@ -17,7 +17,7 @@ classdef Entity < symphonyui.core.CoreObject
             i = char(obj.cobj.UUID.ToString());
         end
         
-        function p = get.propertiesMap(obj)
+        function p = get.propertyMap(obj)
             p = obj.mapFromKeyValueEnumerable(obj.cobj.Properties);
         end
         

@@ -43,6 +43,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'SendToWorkspace', @obj.onViewSelectedSendToWorkspace);
             obj.addListener(v, 'DeleteEntity', @obj.onViewSelectedDeleteEntity);
+            obj.addListener(v, 'OpenAxesInNewWindow', @obj.onViewSelectedOpenAxesInNewWindow);
             
             d = obj.documentationService;
             obj.addListener(d, 'AddedDevice', @obj.onServiceAddedDevice);
@@ -292,7 +293,30 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             if ~iscell(epochs)
                 epochs = {epochs};
             end
-            epochArray = [epochs{:}];
+            
+            epochSet = symphonyui.app.EpochSet(epochs);
+            
+            obj.view.clearEpochDataAxes();
+            obj.view.setEpochDataAxesLabels('Time (s)', 'Data');
+            
+            responseMap = epochSet.responseMap;
+            colorOrder = get(groot, 'defaultAxesColorOrder');
+            devices = responseMap.keys;
+            groups = [];
+            for i = 1:numel(devices)
+                color = colorOrder(mod(i, size(colorOrder, 1)), :);
+                responses = responseMap(devices{i});
+                for k = 1:numel(responses)
+                    r = responses{k};
+                    ydata = r.getData();
+                    rate = r.getSampleRate();
+                    xdata = (1:numel(ydata))/rate;
+                    
+                    obj.view.addEpochDataLine(xdata, ydata, color);
+                    groups = [groups i]; %#ok<AGROW>
+                end
+            end
+            obj.view.setEpochDataLegend(devices, groups);
             
             obj.view.setDataCardSelection(obj.view.EPOCH_DATA_CARD);
             
@@ -363,7 +387,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         
         function populateProperties(obj, entities)
             entitySet = symphonyui.app.EntitySet(entities);
-            props = entitySet.commonPropertiesMap;
+            props = entitySet.commonPropertyMap;
             
             keys = props.keys;
             data = cell(1, numel(keys)); 
@@ -508,6 +532,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.populateDetails();
             obj.updateEnableStateOfControls();
+        end
+        
+        function onViewSelectedOpenAxesInNewWindow(obj, ~, ~)
+            obj.view.openEpochDataAxesInNewWindow();
         end
         
         function updateEnableStateOfControls(obj)

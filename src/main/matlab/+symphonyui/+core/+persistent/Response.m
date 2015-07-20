@@ -16,8 +16,8 @@ classdef Response < symphonyui.core.persistent.IoBase
         
         function [q, u] = getSampleRate(obj)
             s = obj.cobj.SampleRate;
-            q = double(System.Decimal.ToDouble(s.Quantity));
-            u = char(s.DisplayUnit);
+            q = double(System.Decimal.ToDouble(s.QuantityInBaseUnit));
+            u = char(s.BaseUnit);
         end
         
         function [q, u] = getData(obj)

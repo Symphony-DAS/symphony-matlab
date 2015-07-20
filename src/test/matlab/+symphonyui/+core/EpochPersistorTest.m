@@ -70,7 +70,7 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
                 entity.addProperty(keys{i}, expected(keys{i}));
             end
             
-            obj.verifyEqual(entity.propertiesMap, expected);
+            obj.verifyEqual(entity.propertyMap, expected);
         end
         
         function testEntityKeywords(obj)

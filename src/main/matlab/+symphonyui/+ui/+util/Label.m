@@ -4,6 +4,7 @@ classdef Label < matlab.mixin.SetGet %#ok<*MCSUP>
     
     properties
         String
+        BackgroundColor
     end
     
     properties (Access = private)
@@ -28,6 +29,21 @@ classdef Label < matlab.mixin.SetGet %#ok<*MCSUP>
         
         function set.String(obj, s)
             obj.JControl.setText(s);
+        end
+        
+        function c = get.BackgroundColor(obj)
+            color = obj.JControl.getBackground;
+            c = [color.getRed(), color.getGreen(), color.getBlue()];
+        end
+        
+        function set.BackgroundColor(obj, c)
+            switch c
+                case 'w'
+                    c = [1 1 1];
+                otherwise
+                    error('Not supported');
+            end
+            obj.JControl.setBackground(java.awt.Color(c(1), c(2), c(3)));
         end
         
     end

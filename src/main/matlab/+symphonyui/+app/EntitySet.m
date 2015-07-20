@@ -10,7 +10,7 @@ classdef EntitySet < handle
     
     properties (SetAccess = private)
         entities
-        commonPropertiesMap
+        commonPropertyMap
         commonKeywords
         commonNotes
     end
@@ -24,15 +24,15 @@ classdef EntitySet < handle
             obj.entities = entities;
         end
         
-        function p = get.commonPropertiesMap(obj)
+        function p = get.commonPropertyMap(obj)
             if isempty(obj.entities)
                 p = containers.Map();
                 return;
             end
             
-            keys = obj.entities{1}.propertiesMap.keys;
+            keys = obj.entities{1}.propertyMap.keys;
             for i = 2:numel(obj.entities)
-                keys = intersect(keys, obj.entities{i}.propertiesMap.keys);
+                keys = intersect(keys, obj.entities{i}.propertyMap.keys);
             end
             
             values = cell(1, numel(keys));
@@ -40,7 +40,7 @@ classdef EntitySet < handle
                 k = keys{i};
                 v = cell(1, numel(obj.entities));
                 for j = 1:numel(obj.entities)
-                    v{j} = obj.entities{j}.propertiesMap(k);
+                    v{j} = obj.entities{j}.propertyMap(k);
                 end
                 values{i} = unique(v);
             end

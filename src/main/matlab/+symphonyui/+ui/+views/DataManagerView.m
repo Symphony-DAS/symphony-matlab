@@ -12,6 +12,7 @@ classdef DataManagerView < symphonyui.ui.View
         AddNote
         SendToWorkspace
         DeleteEntity
+        OpenAxesInNewWindow
     end
 
     properties (Access = private)
@@ -31,6 +32,7 @@ classdef DataManagerView < symphonyui.ui.View
         epochGroupCard
         epochBlockCard
         epochCard
+        dataTab
         propertiesTab
         keywordsTab
         notesTab
@@ -57,8 +59,9 @@ classdef DataManagerView < symphonyui.ui.View
             import symphonyui.ui.util.*;
             import symphonyui.ui.views.EntityNodeType;
 
-            set(obj.figureHandle, 'Name', 'Data Manager');
-            set(obj.figureHandle, 'Position', screenCenter(559, 350));
+            set(obj.figureHandle, ...
+                'Name', 'Data Manager', ...
+                'Position', screenCenter(559, 350));
 
             % Toolbar.
             toolbar = uitoolbar( ...
@@ -146,11 +149,11 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', detailLayout);
             
             % Data tab.
-            dataTab = obj.tabGroup.addTab( ...
+            obj.dataTab.tab = obj.tabGroup.addTab( ...
                 'Title', 'Data');
             
             obj.dataCardPanel = uix.CardPanel( ...
-                'Parent', dataTab);
+                'Parent', obj.dataTab.tab);
             
             % Empty card.
             emptyLayout = uix.VBox('Parent', obj.dataCardPanel); %#ok<NASGU>
@@ -289,10 +292,20 @@ classdef DataManagerView < symphonyui.ui.View
                 'Heights', 25);
             
             % Epoch card.
-            epochLayout = uix.VBox( ...
+            epochPanel = uipanel( ...
                 'Parent', obj.dataCardPanel, ...
-                'Spacing', 7);
-            %set(epochLayout, 'Heights', -1);
+                'BorderType', 'none');
+            obj.epochCard.axes = axes( ...
+                'Parent', epochPanel, ...
+                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
+            
+            axesMenu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', axesMenu, ...
+                'Label', 'Open in new window', ...
+                'Callback', @(h,d)notify(obj, 'OpenAxesInNewWindow'));
+            set(obj.epochCard.axes, 'UIContextMenu', axesMenu);
             
             set(obj.dataCardPanel, 'Selection', 1);
 
@@ -504,6 +517,39 @@ classdef DataManagerView < symphonyui.ui.View
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/epoch.png'));
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
+        end
+        
+        function clearEpochDataAxes(obj)
+            cla(obj.epochCard.axes);
+        end
+        
+        function setEpochDataAxesLabels(obj, x, y)
+            xlabel(obj.epochCard.axes, x, ...
+                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
+            ylabel(obj.epochCard.axes, y, ...
+                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
+        end
+        
+        function addEpochDataLine(obj, x, y, color)
+            line(x, y, 'Parent', obj.epochCard.axes, 'Color', color);
+        end
+        
+        function setEpochDataLegend(obj, l, g)
+            clickableLegend(obj.epochCard.axes, l{:}, 'groups', g);
+        end
+        
+        function openEpochDataAxesInNewWindow(obj)
+            fig = figure( ...
+                'MenuBar', 'figure', ...
+                'Toolbar', 'figure', ...
+                'Visible', 'off');
+            axes = copyobj(obj.epochCard.axes, fig);
+            set(axes, ...
+                'Units', 'normalized', ...
+                'Position', get(groot, 'defaultAxesPosition'));
+            set(fig, 'Visible', 'on');
         end
         
         function removeNode(obj, node)
