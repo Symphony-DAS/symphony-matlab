@@ -38,7 +38,7 @@ classdef Label < matlab.mixin.SetGet %#ok<*MCSUP>
         
         function set.BackgroundColor(obj, c)
             switch c
-                case 'w'
+                case {'w', 'white'}
                     c = [1 1 1];
                 otherwise
                     error('Not supported');

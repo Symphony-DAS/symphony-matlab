@@ -35,6 +35,7 @@ classdef Table < matlab.mixin.SetGet %#ok<*MCSUP>
             obj.Control.getTableScrollPane.getRowHeader.setVisible(0);
             obj.Control.getTableScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
             obj.Control.getTable.getTableHeader.setToolTipText([]);
+            obj.Control.getTable.setFillsViewportHeight(true);
             obj.set(p.Unmatched);
         end
         

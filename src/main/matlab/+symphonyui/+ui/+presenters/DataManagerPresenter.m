@@ -296,9 +296,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             epochSet = symphonyui.app.EpochSet(epochs);
             
+            % Plot
             obj.view.clearEpochDataAxes();
             obj.view.setEpochDataAxesLabels('Time (s)', 'Data');
-            
             responseMap = epochSet.responseMap;
             colorOrder = get(groot, 'defaultAxesColorOrder');
             devices = responseMap.keys;
@@ -317,6 +317,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 end
             end
             obj.view.setEpochDataLegend(devices, groups);
+            
+            % Protocol parameters
+%             parameters = epochSet.commonProtocolParameters;
+%             keys = parameters.keys;
+%             data = cell(1, numel(keys)); 
+%             for i = 1:numel(keys)
+%                 data{i} = {keys{i}, mergeFields(parameters(keys{i}))};
+%             end
+%             obj.view.setEpochProtocolParameters(data);
             
             obj.view.setDataCardSelection(obj.view.EPOCH_DATA_CARD);
             
@@ -560,6 +569,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 end
 
 function f = mergeFields(fields)
+    if isempty(fields)
+        f = '';
+        return;
+    end
     f = strjoin(unique(fields), ', ');
 end
 

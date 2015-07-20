@@ -38,8 +38,8 @@ set( panel{3}, 'MinimizeFcn', {@nMinimize, 3} );
         % A panel has been maximized/minimized
         s = get( box, 'Heights' );
         pos = get( fig, 'Position' );
-        panel{whichpanel}.IsMinimized = ~panel{whichpanel}.IsMinimized;
-        if panel{whichpanel}.IsMinimized
+        panel{whichpanel}.Minimized = ~panel{whichpanel}.Minimized;
+        if panel{whichpanel}.Minimized
             s(whichpanel) = pheightmin;
         else
             s(whichpanel) = pheightmax;
