@@ -272,6 +272,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             blockArray = [blocks{:}];
             
             obj.view.setEpochBlockProtocolId(mergeFields({blockArray.protocolId}));
+            obj.view.setEpochBlockStartTime(mergeTimes([blockArray.startTime]));
+            obj.view.setEpochBlockEndTime(mergeTimes([blockArray.endTime]));
             obj.view.setDataCardSelection(obj.view.EPOCH_BLOCK_DATA_CARD);
             
             obj.populateAnnotations(blocks);
