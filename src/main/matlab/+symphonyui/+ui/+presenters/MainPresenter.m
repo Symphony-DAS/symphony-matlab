@@ -66,6 +66,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
+            obj.addListener(d, 'DeletedEntity', @obj.onServiceDeletedEntity);
             
             a = obj.acquisitionService;
             obj.addListener(a, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
@@ -150,6 +151,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceEndedEpochGroup(obj, ~, ~)
+            obj.updateEnableStateOfControls();
+        end
+        
+        function onServiceDeletedEntity(obj, ~, ~)
             obj.updateEnableStateOfControls();
         end
         
