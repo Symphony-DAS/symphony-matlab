@@ -36,6 +36,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
             obj.addListener(v, 'SelectedNodes', @obj.onViewSelectedNodes);
+            obj.addListener(v, 'SetSourceLabel', @obj.onViewSetSourceLabel);
+            obj.addListener(v, 'SetExperimentPurpose', @obj.onViewSetExperimentPurpose);
+            obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
             obj.addListener(v, 'AddKeyword', @obj.onViewSelectedAddKeyword);
@@ -62,7 +65,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         function populateEntityTree(obj)
             experiment = obj.documentationService.getCurrentExperiment();
             
-            obj.view.setExperimentNode(experiment.purpose, experiment);
+            obj.view.setExperimentNode(datestr(experiment.startTime, 1), experiment);
             obj.uuidToNode(experiment.uuid) = obj.view.getExperimentNode();
             
             devices = experiment.devices;
@@ -158,6 +161,30 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.enableAnnotations(true);
         end
         
+        function onViewSetSourceLabel(obj, ~, ~)
+            entities = obj.getSelectedEntities();
+            assert(numel(entities) == 1, 'Expected a single selected entity');
+            
+            source = entities{1};
+            label = obj.view.getSourceLabel();            
+            try
+                source.label = label;
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
+            
+            snode = obj.uuidToNode(source.uuid);
+            obj.view.setNodeName(snode, source.label);
+            
+            groups = source.epochGroups;
+            for i = 1:numel(groups)
+                g = groups{i};
+                gnode = obj.uuidToNode(g.uuid);
+                obj.view.setNodeName(gnode, [g.label ' (' g.source.label ')']);
+            end
+        end
+        
         function populateDetailsWithExperiments(obj, experiments)
             if ~iscell(experiments)
                 experiments = {experiments};
@@ -171,6 +198,20 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.populateAnnotations(experiments);
             obj.enableAnnotations(true);
+        end
+        
+        function onViewSetExperimentPurpose(obj, ~, ~)
+            entities = obj.getSelectedEntities();
+            assert(numel(entities) == 1, 'Expected a single selected entity');
+            
+            experiment = entities{1};
+            purpose = obj.view.getExperimentPurpose();
+            try
+                experiment.purpose = purpose;
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -247,6 +288,23 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.populateAnnotations(groups);
             obj.enableAnnotations(true);
+        end
+        
+        function onViewSetEpochGroupLabel(obj, ~, ~)
+            entities = obj.getSelectedEntities();
+            assert(numel(entities) == 1, 'Expected a single selected entity');
+            
+            group = entities{1};
+            label = obj.view.getEpochGroupLabel();
+            try
+                group.label = label;
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
+            
+            gnode = obj.uuidToNode(group.uuid);
+            obj.view.setNodeName(gnode, group.label);
         end
         
         function onServiceAddedEpochBlock(obj, ~, event)

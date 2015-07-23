@@ -6,9 +6,8 @@ classdef BeginEpochGroupView < symphonyui.ui.View
     end
 
     properties (Access = private)
-        labelField
         sourcePopupMenu
-        endCurrentEpochGroupCheckbox
+        templatePopupMenu
         beginButton
         cancelButton
     end
@@ -20,7 +19,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
 
             set(obj.figureHandle, ...
                 'Name', 'Begin Epoch Group', ...
-                'Position', screenCenter(250, 143));
+                'Position', screenCenter(250, 111));
 
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
@@ -32,27 +31,21 @@ classdef BeginEpochGroupView < symphonyui.ui.View
                 'Spacing', 7);
             Label( ...
                 'Parent', groupLayout, ...
-                'String', 'Label:');
+                'String', 'Source:');
             Label( ...
                 'Parent', groupLayout, ...
-                'String', 'Source:');
-            uix.Empty('Parent', groupLayout);
-            obj.labelField = uicontrol( ...
-                'Parent', groupLayout, ...
-                'Style', 'edit', ...
-                'HorizontalAlignment', 'left');
+                'String', 'Template:');
             obj.sourcePopupMenu = MappedPopupMenu( ...
                 'Parent', groupLayout, ...
                 'String', {' '}, ...
-                'HorizontalAlignment', 'left');            
-            obj.endCurrentEpochGroupCheckbox = uicontrol( ...
+                'HorizontalAlignment', 'left'); 
+            obj.templatePopupMenu = MappedPopupMenu( ...
                 'Parent', groupLayout, ...
-                'Style', 'checkbox', ...
-                'String', 'End current epoch group', ...
-                'HorizontalAlignment', 'left');
+                'String', {' '}, ...
+                'HorizontalAlignment', 'left'); 
             set(groupLayout, ...
-                'Widths', [40 -1], ...
-                'Heights', [25 25 25]);
+                'Widths', [55 -1], ...
+                'Heights', [25 25]);
 
             % Begin/Cancel controls.
             controlsLayout = uix.HBox( ...
@@ -80,15 +73,6 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             end
         end
 
-        function l = getLabel(obj)
-            l = get(obj.labelField, 'String');
-        end
-        
-        function requestLabelFocus(obj)
-            obj.update();
-            uicontrol(obj.labelField);
-        end
-
         function s = getSelectedSource(obj)
             s = get(obj.sourcePopupMenu, 'Value');
         end
@@ -102,18 +86,19 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             set(obj.sourcePopupMenu, 'Values', values);
         end
         
-        function enableShouldEndCurrentEpochGroup(obj, tf)
-            set(obj.endCurrentEpochGroupCheckbox, 'Enable', symphonyui.ui.util.onOff(tf));
+        function t = getSelectedTemplate(obj)
+            t = get(obj.templatePopupMenu, 'Value');
         end
         
-        function setShouldEndCurrentEpochGroup(obj, tf)
-            set(obj.endCurrentEpochGroupCheckbox, 'Value', tf);
+        function setSelectedTemplate(obj, t)
+            set(obj.templatePopupMenu, 'Value', t);
         end
         
-        function tf = getShouldEndCurrentEpochGroup(obj)
-            tf = get(obj.endCurrentEpochGroupCheckbox, 'Value');
+        function setTemplateList(obj, names, values)
+            set(obj.templatePopupMenu, 'String', names);
+            set(obj.templatePopupMenu, 'Values', values);
         end
-
+        
     end
 
 end

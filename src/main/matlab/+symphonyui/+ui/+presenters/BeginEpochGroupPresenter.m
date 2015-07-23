@@ -22,11 +22,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
 
         function onGoing(obj, ~, ~)
             obj.populateSourceList();
-            obj.updateShouldEndCurrentEpochGroupState();
-        end
-        
-        function onGo(obj, ~, ~)
-            obj.view.requestLabelFocus();
+            obj.populateTemplateList();
         end
         
         function onBind(obj)
@@ -52,9 +48,8 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedSource(sources{end});
         end
         
-        function updateShouldEndCurrentEpochGroupState(obj)
-            obj.view.enableShouldEndCurrentEpochGroup(obj.documentationService.canEndEpochGroup());
-            obj.view.setShouldEndCurrentEpochGroup(obj.documentationService.canEndEpochGroup() && true);
+        function populateTemplateList(obj)
+            obj.view.setTemplateList({'(None)'}, {[]});
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -69,14 +64,10 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         function onViewSelectedBegin(obj, ~, ~)
             obj.view.update();
             
-            label = obj.view.getLabel();
             source = obj.view.getSelectedSource();
-            shouldEndCurrentEpochGroup = obj.view.getShouldEndCurrentEpochGroup();
+            template = obj.view.getSelectedTemplate();
             try
-                if shouldEndCurrentEpochGroup
-                    obj.documentationService.endEpochGroup();
-                end
-                obj.documentationService.beginEpochGroup(label, source);
+                obj.documentationService.beginEpochGroup('label', source);
             catch x
                 obj.view.showError(x.message);
                 return;

@@ -9,13 +9,14 @@ function main()
     config.setDefaults(getDefaultOptions());
     
     persistorFactory = PersistorFactory();
+    %sourceTemplateRepository = ObjectRepository();
     protocolRepository = ObjectRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
     
     sessionData = SessionData();
     protocols = protocolRepository.getAll();
     sessionData.protocol = protocols{1};
     
-    documentationService = DocumentationService(sessionData, persistorFactory);
+    documentationService = DocumentationService(sessionData, persistorFactory, []);
     acquisitionService = AcquisitionService(sessionData, protocolRepository);
     configurationService = ConfigurationService();
 %     try %#ok<TRYNC>

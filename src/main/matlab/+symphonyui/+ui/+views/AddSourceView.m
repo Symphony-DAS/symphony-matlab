@@ -7,7 +7,7 @@ classdef AddSourceView < symphonyui.ui.View
     
     properties (Access = private)
         parentPopupMenu
-        labelField
+        templatePopupMenu
         addButton
         cancelButton
     end
@@ -34,17 +34,17 @@ classdef AddSourceView < symphonyui.ui.View
                 'String', 'Parent:');
             Label( ...
                 'Parent', sourceLayout, ...
-                'String', 'Label:');
+                'String', 'Template:');
             obj.parentPopupMenu = MappedPopupMenu( ...
                 'Parent', sourceLayout, ...
                 'String', {' '}, ...
                 'HorizontalAlignment', 'left');
-            obj.labelField = uicontrol( ...
+            obj.templatePopupMenu = MappedPopupMenu( ...
                 'Parent', sourceLayout, ...
-                'Style', 'edit', ...
+                'String', {' '}, ...
                 'HorizontalAlignment', 'left');
             set(sourceLayout, ...
-                'Widths', [40 -1], ...
+                'Widths', [55 -1], ...
                 'Heights', [25 25]);
 
             % Add/Cancel controls.
@@ -77,8 +77,8 @@ classdef AddSourceView < symphonyui.ui.View
             set(obj.parentPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
-        function v = getSelectedParent(obj)
-            v = get(obj.parentPopupMenu, 'Value');
+        function p = getSelectedParent(obj)
+            p = get(obj.parentPopupMenu, 'Value');
         end
 
         function setSelectedParent(obj, p)
@@ -90,13 +90,17 @@ classdef AddSourceView < symphonyui.ui.View
             set(obj.parentPopupMenu, 'Values', values);
         end
         
-        function l = getLabel(obj)
-            l = get(obj.labelField, 'String');
+        function t = getSelectedTemplate(obj)
+            t = get(obj.templatePopupMenu, 'Value');
         end
         
-        function requestLabelFocus(obj)
-            obj.update();
-            uicontrol(obj.labelField);
+        function setSelectedTemplate(obj, t)
+            set(obj.templatePopupMenu, 'Value', t);
+        end
+        
+        function setTemplateList(obj, names, values)
+            set(obj.templatePopupMenu, 'String', names);
+            set(obj.templatePopupMenu, 'Values', values);
         end
 
     end

@@ -15,13 +15,15 @@ classdef DocumentationService < handle
     properties (Access = private)
         sessionData
         persistorFactory
+        sourceTemplateRepository
     end
 
     methods
         
-        function obj = DocumentationService(sessionData, persistorFactory)
+        function obj = DocumentationService(sessionData, persistorFactory, sourceTemplateRepository)
             obj.sessionData = sessionData;
             obj.persistorFactory = persistorFactory;
+            obj.sourceTemplateRepository = sourceTemplateRepository;
         end
         
         function tf = hasOpenFile(obj)

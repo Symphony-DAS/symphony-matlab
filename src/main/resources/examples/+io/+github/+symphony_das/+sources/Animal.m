@@ -1,4 +1,4 @@
-classdef Animal < symphonyui.core.Source
+classdef Animal < symphonyui.core.Template
     
     properties
         species = 'C57BL/6'

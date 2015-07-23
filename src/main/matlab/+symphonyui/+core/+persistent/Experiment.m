@@ -1,7 +1,10 @@
 classdef Experiment < symphonyui.core.persistent.TimelineEntity
 
-    properties (SetAccess = private)
+    properties
         purpose
+    end
+    
+    properties (SetAccess = private)
         devices
         sources
         allSources
@@ -16,6 +19,10 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
 
         function p = get.purpose(obj)
             p = char(obj.cobj.Purpose);
+        end
+        
+        function set.purpose(obj, p)
+            obj.cobj.Purpose = p;
         end
 
         function d = get.devices(obj)

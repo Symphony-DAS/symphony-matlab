@@ -7,7 +7,7 @@ classdef PersistorFactory < handle
             if exist(path, 'file')
                 error('File exists');
             end
-            p = symphonyui.core.Persistor(Symphony.Core.H5EpochPersistor.Create(path, 'my purpose here'));
+            p = symphonyui.core.Persistor(Symphony.Core.H5EpochPersistor.Create(path));
         end
         
         function p = open(obj, path)

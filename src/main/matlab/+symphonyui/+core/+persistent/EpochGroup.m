@@ -1,7 +1,10 @@
 classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
 
-    properties (SetAccess = private)
+    properties
         label
+    end
+    
+    properties (SetAccess = private)
         source
         epochGroups
         epochBlocks
@@ -17,6 +20,10 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
 
         function p = get.label(obj)
             p = char(obj.cobj.Label);
+        end
+        
+        function set.label(obj, l)
+            obj.cobj.Label = l;
         end
 
         function s = get.source(obj)

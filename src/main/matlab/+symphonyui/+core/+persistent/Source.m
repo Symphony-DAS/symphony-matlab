@@ -1,7 +1,10 @@
 classdef Source < symphonyui.core.persistent.Entity
 
-    properties (SetAccess = private)
+    properties
         label
+    end
+    
+    properties (SetAccess = private)
         sources
         allSources
         epochGroups
@@ -16,8 +19,12 @@ classdef Source < symphonyui.core.persistent.Entity
             obj@symphonyui.core.persistent.Entity(cobj);
         end
 
-        function n = get.label(obj)
-            n = char(obj.cobj.Label);
+        function l = get.label(obj)
+            l = char(obj.cobj.Label);
+        end
+        
+        function set.label(obj, l)
+            obj.cobj.Label = l;
         end
 
         function s = get.sources(obj)

@@ -5,6 +5,9 @@ classdef DataManagerView < symphonyui.ui.View
         BeginEpochGroup
         EndEpochGroup
         SelectedNodes
+        SetSourceLabel
+        SetExperimentPurpose
+        SetEpochGroupLabel
         AddProperty
         RemoveProperty
         AddKeyword
@@ -203,8 +206,8 @@ classdef DataManagerView < symphonyui.ui.View
             obj.sourceCard.labelField = uicontrol( ...
                 'Parent', sourceLayout, ...
                 'Style', 'edit', ...
-                'Enable', 'off', ...
-                'HorizontalAlignment', 'left');
+                'HorizontalAlignment', 'left', ...
+                'Callback', @(h,d)notify(obj, 'SetSourceLabel'));
             set(sourceLayout, ...
                 'Widths', [35 -1], ...
                 'Heights', 25);
@@ -230,8 +233,8 @@ classdef DataManagerView < symphonyui.ui.View
             obj.experimentCard.purposeField = uicontrol( ...
                 'Parent', experimentLayout, ...
                 'Style', 'edit', ...
-                'Enable', 'off', ...
-                'HorizontalAlignment', 'left');
+                'HorizontalAlignment', 'left', ...
+                'Callback', @(h,d)notify(obj, 'SetExperimentPurpose'));
             obj.experimentCard.startTimeField = uicontrol( ...
                 'Parent', experimentLayout, ...
                 'Style', 'edit', ...
@@ -271,8 +274,8 @@ classdef DataManagerView < symphonyui.ui.View
             obj.epochGroupCard.labelField = uicontrol( ...
                 'Parent', epochGroupLayout, ...
                 'Style', 'edit', ...
-                'Enable', 'off', ...
-                'HorizontalAlignment', 'left');
+                'HorizontalAlignment', 'left', ...
+                'Callback', @(h,d)notify(obj, 'SetEpochGroupLabel'));
             obj.epochGroupCard.startTimeField = uicontrol( ...
                 'Parent', epochGroupLayout, ...
                 'Style', 'edit', ...
@@ -475,7 +478,11 @@ classdef DataManagerView < symphonyui.ui.View
             n.setIcon(symphonyui.app.App.getResource('icons/source.png'));
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
-
+        
+        function l = getSourceLabel(obj)
+            l = get(obj.sourceCard.labelField, 'String');
+        end
+        
         function setSourceLabel(obj, l)
             set(obj.sourceCard.labelField, 'String', l);
         end
@@ -490,6 +497,10 @@ classdef DataManagerView < symphonyui.ui.View
         
         function n = getExperimentNode(obj)
             n = obj.entityTree.Root;
+        end
+        
+        function p = getExperimentPurpose(obj)
+            p = get(obj.experimentCard.purposeField, 'String');
         end
 
         function setExperimentPurpose(obj, p)
@@ -517,6 +528,10 @@ classdef DataManagerView < symphonyui.ui.View
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/group.png'));
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
+        end
+        
+        function l = getEpochGroupLabel(obj)
+            l = get(obj.epochGroupCard.labelField, 'String');
         end
 
         function setEpochGroupLabel(obj, l)
@@ -612,6 +627,10 @@ classdef DataManagerView < symphonyui.ui.View
         
         function setEpochProtocolParameters(obj, data)
             set(obj.epochCard.table, 'Data', data);
+        end
+        
+        function setNodeName(obj, node, name) %#ok<INUSL>
+            set(node, 'Name', name);
         end
         
         function removeNode(obj, node) %#ok<INUSL>
