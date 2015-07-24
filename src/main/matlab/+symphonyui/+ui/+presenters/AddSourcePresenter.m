@@ -22,7 +22,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
         
         function onGoing(obj, ~, ~)
             obj.populateParentList();
-            obj.populateTemplateList();
+            obj.populateDescriptionList();
         end
         
         function onBind(obj)
@@ -54,8 +54,8 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             end
         end
         
-        function populateTemplateList(obj)
-            obj.view.setTemplateList({'(None)'}, {[]});
+        function populateDescriptionList(obj)
+            obj.view.setDescriptionList({'(None)'}, {[]});
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -71,7 +71,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             obj.view.update();
             
             parent = obj.view.getSelectedParent();
-            template = obj.view.getSelectedTemplate();
+            description = obj.view.getSelectedDescription();
             try
                 obj.documentationService.addSource('label', parent);
             catch x

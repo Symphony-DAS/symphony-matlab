@@ -7,7 +7,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
 
     properties (Access = private)
         sourcePopupMenu
-        templatePopupMenu
+        descriptionPopupMenu
         beginButton
         cancelButton
     end
@@ -19,7 +19,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
 
             set(obj.figureHandle, ...
                 'Name', 'Begin Epoch Group', ...
-                'Position', screenCenter(250, 111));
+                'Position', screenCenter(260, 111));
 
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
@@ -34,17 +34,17 @@ classdef BeginEpochGroupView < symphonyui.ui.View
                 'String', 'Source:');
             Label( ...
                 'Parent', groupLayout, ...
-                'String', 'Template:');
+                'String', 'Description:');
             obj.sourcePopupMenu = MappedPopupMenu( ...
                 'Parent', groupLayout, ...
                 'String', {' '}, ...
                 'HorizontalAlignment', 'left'); 
-            obj.templatePopupMenu = MappedPopupMenu( ...
+            obj.descriptionPopupMenu = MappedPopupMenu( ...
                 'Parent', groupLayout, ...
                 'String', {' '}, ...
                 'HorizontalAlignment', 'left'); 
             set(groupLayout, ...
-                'Widths', [55 -1], ...
+                'Widths', [65 -1], ...
                 'Heights', [25 25]);
 
             % Begin/Cancel controls.
@@ -86,17 +86,17 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             set(obj.sourcePopupMenu, 'Values', values);
         end
         
-        function t = getSelectedTemplate(obj)
-            t = get(obj.templatePopupMenu, 'Value');
+        function t = getSelectedDescription(obj)
+            t = get(obj.descriptionPopupMenu, 'Value');
         end
         
-        function setSelectedTemplate(obj, t)
-            set(obj.templatePopupMenu, 'Value', t);
+        function setSelectedDescription(obj, t)
+            set(obj.descriptionPopupMenu, 'Value', t);
         end
         
-        function setTemplateList(obj, names, values)
-            set(obj.templatePopupMenu, 'String', names);
-            set(obj.templatePopupMenu, 'Values', values);
+        function setDescriptionList(obj, names, values)
+            set(obj.descriptionPopupMenu, 'String', names);
+            set(obj.descriptionPopupMenu, 'Values', values);
         end
         
     end

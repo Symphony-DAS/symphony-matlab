@@ -22,7 +22,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
 
         function onGoing(obj, ~, ~)
             obj.populateSourceList();
-            obj.populateTemplateList();
+            obj.populateDescriptionList();
         end
         
         function onBind(obj)
@@ -48,8 +48,8 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedSource(sources{end});
         end
         
-        function populateTemplateList(obj)
-            obj.view.setTemplateList({'(None)'}, {[]});
+        function populateDescriptionList(obj)
+            obj.view.setDescriptionList({'(None)'}, {[]});
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -65,7 +65,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             obj.view.update();
             
             source = obj.view.getSelectedSource();
-            template = obj.view.getSelectedTemplate();
+            description = obj.view.getSelectedDescription();
             try
                 obj.documentationService.beginEpochGroup('label', source);
             catch x
