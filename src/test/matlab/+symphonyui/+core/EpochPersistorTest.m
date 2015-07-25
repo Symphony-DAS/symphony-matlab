@@ -6,7 +6,6 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
     
     properties (Constant)
         TEST_FILE = 'test.h5'
-        TEST_PURPOSE = 'for testing purposes';
         TEST_START_TIME = datetime([2016,10,24,11,45,07], 'TimeZone', 'America/Denver');
         TEST_END_TIME = datetime([2016,10,24,12,48,32], 'TimeZone', 'Asia/Tokyo');
     end
@@ -32,7 +31,7 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
     methods (TestMethodSetup)
         
         function methodSetup(obj)
-            cobj = Symphony.Core.H5EpochPersistor.Create(obj.TEST_FILE, obj.TEST_PURPOSE);
+            cobj = Symphony.Core.H5EpochPersistor.Create(obj.TEST_FILE);
             obj.persistor = symphonyui.core.Persistor(cobj);
         end
         
@@ -145,7 +144,7 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
         function testExperiment(obj)
             exp = obj.persistor.experiment;
             
-            obj.verifyEqual(exp.purpose, obj.TEST_PURPOSE);
+            obj.verifyEmpty(exp.purpose);
             obj.verifyEmpty(exp.devices);
             obj.verifyEmpty(exp.sources);
             obj.verifyEmpty(exp.allSources);

@@ -17,29 +17,17 @@ classdef AcquisitionService < handle
             obj.protocolRepository = protocolRepository;
         end
         
-        function [cn, dn] = getAvailableProtocols(obj)
-            protocols = obj.protocolRepository.getAll();
-            
-            cn = cell(1, numel(protocols));
-            dn = cell(1, numel(protocols));
-            for i = 1:numel(protocols)
-                cn{i} = class(protocols{i});
-                dn{i} = protocols{i}.getDisplayName();
-            end
+        function p = getAvailableProtocols(obj)
+            p = obj.protocolRepository.getAll();
         end
         
-        function selectProtocol(obj, className)
-            if ~any(strcmp(className, obj.getAvailableProtocols))
-                error([className ' is not a member of available protocols']);
-            end
-            protocols = obj.protocolRepository.getAll();
-            index = cellfun(@(p)strcmp(class(p), className), protocols);
-            obj.sessionData.protocol = protocols{index};
+        function selectProtocol(obj, protocol)
+            obj.sessionData.protocol = protocol;
             notify(obj, 'SelectedProtocol');
         end
         
-        function cn = getSelectedProtocol(obj)
-            cn = class(obj.getSessionProtocol());
+        function p = getSelectedProtocol(obj)
+            p = obj.getSessionProtocol();
         end
         
         function setProtocolProperty(obj, name, value)

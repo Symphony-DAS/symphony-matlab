@@ -9,14 +9,14 @@ function main()
     config.setDefaults(getDefaultOptions());
     
     persistorFactory = PersistorFactory();
-    %sourceTemplateRepository = ObjectRepository();
+    sourceDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.SourceDescription', config.get(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH));
     protocolRepository = ObjectRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
     
     sessionData = SessionData();
     protocols = protocolRepository.getAll();
     sessionData.protocol = protocols{1};
     
-    documentationService = DocumentationService(sessionData, persistorFactory, []);
+    documentationService = DocumentationService(sessionData, persistorFactory, sourceDescriptionRepository);
     acquisitionService = AcquisitionService(sessionData, protocolRepository);
     configurationService = ConfigurationService();
 %     try %#ok<TRYNC>
@@ -68,6 +68,7 @@ function d = getDefaultOptions()
 
     d(Options.GENERAL_RIG_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+rigs')};
     d(Options.GENERAL_PROTOCOL_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+protocols')};
+    d(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+sources')};
     d(Options.FILE_DEFAULT_NAME) = @()datestr(now, 'yyyy-mm-dd');
     d(Options.FILE_DEFAULT_LOCATION) = @()pwd();
     d(Options.EPOCH_GROUP_LABEL_LIST) = {'Control', 'Drug', 'Wash'};

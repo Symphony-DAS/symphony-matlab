@@ -173,8 +173,16 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function populateProtocolList(obj)
-            [classNames, displayNames] = obj.acquisitionService.getAvailableProtocols();
-            obj.view.setProtocolList(displayNames, classNames);
+            protocols = obj.acquisitionService.getAvailableProtocols();
+            
+            names = cell(1, numel(protocols));
+            for i = 1:numel(protocols)
+                names{i} = protocols{i}.getDisplayName();
+            end
+            names = ['(None)', names];
+            values = [{symphonyui.app.NullProtocol()}, protocols];
+            
+            obj.view.setProtocolList(names, values);
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
         end
         

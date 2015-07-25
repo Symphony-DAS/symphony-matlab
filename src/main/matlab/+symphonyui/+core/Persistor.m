@@ -34,13 +34,18 @@ classdef Persistor < symphonyui.core.CoreObject
             d = symphonyui.core.persistent.Device(cdev);
         end
 
-        function s = addSource(obj, label, parent)
+        function s = addSource(obj, description, parent)
+            if ischar(description)
+                label = description;
+                description = symphonyui.core.descriptions.SourceDescription();
+                description.label = label;
+            end
             if nargin < 3 || isempty(parent)
                 cparent = [];
             else
                 cparent = parent.cobj;
             end
-            csrc = obj.tryCoreWithReturn(@()obj.cobj.AddSource(label, cparent));
+            csrc = obj.tryCoreWithReturn(@()obj.cobj.AddSource(description.label, cparent));
             s = symphonyui.core.persistent.Source(csrc);
         end
 

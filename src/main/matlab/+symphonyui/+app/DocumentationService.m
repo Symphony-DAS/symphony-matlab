@@ -61,8 +61,15 @@ classdef DocumentationService < handle
             notify(obj, 'AddedDevice', symphonyui.app.util.AppEventData(d));
         end
         
-        function s = addSource(obj, label, parent)
-            s = obj.getSessionPersistor().addSource(label, parent);
+        function d = getAvailableSourceDescriptions(obj)
+            d = obj.sourceDescriptionRepository.getAll();
+        end
+        
+        function s = addSource(obj, description, parent)
+            if isempty(description)
+                description = 'Source';
+            end
+            s = obj.getSessionPersistor().addSource(description, parent);
             notify(obj, 'AddedSource', symphonyui.app.util.AppEventData(s));
         end
         

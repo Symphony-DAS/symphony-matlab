@@ -1,10 +1,13 @@
-classdef Animal < symphonyui.core.Template
+classdef Animal < symphonyui.core.descriptions.SourceDescription
     
     properties
-        species = 'C57BL/6'
     end
     
     methods
+        
+        function obj = Animal()
+            obj.keywords = {'one', 'two'};
+        end
         
     end
     
