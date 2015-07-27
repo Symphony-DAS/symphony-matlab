@@ -9,6 +9,7 @@ classdef DataManagerView < symphonyui.ui.View
         SetExperimentPurpose
         SetEpochGroupLabel
         AddProperty
+        SetProperty
         RemoveProperty
         AddKeyword
         RemoveKeyword
@@ -366,10 +367,9 @@ classdef DataManagerView < symphonyui.ui.View
                 'Title', 'Properties');
             obj.propertiesTab.layout = uix.VBox( ...
                 'Parent', obj.propertiesTab.tab);
-            obj.propertiesTab.table = Table( ...
-                'Parent', obj.propertiesTab.layout, ...
-                'ColumnName', {'Key', 'Value'}, ...
-                'Editable', false);
+            obj.propertiesTab.grid = uiextras.jide.PropertyGrid(obj.propertiesTab.layout, ...
+                'BorderType', 'none', ...
+                'Callback', @(h,d)notify(obj, 'SetProperty', d));
             [a, r] = obj.createAddRemoveButtons(obj.propertiesTab.layout, @(h,d)notify(obj, 'AddProperty'), @(h,d)notify(obj, 'RemoveProperty'));
             obj.propertiesTab.addButton = a;
             obj.propertiesTab.removeButton = r;
@@ -658,22 +658,22 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.propertiesTab.removeButton, 'Enable', enable);
         end
 
-        function setProperties(obj, data)
-            set(obj.propertiesTab.table, 'Data', data);
+        function setProperties(obj, properties)
+            set(obj.propertiesTab.grid, 'Properties', properties);
         end
         
-        function d = getProperties(obj)
-            d = get(obj.propertiesTab.table, 'Data');
+        function p = getProperties(obj)
+            p = get(obj.propertiesTab.grid, 'Properties');
         end
 
         function addProperty(obj, key, value)
-            obj.propertiesTab.table.addRow({key, value});
+            %obj.propertiesTab.table.addRow({key, value});
         end
 
         function removeProperty(obj, property)
-            properties = obj.propertiesTab.table.getColumnData(1);
-            index = find(cellfun(@(c)strcmp(c, property), properties));
-            obj.propertiesTab.table.removeRow(index); %#ok<FNDSB>
+            %properties = obj.propertiesTab.table.getColumnData(1);
+            %index = find(cellfun(@(c)strcmp(c, property), properties));
+            %obj.propertiesTab.table.removeRow(index); %#ok<FNDSB>
         end
 
         function p = getSelectedProperty(obj)

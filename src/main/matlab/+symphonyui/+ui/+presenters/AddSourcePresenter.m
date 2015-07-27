@@ -68,6 +68,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             values = [{emptyDescription}, descriptions];
             
             obj.view.setDescriptionList(names, values);
+            obj.view.setSelectedDescription(values{end});
         end
         
         function onViewKeyPress(obj, ~, event)

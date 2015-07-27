@@ -455,16 +455,16 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateProperties(obj, entities)
-            entitySet = symphonyui.app.EntitySet(entities);
-            props = entitySet.commonPropertyMap;
-            
-            keys = props.keys;
-            data = cell(1, numel(keys)); 
-            for i = 1:numel(keys)
-                data{i} = {keys{i}, mergeFields(props(keys{i}))};
-            end
-            
-            obj.view.setProperties(data);
+%             entitySet = symphonyui.app.EntitySet(entities);
+%             props = entitySet.commonPropertyMap;
+%             
+%             keys = props.keys;
+%             data = cell(1, numel(keys)); 
+%             for i = 1:numel(keys)
+%                 data{i} = {keys{i}, mergeFields(props(keys{i}))};
+%             end
+%             
+%             obj.view.setProperties(data);
         end
         
         function onViewSelectedAddProperty(obj, ~, ~)

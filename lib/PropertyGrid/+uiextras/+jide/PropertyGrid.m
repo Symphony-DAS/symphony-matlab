@@ -52,6 +52,8 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
         Enable;
         % Show description pane?
         ShowDescription;
+        % Border type of grid outline
+        BorderType
     end
     properties (Access = private)
         % A matlab.ui.container.internal.JavaWrapper.
@@ -219,6 +221,20 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
 
         function set.ShowDescription(self, tf)
             self.Pane.setShowDescription(tf);
+        end
+        
+        function t = get.BorderType(self)
+            t = []; % TODO: Implement
+        end
+        
+        function set.BorderType(self, t)
+            switch t
+                case 'none'
+                    t = javax.swing.BorderFactory.createEmptyBorder();
+                otherwise
+                    error('Unsupported type');
+            end
+            self.Pane.getScrollPane().setBorder(t);
         end
 
         function self = Bind(self, item, properties)
