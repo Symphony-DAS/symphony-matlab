@@ -21,6 +21,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj, ~, ~)
+            obj.populateParent();
             obj.populateSourceList();
             obj.populateDescriptionList();
         end
@@ -35,6 +36,16 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     end
     
     methods (Access = private)
+        
+        function populateParent(obj)
+            group = obj.documentationService.getCurrentEpochGroup();
+            if isempty(group)
+                parent = '(None)';
+            else
+                parent = group.label;
+            end
+            obj.view.setParent(parent);
+        end
         
         function populateSourceList(obj)
             sources = obj.documentationService.getCurrentExperiment().allSources();
