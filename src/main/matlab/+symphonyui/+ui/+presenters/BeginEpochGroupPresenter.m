@@ -49,7 +49,19 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         end
         
         function populateDescriptionList(obj)
-            obj.view.setDescriptionList({'(None)'}, {[]});
+            descriptions = obj.documentationService.getAvailableEpochGroupDescriptions();
+            
+            emptyDescription = symphonyui.core.descriptions.EpochGroupDescription();
+            emptyDescription.label = 'Epoch Group';
+            
+            names = cell(1, numel(descriptions));
+            for i = 1:numel(descriptions)
+                names{i} = descriptions{i}.displayName;
+            end
+            names = ['(None)', names];
+            values = [{emptyDescription}, descriptions];
+            
+            obj.view.setDescriptionList(names, values);
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -67,7 +79,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             source = obj.view.getSelectedSource();
             description = obj.view.getSelectedDescription();
             try
-                obj.documentationService.beginEpochGroup('label', source);
+                obj.documentationService.beginEpochGroup(description, source);
             catch x
                 obj.view.showError(x.message);
                 return;

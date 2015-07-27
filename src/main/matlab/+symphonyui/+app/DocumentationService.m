@@ -16,14 +16,16 @@ classdef DocumentationService < handle
         sessionData
         persistorFactory
         sourceDescriptionRepository
+        epochGroupDescriptionRepository
     end
 
     methods
         
-        function obj = DocumentationService(sessionData, persistorFactory, sourceDescriptionRepository)
+        function obj = DocumentationService(sessionData, persistorFactory, sourceDescriptionRepository, epochGroupDescriptionRespository)
             obj.sessionData = sessionData;
             obj.persistorFactory = persistorFactory;
             obj.sourceDescriptionRepository = sourceDescriptionRepository;
+            obj.epochGroupDescriptionRepository = epochGroupDescriptionRespository;
         end
         
         function tf = hasOpenFile(obj)
@@ -73,12 +75,16 @@ classdef DocumentationService < handle
             notify(obj, 'AddedSource', symphonyui.app.util.AppEventData(s));
         end
         
+        function d = getAvailableEpochGroupDescriptions(obj)
+            d = obj.epochGroupDescriptionRepository.getAll();
+        end
+        
         function tf = canBeginEpochGroup(obj)
             tf = obj.hasOpenFile() && ~isempty(obj.getCurrentExperiment().sources);
         end
         
-        function g = beginEpochGroup(obj, label, source)
-            g = obj.getSessionPersistor().beginEpochGroup(label, source);
+        function g = beginEpochGroup(obj, description, source)
+            g = obj.getSessionPersistor().beginEpochGroup(description, source);
             notify(obj, 'BeganEpochGroup', symphonyui.app.util.AppEventData(g));
         end
         
