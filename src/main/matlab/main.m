@@ -9,6 +9,7 @@ function main()
     config.setDefaults(getDefaultOptions());
     
     persistorFactory = PersistorFactory();
+    fileDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.FileDescription', config.get(Options.GENERAL_FILE_DESCRIPTION_SEARCH_PATH));
     sourceDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.SourceDescription', config.get(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH));
     epochGroupDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.EpochGroupDescription', config.get(Options.GENERAL_EPOCH_GROUP_DESCRIPTION_SEARCH_PATH));
     protocolRepository = ObjectRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
@@ -17,7 +18,7 @@ function main()
     protocols = protocolRepository.getAll();
     sessionData.protocol = protocols{1};
     
-    documentationService = DocumentationService(sessionData, persistorFactory, sourceDescriptionRepository, epochGroupDescriptionRepository);
+    documentationService = DocumentationService(sessionData, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRepository);
     acquisitionService = AcquisitionService(sessionData, protocolRepository);
     configurationService = ConfigurationService();
 %     try %#ok<TRYNC>
@@ -69,6 +70,7 @@ function d = getDefaultOptions()
 
     d(Options.GENERAL_RIG_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+rigs')};
     d(Options.GENERAL_PROTOCOL_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+protocols')};
+    d(Options.GENERAL_FILE_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+files')};
     d(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+sources')};
     d(Options.GENERAL_EPOCH_GROUP_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+epochgroups')};
     d(Options.FILE_DEFAULT_NAME) = @()datestr(now, 'yyyy-mm-dd');

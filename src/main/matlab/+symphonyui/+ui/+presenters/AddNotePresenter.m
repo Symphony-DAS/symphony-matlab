@@ -55,11 +55,11 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
                 return;
             end
 
-            obj.view.hide();
+            obj.close();
         end
 
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.hide();
+            obj.close();
         end
 
     end

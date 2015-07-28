@@ -47,7 +47,7 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedOk(obj, ~, ~)
-            obj.view.hide();
+            obj.close();
         end
         
     end

@@ -165,7 +165,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function showDataManager(obj)
             if isempty(obj.dataManagerPresenter) || obj.dataManagerPresenter.isStopped
                 obj.dataManagerPresenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.app);
-                obj.dataManagerPresenter.hideOnViewSelectedClose = true;
                 obj.dataManagerPresenter.go();
             else
                 obj.dataManagerPresenter.show();

@@ -21,12 +21,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj)
-            obj.populateEntityTree();
-            
-            experiment = obj.documentationService.getCurrentExperiment();
-            obj.view.setSelectedNodes(obj.uuidToNode(experiment.uuid));
-            obj.populateDetailsWithExperiments(experiment);
-            
+            obj.populateEntityTree();            
             obj.updateEnableStateOfControls();
         end
         
@@ -63,9 +58,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateEntityTree(obj)
-            experiment = obj.documentationService.getCurrentExperiment();
-            
-            obj.view.setExperimentNode(datestr(experiment.startTime, 1), experiment);
+            experiment = obj.documentationService.getExperiment();
+            obj.view.setExperimentNode(['Experiment (' datestr(experiment.startTime, 1) ')'], experiment);
             obj.uuidToNode(experiment.uuid) = obj.view.getExperimentNode();
             
             devices = experiment.devices;
@@ -85,6 +79,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 obj.addEpochGroupNode(groups{i});
             end
             obj.view.expandNode(obj.view.getEpochGroupsFolderNode());
+            
+            obj.view.setSelectedNodes(obj.uuidToNode(experiment.uuid));
+            obj.populateDetailsWithExperiments(experiment);
         end
         
         function onServiceAddedDevice(obj, ~, event)
@@ -126,7 +123,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             node = obj.addSourceNode(source);
             
             obj.view.setSelectedNodes(node);
-            obj.view.setSelectedTab(obj.view.PROPERTIES_TAB);
             
             obj.populateDetailsWithSources(source);
             obj.updateEnableStateOfControls();
@@ -185,6 +181,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             end
         end
         
+        function onServiceSetExperimentDetails(obj, ~, ~)
+            
+        end
+        
         function populateDetailsWithExperiments(obj, experiments)
             if ~iscell(experiments)
                 experiments = {experiments};
@@ -225,7 +225,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.view.setSelectedNodes(node);
             obj.view.setEpochGroupNodeCurrent(node);
-            obj.view.setSelectedTab(obj.view.PROPERTIES_TAB);
             
             obj.populateDetailsWithEpochGroups(group);
             obj.updateEnableStateOfControls();

@@ -24,7 +24,7 @@ classdef Persistor < symphonyui.core.CoreObject
         function tf = get.isClosed(obj)
             tf = obj.cobj.IsClosed;
         end
-
+        
         function e = get.experiment(obj)
             e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
         end
@@ -34,13 +34,13 @@ classdef Persistor < symphonyui.core.CoreObject
             d = symphonyui.core.persistent.Device(cdev);
         end
 
-        function s = addSource(obj, description, parent)
+        function s = addSource(obj, parent, description)
             if ischar(description)
                 label = description;
                 description = symphonyui.core.descriptions.SourceDescription();
                 description.label = label;
             end
-            if nargin < 3 || isempty(parent)
+            if isempty(parent)
                 cparent = [];
             else
                 cparent = parent.cobj;
@@ -49,7 +49,7 @@ classdef Persistor < symphonyui.core.CoreObject
             s = symphonyui.core.persistent.Source(csrc);
         end
 
-        function g = beginEpochGroup(obj, description, source)
+        function g = beginEpochGroup(obj, source, description)
             if ischar(description)
                 label = description;
                 description = symphonyui.core.descriptions.EpochGroupDescription();

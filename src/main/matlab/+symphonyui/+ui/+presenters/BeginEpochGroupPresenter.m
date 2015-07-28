@@ -48,7 +48,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
         end
         
         function populateSourceList(obj)
-            sources = obj.documentationService.getCurrentExperiment().allSources();
+            sources = obj.documentationService.getExperiment().allSources();
             
             names = cell(1, numel(sources));
             for i = 1:numel(sources)
@@ -91,17 +91,17 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             source = obj.view.getSelectedSource();
             description = obj.view.getSelectedDescription();
             try
-                obj.documentationService.beginEpochGroup(description, source);
+                obj.documentationService.beginEpochGroup(source, description);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
             
-            obj.view.hide();
+            obj.close();
         end
         
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.hide();
+            obj.close();
         end
         
     end

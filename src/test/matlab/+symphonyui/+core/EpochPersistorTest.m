@@ -113,7 +113,7 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
         end
         
         function testSource(obj)
-            src = obj.persistor.addSource('src');
+            src = obj.persistor.addSource([], 'src');
             
             obj.verifyEqual(src.label, 'src');
             obj.verifyEmpty(src.sources);
@@ -123,9 +123,9 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
             obj.verifyEmpty(src.parent);
             obj.verifyEqual(src.experiment, obj.persistor.experiment);
             
-            src1 = obj.persistor.addSource('src1', src);
-            src2 = obj.persistor.addSource('src2', src);
-            src3 = obj.persistor.addSource('src3', src2);
+            src1 = obj.persistor.addSource(src, 'src1');
+            src2 = obj.persistor.addSource(src, 'src2');
+            src3 = obj.persistor.addSource(src2, 'src3');
             
             obj.verifyEqual(src1.parent, src);
             obj.verifyEqual(src2.parent, src);
@@ -133,9 +133,9 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
             obj.verifyCellsAreEquivalent(src.sources, {src1, src2});
             obj.verifyCellsAreEquivalent(src.allSources, {src1, src2, src3});
             
-            grp1 = obj.persistor.beginEpochGroup('grp1', src);
-            grp2 = obj.persistor.beginEpochGroup('grp2', src);
-            grp3 = obj.persistor.beginEpochGroup('grp3', src1);
+            grp1 = obj.persistor.beginEpochGroup(src, 'grp1');
+            grp2 = obj.persistor.beginEpochGroup(src, 'grp2');
+            grp3 = obj.persistor.beginEpochGroup(src1, 'grp3');
             
             obj.verifyCellsAreEquivalent(src.epochGroups, {grp1, grp2});
             obj.verifyCellsAreEquivalent(src.allEpochGroups, {grp1, grp2, grp3});
@@ -155,16 +155,16 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
             
             obj.verifyCellsAreEquivalent(exp.devices, {dev1, dev2});
             
-            src1 = obj.persistor.addSource('src1');
-            src2 = obj.persistor.addSource('src2');
-            src3 = obj.persistor.addSource('src3', src1);
+            src1 = obj.persistor.addSource([], 'src1');
+            src2 = obj.persistor.addSource([], 'src2');
+            src3 = obj.persistor.addSource(src1, 'src3');
             
             obj.verifyCellsAreEquivalent(exp.sources, {src1, src2});
             obj.verifyCellsAreEquivalent(exp.allSources, {src1, src2, src3});
             
-            grp1 = obj.persistor.beginEpochGroup('grp1', src1);
+            grp1 = obj.persistor.beginEpochGroup(src1, 'grp1');
             obj.persistor.endEpochGroup();
-            grp2 = obj.persistor.beginEpochGroup('grp2', src2);
+            grp2 = obj.persistor.beginEpochGroup(src2, 'grp2');
             
             obj.verifyCellsAreEquivalent(exp.epochGroups, {grp1, grp2});
         end
@@ -172,8 +172,8 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
         function testEpochGroup(obj)
             obj.verifyEmpty(obj.persistor.currentEpochGroup);
             
-            src = obj.persistor.addSource('src');
-            grp = obj.persistor.beginEpochGroup('grp', src);
+            src = obj.persistor.addSource([], 'src');
+            grp = obj.persistor.beginEpochGroup(src, 'grp');
             
             obj.verifyEqual(obj.persistor.currentEpochGroup, grp);
             obj.verifyEqual(grp.label, 'grp');
@@ -183,9 +183,9 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
             obj.verifyEmpty(grp.parent);
             obj.verifyEqual(grp.experiment, obj.persistor.experiment);
             
-            grp1 = obj.persistor.beginEpochGroup('grp1', src);
+            grp1 = obj.persistor.beginEpochGroup(src, 'grp1');
             obj.persistor.endEpochGroup();
-            grp2 = obj.persistor.beginEpochGroup('grp2', src);
+            grp2 = obj.persistor.beginEpochGroup(src, 'grp2');
             obj.persistor.endEpochGroup();
             
             obj.verifyEqual(grp1.parent, grp);
@@ -202,8 +202,8 @@ classdef EpochPersistorTest < matlab.unittest.TestCase
         function testEpochBlock(obj)
             obj.verifyEmpty(obj.persistor.currentEpochBlock);
             
-            src = obj.persistor.addSource('src');
-            grp = obj.persistor.beginEpochGroup('grp', src);
+            src = obj.persistor.addSource([], 'src');
+            grp = obj.persistor.beginEpochGroup(src, 'grp');
             blk = obj.persistor.beginEpochBlock('blk', obj.TEST_START_TIME);
             
             obj.verifyEqual(obj.persistor.currentEpochBlock, blk);

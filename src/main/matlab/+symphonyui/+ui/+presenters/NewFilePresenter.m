@@ -22,6 +22,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
         
         function onGoing(obj)
             obj.populateFromConfig();
+            obj.populateDescriptionList();
         end
         
         function onGo(obj)
@@ -32,7 +33,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'BrowseLocation', @obj.onViewSelectedBrowseLocation);
-            obj.addListener(v, 'Open', @obj.onViewSelectedOpen);
+            obj.addListener(v, 'Ok', @obj.onViewSelectedOk);
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
         
@@ -56,11 +57,27 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             end
         end
         
+        function populateDescriptionList(obj)
+            descriptions = obj.documentationService.getAvailableFileDescriptions();
+            
+            emptyDescription = symphonyui.core.descriptions.FileDescription();
+            
+            names = cell(1, numel(descriptions));
+            for i = 1:numel(descriptions)
+                names{i} = descriptions{i}.displayName;
+            end
+            names = ['(None)', names];
+            values = [{emptyDescription}, descriptions];
+            
+            obj.view.setDescriptionList(names, values);
+            obj.view.setSelectedDescription(values{end});
+        end
+        
         function onViewKeyPress(obj, ~, event)
             switch event.key
                 case 'return'
                     % FIXME: not sure why this is sometimes called twice on return
-                    obj.onViewSelectedOpen();
+                    obj.onViewSelectedOk();
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
@@ -74,23 +91,25 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             obj.view.setLocation(location);
         end
         
-        function onViewSelectedOpen(obj, ~, ~)
+        function onViewSelectedOk(obj, ~, ~)
             obj.view.update();
             
             name = obj.view.getName();            
             location = obj.view.getLocation();
+            description = obj.view.getSelectedDescription();
             try
-                obj.documentationService.newFile(name, location);
+                obj.documentationService.newFile(name, location, description);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
             
-            obj.view.hide();
+            obj.result = true;
+            obj.close();
         end
         
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.hide();
+            obj.close();
         end
         
     end

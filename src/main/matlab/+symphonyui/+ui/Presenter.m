@@ -1,7 +1,7 @@
 classdef Presenter < handle
     
-    properties
-        hideOnViewSelectedClose
+    properties (SetAccess = protected)
+        result
     end
     
     properties (SetAccess = private)
@@ -21,7 +21,7 @@ classdef Presenter < handle
     methods
         
         function obj = Presenter(app, view)
-            obj.hideOnViewSelectedClose = false;
+            obj.result = false;
             obj.isStopped = false;
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.app = app;
@@ -57,6 +57,10 @@ classdef Presenter < handle
         
         function hide(obj)
             obj.view.hide();
+        end
+        
+        function close(obj)
+            obj.view.close();
         end
         
         function goWaitStop(obj)
@@ -106,11 +110,7 @@ classdef Presenter < handle
         end
         
         function onViewSelectedClose(obj, ~, ~)
-            if obj.hideOnViewSelectedClose
-                obj.hide();
-            else
-                obj.stop();
-            end
+            obj.stop();
         end
         
     end

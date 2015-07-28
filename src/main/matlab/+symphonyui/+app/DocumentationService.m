@@ -15,15 +15,17 @@ classdef DocumentationService < handle
     properties (Access = private)
         sessionData
         persistorFactory
+        fileDescriptionRepository
         sourceDescriptionRepository
         epochGroupDescriptionRepository
     end
 
     methods
         
-        function obj = DocumentationService(sessionData, persistorFactory, sourceDescriptionRepository, epochGroupDescriptionRespository)
+        function obj = DocumentationService(sessionData, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRespository)
             obj.sessionData = sessionData;
             obj.persistorFactory = persistorFactory;
+            obj.fileDescriptionRepository = fileDescriptionRepository;
             obj.sourceDescriptionRepository = sourceDescriptionRepository;
             obj.epochGroupDescriptionRepository = epochGroupDescriptionRespository;
         end
@@ -32,7 +34,11 @@ classdef DocumentationService < handle
             tf = obj.hasSessionPersistor();
         end
         
-        function newFile(obj, name, location)
+        function d = getAvailableFileDescriptions(obj)
+            d = obj.fileDescriptionRepository.getAll();
+        end
+        
+        function newFile(obj, name, location, description)
             if obj.hasOpenFile()
                 error('File already open');
             end
@@ -54,7 +60,7 @@ classdef DocumentationService < handle
             notify(obj, 'ClosedFile');
         end
         
-        function e = getCurrentExperiment(obj)
+        function e = getExperiment(obj)
             e = obj.getSessionPersistor().experiment;
         end
         
@@ -67,11 +73,8 @@ classdef DocumentationService < handle
             d = obj.sourceDescriptionRepository.getAll();
         end
         
-        function s = addSource(obj, description, parent)
-            if isempty(description)
-                description = 'Source';
-            end
-            s = obj.getSessionPersistor().addSource(description, parent);
+        function s = addSource(obj, parent, description)
+            s = obj.getSessionPersistor().addSource(parent, description);
             notify(obj, 'AddedSource', symphonyui.app.util.AppEventData(s));
         end
         
@@ -80,11 +83,11 @@ classdef DocumentationService < handle
         end
         
         function tf = canBeginEpochGroup(obj)
-            tf = obj.hasOpenFile() && ~isempty(obj.getCurrentExperiment().sources);
+            tf = obj.hasOpenFile() && ~isempty(obj.getExperiment().sources);
         end
         
-        function g = beginEpochGroup(obj, description, source)
-            g = obj.getSessionPersistor().beginEpochGroup(description, source);
+        function g = beginEpochGroup(obj, source, description)
+            g = obj.getSessionPersistor().beginEpochGroup(source, description);
             notify(obj, 'BeganEpochGroup', symphonyui.app.util.AppEventData(g));
         end
         

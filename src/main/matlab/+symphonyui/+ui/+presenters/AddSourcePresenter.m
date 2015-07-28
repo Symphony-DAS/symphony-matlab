@@ -37,7 +37,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateParentList(obj)
-            sources = obj.documentationService.getCurrentExperiment().allSources();
+            sources = obj.documentationService.getExperiment().allSources();
             
             names = cell(1, numel(sources));
             for i = 1:numel(sources)
@@ -86,17 +86,17 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             parent = obj.view.getSelectedParent();
             description = obj.view.getSelectedDescription();
             try
-                obj.documentationService.addSource(description, parent);
+                obj.documentationService.addSource(parent, description);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
             
-            obj.view.hide();
+            obj.close();
         end
         
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.hide();
+            obj.close();
         end
         
     end
