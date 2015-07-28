@@ -16,6 +16,7 @@ classdef DataManagerView < symphonyui.ui.View
         AddNote
         SendToWorkspace
         DeleteEntity
+        Reload
         OpenAxesInNewWindow
     end
 
@@ -23,6 +24,7 @@ classdef DataManagerView < symphonyui.ui.View
         addSourceButtons
         beginEpochGroupButtons
         endEpochGroupButtons
+        reloadButtons
         entityTree
         devicesFolderNode
         sourcesFolderNode
@@ -119,6 +121,11 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', treeMenu, ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
+            obj.reloadButtons.menu = uimenu( ...
+                'Parent', treeMenu, ...
+                'Label', 'Reload', ...
+                'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'Reload'));
             set(obj.entityTree, 'UIContextMenu', treeMenu);
             
             root = obj.entityTree.Root;

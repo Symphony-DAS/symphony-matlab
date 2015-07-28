@@ -41,6 +41,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'SendToWorkspace', @obj.onViewSelectedSendToWorkspace);
             obj.addListener(v, 'DeleteEntity', @obj.onViewSelectedDeleteEntity);
+            obj.addListener(v, 'Reload', @obj.onViewSelectedReload);
             obj.addListener(v, 'OpenAxesInNewWindow', @obj.onViewSelectedOpenAxesInNewWindow);
             
             d = obj.documentationService;
@@ -179,10 +180,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 gnode = obj.uuidToNode(g.uuid);
                 obj.view.setNodeName(gnode, [g.label ' (' g.source.label ')']);
             end
-        end
-        
-        function onServiceSetExperimentDetails(obj, ~, ~)
-            
         end
         
         function populateDetailsWithExperiments(obj, experiments)
@@ -600,6 +597,11 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.populateDetails();
             obj.updateEnableStateOfControls();
+        end
+        
+        function onViewSelectedReload(obj, ~, ~)
+            % TODO: Implement
+            obj.view.showError('Not implemented yet');
         end
         
         function onViewSelectedOpenAxesInNewWindow(obj, ~, ~)
