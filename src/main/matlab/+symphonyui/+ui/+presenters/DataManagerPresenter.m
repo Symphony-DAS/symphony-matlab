@@ -60,7 +60,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         
         function populateEntityTree(obj)
             experiment = obj.documentationService.getExperiment();
-            obj.view.setExperimentNode(['Experiment (' datestr(experiment.startTime, 1) ')'], experiment);
+            obj.view.setExperimentNode([experiment.purpose ' (' datestr(experiment.startTime, 1) ')'], experiment);
             obj.uuidToNode(experiment.uuid) = obj.view.getExperimentNode();
             
             devices = experiment.devices;
@@ -208,6 +208,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 obj.view.showError(x.message);
                 return;
             end
+            
+            enode = obj.uuidToNode(experiment.uuid);
+            obj.view.setNodeName(enode, [experiment.purpose ' (' datestr(experiment.startTime, 1) ')']);
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -299,7 +302,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             end
             
             gnode = obj.uuidToNode(group.uuid);
-            obj.view.setNodeName(gnode, group.label);
+            obj.view.setNodeName(gnode, [group.label ' (' group.source.label ')']);
         end
         
         function onServiceAddedEpochBlock(obj, ~, event)
@@ -386,15 +389,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.populateAnnotations(epochs);
         end
         
-        function populateDetailsWithEmpty(obj)
-            nodes = obj.view.getSelectedNodes();
-            
-            if numel(nodes) == 1
-                text = obj.view.getNodeName(nodes);
-            else
-                text = [num2str(numel(nodes)) ' nodes selected'];
-            end
-            obj.view.setEmptyText(text);
+        function populateDetailsWithEmpty(obj, entities, types) %#ok<INUSL>
+            obj.view.setEmptyText(mergeFields(arrayfun(@(t)lower(strrep(char(t), '_', ' ')), types, 'UniformOutput', false)));
             obj.view.setCardSelection(obj.view.EMPTY_CARD);
             
             obj.populateAnnotations({});
@@ -410,7 +406,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             [entities, types] = obj.getSelectedEntities();
             
             if isempty(types) || numel(types) > 1
-                obj.populateDetailsWithEmpty();
+                obj.populateDetailsWithEmpty(entities, types);
                 return;
             end
             
@@ -428,7 +424,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 case EntityNodeType.EPOCH
                     obj.populateDetailsWithEpochs(entities);
                 otherwise
-                    obj.populateDetailsWithEmpty();
+                    obj.populateDetailsWithEmpty(entities, types);
             end
         end
         
