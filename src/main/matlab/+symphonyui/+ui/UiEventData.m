@@ -1,4 +1,4 @@
-classdef DomainEventData < event.EventData
+classdef UiEventData < event.EventData
     
     properties
         data
@@ -6,7 +6,7 @@ classdef DomainEventData < event.EventData
     
     methods
         
-        function obj = DomainEventData(data)
+        function obj = AppEventData(data)
             obj.data = data;
         end
         
