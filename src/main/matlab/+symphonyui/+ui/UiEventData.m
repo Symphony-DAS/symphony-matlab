@@ -6,7 +6,7 @@ classdef UiEventData < event.EventData
     
     methods
         
-        function obj = AppEventData(data)
+        function obj = UiEventData(data)
             obj.data = data;
         end
         

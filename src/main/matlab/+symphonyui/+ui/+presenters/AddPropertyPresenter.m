@@ -35,7 +35,7 @@ classdef AddPropertyPresenter < symphonyui.ui.Presenter
     methods (Access = private)
 
         function onViewKeyPress(obj, ~, event)
-            switch event.key
+            switch event.data.Key
                 case 'return'
                     obj.onViewSelectedAdd();
                 case 'escape'

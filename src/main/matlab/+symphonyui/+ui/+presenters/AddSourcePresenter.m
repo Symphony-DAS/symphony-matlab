@@ -72,7 +72,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
         end
         
         function onViewKeyPress(obj, ~, event)
-            switch event.key
+            switch event.data.Key
                 case 'return'
                     obj.onViewSelectedAdd();
                 case 'escape'

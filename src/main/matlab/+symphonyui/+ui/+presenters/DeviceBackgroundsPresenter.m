@@ -45,7 +45,7 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
         end
         
         function onViewKeyPress(obj, ~, event)
-            switch event.key
+            switch event.data.Key
                 case 'return'
                     obj.onViewSelectedApply();
                 case 'escape'

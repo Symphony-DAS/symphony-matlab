@@ -23,7 +23,7 @@ classdef View < handle
                 'HandleVisibility', 'off', ...
                 'Visible', 'off', ...
                 'DockControls', 'off', ...
-                'WindowKeyPressFcn', @(h,d)notify(obj, 'KeyPress', symphonyui.ui.util.KeyPressEventData(d)), ...
+                'WindowKeyPressFcn', @(h,d)notify(obj, 'KeyPress', symphonyui.ui.UiEventData(d)), ...
                 'CloseRequestFcn', @(h,d)notify(obj, 'Close'));
 
             if ispc
@@ -33,7 +33,7 @@ classdef View < handle
                 set(obj.figureHandle, 'DefaultUicontrolFontName', 'Helvetica Neue');
                 set(obj.figureHandle, 'DefaultUicontrolFontSize', 12);
             end
-            
+
             try
                 obj.createUi();
             catch x
@@ -45,7 +45,7 @@ classdef View < handle
         function delete(obj)
             obj.close();
         end
-        
+
         function setWindowStyle(obj, s)
             set(obj.figureHandle, 'WindowStyle', s);
         end
@@ -87,7 +87,7 @@ classdef View < handle
         function showWeb(obj, url) %#ok<INUSL>
             web(url);
         end
-        
+
         function p = showGetFile(obj, title, filter, defaultName) %#ok<INUSL>
             if nargin < 3
                 filter = '*';
@@ -102,7 +102,7 @@ classdef View < handle
             end
             p = fullfile(pathname, filename);
         end
-        
+
         function p = showPutFile(obj, title, filter, defaultName) %#ok<INUSL>
             if nargin < 3
                 filter = '*';
