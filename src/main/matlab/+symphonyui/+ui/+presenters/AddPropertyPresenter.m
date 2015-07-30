@@ -54,7 +54,10 @@ classdef AddPropertyPresenter < symphonyui.ui.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-
+            
+            obj.result.key = key;
+            obj.result.value = value;
+            
             obj.close();
         end
 

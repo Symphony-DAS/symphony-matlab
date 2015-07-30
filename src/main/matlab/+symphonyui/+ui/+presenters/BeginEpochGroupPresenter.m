@@ -91,11 +91,13 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             source = obj.view.getSelectedSource();
             description = obj.view.getSelectedDescription();
             try
-                obj.documentationService.beginEpochGroup(source, description);
+                group = obj.documentationService.beginEpochGroup(source, description);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
+            
+            obj.result = group;
             
             obj.close();
         end

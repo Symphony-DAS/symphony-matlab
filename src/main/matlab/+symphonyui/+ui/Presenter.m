@@ -21,7 +21,7 @@ classdef Presenter < handle
     methods
         
         function obj = Presenter(app, view)
-            obj.result = false;
+            obj.result = [];
             obj.isStopped = false;
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.app = app;

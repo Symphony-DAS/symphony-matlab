@@ -58,7 +58,7 @@ classdef EntitySet < handle
             end
             p.key = key;
             p.value = value;
-            notify(obj, 'AddedProperty', symphonyui.app.util.AppEventData(p));
+            notify(obj, 'AddedProperty', symphonyui.app.AppEventData(p));
         end
         
         function tf = removeProperty(obj, key)
@@ -68,7 +68,7 @@ classdef EntitySet < handle
                 tf = tf || removed;
             end
             if tf
-                notify(obj, 'RemovedProperty', symphonyui.app.util.AppEventData(key));
+                notify(obj, 'RemovedProperty', symphonyui.app.AppEventData(key));
             end
         end
         
@@ -91,7 +91,7 @@ classdef EntitySet < handle
                 tf = tf || added;
             end
             if tf
-                notify(obj, 'AddedKeyword', symphonyui.app.util.AppEventData(keyword));
+                notify(obj, 'AddedKeyword', symphonyui.app.AppEventData(keyword));
             end
         end
         
@@ -102,7 +102,7 @@ classdef EntitySet < handle
                 tf = tf || removed;
             end
             if tf
-                notify(obj, 'RemovedKeyword', symphonyui.app.util.AppEventData(keyword));
+                notify(obj, 'RemovedKeyword', symphonyui.app.AppEventData(keyword));
             end
         end
         
@@ -124,7 +124,7 @@ classdef EntitySet < handle
             for i = 1:numel(obj.entities)
                 n = obj.entities{i}.addNote(text, time);
             end
-            notify(obj, 'AddedNote', symphonyui.app.util.AppEventData(n));
+            notify(obj, 'AddedNote', symphonyui.app.AppEventData(n));
         end
         
     end

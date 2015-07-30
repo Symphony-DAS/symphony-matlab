@@ -3,6 +3,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
     properties (Access = private)
         documentationService
         uuidToNode
+        detailedEntities
     end
     
     methods
@@ -12,8 +13,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 view = symphonyui.ui.views.DataManagerView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
+            
             obj.documentationService = documentationService;
             obj.uuidToNode = containers.Map();
+            obj.detailedEntities = {};
         end
 
     end
@@ -111,6 +114,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setCardSelection(obj.view.DEVICE_CARD);
             
             obj.populateAnnotations(devices);
+            obj.detailedEntities = devices;
         end
         
         function onViewSelectedAddSource(obj, ~, ~)
@@ -155,29 +159,31 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setCardSelection(obj.view.SOURCE_CARD);
             
             obj.populateAnnotations(sources);
+            obj.detailedEntities = sources;
         end
         
         function onViewSetSourceLabel(obj, ~, ~)
-            entities = obj.getSelectedEntities();
-            assert(numel(entities) == 1, 'Expected a single selected entity');
+            entities = obj.detailedEntities;
             
-            source = entities{1};
-            label = obj.view.getSourceLabel();            
-            try
-                source.label = label;
-            catch x
-                obj.view.showError(x.message);
-                return;
-            end
-            
-            snode = obj.uuidToNode(source.uuid);
-            obj.view.setNodeName(snode, source.label);
-            
-            groups = source.epochGroups;
-            for i = 1:numel(groups)
-                g = groups{i};
-                gnode = obj.uuidToNode(g.uuid);
-                obj.view.setNodeName(gnode, [g.label ' (' g.source.label ')']);
+            label = obj.view.getSourceLabel();
+            for i = 1:numel(entities)
+                source = entities{i};            
+                try
+                    source.label = label;
+                catch x
+                    obj.view.showError(x.message);
+                    return;
+                end
+
+                snode = obj.uuidToNode(source.uuid);
+                obj.view.setNodeName(snode, source.label);
+
+                groups = source.epochGroups;
+                for k = 1:numel(groups)
+                    g = groups{k};
+                    gnode = obj.uuidToNode(g.uuid);
+                    obj.view.setNodeName(gnode, [g.label ' (' g.source.label ')']);
+                end
             end
         end
         
@@ -194,23 +200,25 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setCardSelection(obj.view.EXPERIMENT_CARD);
             
             obj.populateAnnotations(experiments);
+            obj.detailedEntities = experiments;
         end
         
-        function onViewSetExperimentPurpose(obj, ~, ~)
-            entities = obj.getSelectedEntities();
-            assert(numel(entities) == 1, 'Expected a single selected entity');
+        function onViewSetExperimentPurpose(obj, ~, ~)            
+            entities = obj.detailedEntities;
             
-            experiment = entities{1};
             purpose = obj.view.getExperimentPurpose();
-            try
-                experiment.purpose = purpose;
-            catch x
-                obj.view.showError(x.message);
-                return;
+            for i = 1:numel(entities)
+                experiment = entities{i};
+                try
+                    experiment.purpose = purpose;
+                catch x
+                    obj.view.showError(x.message);
+                    return;
+                end
+
+                enode = obj.uuidToNode(experiment.uuid);
+                obj.view.setNodeName(enode, [experiment.purpose ' (' datestr(experiment.startTime, 1) ')']);
             end
-            
-            enode = obj.uuidToNode(experiment.uuid);
-            obj.view.setNodeName(enode, [experiment.purpose ' (' datestr(experiment.startTime, 1) ')']);
         end
         
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
@@ -286,23 +294,25 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setCardSelection(obj.view.EPOCH_GROUP_CARD);
             
             obj.populateAnnotations(groups);
+            obj.detailedEntities = groups;
         end
         
         function onViewSetEpochGroupLabel(obj, ~, ~)
-            entities = obj.getSelectedEntities();
-            assert(numel(entities) == 1, 'Expected a single selected entity');
+            entities = obj.detailedEntities;
             
-            group = entities{1};
             label = obj.view.getEpochGroupLabel();
-            try
-                group.label = label;
-            catch x
-                obj.view.showError(x.message);
-                return;
+            for i = 1:numel(entities)
+                group = entities{i};
+                try
+                    group.label = label;
+                catch x
+                    obj.view.showError(x.message);
+                    return;
+                end
+
+                gnode = obj.uuidToNode(group.uuid);
+                obj.view.setNodeName(gnode, [group.label ' (' group.source.label ')']);
             end
-            
-            gnode = obj.uuidToNode(group.uuid);
-            obj.view.setNodeName(gnode, [group.label ' (' group.source.label ')']);
         end
         
         function onServiceAddedEpochBlock(obj, ~, event)
@@ -333,6 +343,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
             
             obj.populateAnnotations(blocks);
+            obj.detailedEntities = blocks;
         end
         
         function onServiceAddedEpoch(obj, ~, event)
@@ -387,26 +398,35 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setCardSelection(obj.view.EPOCH_CARD);
             
             obj.populateAnnotations(epochs);
+            obj.detailedEntities = epochs;
         end
         
-        function populateDetailsWithEmpty(obj, entities, types) %#ok<INUSL>
+        function populateDetailsWithEmpty(obj, types)
             obj.view.setEmptyText(mergeFields(arrayfun(@(t)lower(strrep(char(t), '_', ' ')), types, 'UniformOutput', false)));
             obj.view.setCardSelection(obj.view.EMPTY_CARD);
             
             obj.populateAnnotations({});
+            obj.detailedEntities = {};
         end
         
         function onViewSelectedNodes(obj, ~, ~)
-            obj.populateDetails();
+            obj.view.update();
+            obj.populateDetailsWithNodes(obj.view.getSelectedNodes());
         end
         
-        function populateDetails(obj)
+        function populateDetailsWithNodes(obj, nodes)
             import symphonyui.ui.views.EntityNodeType;
             
-            [entities, types] = obj.getSelectedEntities();
+            entities = cell(1, numel(nodes));
+            types = symphonyui.ui.views.EntityNodeType.empty(0, numel(nodes));
+            for i = 1:numel(nodes)
+                entities{i} = obj.view.getNodeEntity(nodes(i));
+                types(i) = obj.view.getNodeType(nodes(i));
+            end
             
+            types = unique(types);
             if isempty(types) || numel(types) > 1
-                obj.populateDetailsWithEmpty(entities, types);
+                obj.populateDetailsWithEmpty(types);
                 return;
             end
             
@@ -424,7 +444,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 case EntityNodeType.EPOCH
                     obj.populateDetailsWithEpochs(entities);
                 otherwise
-                    obj.populateDetailsWithEmpty(entities, types);
+                    obj.populateDetailsWithEmpty(types);
             end
         end
         
@@ -448,22 +468,22 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddProperty(obj, ~, ~)
-            entitySet = symphonyui.app.EntitySet(obj.getSelectedEntities());
-            addlistener(entitySet, 'AddedProperty', @obj.onEntitySetAddedProperty);
+            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
             
             presenter = symphonyui.ui.presenters.AddPropertyPresenter(entitySet, obj.app);
             presenter.goWaitStop();
-        end
-        
-        function onEntitySetAddedProperty(obj, ~, event)
-            p = event.data;
-            values = obj.view.getProperties();
-            index = cellfun(@(c)strcmp(c{1}, p.key), values);
-            if any(index)
-                values{index}{2} = p.value;
-                obj.view.setProperties(values);
-            else
-                obj.view.addProperty(p.key, p.value);
+            
+            if ~isempty(presenter.result)
+                property = presenter.result;
+                
+                values = obj.view.getProperties();
+                index = cellfun(@(c)strcmp(c{1}, property.key), values);
+                if any(index)
+                    values{index}{2} = p.value;
+                    obj.view.setProperties(values);
+                else
+                    obj.view.addProperty(p.key, p.value);
+                end
             end
         end
         
@@ -473,18 +493,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 return;
             end
             
-            entitySet = symphonyui.app.EntitySet(obj.getSelectedEntities());
-            addlistener(entitySet, 'RemovedProperty', @obj.onEntitySetRemovedProperty);
+            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
             try
                 entitySet.removeProperty(key);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
-        end
-        
-        function onEntitySetRemovedProperty(obj, ~, event)
-            obj.view.removeProperty(event.data);
+            
+            obj.view.removeProperty(key);
         end
         
         function populateKeywords(obj, entities)
@@ -494,15 +511,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddKeyword(obj, ~, ~)
-            entitySet = symphonyui.app.EntitySet(obj.getSelectedEntities());
-            addlistener(entitySet, 'AddedKeyword', @obj.onEntitySetAddedKeyword);
+            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
             
             presenter = symphonyui.ui.presenters.AddKeywordPresenter(entitySet, obj.app);
             presenter.goWaitStop();
-        end
-        
-        function onEntitySetAddedKeyword(obj, ~, event)
-            obj.view.addKeyword(event.data);
+            
+            if ~isempty(presenter.result)
+                keyword = presenter.result;
+                obj.view.addKeyword(keyword);
+            end
         end
         
         function onViewSelectedRemoveKeyword(obj, ~, ~)
@@ -511,18 +528,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 return;
             end
             
-            entitySet = symphonyui.app.EntitySet(obj.getSelectedEntities());
-            addlistener(entitySet, 'RemovedKeyword', @obj.onEntitySetRemovedKeyword);
+            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
             try
                 entitySet.removeKeyword(keyword);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
-        end
-        
-        function onEntitySetRemovedKeyword(obj, ~, event)
-            obj.view.removeKeyword(event.data);
+            
+            obj.view.removeKeyword(keyword);
         end
         
         function populateNotes(obj, entities)
@@ -537,37 +551,43 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddNote(obj, ~, ~)
-            entitySet = symphonyui.app.EntitySet(obj.getSelectedEntities());
-            addlistener(entitySet, 'AddedNote', @obj.onEntitySetAddedNote);
+            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
             
             presenter = symphonyui.ui.presenters.AddNotePresenter(entitySet, obj.app);
             presenter.goWaitStop();
-        end
-        
-        function onEntitySetAddedNote(obj, ~, event)
-            note = event.data;
-            obj.view.addNote(datestr(note.time, 14), note.text);
+            
+            if ~isempty(presenter.result)
+                note = presenter.result;
+                obj.view.addNote(datestr(note.time, 14), note.text);
+            end
         end
         
         function onViewSelectedSendToWorkspace(obj, ~, ~)
-            entities = obj.getSelectedEntities();
-            assert(numel(entities) == 1, 'Expected a single selected entity');
-            try
-                obj.documentationService.sendToWorkspace(entities{1});
-            catch x
-                obj.view.showError(x.message);
-                return;
+            nodes = obj.view.getSelectedNodes();
+            
+            for i = 1:numel(nodes)
+                name = matlab.lang.makeValidName(obj.view.getNodeName(nodes(i)));
+                entity = obj.view.getNodeEntity(nodes(i));
+                try
+                    obj.documentationService.sendToWorkspace(name, entity);
+                catch x
+                    obj.view.showError(x.message);
+                    return;
+                end
             end
         end
         
         function onViewSelectedDeleteEntity(obj, ~, ~)
-            entities = obj.getSelectedEntities();
-            assert(numel(entities) == 1, 'Expected a single selected entity');
-            try
-                obj.documentationService.deleteEntity(entities{1});
-            catch x
-                obj.view.showError(x.message);
-                return;
+            nodes = obj.view.getSelectedNodes();
+            
+            for i = 1:numel(nodes)
+                entity = obj.view.getNodeEntity(nodes(i));
+                try
+                    obj.documentationService.deleteEntity(entity);
+                catch x
+                    obj.view.showError(x.message);
+                    return;
+                end
             end
         end
         
@@ -575,11 +595,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             uuid = event.data;
             node = obj.uuidToNode(uuid);
             
-            obj.view.setSelectedNodes(get(node, 'Parent'));
             obj.view.removeNode(node);
             obj.uuidToNode.remove(uuid);
             
-            obj.populateDetails();
+            obj.populateDetailsWithNodes(obj.view.getSelectedNodes());
             obj.updateEnableStateOfControls();
         end
         
@@ -595,18 +614,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         function updateEnableStateOfControls(obj)
             obj.view.enableBeginEpochGroup(obj.documentationService.canBeginEpochGroup());
             obj.view.enableEndEpochGroup(obj.documentationService.canEndEpochGroup());
-        end
-        
-        function [e, t] = getSelectedEntities(obj)
-            nodes = obj.view.getSelectedNodes();
-            values = [nodes(:).Value];
-            if isempty(values)
-                e = [];
-                t = [];
-                return;
-            end
-            e = {values(:).entity};
-            t = unique([values(:).type]);
         end
         
     end

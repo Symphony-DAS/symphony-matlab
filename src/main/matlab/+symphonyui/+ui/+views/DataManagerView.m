@@ -638,6 +638,16 @@ classdef DataManagerView < symphonyui.ui.View
             set(node, 'Name', name);
         end
         
+        function e = getNodeEntity(obj, node) %#ok<INUSL>
+            v = get(node, 'Value');
+            e = v.entity;
+        end
+        
+        function t = getNodeType(obj, node) %#ok<INUSL>
+            v = get(node, 'Value');
+            t = v.type;
+        end
+        
         function removeNode(obj, node) %#ok<INUSL>
             node.delete();
         end

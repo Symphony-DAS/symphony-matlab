@@ -49,12 +49,14 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
             text = obj.view.getText();
             time = datetime('now', 'TimeZone', 'local');
             try
-                obj.entitySet.addNote(text, time);
+                note = obj.entitySet.addNote(text, time);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
-
+            
+            obj.result = note;
+            
             obj.close();
         end
 

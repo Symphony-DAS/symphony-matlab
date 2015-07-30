@@ -66,7 +66,7 @@ classdef DocumentationService < handle
         
         function d = addDevice(obj, name, manufacturer)
             d = obj.getSessionPersistor().addDevice(name, manufacturer);
-            notify(obj, 'AddedDevice', symphonyui.app.util.AppEventData(d));
+            notify(obj, 'AddedDevice', symphonyui.app.AppEventData(d));
         end
         
         function d = getAvailableSourceDescriptions(obj)
@@ -75,7 +75,7 @@ classdef DocumentationService < handle
         
         function s = addSource(obj, parent, description)
             s = obj.getSessionPersistor().addSource(parent, description);
-            notify(obj, 'AddedSource', symphonyui.app.util.AppEventData(s));
+            notify(obj, 'AddedSource', symphonyui.app.AppEventData(s));
         end
         
         function d = getAvailableEpochGroupDescriptions(obj)
@@ -88,7 +88,7 @@ classdef DocumentationService < handle
         
         function g = beginEpochGroup(obj, source, description)
             g = obj.getSessionPersistor().beginEpochGroup(source, description);
-            notify(obj, 'BeganEpochGroup', symphonyui.app.util.AppEventData(g));
+            notify(obj, 'BeganEpochGroup', symphonyui.app.AppEventData(g));
         end
         
         function tf = canEndEpochGroup(obj)
@@ -97,7 +97,7 @@ classdef DocumentationService < handle
         
         function g = endEpochGroup(obj)
             g = obj.getSessionPersistor().endEpochGroup();
-            notify(obj, 'EndedEpochGroup', symphonyui.app.util.AppEventData(g));
+            notify(obj, 'EndedEpochGroup', symphonyui.app.AppEventData(g));
         end
         
         function g = getCurrentEpochGroup(obj)
@@ -107,13 +107,13 @@ classdef DocumentationService < handle
         function deleteEntity(obj, entity)
             uuid = entity.uuid;
             obj.getSessionPersistor().deleteEntity(entity);
-            notify(obj, 'DeletedEntity', symphonyui.app.util.AppEventData(uuid));
+            notify(obj, 'DeletedEntity', symphonyui.app.AppEventData(uuid));
         end
         
-        function sendToWorkspace(obj, entity) %#ok<INUSL>
+        function sendToWorkspace(obj, name, value) %#ok<INUSL>
             % TODO: use a unique name so it doesn't overwrite existing var
-            assignin('base', 'entity', entity);
-            evalin('base', 'disp([''entity = '' class(entity)])');
+            assignin('base', name, value);
+            evalin('base', ['disp(''' name ' = ' class(value) ''')']);
         end
         
     end

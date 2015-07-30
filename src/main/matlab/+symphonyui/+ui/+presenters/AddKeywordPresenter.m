@@ -61,12 +61,16 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
             
             keyword = obj.view.getText();
             try
-                obj.entitySet.addKeyword(keyword);
+                tf = obj.entitySet.addKeyword(keyword);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
-
+            
+            if tf
+                obj.result = keyword;
+            end
+            
             obj.close();
         end
 

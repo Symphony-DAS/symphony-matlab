@@ -86,11 +86,13 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             parent = obj.view.getSelectedParent();
             description = obj.view.getSelectedDescription();
             try
-                obj.documentationService.addSource(parent, description);
+                source = obj.documentationService.addSource(parent, description);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
+            
+            obj.result = source;
             
             obj.close();
         end
