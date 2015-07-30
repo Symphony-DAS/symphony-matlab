@@ -41,7 +41,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'SendToWorkspace', @obj.onViewSelectedSendToWorkspace);
             obj.addListener(v, 'DeleteEntity', @obj.onViewSelectedDeleteEntity);
-            obj.addListener(v, 'Reload', @obj.onViewSelectedReload);
+            obj.addListener(v, 'Refresh', @obj.onViewSelectedRefresh);
             obj.addListener(v, 'OpenAxesInNewWindow', @obj.onViewSelectedOpenAxesInNewWindow);
             
             d = obj.documentationService;
@@ -108,10 +108,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.view.setDeviceName(mergeFields({deviceArray.name}));
             obj.view.setDeviceManufacturer(mergeFields({deviceArray.manufacturer}));
-            obj.view.setDataCardSelection(obj.view.DEVICE_DATA_CARD);
+            obj.view.setCardSelection(obj.view.DEVICE_CARD);
             
             obj.populateAnnotations(devices);
-            obj.enableAnnotations(true);
         end
         
         function onViewSelectedAddSource(obj, ~, ~)
@@ -151,11 +150,11 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             end
             sourceArray = [sources{:}];
             
+            obj.view.enableSourceLabel(numel(sourceArray) == 1);
             obj.view.setSourceLabel(mergeFields({sourceArray.label}));
-            obj.view.setDataCardSelection(obj.view.SOURCE_DATA_CARD);
+            obj.view.setCardSelection(obj.view.SOURCE_CARD);
             
             obj.populateAnnotations(sources);
-            obj.enableAnnotations(true);
         end
         
         function onViewSetSourceLabel(obj, ~, ~)
@@ -188,13 +187,13 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             end
             experimentArray = [experiments{:}];
             
+            obj.view.enableExperimentPurpose(numel(experimentArray) == 1);
             obj.view.setExperimentPurpose(mergeFields({experimentArray.purpose}));
             obj.view.setExperimentStartTime(mergeTimes([experimentArray.startTime]));
             obj.view.setExperimentEndTime(mergeTimes([experimentArray.endTime]));
-            obj.view.setDataCardSelection(obj.view.EXPERIMENT_DATA_CARD);
+            obj.view.setCardSelection(obj.view.EXPERIMENT_CARD);
             
             obj.populateAnnotations(experiments);
-            obj.enableAnnotations(true);
         end
         
         function onViewSetExperimentPurpose(obj, ~, ~)
@@ -276,14 +275,14 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             groupArray = [groups{:}];
             sourceArray = [groupArray.source];
             
+            obj.view.enableEpochGroupLabel(numel(groupArray) == 1);
             obj.view.setEpochGroupLabel(mergeFields({groupArray.label}));
             obj.view.setEpochGroupStartTime(mergeTimes([groupArray.startTime]));
             obj.view.setEpochGroupEndTime(mergeTimes([groupArray.endTime]));
             obj.view.setEpochGroupSource(mergeFields({sourceArray.label}));
-            obj.view.setDataCardSelection(obj.view.EPOCH_GROUP_DATA_CARD);
+            obj.view.setCardSelection(obj.view.EPOCH_GROUP_CARD);
             
             obj.populateAnnotations(groups);
-            obj.enableAnnotations(true);
         end
         
         function onViewSetEpochGroupLabel(obj, ~, ~)
@@ -328,10 +327,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setEpochBlockProtocolId(mergeFields({blockArray.protocolId}));
             obj.view.setEpochBlockStartTime(mergeTimes([blockArray.startTime]));
             obj.view.setEpochBlockEndTime(mergeTimes([blockArray.endTime]));
-            obj.view.setDataCardSelection(obj.view.EPOCH_BLOCK_DATA_CARD);
+            obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
             
             obj.populateAnnotations(blocks);
-            obj.enableAnnotations(true);
         end
         
         function onServiceAddedEpoch(obj, ~, event)
@@ -383,21 +381,23 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 %             end
 %             obj.view.setEpochProtocolParameters(data);
             
-            obj.view.setDataCardSelection(obj.view.EPOCH_DATA_CARD);
+            obj.view.setCardSelection(obj.view.EPOCH_CARD);
             
             obj.populateAnnotations(epochs);
-            obj.enableAnnotations(true);
         end
         
-        function populateDetailsWithEntities(obj, entities)
-            if ~iscell(entities)
-                entities = {entities};
+        function populateDetailsWithEmpty(obj)
+            nodes = obj.view.getSelectedNodes();
+            
+            if numel(nodes) == 1
+                text = obj.view.getNodeName(nodes);
+            else
+                text = [num2str(numel(nodes)) ' nodes selected'];
             end
+            obj.view.setEmptyText(text);
+            obj.view.setCardSelection(obj.view.EMPTY_CARD);
             
-            obj.view.setDataCardSelection(obj.view.EMPTY_DATA_CARD);
-            
-            obj.populateAnnotations(entities);
-            obj.enableAnnotations(true);
+            obj.populateAnnotations({});
         end
         
         function onViewSelectedNodes(obj, ~, ~)
@@ -409,39 +409,27 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             [entities, types] = obj.getSelectedEntities();
             
-            if isempty(types) || any(types == EntityNodeType.NON_ENTITY)
-                obj.view.setDataCardSelection(obj.view.EMPTY_DATA_CARD);
-                obj.populateAnnotations({});
-                obj.enableAnnotations(false);
+            if isempty(types) || numel(types) > 1
+                obj.populateDetailsWithEmpty();
                 return;
             end
             
-            if numel(types) > 1
-                obj.populateDetailsWithEntities(entities);
-            else
-                switch types
-                    case EntityNodeType.DEVICE
-                        obj.populateDetailsWithDevices(entities);
-                    case EntityNodeType.SOURCE
-                        obj.populateDetailsWithSources(entities);
-                    case EntityNodeType.EXPERIMENT
-                        obj.populateDetailsWithExperiments(entities);
-                    case EntityNodeType.EPOCH_GROUP
-                        obj.populateDetailsWithEpochGroups(entities);
-                    case EntityNodeType.EPOCH_BLOCK
-                        obj.populateDetailsWithEpochBlocks(entities);
-                    case EntityNodeType.EPOCH
-                        obj.populateDetailsWithEpochs(entities);
-                    otherwise
-                        obj.populateDetailsWithEntities(entities);
-                end
+            switch types
+                case EntityNodeType.DEVICE
+                    obj.populateDetailsWithDevices(entities);
+                case EntityNodeType.SOURCE
+                    obj.populateDetailsWithSources(entities);
+                case EntityNodeType.EXPERIMENT
+                    obj.populateDetailsWithExperiments(entities);
+                case EntityNodeType.EPOCH_GROUP
+                    obj.populateDetailsWithEpochGroups(entities);
+                case EntityNodeType.EPOCH_BLOCK
+                    obj.populateDetailsWithEpochBlocks(entities);
+                case EntityNodeType.EPOCH
+                    obj.populateDetailsWithEpochs(entities);
+                otherwise
+                    obj.populateDetailsWithEmpty();
             end
-        end
-        
-        function enableAnnotations(obj, tf)
-            obj.view.enableProperties(tf);
-            obj.view.enableKeywords(tf);
-            obj.view.enableNotes(tf);
         end
         
         function populateAnnotations(obj, entities)
@@ -599,7 +587,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.updateEnableStateOfControls();
         end
         
-        function onViewSelectedReload(obj, ~, ~)
+        function onViewSelectedRefresh(obj, ~, ~)
             % TODO: Implement
             obj.view.showError('Not implemented yet');
         end
