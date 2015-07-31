@@ -475,7 +475,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             if isempty(key)
                 return;
             end
-            
             try
                 obj.detailedEntitySet.removeProperty(key);
             catch x
@@ -505,7 +504,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             if isempty(keyword)
                 return;
             end
-            
             try
                 obj.detailedEntitySet.removeKeyword(keyword);
             catch x
@@ -538,30 +536,27 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedSendToWorkspace(obj, ~, ~)
             nodes = obj.view.getSelectedNodes();
+            assert(numel(nodes) == 1, 'Expected a single entity');
             
-            for i = 1:numel(nodes)
-                name = matlab.lang.makeValidName(obj.view.getNodeName(nodes(i)));
-                entity = obj.view.getNodeEntity(nodes(i));
-                try
-                    obj.documentationService.sendToWorkspace(name, entity);
-                catch x
-                    obj.view.showError(x.message);
-                    return;
-                end
+            entity = obj.view.getNodeEntity(nodes(1));
+            try
+                obj.documentationService.sendToWorkspace(entity);
+            catch x
+                obj.view.showError(x.message);
+                return;
             end
         end
         
         function onViewSelectedDeleteEntity(obj, ~, ~)
             nodes = obj.view.getSelectedNodes();
+            assert(numel(nodes) == 1, 'Expected a single entity');
             
-            for i = 1:numel(nodes)
-                entity = obj.view.getNodeEntity(nodes(i));
-                try
-                    obj.documentationService.deleteEntity(entity);
-                catch x
-                    obj.view.showError(x.message);
-                    return;
-                end
+            entity = obj.view.getNodeEntity(nodes(1));
+            try
+                obj.documentationService.deleteEntity(entity);
+            catch x
+                obj.view.showError(x.message);
+                return;
             end
         end
         

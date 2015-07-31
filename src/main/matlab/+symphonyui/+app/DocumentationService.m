@@ -110,10 +110,10 @@ classdef DocumentationService < handle
             notify(obj, 'DeletedEntity', symphonyui.app.AppEventData(uuid));
         end
         
-        function sendToWorkspace(obj, name, value) %#ok<INUSL>
-            % TODO: use a unique name so it doesn't overwrite existing var
-            assignin('base', name, value);
-            evalin('base', ['disp(''' name ' = ' class(value) ''')']);
+        function sendToWorkspace(obj, entity) %#ok<INUSL>
+            name = matlab.lang.makeValidName(entity.uuid);
+            assignin('base', name, entity);
+            evalin('base', ['disp(''' name ' = ' class(entity) ''')']);
         end
         
     end
