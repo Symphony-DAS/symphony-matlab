@@ -1,30 +1,37 @@
 classdef EntitySet < handle
     
-    events
-        AddedProperty
-        RemovedProperty
-        AddedKeyword
-        RemovedKeyword
-        AddedNote
+    properties (SetAccess = private)
+        size
+        propertyMap
+        keywords
+        notes
     end
     
-    properties (SetAccess = private)
+    properties (Access = protected)
         entities
-        commonPropertyMap
-        commonKeywords
-        commonNotes
     end
     
     methods
         
         function obj = EntitySet(entities)
+            if nargin < 1 || isempty(entities)
+                entities = {};
+            end
             if ~iscell(entities)
                 entities = {entities};
             end
             obj.entities = entities;
         end
         
-        function p = get.commonPropertyMap(obj)
+        function s = get.size(obj)
+            s = numel(obj.entities);
+        end
+        
+        function e = get(obj, index)
+            e = obj.entities{index};
+        end
+        
+        function p = get.propertyMap(obj)
             if isempty(obj.entities)
                 p = containers.Map();
                 return;
@@ -56,9 +63,6 @@ classdef EntitySet < handle
             for i = 1:numel(obj.entities)
                 obj.entities{i}.addProperty(key, value);
             end
-            p.key = key;
-            p.value = value;
-            notify(obj, 'AddedProperty', symphonyui.app.AppEventData(p));
         end
         
         function tf = removeProperty(obj, key)
@@ -67,12 +71,9 @@ classdef EntitySet < handle
                 removed = obj.entities{i}.removeProperty(key);
                 tf = tf || removed;
             end
-            if tf
-                notify(obj, 'RemovedProperty', symphonyui.app.AppEventData(key));
-            end
         end
         
-        function k = get.commonKeywords(obj)
+        function k = get.keywords(obj)
             if isempty(obj.entities)
                 k = {};
                 return;
@@ -90,9 +91,6 @@ classdef EntitySet < handle
                 added = obj.entities{i}.addKeyword(keyword);
                 tf = tf || added;
             end
-            if tf
-                notify(obj, 'AddedKeyword', symphonyui.app.AppEventData(keyword));
-            end
         end
         
         function tf = removeKeyword(obj, keyword)
@@ -101,12 +99,9 @@ classdef EntitySet < handle
                 removed = obj.entities{i}.removeKeyword(keyword);
                 tf = tf || removed;
             end
-            if tf
-                notify(obj, 'RemovedKeyword', symphonyui.app.AppEventData(keyword));
-            end
         end
         
-        function n = get.commonNotes(obj)
+        function n = get.notes(obj)
             if isempty(obj.entities)
                 n = {};
                 return;
@@ -124,7 +119,6 @@ classdef EntitySet < handle
             for i = 1:numel(obj.entities)
                 n = obj.entities{i}.addNote(text, time);
             end
-            notify(obj, 'AddedNote', symphonyui.app.AppEventData(n));
         end
         
     end

@@ -3,7 +3,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
     properties (Access = private)
         documentationService
         uuidToNode
-        detailedEntities
+        detailedEntitySet
     end
     
     methods
@@ -15,8 +15,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj = obj@symphonyui.ui.Presenter(app, view);
             
             obj.documentationService = documentationService;
+            obj.detailedEntitySet = symphonyui.core.collections.EntitySet();
             obj.uuidToNode = containers.Map();
-            obj.detailedEntities = {};
         end
 
     end
@@ -104,17 +104,14 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateDetailsWithDevices(obj, devices)
-            if ~iscell(devices)
-                devices = {devices};
-            end
-            deviceArray = [devices{:}];
+            deviceSet = symphonyui.core.collections.DeviceSet(devices);
             
-            obj.view.setDeviceName(mergeFields({deviceArray.name}));
-            obj.view.setDeviceManufacturer(mergeFields({deviceArray.manufacturer}));
+            obj.view.setDeviceName(deviceSet.name);
+            obj.view.setDeviceManufacturer(deviceSet.manufacturer);
             obj.view.setCardSelection(obj.view.DEVICE_CARD);
             
-            obj.populateAnnotations(devices);
-            obj.detailedEntities = devices;
+            obj.populateAnnotationsWithEntitySet(deviceSet);
+            obj.detailedEntitySet = deviceSet;
         end
         
         function onViewSelectedAddSource(obj, ~, ~)
@@ -128,7 +125,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.view.setSelectedNodes(node);
             
-            obj.populateDetailsWithSources(source);
+            obj.populateDetailsWithSources(symphonyui.core.collections.SourceSet(source));
             obj.updateEnableStateOfControls();
         end
         
@@ -149,32 +146,29 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateDetailsWithSources(obj, sources)
-            if ~iscell(sources)
-                sources = {sources};
-            end
-            sourceArray = [sources{:}];
+            sourceSet = symphonyui.core.collections.SourceSet(sources);
             
-            obj.view.enableSourceLabel(numel(sourceArray) == 1);
-            obj.view.setSourceLabel(mergeFields({sourceArray.label}));
+            obj.view.enableSourceLabel(sourceSet.size == 1);
+            obj.view.setSourceLabel(sourceSet.label);
             obj.view.setCardSelection(obj.view.SOURCE_CARD);
             
-            obj.populateAnnotations(sources);
-            obj.detailedEntities = sources;
+            obj.populateAnnotationsWithEntitySet(sourceSet);
+            obj.detailedEntitySet = sourceSet;
         end
         
         function onViewSetSourceLabel(obj, ~, ~)
-            entities = obj.detailedEntities;
+            sourceSet = obj.detailedEntitySet;
             
-            label = obj.view.getSourceLabel();
-            for i = 1:numel(entities)
-                source = entities{i};            
-                try
-                    source.label = label;
-                catch x
-                    obj.view.showError(x.message);
-                    return;
-                end
-
+            try
+                sourceSet.label = obj.view.getSourceLabel();
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
+            
+            for i = 1:sourceSet.size
+                source = sourceSet.get(i);
+                
                 snode = obj.uuidToNode(source.uuid);
                 obj.view.setNodeName(snode, source.label);
 
@@ -188,33 +182,31 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateDetailsWithExperiments(obj, experiments)
-            if ~iscell(experiments)
-                experiments = {experiments};
-            end
-            experimentArray = [experiments{:}];
+            experimentSet = symphonyui.core.collections.ExperimentSet(experiments);
             
-            obj.view.enableExperimentPurpose(numel(experimentArray) == 1);
-            obj.view.setExperimentPurpose(mergeFields({experimentArray.purpose}));
-            obj.view.setExperimentStartTime(mergeTimes([experimentArray.startTime]));
-            obj.view.setExperimentEndTime(mergeTimes([experimentArray.endTime]));
+            obj.view.enableExperimentPurpose(experimentSet.size == 1);
+            obj.view.setExperimentPurpose(experimentSet.purpose);
+            obj.view.setExperimentStartTime(datestr(experimentSet.startTime, 14));
+            obj.view.setExperimentEndTime(datestr(experimentSet.endTime, 14));
             obj.view.setCardSelection(obj.view.EXPERIMENT_CARD);
             
-            obj.populateAnnotations(experiments);
-            obj.detailedEntities = experiments;
+            obj.populateAnnotationsWithEntitySet(experimentSet);
+            obj.detailedEntitySet = experimentSet;
         end
         
         function onViewSetExperimentPurpose(obj, ~, ~)            
-            entities = obj.detailedEntities;
+            experimentSet = obj.detailedEntitySet;
             
             purpose = obj.view.getExperimentPurpose();
-            for i = 1:numel(entities)
-                experiment = entities{i};
-                try
-                    experiment.purpose = purpose;
-                catch x
-                    obj.view.showError(x.message);
-                    return;
-                end
+            try
+                experimentSet.purpose = purpose;
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
+            
+            for i = 1:experimentSet.size
+                experiment = experimentSet.get(i);
 
                 enode = obj.uuidToNode(experiment.uuid);
                 obj.view.setNodeName(enode, [experiment.purpose ' (' datestr(experiment.startTime, 1) ')']);
@@ -280,36 +272,34 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateDetailsWithEpochGroups(obj, groups)
-            if ~iscell(groups)
-                groups = {groups};
-            end
-            groupArray = [groups{:}];
-            sourceArray = [groupArray.source];
+            groupSet = symphonyui.core.collections.EpochGroupSet(groups);
+            sourceSet = symphonyui.core.collections.SourceSet(groupSet.sources);
             
-            obj.view.enableEpochGroupLabel(numel(groupArray) == 1);
-            obj.view.setEpochGroupLabel(mergeFields({groupArray.label}));
-            obj.view.setEpochGroupStartTime(mergeTimes([groupArray.startTime]));
-            obj.view.setEpochGroupEndTime(mergeTimes([groupArray.endTime]));
-            obj.view.setEpochGroupSource(mergeFields({sourceArray.label}));
+            obj.view.enableEpochGroupLabel(groupSet.size == 1);
+            obj.view.setEpochGroupLabel(groupSet.label);
+            obj.view.setEpochGroupStartTime(datestr(groupSet.startTime, 14));
+            obj.view.setEpochGroupEndTime(datestr(groupSet.endTime, 14));
+            obj.view.setEpochGroupSource(sourceSet.label);
             obj.view.setCardSelection(obj.view.EPOCH_GROUP_CARD);
             
-            obj.populateAnnotations(groups);
-            obj.detailedEntities = groups;
+            obj.populateAnnotationsWithEntitySet(groupSet);
+            obj.detailedEntitySet = groupSet;
         end
         
         function onViewSetEpochGroupLabel(obj, ~, ~)
-            entities = obj.detailedEntities;
+            groupSet = obj.detailedEntitySet;
             
             label = obj.view.getEpochGroupLabel();
-            for i = 1:numel(entities)
-                group = entities{i};
-                try
-                    group.label = label;
-                catch x
-                    obj.view.showError(x.message);
-                    return;
-                end
-
+            try
+                groupSet.label = label;
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
+            
+            for i = 1:groupSet.size
+                group = groupSet.get(i);
+                
                 gnode = obj.uuidToNode(group.uuid);
                 obj.view.setNodeName(gnode, [group.label ' (' group.source.label ')']);
             end
@@ -332,18 +322,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateDetailsWithEpochBlocks(obj, blocks)
-            if ~iscell(blocks)
-                blocks = {blocks};
-            end
-            blockArray = [blocks{:}];
+            blockSet = symphonyui.core.collections.EpochBlockSet(blocks);
             
-            obj.view.setEpochBlockProtocolId(mergeFields({blockArray.protocolId}));
-            obj.view.setEpochBlockStartTime(mergeTimes([blockArray.startTime]));
-            obj.view.setEpochBlockEndTime(mergeTimes([blockArray.endTime]));
+            obj.view.setEpochBlockProtocolId(blockSet.protocolId);
+            obj.view.setEpochBlockStartTime(datestr(blockSet.startTime, 14));
+            obj.view.setEpochBlockEndTime(datestr(blockSet.endTime, 14));
             obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
             
-            obj.populateAnnotations(blocks);
-            obj.detailedEntities = blocks;
+            obj.populateAnnotationsWithEntitySet(blockSet);
+            obj.detailedEntitySet = blockSet;
         end
         
         function onServiceAddedEpoch(obj, ~, event)
@@ -358,11 +345,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populateDetailsWithEpochs(obj, epochs)
-            if ~iscell(epochs)
-                epochs = {epochs};
-            end
-            
-            epochSet = symphonyui.app.EpochSet(epochs);
+            epochSet = symphonyui.core.collections.EpochSet(epochs);
             
             % Plot
             obj.view.clearEpochDataAxes();
@@ -397,16 +380,18 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.view.setCardSelection(obj.view.EPOCH_CARD);
             
-            obj.populateAnnotations(epochs);
-            obj.detailedEntities = epochs;
+            obj.populateAnnotationsWithEntitySet(epochSet);
+            obj.detailedEntitySet = epochSet;
         end
         
-        function populateDetailsWithEmpty(obj, types)
-            obj.view.setEmptyText(mergeFields(arrayfun(@(t)lower(strrep(char(t), '_', ' ')), types, 'UniformOutput', false)));
+        function populateDetailsWithEmpty(obj, text)
+            emptySet = symphonyui.core.collections.EntitySet();
+            
+            obj.view.setEmptyText(text);
             obj.view.setCardSelection(obj.view.EMPTY_CARD);
             
-            obj.populateAnnotations({});
-            obj.detailedEntities = {};
+            obj.populateAnnotationsWithEntitySet(emptySet);
+            obj.detailedEntitySet = emptySet;
         end
         
         function onViewSelectedNodes(obj, ~, ~)
@@ -426,7 +411,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             types = unique(types);
             if isempty(types) || numel(types) > 1
-                obj.populateDetailsWithEmpty(types);
+                obj.populateDetailsWithEmpty(strjoin(arrayfun(@(t)char(t), types, 'UniformOutput', false), ', '));
                 return;
             end
             
@@ -444,18 +429,18 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 case EntityNodeType.EPOCH
                     obj.populateDetailsWithEpochs(entities);
                 otherwise
-                    obj.populateDetailsWithEmpty(types);
+                    obj.populateDetailsWithEmpty(strjoin(arrayfun(@(t)char(t), types, 'UniformOutput', false), ', '));
             end
         end
         
-        function populateAnnotations(obj, entities)
-            obj.populateProperties(entities);
-            obj.populateKeywords(entities);
-            obj.populateNotes(entities);
+        function populateAnnotationsWithEntitySet(obj, entitySet)
+            obj.populatePropertiesWithEntitySet(entitySet);
+            obj.populateKeywordsWithEntitySet(entitySet);
+            obj.populateNotesWithEntitySet(entitySet);
         end
         
-        function populateProperties(obj, entities)
-%             entitySet = symphonyui.app.EntitySet(entities);
+        function populatePropertiesWithEntitySet(obj, entitySet)
+%             entitySet = symphonyui.core.collections.EntitySet(entities);
 %             props = entitySet.commonPropertyMap;
 %             
 %             keys = props.keys;
@@ -468,9 +453,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddProperty(obj, ~, ~)
-            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
-            
-            presenter = symphonyui.ui.presenters.AddPropertyPresenter(entitySet, obj.app);
+            presenter = symphonyui.ui.presenters.AddPropertyPresenter(obj.detailedEntitySet, obj.app);
             presenter.goWaitStop();
             
             if ~isempty(presenter.result)
@@ -493,9 +476,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 return;
             end
             
-            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
             try
-                entitySet.removeProperty(key);
+                obj.detailedEntitySet.removeProperty(key);
             catch x
                 obj.view.showError(x.message);
                 return;
@@ -504,16 +486,12 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.removeProperty(key);
         end
         
-        function populateKeywords(obj, entities)
-            entitySet = symphonyui.app.EntitySet(entities);
-            keywords = entitySet.commonKeywords;
-            obj.view.setKeywords(keywords);
+        function populateKeywordsWithEntitySet(obj, entitySet)
+            obj.view.setKeywords(entitySet.keywords);
         end
         
         function onViewSelectedAddKeyword(obj, ~, ~)
-            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
-            
-            presenter = symphonyui.ui.presenters.AddKeywordPresenter(entitySet, obj.app);
+            presenter = symphonyui.ui.presenters.AddKeywordPresenter(obj.detailedEntitySet, obj.app);
             presenter.goWaitStop();
             
             if ~isempty(presenter.result)
@@ -528,9 +506,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 return;
             end
             
-            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
             try
-                entitySet.removeKeyword(keyword);
+                obj.detailedEntitySet.removeKeyword(keyword);
             catch x
                 obj.view.showError(x.message);
                 return;
@@ -539,9 +516,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.removeKeyword(keyword);
         end
         
-        function populateNotes(obj, entities)
-            entitySet = symphonyui.app.EntitySet(entities);
-            notes = entitySet.commonNotes;
+        function populateNotesWithEntitySet(obj, entitySet)
+            notes = entitySet.notes;
             
             data = cell(1, numel(notes));
             for i = 1:numel(notes)
@@ -551,9 +527,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedAddNote(obj, ~, ~)
-            entitySet = symphonyui.app.EntitySet(obj.detailedEntities);
-            
-            presenter = symphonyui.ui.presenters.AddNotePresenter(entitySet, obj.app);
+            presenter = symphonyui.ui.presenters.AddNotePresenter(obj.detailedEntitySet, obj.app);
             presenter.goWaitStop();
             
             if ~isempty(presenter.result)
@@ -618,20 +592,4 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         
     end
 
-end
-
-function f = mergeFields(fields)
-    if isempty(fields)
-        f = '';
-        return;
-    end
-    f = strjoin(unique(fields), ', ');
-end
-
-function f = mergeTimes(times)
-    fields = cell(1, numel(times));
-    for i = 1:numel(times)
-        fields{i} = strtrim(datestr(times(i), 14));
-    end
-    f = mergeFields(fields);
 end

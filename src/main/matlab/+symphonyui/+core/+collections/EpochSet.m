@@ -1,7 +1,7 @@
-classdef EpochSet < symphonyui.app.EntitySet
+classdef EpochSet < symphonyui.core.collections.TimelineEntitySet
     
     properties (SetAccess = private)
-        commonProtocolParameters
+        protocolParameters
         stimulusMap
         responseMap
     end
@@ -9,10 +9,10 @@ classdef EpochSet < symphonyui.app.EntitySet
     methods
         
         function obj = EpochSet(epochs)
-            obj@symphonyui.app.EntitySet(epochs);
+            obj@symphonyui.core.collections.TimelineEntitySet(epochs);
         end
         
-        function p = get.commonProtocolParameters(obj)
+        function p = get.protocolParameters(obj)
             if isempty(obj.entities)
                 p = containers.Map();
                 return;
