@@ -18,8 +18,21 @@ classdef TabGroup < matlab.mixin.SetGet %#ok<*MCSUP>
             obj.Control = uitabgroup(varargin{:});
         end
         
-        function t = addTab(obj, varargin)
-            t = uitab(varargin{:}, 'Parent', obj.Control);
+        function addTab(obj, tab)
+            set(tab, 'Parent', obj.Control);
+        end
+        
+        function insertTab(obj, tab, index)
+            if index < 1 || index > numel(get(obj.Control, 'Children')) + 1
+                error('Index out of bounds');
+            end            
+            set(tab, 'Parent', obj.Control);
+            c = get(obj.Control, 'Children');
+            set(obj.Control, 'Children', [c(1:index-1); tab; c(index:end-1);]);
+        end
+        
+        function removeTab(obj, tab) %#ok<INUSL>
+            set(tab, 'Parent', []);
         end
         
         function e = get.Enable(obj)

@@ -42,6 +42,7 @@ classdef DataManagerView < symphonyui.ui.View
         propertiesTab
         keywordsTab
         notesTab
+        parametersTab
     end
     
     properties (Constant)
@@ -345,8 +346,10 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', obj.detailLayout);
 
             % Properties tab.
-            obj.propertiesTab.tab = obj.tabGroup.addTab( ...
+            obj.propertiesTab.tab = uitab( ...
+                'Parent', [], ...
                 'Title', 'Properties');
+            obj.tabGroup.addTab(obj.propertiesTab.tab);
             obj.propertiesTab.layout = uix.VBox( ...
                 'Parent', obj.propertiesTab.tab);
             obj.propertiesTab.grid = uiextras.jide.PropertyGrid(obj.propertiesTab.layout, ...
@@ -358,8 +361,10 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.propertiesTab.layout, 'Heights', [-1 25]);
 
             % Keywords tab.
-            obj.keywordsTab.tab = obj.tabGroup.addTab( ...
+            obj.keywordsTab.tab = uitab( ...
+                'Parent', [], ...
                 'Title', 'Keywords');
+            obj.tabGroup.addTab(obj.keywordsTab.tab);
             obj.keywordsTab.layout = uix.VBox( ...
                 'Parent', obj.keywordsTab.tab);
             obj.keywordsTab.table = Table( ...
@@ -372,8 +377,10 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.keywordsTab.layout, 'Heights', [-1 25]);
 
             % Notes tab.
-            obj.notesTab.tab = obj.tabGroup.addTab( ...
+            obj.notesTab.tab = uitab( ...
+                'Parent', [], ...
                 'Title', 'Notes');
+            obj.tabGroup.addTab(obj.notesTab.tab);
             obj.notesTab.layout = uix.VBox( ...
                 'Parent', obj.notesTab.tab);
             obj.notesTab.table = Table( ...
@@ -386,6 +393,12 @@ classdef DataManagerView < symphonyui.ui.View
             obj.notesTab.removeButton = r;
             set(obj.notesTab.removeButton, 'Enable', 'off');
             set(obj.notesTab.layout, 'Heights', [-1 25]);
+            
+            % Parameters tab.
+            obj.parametersTab.tab = uitab( ...
+                'Parent', [], ...
+                'Title', 'Parameters');
+            obj.tabGroup.addTab(obj.parametersTab.tab);
 
             set(mainLayout, 'Widths', [-1 -1.75]);
         end
@@ -424,6 +437,12 @@ classdef DataManagerView < symphonyui.ui.View
                     u = get(obj.epochCard.layout, 'UserData');
             end
             set(obj.detailLayout, 'Heights', [u.Height tabGroupHeight]);
+            
+            if index == obj.EPOCH_CARD
+                obj.tabGroup.addTab(obj.parametersTab.tab);
+            else
+                obj.tabGroup.removeTab(obj.parametersTab.tab);
+            end
         end
         
         function setEmptyText(obj, t)
