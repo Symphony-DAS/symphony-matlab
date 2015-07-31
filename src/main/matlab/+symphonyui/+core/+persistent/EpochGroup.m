@@ -31,11 +31,11 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         end
 
         function g = get.epochGroups(obj)
-            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
+            g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.EpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
         end
 
         function b = get.epochBlocks(obj)
-            b = obj.cellArrayFromEnumerable(obj.cobj.EpochBlocks, @symphonyui.core.persistent.EpochBlock);
+            b = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.EpochBlocks, 'startTime', @symphonyui.core.persistent.EpochBlock);
         end
 
         function g = get.parent(obj)

@@ -38,7 +38,7 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
 
         function g = get.epochGroups(obj)
-            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
+            g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.EpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
         end
 
     end

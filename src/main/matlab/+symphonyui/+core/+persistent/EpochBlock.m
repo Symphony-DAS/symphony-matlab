@@ -17,7 +17,7 @@ classdef EpochBlock < symphonyui.core.persistent.TimelineEntity
         end
 
         function e = get.epochs(obj)
-            e = obj.cellArrayFromEnumerable(obj.cobj.Epochs, @symphonyui.core.persistent.Epoch);
+            e = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.Epochs, 'startTime', @symphonyui.core.persistent.Epoch);
         end
 
         function g = get.epochGroup(obj)

@@ -51,7 +51,7 @@ classdef (Abstract) CoreObject < handle
         end
         
         function c = cellArrayFromEnumerable(~, enum, wrap)
-            if nargin < 3
+            if nargin < 3 || isempty(wrap)
                 wrap = @(e)e;
             end
             
@@ -63,6 +63,20 @@ classdef (Abstract) CoreObject < handle
                 c{i} = wrap(e.Current());
                 i = i + 1;
             end
+        end
+        
+        function c = cellArrayFromEnumerableOrderedBy(obj, enum, prop, wrap)
+            if nargin < 4
+                wrap = [];
+            end
+            
+            c = obj.cellArrayFromEnumerable(enum, wrap);
+            if isempty(c)
+                return;
+            end
+            a = [c{:}];
+            [~, i] = sort([a(:).(prop)]);
+            c = c(i);
         end
         
         function m = mapFromKeyValueEnumerable(~, enum, wrap)
