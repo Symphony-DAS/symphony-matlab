@@ -186,8 +186,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.view.enableExperimentPurpose(experimentSet.size == 1);
             obj.view.setExperimentPurpose(experimentSet.purpose);
-            obj.view.setExperimentStartTime(datestr(experimentSet.startTime, 14));
-            obj.view.setExperimentEndTime(datestr(experimentSet.endTime, 14));
+            obj.view.setExperimentStartTime(strtrim(datestr(experimentSet.startTime, 14)));
+            obj.view.setExperimentEndTime(strtrim(datestr(experimentSet.endTime, 14)));
             obj.view.setCardSelection(obj.view.EXPERIMENT_CARD);
             
             obj.populateAnnotationsWithEntitySet(experimentSet);
@@ -277,8 +277,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.view.enableEpochGroupLabel(groupSet.size == 1);
             obj.view.setEpochGroupLabel(groupSet.label);
-            obj.view.setEpochGroupStartTime(datestr(groupSet.startTime, 14));
-            obj.view.setEpochGroupEndTime(datestr(groupSet.endTime, 14));
+            obj.view.setEpochGroupStartTime(strtrim(datestr(groupSet.startTime, 14)));
+            obj.view.setEpochGroupEndTime(strtrim(datestr(groupSet.endTime, 14)));
             obj.view.setEpochGroupSource(sourceSet.label);
             obj.view.setCardSelection(obj.view.EPOCH_GROUP_CARD);
             
@@ -325,8 +325,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             blockSet = symphonyui.core.collections.EpochBlockSet(blocks);
             
             obj.view.setEpochBlockProtocolId(blockSet.protocolId);
-            obj.view.setEpochBlockStartTime(datestr(blockSet.startTime, 14));
-            obj.view.setEpochBlockEndTime(datestr(blockSet.endTime, 14));
+            obj.view.setEpochBlockStartTime(strtrim(datestr(blockSet.startTime, 14)));
+            obj.view.setEpochBlockEndTime(strtrim(datestr(blockSet.endTime, 14)));
             obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
             
             obj.populateAnnotationsWithEntitySet(blockSet);
@@ -519,7 +519,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             data = cell(1, numel(notes));
             for i = 1:numel(notes)
-                data{i} = {datestr(notes{i}.time, 14), notes{i}.text};
+                data{i} = {strtrim(datestr(notes{i}.time, 14)), notes{i}.text};
             end
             obj.view.setNotes(data);
         end
@@ -530,7 +530,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             if ~isempty(presenter.result)
                 note = presenter.result;
-                obj.view.addNote(datestr(note.time, 14), note.text);
+                obj.view.addNote(strtrim(datestr(note.time, 14)), note.text);
             end
         end
         
