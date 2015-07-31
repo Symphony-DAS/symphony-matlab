@@ -3,6 +3,7 @@
 classdef TabGroup < matlab.mixin.SetGet %#ok<*MCSUP>
     
     properties
+        Parent
         Enable
         SelectedTab
     end
@@ -33,6 +34,14 @@ classdef TabGroup < matlab.mixin.SetGet %#ok<*MCSUP>
         
         function removeTab(obj, tab) %#ok<INUSL>
             set(tab, 'Parent', []);
+        end
+        
+        function p = get.Parent(obj)
+            p = get(obj.Control, 'Parent');
+        end
+        
+        function set.Parent(obj, p)
+            set(obj.Control, 'Parent', p);
         end
         
         function e = get.Enable(obj)
