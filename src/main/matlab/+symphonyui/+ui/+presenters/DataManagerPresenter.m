@@ -125,7 +125,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             obj.view.setSelectedNodes(node);
             
-            obj.populateDetailsWithSources(symphonyui.core.collections.SourceSet(source));
+            obj.populateDetailsWithSources(source);
             obj.updateEnableStateOfControls();
         end
         
