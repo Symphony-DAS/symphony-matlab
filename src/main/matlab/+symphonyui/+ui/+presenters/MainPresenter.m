@@ -15,6 +15,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 view = symphonyui.ui.views.MainView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
+            
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
             obj.configurationService = configurationService;

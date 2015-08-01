@@ -440,16 +440,25 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populatePropertiesWithEntitySet(obj, entitySet)
-%             entitySet = symphonyui.core.collections.EntitySet(entities);
-%             props = entitySet.commonPropertyMap;
-%             
-%             keys = props.keys;
-%             data = cell(1, numel(keys)); 
-%             for i = 1:numel(keys)
-%                 data{i} = {keys{i}, mergeFields(props(keys{i}))};
-%             end
-%             
-%             obj.view.setProperties(data);
+            map = entitySet.propertyMap;
+            
+            s = struct();
+            keys = map.keys;
+            for i = 1:numel(keys)
+                k = keys{i};
+                v = map(k);
+                s.(k) = v;
+            end
+            
+            try
+                properties = uiextras.jide.PropertyGridField.GenerateFrom(s);
+            catch x
+                properties = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
+            
+            obj.view.setProperties(properties);
         end
         
         function onViewSelectedAddProperty(obj, ~, ~)
@@ -457,16 +466,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             presenter.goWaitStop();
             
             if ~isempty(presenter.result)
-                property = presenter.result;
-                
-                values = obj.view.getProperties();
-                index = cellfun(@(c)strcmp(c{1}, property.key), values);
-                if any(index)
-                    values{index}{2} = p.value;
-                    obj.view.setProperties(values);
-                else
-                    obj.view.addProperty(p.key, p.value);
-                end
+                obj.populatePropertiesWithEntitySet(obj.detailedEntitySet);
             end
         end
         
@@ -476,13 +476,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 return;
             end
             try
-                obj.detailedEntitySet.removeProperty(key);
+                tf = obj.detailedEntitySet.removeProperty(key);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
             
-            obj.view.removeProperty(key);
+            if tf
+                obj.populatePropertiesWithEntitySet(obj.detailedEntitySet);
+            end
         end
         
         function populateKeywordsWithEntitySet(obj, entitySet)

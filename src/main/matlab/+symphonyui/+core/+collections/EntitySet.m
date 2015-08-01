@@ -49,7 +49,7 @@ classdef EntitySet < handle
                 for j = 1:numel(obj.entities)
                     v{j} = obj.entities{j}.propertyMap(k);
                 end
-                values{i} = unique(v);
+                values{i} = v{1}; %unique(v);
             end
             
             if isempty(keys)

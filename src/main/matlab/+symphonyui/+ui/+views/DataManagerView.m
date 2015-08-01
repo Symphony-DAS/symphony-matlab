@@ -736,8 +736,7 @@ classdef DataManagerView < symphonyui.ui.View
         end
 
         function p = getSelectedProperty(obj)
-            row = get(obj.propertiesTab.table, 'SelectedRow');
-            p = obj.propertiesTab.table.getValueAt(row, 1);
+            p = obj.propertiesTab.grid.GetSelectedProperty();
         end
         
         function enableKeywords(obj, tf)

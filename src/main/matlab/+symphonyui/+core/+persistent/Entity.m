@@ -41,6 +41,16 @@ classdef Entity < symphonyui.core.CoreObject
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveKeyword(keyword));
         end
         
+        function r = addResource(obj, uti, name, data)
+            cres = obj.tryCoreWithReturn(@()obj.cobj.AddResource(uti, name, data));
+            r = symphonyui.core.persistent.Resource(cres);
+        end
+        
+        function r = getResource(obj, name)
+            cres = obj.tryCoreWithReturn(@()obj.cobj.GetResource(name));
+            r = symphonyui.core.persistent.Resource(cres);
+        end
+        
         function n = get.notes(obj)
             n = obj.cellArrayFromEnumerable(obj.cobj.Notes, @symphonyui.core.persistent.Note);
         end
