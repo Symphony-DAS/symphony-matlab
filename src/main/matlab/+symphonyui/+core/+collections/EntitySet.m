@@ -32,8 +32,8 @@ classdef EntitySet < handle
         end
         
         function p = get.propertyMap(obj)
+            p = containers.Map();
             if isempty(obj.entities)
-                p = containers.Map();
                 return;
             end
             
@@ -45,16 +45,21 @@ classdef EntitySet < handle
             values = cell(1, numel(keys));
             for i = 1:numel(keys)
                 k = keys{i};
-                v = cell(1, numel(obj.entities));
+                v = {};
                 for j = 1:numel(obj.entities)
-                    v{j} = obj.entities{j}.propertyMap(k);
+                    p = obj.entities{j}.propertyMap(k);
+                    if ~any(cellfun(@(c)isequal(c, p), v))
+                        v{end + 1} = p; %#ok<AGROW>
+                    end
                 end
-                values{i} = v{1}; %unique(v);
+                if numel(v) == 1
+                    values{i} = v{1};
+                else
+                    values{i} = v;
+                end
             end
             
-            if isempty(keys)
-                p = containers.Map();
-            else
+            if ~isempty(keys)
                 p = containers.Map(keys, values);
             end
         end
@@ -108,9 +113,14 @@ classdef EntitySet < handle
             end
             
             n = obj.entities{1}.notes;
-            if numel(obj.entities) > 1
-                % TODO: implement
-                n = {};
+            for i = 2:numel(obj.entities)
+                keep = false(1, numel(n));
+                for j = 1:numel(n)
+                    if any(cellfun(@(c)isequal(c,n{j}), obj.entities{i}.notes))
+                        keep(j) = true;
+                    end
+                end
+                n = n(keep);
             end
         end
         

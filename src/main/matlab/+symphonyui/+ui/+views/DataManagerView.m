@@ -428,6 +428,11 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', [], ...
                 'Title', 'Parameters');
             obj.tabGroup.addTab(obj.parametersTab.tab);
+            obj.parametersTab.layout = uix.VBox( ...
+                'Parent', obj.parametersTab.tab);
+            obj.parametersTab.grid = uiextras.jide.PropertyGrid(obj.parametersTab.layout, ...
+                'BorderType', 'none', ...
+                'Enable', false);
 
             set(mainLayout, 'Widths', [-1 -1.75]);
         end
@@ -669,8 +674,8 @@ classdef DataManagerView < symphonyui.ui.View
             set(fig, 'Visible', 'on');
         end
         
-        function setEpochProtocolParameters(obj, data)
-            set(obj.epochCard.table, 'Data', data);
+        function setEpochProtocolParameters(obj, properties)
+            set(obj.parametersTab.grid, 'Properties', properties);
         end
         
         function n = getNodeName(obj, node) %#ok<INUSL>
@@ -712,9 +717,7 @@ classdef DataManagerView < symphonyui.ui.View
         end
         
         function enableProperties(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
-            set(obj.propertiesTab.addButton, 'Enable', enable);
-            set(obj.propertiesTab.removeButton, 'Enable', enable);
+            set(obj.propertiesTab.grid, 'Enable', tf);
         end
 
         function setProperties(obj, properties)
@@ -725,24 +728,8 @@ classdef DataManagerView < symphonyui.ui.View
             p = get(obj.propertiesTab.grid, 'Properties');
         end
 
-        function addProperty(obj, key, value)
-            %obj.propertiesTab.table.addRow({key, value});
-        end
-
-        function removeProperty(obj, property)
-            %properties = obj.propertiesTab.table.getColumnData(1);
-            %index = find(cellfun(@(c)strcmp(c, property), properties));
-            %obj.propertiesTab.table.removeRow(index); %#ok<FNDSB>
-        end
-
         function p = getSelectedProperty(obj)
             p = obj.propertiesTab.grid.GetSelectedProperty();
-        end
-        
-        function enableKeywords(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
-            set(obj.keywordsTab.addButton, 'Enable', enable);
-            set(obj.keywordsTab.removeButton, 'Enable', enable);
         end
 
         function setKeywords(obj, data)
@@ -762,10 +749,6 @@ classdef DataManagerView < symphonyui.ui.View
         function k = getSelectedKeyword(obj)
             row = get(obj.keywordsTab.table, 'SelectedRow');
             k = obj.keywordsTab.table.getValueAt(row, 1);
-        end
-        
-        function enableNotes(obj, tf)
-            set(obj.notesTab.addButton, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function setNotes(obj, data)

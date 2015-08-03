@@ -370,13 +370,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setEpochDataLegend(devices, groups);
             
             % Protocol parameters
-%             parameters = epochSet.commonProtocolParameters;
-%             keys = parameters.keys;
-%             data = cell(1, numel(keys)); 
-%             for i = 1:numel(keys)
-%                 data{i} = {keys{i}, mergeFields(parameters(keys{i}))};
-%             end
-%             obj.view.setEpochProtocolParameters(data);
+            map = map2pmap(epochSet.protocolParameters);
+            try
+                properties = uiextras.jide.PropertyGridField.GenerateFromMap(map, true);
+            catch x
+                properties = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
+            obj.view.setEpochProtocolParameters(properties);
             
             obj.view.setCardSelection(obj.view.EPOCH_CARD);
             
@@ -440,14 +442,14 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populatePropertiesWithEntitySet(obj, entitySet)
+            map = map2pmap(entitySet.propertyMap);
             try
-                properties = uiextras.jide.PropertyGridField.GenerateFrom(entitySet.propertyMap);
+                properties = uiextras.jide.PropertyGridField.GenerateFromMap(map, entitySet.size ~= 1);
             catch x
                 properties = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
-            
             obj.view.setProperties(properties);
         end
         
@@ -579,4 +581,25 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         
     end
 
+end
+
+function map = map2pmap(map)
+    keys = map.keys;
+    for i = 1:numel(keys)
+        k = keys{i};
+        v = map(k);
+        if iscell(v)
+            for j = 1:numel(v)
+                if ismatrix(v{j})
+                    v{j} = mat2str(v{j});
+                elseif isnumeric(v{j})
+                    v{j} = num2str(v{j});
+                end
+            end
+            if ~iscellstr(v)
+                v = '...';
+            end
+            map(k) = v;
+        end
+    end
 end

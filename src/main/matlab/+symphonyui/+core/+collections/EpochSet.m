@@ -13,8 +13,8 @@ classdef EpochSet < symphonyui.core.collections.TimelineEntitySet
         end
         
         function p = get.protocolParameters(obj)
+            p = containers.Map();
             if isempty(obj.entities)
-                p = containers.Map();
                 return;
             end
             
@@ -26,16 +26,21 @@ classdef EpochSet < symphonyui.core.collections.TimelineEntitySet
             values = cell(1, numel(keys));
             for i = 1:numel(keys)
                 k = keys{i};
-                v = cell(1, numel(obj.entities));
+                v = {};
                 for j = 1:numel(obj.entities)
-                    v{j} = obj.entities{j}.protocolParameters(k);
+                    p = obj.entities{j}.protocolParameters(k);
+                    if ~any(cellfun(@(c)isequal(c, p), v))
+                        v{end + 1} = p; %#ok<AGROW>
+                    end
                 end
-                values{i} = v; %unique(v);
+                if numel(v) == 1
+                    values{i} = v{1};
+                else
+                    values{i} = v;
+                end
             end
             
-            if isempty(keys)
-                p = containers.Map();
-            else
+            if ~isempty(keys)
                 p = containers.Map(keys, values);
             end
         end
