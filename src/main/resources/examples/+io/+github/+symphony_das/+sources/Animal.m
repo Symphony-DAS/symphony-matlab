@@ -6,6 +6,8 @@ classdef Animal < symphonyui.core.descriptions.SourceDescription
     methods
         
         function obj = Animal()
+            obj.propertyMap = 
+            
             obj.keywords = {'one', 'two'};
         end
         

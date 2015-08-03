@@ -54,6 +54,8 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
         ShowDescription;
         % Border type of grid outline
         BorderType
+        % Editor style
+        EditorStyle
     end
     properties (Access = private)
         % A matlab.ui.container.internal.JavaWrapper.
@@ -105,6 +107,8 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
             [control,container] = javacomponent(self.Pane, [0 0 pixelpos(3) pixelpos(4)], parent); %#ok<ASGLU>
             set(container, 'Units', 'normalized');
             self.Container = container;
+            
+            self.EditorStyle = 'normal';
 
             set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
         end
@@ -147,6 +151,9 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
             style = com.jidesoft.grid.CellStyle();
             style.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             model.setCellStyle(style);
+            if strcmp(self.EditorStyle, 'readonly')
+                model.setEditorStyle(com.jidesoft.grid.EditorStyleTableModel.EDITOR_STYLE_READ_ONLY);
+            end
             model.setMiscCategoryName('Miscellaneous');  % caption for uncategorized properties
             model.setCategoryOrder(1);
             if properties.HasCategory()
@@ -235,6 +242,21 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
                     error('Unsupported type');
             end
             self.Pane.getScrollPane().setBorder(t);
+        end
+        
+        function set.EditorStyle(self, s)            
+            switch s
+                case 'normal'
+                    style = com.jidesoft.grid.EditorStyleTableModel.EDITOR_STYLE_NORMAL;
+                case 'readonly'
+                    style = com.jidesoft.grid.EditorStyleTableModel.EDITOR_STYLE_READ_ONLY;
+                otherwise
+                    error('Unknown style');
+            end
+            if ~isempty(self.Model)
+                self.Model.setEditorStyle(style);
+            end
+            self.EditorStyle = s;
         end
 
         function self = Bind(self, item, properties)

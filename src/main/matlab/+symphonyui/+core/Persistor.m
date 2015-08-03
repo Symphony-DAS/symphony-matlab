@@ -47,6 +47,11 @@ classdef Persistor < symphonyui.core.CoreObject
             end
             csrc = obj.tryCoreWithReturn(@()obj.cobj.AddSource(description.label, cparent));
             s = symphonyui.core.persistent.Source(csrc);
+            
+            keywords = description.keywords;
+            for i = 1:numel(keywords)
+                s.addKeyword(keywords{i});
+            end
         end
 
         function g = beginEpochGroup(obj, source, description)

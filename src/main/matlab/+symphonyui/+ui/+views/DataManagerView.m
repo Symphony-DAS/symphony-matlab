@@ -432,7 +432,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', obj.parametersTab.tab);
             obj.parametersTab.grid = uiextras.jide.PropertyGrid(obj.parametersTab.layout, ...
                 'BorderType', 'none', ...
-                'Enable', false);
+                'EditorStyle', 'readonly');
 
             set(mainLayout, 'Widths', [-1 -1.75]);
         end
@@ -716,8 +716,8 @@ classdef DataManagerView < symphonyui.ui.View
             obj.entityTree.SelectedNodes = nodes;
         end
         
-        function enableProperties(obj, tf)
-            set(obj.propertiesTab.grid, 'Enable', tf);
+        function setPropertiesEditorStyle(obj, s)
+            set(obj.propertiesTab.grid, 'EditorStyle', s);
         end
 
         function setProperties(obj, properties)

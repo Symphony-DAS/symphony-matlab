@@ -372,7 +372,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             % Protocol parameters
             map = map2pmap(epochSet.protocolParameters);
             try
-                properties = uiextras.jide.PropertyGridField.GenerateFromMap(map, true);
+                properties = uiextras.jide.PropertyGridField.GenerateFrom(map);
             catch x
                 properties = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
@@ -444,13 +444,19 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         function populatePropertiesWithEntitySet(obj, entitySet)
             map = map2pmap(entitySet.propertyMap);
             try
-                properties = uiextras.jide.PropertyGridField.GenerateFromMap(map, entitySet.size ~= 1);
+                properties = uiextras.jide.PropertyGridField.GenerateFrom(map);
             catch x
                 properties = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
             obj.view.setProperties(properties);
+            
+            if entitySet.size == 1
+                obj.view.setPropertiesEditorStyle('normal');
+            else
+                obj.view.setPropertiesEditorStyle('readonly');
+            end
         end
         
         function onViewSelectedAddProperty(obj, ~, ~)

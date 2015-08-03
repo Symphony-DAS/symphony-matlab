@@ -206,11 +206,7 @@ classdef PropertyGridField < hgsetget
             end
         end
         
-        function fields = GenerateFromMap(obj, readOnly)
-            if nargin < 2
-                readOnly = false;
-            end
-            
+        function fields = GenerateFromMap(obj)            
             names = obj.keys;
             n = numel(names);
             
@@ -221,7 +217,6 @@ classdef PropertyGridField < hgsetget
                 value = obj(name);
                 k = k + 1;
                 fields(k) = uiextras.jide.PropertyGridField(name, value);
-                fields(k).ReadOnly = readOnly;
                 fields(k).Children = uiextras.jide.PropertyGridField.GenerateFrom(value);
             end
         end
