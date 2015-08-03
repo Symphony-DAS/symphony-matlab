@@ -440,18 +440,8 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
         
         function populatePropertiesWithEntitySet(obj, entitySet)
-            map = entitySet.propertyMap;
-            
-            s = struct();
-            keys = map.keys;
-            for i = 1:numel(keys)
-                k = keys{i};
-                v = map(k);
-                s.(k) = v;
-            end
-            
             try
-                properties = uiextras.jide.PropertyGridField.GenerateFrom(s);
+                properties = uiextras.jide.PropertyGridField.GenerateFrom(entitySet.propertyMap);
             catch x
                 properties = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);

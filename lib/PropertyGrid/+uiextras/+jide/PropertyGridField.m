@@ -195,12 +195,29 @@ classdef PropertyGridField < hgsetget
     methods (Static)
         function fields = GenerateFrom(obj)
         % Property fields for a structure, a value or a handle object.
-            if isstruct(obj)
+            if isa(obj, 'containers.Map')
+                fields = uiextras.jide.PropertyGridField.GenerateFromMap(obj);
+            elseif isstruct(obj)
                 fields = uiextras.jide.PropertyGridField.GenerateFromStruct(obj);
             elseif isobject(obj)
                 fields = uiextras.jide.PropertyGridField.GenerateFromClass(obj);
             else
                 fields = uiextras.jide.PropertyGridField.empty(1,0);
+            end
+        end
+        
+        function fields = GenerateFromMap(obj)
+            names = obj.keys;
+            n = numel(names);
+            
+            k = 0;
+            fields = uiextras.jide.PropertyGridField.empty(1,0);
+            for i = 1 : n
+                name = names{i};
+                value = obj(name);
+                k = k + 1;
+                fields(k) = uiextras.jide.PropertyGridField(name, value);
+                fields(k).Children = uiextras.jide.PropertyGridField.GenerateFrom(value);
             end
         end
 
