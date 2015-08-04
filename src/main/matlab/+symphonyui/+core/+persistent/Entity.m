@@ -29,6 +29,16 @@ classdef Entity < symphonyui.core.CoreObject
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(key));
         end
         
+        function p = getPropertyDescriptors(obj)
+            map = obj.propertyMap;
+            keys = map.keys;
+            p = symphonyui.core.PropertyDescriptor.empty(0, numel(keys)); 
+            for i = 1:numel(keys)
+                p(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}), ...
+                    'readOnly', true);
+            end
+        end
+        
         function k = get.keywords(obj)
             k = obj.cellArrayFromEnumerable(obj.cobj.Keywords, @char);
         end

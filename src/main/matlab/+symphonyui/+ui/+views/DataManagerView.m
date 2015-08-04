@@ -8,8 +8,8 @@ classdef DataManagerView < symphonyui.ui.View
         SetSourceLabel
         SetExperimentPurpose
         SetEpochGroupLabel
-        AddProperty
         SetProperty
+        AddProperty
         RemoveProperty
         AddKeyword
         RemoveKeyword
@@ -383,7 +383,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', obj.propertiesTab.tab);
             obj.propertiesTab.grid = uiextras.jide.PropertyGrid(obj.propertiesTab.layout, ...
                 'BorderType', 'none', ...
-                'Callback', @(h,d)notify(obj, 'SetProperty', d));
+                'Callback', @(h,d)notify(obj, 'SetProperty', symphonyui.ui.UiEventData(d)));
             [a, r] = obj.createAddRemoveButtons(obj.propertiesTab.layout, @(h,d)notify(obj, 'AddProperty'), @(h,d)notify(obj, 'RemoveProperty'));
             obj.propertiesTab.addButton = a;
             obj.propertiesTab.removeButton = r;
@@ -720,12 +720,16 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.propertiesTab.grid, 'EditorStyle', s);
         end
 
-        function setProperties(obj, properties)
-            set(obj.propertiesTab.grid, 'Properties', properties);
+        function setProperties(obj, fields)
+            set(obj.propertiesTab.grid, 'Properties', fields);
         end
         
-        function p = getProperties(obj)
-            p = get(obj.propertiesTab.grid, 'Properties');
+        function updateProperties(obj, fields)
+            obj.propertiesTab.grid.UpdateProperties(fields);
+        end
+        
+        function f = getProperties(obj)
+            f = get(obj.propertiesTab.grid, 'Properties');
         end
 
         function p = getSelectedProperty(obj)

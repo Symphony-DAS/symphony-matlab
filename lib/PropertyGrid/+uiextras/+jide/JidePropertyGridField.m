@@ -59,6 +59,8 @@ classdef JidePropertyGridField < handle
                             matlabtype = 'int32';
                         case {'uint32','int64'}
                             matlabtype = 'int64';
+                        case {'char'}
+                            matlabtype = 'char';
                         case 'logical'  % add a logical property
                             matlabtype = 'logical';
                             field.setEditorContext(com.jidesoft.grid.BooleanCheckBoxCellEditor.CONTEXT);

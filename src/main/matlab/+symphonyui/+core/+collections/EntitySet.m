@@ -78,6 +78,16 @@ classdef EntitySet < handle
             end
         end
         
+        function p = getPropertyDescriptors(obj)
+            p = symphonyui.core.PropertyDescriptor.empty();
+            if isempty(obj.entities)
+                return;
+            end
+            
+            % TODO: Implement merging of property descriptors.
+            p = obj.entities{1}.getPropertyDescriptors();
+        end
+        
         function k = get.keywords(obj)
             if isempty(obj.entities)
                 k = {};

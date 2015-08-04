@@ -323,7 +323,7 @@ classdef PropertyType
                             value = full(single(javavalue));
                         case 'sparserealsingle'
                             value = sparse(single(javavalue));
-                        case {'int8','uint8','int16','uint16','int32','uint32','int64','logical'}
+                        case {'char', 'int8','uint8','int16','uint16','int32','uint32','int64','logical'}
                             value = cast(javavalue, self.PrimitiveType);
                         case {'densecomplexdouble','sparsecomplexdouble','densecomplexsingle','sparsecomplexsingle'}
                             value = self.ConvertFromString(javavalue);

@@ -1,9 +1,6 @@
 classdef EntityDescription < symphonyui.core.Description
     
     properties
-        propertyMap
-        keywords
-        notes
     end
     
     methods

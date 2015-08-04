@@ -37,6 +37,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'SetSourceLabel', @obj.onViewSetSourceLabel);
             obj.addListener(v, 'SetExperimentPurpose', @obj.onViewSetExperimentPurpose);
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
+            obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
             obj.addListener(v, 'AddKeyword', @obj.onViewSelectedAddKeyword);
@@ -441,22 +442,40 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.populateNotesWithEntitySet(entitySet);
         end
         
-        function populatePropertiesWithEntitySet(obj, entitySet)
-            map = map2pmap(entitySet.propertyMap);
+        function populatePropertiesWithEntitySet(obj, entitySet, update)
+            if nargin < 3
+                update = false;
+            end
             try
-                properties = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                fields = desc2field(entitySet.getPropertyDescriptors());
             catch x
-                properties = uiextras.jide.PropertyGridField.empty(0, 1);
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
-            obj.view.setProperties(properties);
+            if update
+                obj.view.updateProperties(fields);
+            else
+                obj.view.setProperties(fields);
+            end
             
             if entitySet.size == 1
                 obj.view.setPropertiesEditorStyle('normal');
             else
                 obj.view.setPropertiesEditorStyle('readonly');
             end
+        end
+        
+        function onViewSetProperty(obj, ~, event)
+            p = event.data.Property;
+            try
+                obj.detailedEntitySet.addProperty(p.Name, p.Value);
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
+            
+            obj.populatePropertiesWithEntitySet(obj.detailedEntitySet, true);
         end
         
         function onViewSelectedAddProperty(obj, ~, ~)
@@ -607,5 +626,13 @@ function map = map2pmap(map)
             end
             map(k) = v;
         end
+    end
+end
+
+function f = desc2field(desc)
+    f = uiextras.jide.PropertyGridField.empty(0, max(1, numel(desc)));
+    for i = 1:numel(desc)
+        f(i) = uiextras.jide.PropertyGridField(desc(i).name, desc(i).value, ...
+            'ReadOnly', desc(i).readOnly);
     end
 end

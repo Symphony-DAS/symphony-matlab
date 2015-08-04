@@ -2,6 +2,7 @@ classdef Source < symphonyui.core.persistent.Entity
 
     properties
         label
+        propertyDescriptors
     end
     
     properties (SetAccess = private)
