@@ -18,6 +18,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.detailedEntitySet = symphonyui.core.collections.EntitySet();
             obj.uuidToNode = containers.Map();
         end
+        
+        function requestExperimentPurposeFocus(obj)
+            obj.view.requestExperimentPurposeFocus();
+        end
 
     end
 

@@ -1,6 +1,7 @@
 classdef DocumentationService < handle
 
     events (NotifyAccess = private)
+        CreatedFile
         OpenedFile
         ClosedFile
         AddedDevice
@@ -43,7 +44,7 @@ classdef DocumentationService < handle
                 error('File already open');
             end
             obj.sessionData.persistor = obj.persistorFactory.new(name, location);
-            notify(obj, 'OpenedFile');
+            notify(obj, 'CreatedFile');
         end
         
         function openFile(obj, path)

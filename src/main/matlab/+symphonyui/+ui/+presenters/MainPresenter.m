@@ -62,6 +62,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'ShowAbout', @obj.onViewSelectedShowAbout);
             
             d = obj.documentationService;
+            obj.addListener(d, 'CreatedFile', @obj.onServiceCreatedFile);
             obj.addListener(d, 'OpenedFile', @obj.onServiceOpenedFile);
             obj.addListener(d, 'ClosedFile', @obj.onServiceClosedFile);
             obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
@@ -83,6 +84,12 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onViewSelectedNewFile(obj, ~, ~)
             presenter = symphonyui.ui.presenters.NewFilePresenter(obj.documentationService, obj.app);
             presenter.goWaitStop();
+        end
+        
+        function onServiceCreatedFile(obj, ~, ~)
+            obj.updateEnableStateOfControls();
+            obj.showDataManager();
+            obj.dataManagerPresenter.requestExperimentPurposeFocus();
         end
         
         function onViewSelectedOpenFile(obj, ~, ~)

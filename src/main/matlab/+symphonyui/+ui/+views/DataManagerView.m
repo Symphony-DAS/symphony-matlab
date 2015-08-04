@@ -552,6 +552,11 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.experimentCard.purposeField, 'String', p);
         end
         
+        function requestExperimentPurposeFocus(obj)
+            obj.update();
+            uicontrol(obj.experimentCard.purposeField);
+        end
+        
         function setExperimentStartTime(obj, t)
             set(obj.experimentCard.startTimeField, 'String', t);
         end
