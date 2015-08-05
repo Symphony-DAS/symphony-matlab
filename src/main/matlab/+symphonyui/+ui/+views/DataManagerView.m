@@ -437,6 +437,12 @@ classdef DataManagerView < symphonyui.ui.View
             set(mainLayout, 'Widths', [-1 -1.75]);
         end
         
+        function close(obj)
+            close@symphonyui.ui.View(obj);
+            obj.propertiesTab.grid.Close();
+            obj.parametersTab.grid.Close();
+        end
+        
         function enableBeginEpochGroup(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
             set(obj.beginEpochGroupButtons.tool, 'Enable', enable);

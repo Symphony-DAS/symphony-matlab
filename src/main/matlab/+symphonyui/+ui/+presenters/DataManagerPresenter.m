@@ -636,7 +636,6 @@ end
 function f = desc2field(desc)
     f = uiextras.jide.PropertyGridField.empty(0, max(1, numel(desc)));
     for i = 1:numel(desc)
-        f(i) = uiextras.jide.PropertyGridField(desc(i).name, desc(i).value, ...
-            'ReadOnly', desc(i).readOnly);
+        f(i) = uiextras.jide.PropertyGridField(desc(i).name, desc(i).value);
     end
 end

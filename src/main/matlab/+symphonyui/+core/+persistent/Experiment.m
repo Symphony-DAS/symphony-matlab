@@ -42,5 +42,14 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
 
     end
+    
+    methods (Static)
+        
+        function e = newExperiment(cobj, description)
+            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, description);
+            e = symphonyui.core.persistent.Experiment(cobj);
+        end
+        
+    end
 
 end

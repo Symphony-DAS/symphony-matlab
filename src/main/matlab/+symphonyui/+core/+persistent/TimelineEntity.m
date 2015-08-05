@@ -26,5 +26,14 @@ classdef TimelineEntity < symphonyui.core.persistent.Entity
         
     end
     
+    methods (Static)
+        
+        function e = newTimelineEntity(cobj, description)
+            symphonyui.core.persistent.Entity.newEntity(cobj, description);
+            e = symphonyui.core.persistent.TimelineEntity(cobj);
+        end
+        
+    end
+    
 end
 

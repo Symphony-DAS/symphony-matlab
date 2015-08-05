@@ -7,6 +7,14 @@ classdef Entity < symphonyui.core.CoreObject
         notes
     end
     
+    properties (Access = private)
+        staticPropertyDescriptors
+    end
+    
+    properties (Constant, Access = private)
+        STATIC_PROPERTY_DESCRIPTORS_NAME = 'descriptors'
+    end
+    
     methods
         
         function obj = Entity(cobj)
@@ -26,16 +34,26 @@ classdef Entity < symphonyui.core.CoreObject
         end
         
         function tf = removeProperty(obj, key)
+            desc = obj.getStaticPropertyDescriptors();
+            if ~isempty(desc.findByName(key))
+                error('Cannot remove a property with a descriptor');
+            end
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(key));
         end
         
         function p = getPropertyDescriptors(obj)
+            desc = obj.getStaticPropertyDescriptors();
             map = obj.propertyMap;
             keys = map.keys;
-            p = symphonyui.core.PropertyDescriptor.empty(0, numel(keys)); 
+            p = symphonyui.core.PropertyDescriptor.empty(0, numel(keys));
             for i = 1:numel(keys)
-                p(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}), ...
-                    'readOnly', true);
+                d = desc.findByName(keys{i});
+                if isempty(d)
+                    p(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}));
+                else
+                    d.value = map(d.name);
+                    p(i) = d;
+                end
             end
         end
         
@@ -51,14 +69,28 @@ classdef Entity < symphonyui.core.CoreObject
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveKeyword(keyword));
         end
         
-        function r = addResource(obj, uti, name, data)
-            cres = obj.tryCoreWithReturn(@()obj.cobj.AddResource(uti, name, data));
-            r = symphonyui.core.persistent.Resource(cres);
+        function addResource(obj, name, variable) %#ok<INUSD>
+            temp = [tempname '.mat'];
+            save(temp, 'variable');
+            file = java.io.File(temp);
+            bytes = typecast(java.nio.file.Files.readAllBytes(file.toPath), 'uint8');
+            delete(temp);
+            obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.workspace', name, bytes));
         end
         
-        function r = getResource(obj, name)
+        function v = getResource(obj, name)
             cres = obj.tryCoreWithReturn(@()obj.cobj.GetResource(name));
-            r = symphonyui.core.persistent.Resource(cres);
+            temp = [tempname '.mat'];
+            fid = fopen(temp, 'w');
+            fwrite(fid, uint8(cres.Data));
+            fclose(fid);
+            s = load(temp);
+            delete(temp);
+            v = s.variable;
+        end
+        
+        function n = getResourceNames(obj)
+            n = obj.cellArrayFromEnumerable(obj.cobj.GetResourceNames(), @char);
         end
         
         function n = get.notes(obj)
@@ -72,6 +104,33 @@ classdef Entity < symphonyui.core.CoreObject
             dto = obj.dateTimeOffsetFromDatetime(time);
             cnote = obj.tryCoreWithReturn(@()obj.cobj.AddNote(dto, text));
             n = symphonyui.core.persistent.Note(cnote);
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function p = getStaticPropertyDescriptors(obj)
+            if isempty(obj.staticPropertyDescriptors)
+                obj.staticPropertyDescriptors = obj.getResource(obj.STATIC_PROPERTY_DESCRIPTORS_NAME);
+            end
+            p = obj.staticPropertyDescriptors;
+        end
+        
+    end
+    
+    methods (Static)
+        
+        function e = newEntity(cobj, description)
+            e = symphonyui.core.persistent.Entity(cobj);
+            
+            descriptors = description.propertyDescriptors;
+            e.addResource(e.STATIC_PROPERTY_DESCRIPTORS_NAME, descriptors);
+            
+            for i = 1:numel(descriptors)
+                desc = descriptors(i);
+                e.addProperty(desc.name, desc.value);
+            end
         end
         
     end

@@ -36,9 +36,9 @@ classdef Persistor < symphonyui.core.CoreObject
 
         function s = addSource(obj, parent, description)
             if ischar(description)
-                label = description;
+                l = description;
                 description = symphonyui.core.descriptions.SourceDescription();
-                description.label = label;
+                description.label = l;
             end
             if isempty(parent)
                 cparent = [];
@@ -46,7 +46,7 @@ classdef Persistor < symphonyui.core.CoreObject
                 cparent = parent.cobj;
             end
             csrc = obj.tryCoreWithReturn(@()obj.cobj.AddSource(description.label, cparent));
-            s = symphonyui.core.persistent.Source(csrc);
+            s = symphonyui.core.persistent.Source.newSource(csrc, description);
         end
 
         function g = beginEpochGroup(obj, source, description)
@@ -56,7 +56,7 @@ classdef Persistor < symphonyui.core.CoreObject
                 description.label = label;
             end
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochGroup(description.label, source.cobj));
-            g = symphonyui.core.persistent.EpochGroup(cgrp);
+            g = symphonyui.core.persistent.EpochGroup.newEpochGroup(cgrp, description);
         end
 
         function g = endEpochGroup(obj)
@@ -108,6 +108,15 @@ classdef Persistor < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.Delete(entity.cobj));
         end
 
+    end
+    
+    methods (Static)
+        
+        function p = newPersistor(cobj, description)
+            symphonyui.core.persistent.Experiment.newExperiment(cobj.Experiment, description.experimentDescription);
+            p = symphonyui.core.Persistor(cobj);
+        end
+        
     end
 
 end

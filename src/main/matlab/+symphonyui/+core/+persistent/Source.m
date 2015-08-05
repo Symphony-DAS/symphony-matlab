@@ -2,7 +2,6 @@ classdef Source < symphonyui.core.persistent.Entity
 
     properties
         label
-        propertyDescriptors
     end
     
     properties (SetAccess = private)
@@ -15,7 +14,7 @@ classdef Source < symphonyui.core.persistent.Entity
     end
 
     methods
-
+        
         function obj = Source(cobj)
             obj@symphonyui.core.persistent.Entity(cobj);
         end
@@ -57,6 +56,15 @@ classdef Source < symphonyui.core.persistent.Entity
             e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
         end
 
+    end
+    
+    methods (Static)
+        
+        function s = newSource(cobj, description)
+            symphonyui.core.persistent.Entity.newEntity(cobj, description);
+            s = symphonyui.core.persistent.Source(cobj);
+        end
+        
     end
 
 end

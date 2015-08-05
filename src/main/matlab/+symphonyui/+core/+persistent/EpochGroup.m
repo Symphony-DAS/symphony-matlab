@@ -52,5 +52,14 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         end
 
     end
+    
+    methods (Static)
+        
+        function e = newEpochGroup(cobj, description)
+            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, description);
+            e = symphonyui.core.persistent.EpochGroup(cobj);
+        end
+        
+    end
 
 end

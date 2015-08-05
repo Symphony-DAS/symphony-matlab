@@ -17,6 +17,16 @@ classdef PropertyDescriptor < matlab.mixin.SetGet
             end
         end
         
+        function p = findByName(array, name)
+            p = [];
+            for i = 1:numel(array)
+                if strcmp(name, array(i).name)
+                    p = array(i);
+                    return;
+                end
+            end
+        end
+        
     end
     
 end

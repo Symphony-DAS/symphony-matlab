@@ -2,12 +2,13 @@ classdef PersistorFactory < handle
     
     methods
         
-        function p = new(obj, name, location)
+        function p = new(obj, name, location, description)
             path = fullfile(location, [name '.h5']);
             if exist(path, 'file')
                 error('File exists');
             end
-            p = symphonyui.core.Persistor(Symphony.Core.H5EpochPersistor.Create(path));
+            cper = Symphony.Core.H5EpochPersistor.Create(path);
+            p = symphonyui.core.Persistor.newPersistor(cper, description);
         end
         
         function p = open(obj, path)

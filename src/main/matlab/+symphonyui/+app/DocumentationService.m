@@ -43,7 +43,7 @@ classdef DocumentationService < handle
             if obj.hasOpenFile()
                 error('File already open');
             end
-            obj.sessionData.persistor = obj.persistorFactory.new(name, location);
+            obj.sessionData.persistor = obj.persistorFactory.new(name, location, description);
             notify(obj, 'CreatedFile');
         end
         
