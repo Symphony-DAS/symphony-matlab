@@ -186,7 +186,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             for i = 1:numel(protocols)
                 names{i} = protocols{i}.getDisplayName();
             end
-            names = ['(None)', names];
+            names = ['(Empty)', names];
             values = [{symphonyui.app.NullProtocol()}, protocols];
             
             obj.view.setProtocolList(names, values);

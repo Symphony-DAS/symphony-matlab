@@ -64,7 +64,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             for i = 1:numel(descriptions)
                 names{i} = descriptions{i}.displayName;
             end
-            names = ['(None)', names];
+            names = ['(Empty)', names];
             values = [{emptyDescription}, descriptions];
             
             obj.view.setDescriptionList(names, values);
