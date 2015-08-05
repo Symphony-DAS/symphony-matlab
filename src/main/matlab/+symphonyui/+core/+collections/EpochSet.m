@@ -13,36 +13,11 @@ classdef EpochSet < symphonyui.core.collections.TimelineEntitySet
         end
         
         function p = get.protocolParameters(obj)
-            p = containers.Map();
-            if isempty(obj.entities)
-                return;
+            maps = cell(1, numel(obj.entities));
+            for i = 1:numel(obj.entities)
+                maps{i} = obj.entities{i}.protocolParameters;
             end
-            
-            keys = obj.entities{1}.protocolParameters.keys;
-            for i = 2:numel(obj.entities)
-                keys = intersect(keys, obj.entities{i}.protocolParameters.keys);
-            end
-            
-            values = cell(1, numel(keys));
-            for i = 1:numel(keys)
-                k = keys{i};
-                v = {};
-                for j = 1:numel(obj.entities)
-                    p = obj.entities{j}.protocolParameters(k);
-                    if ~any(cellfun(@(c)isequal(c, p), v))
-                        v{end + 1} = p; %#ok<AGROW>
-                    end
-                end
-                if numel(v) == 1
-                    values{i} = v{1};
-                else
-                    values{i} = v;
-                end
-            end
-            
-            if ~isempty(keys)
-                p = containers.Map(keys, values);
-            end
+            p = obj.intersectMaps(maps);
         end
         
         function m = get.stimulusMap(obj)

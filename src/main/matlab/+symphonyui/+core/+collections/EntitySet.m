@@ -32,36 +32,11 @@ classdef EntitySet < handle
         end
         
         function p = get.propertyMap(obj)
-            p = containers.Map();
-            if isempty(obj.entities)
-                return;
+            maps = cell(1, numel(obj.entities));
+            for i = 1:numel(obj.entities)
+                maps{i} = obj.entities{i}.propertyMap;
             end
-            
-            keys = obj.entities{1}.propertyMap.keys;
-            for i = 2:numel(obj.entities)
-                keys = intersect(keys, obj.entities{i}.propertyMap.keys);
-            end
-            
-            values = cell(1, numel(keys));
-            for i = 1:numel(keys)
-                k = keys{i};
-                v = {};
-                for j = 1:numel(obj.entities)
-                    p = obj.entities{j}.propertyMap(k);
-                    if ~any(cellfun(@(c)isequal(c, p), v))
-                        v{end + 1} = p; %#ok<AGROW>
-                    end
-                end
-                if numel(v) == 1
-                    values{i} = v{1};
-                else
-                    values{i} = v;
-                end
-            end
-            
-            if ~isempty(keys)
-                p = containers.Map(keys, values);
-            end
+            p = obj.intersectMaps(maps);
         end
         
         function addProperty(obj, key, value)
@@ -138,6 +113,43 @@ classdef EntitySet < handle
             n = [];
             for i = 1:numel(obj.entities)
                 n = obj.entities{i}.addNote(text, time);
+            end
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function m = intersectMaps(obj, maps)
+            m = containers.Map();
+            if isempty(maps)
+                return;
+            end
+            
+            keys = maps{1}.keys;
+            for i = 2:numel(obj.entities)
+                keys = intersect(keys, maps{i}.keys);
+            end
+            
+            values = cell(1, numel(keys));
+            for i = 1:numel(keys)
+                k = keys{i};
+                v = {};
+                for j = 1:numel(obj.entities)
+                    p = obj.entities{j}.propertyMap(k);
+                    if ~any(cellfun(@(c)isequal(c, p), v))
+                        v{end + 1} = p; %#ok<AGROW>
+                    end
+                end
+                if numel(v) == 1
+                    values{i} = v{1};
+                else
+                    values{i} = v;
+                end
+            end
+            
+            if ~isempty(keys)
+                m = containers.Map(keys, values);
             end
         end
         
