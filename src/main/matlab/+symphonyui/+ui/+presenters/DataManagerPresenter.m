@@ -636,6 +636,10 @@ end
 function f = desc2field(desc)
     f = uiextras.jide.PropertyGridField.empty(0, max(1, numel(desc)));
     for i = 1:numel(desc)
-        f(i) = uiextras.jide.PropertyGridField(desc(i).name, desc(i).value);
+        d = desc(i);
+        t = d.type;
+        f(i) = uiextras.jide.PropertyGridField(d.name, d.value, ...
+            'Type', uiextras.jide.PropertyType(t.primitiveType, t.shape, t.domain), ...
+            'Description', d.description);
     end
 end
