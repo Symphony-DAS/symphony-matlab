@@ -8,7 +8,7 @@ classdef Protocol < handle
 
         function n = getDisplayName(obj)
             split = strsplit(class(obj), '.');
-            n = symphonyui.ui.util.humanize(split{end});
+            n = symphonyui.core.util.humanize(split{end});
         end
 
         function setRig(obj, rig)

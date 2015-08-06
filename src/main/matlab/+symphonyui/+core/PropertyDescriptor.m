@@ -8,6 +8,7 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
         displayName
         description
         readOnly
+        hidden
     end
     
     properties (Access = private, Transient)
@@ -17,7 +18,8 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
     methods
         
         function obj = PropertyDescriptor(name, value, varargin)
-            obj.field = uiextras.jide.PropertyGridField(name, value);
+            obj.field = uiextras.jide.PropertyGridField(name, value, ...
+                'DisplayName', symphonyui.core.util.humanize(name));
             if nargin > 2
                 obj.set(varargin{:});
             end
@@ -49,12 +51,44 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
             obj.field.Type = ft;
         end
         
+        function c = get.category(obj)
+            c = obj.field.Category;
+        end
+        
+        function set.category(obj, c)
+            obj.field.Category = c;
+        end
+        
+        function n = get.displayName(obj)
+            n = obj.field.DisplayName;
+        end
+        
+        function set.displayName(obj, n)
+            obj.field.DisplayName = n;
+        end
+        
         function d = get.description(obj)
             d = obj.field.Description;
         end
         
         function set.description(obj, d)
             obj.field.Description = d;
+        end
+        
+        function tf = get.readOnly(obj)
+            tf = obj.field.ReadOnly;
+        end
+        
+        function set.readOnly(obj, tf)
+            obj.field.ReadOnly = tf;
+        end
+        
+        function tf = get.hidden(obj)
+            tf = obj.field.Hidden;
+        end
+        
+        function set.hidden(obj, tf)
+            obj.field.Hidden = tf;
         end
         
         function p = findByName(array, name)
@@ -86,7 +120,8 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
                     'category', s.category, ...
                     'displayName', s.displayName, ...
                     'description', s.description, ...
-                    'readOnly', s.readOnly);
+                    'readOnly', s.readOnly, ...
+                    'hidden', s.hidden);
             end
         end
         

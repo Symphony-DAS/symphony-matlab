@@ -1,6 +1,7 @@
 classdef ObjectRepository < handle
 
     properties (Access = private)
+        log
         subtype
         searchPaths
         objects
@@ -9,6 +10,7 @@ classdef ObjectRepository < handle
     methods
         
         function obj = ObjectRepository(subtype, searchPaths)
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.subtype = subtype;
             obj.setSearchPaths(searchPaths);
             obj.loadAll();
@@ -25,7 +27,38 @@ classdef ObjectRepository < handle
         end
 
         function loadAll(obj)
-            obj.objects = discover(obj.subtype, obj.searchPaths);
+            loaded = {};
+
+            for i = 1:numel(obj.searchPaths)
+                package = packageName(obj.searchPaths{i});
+                if ~isempty(package)
+                    package = [package '.']; %#ok<AGROW>
+                end
+
+                listing = dir(fullfile(obj.searchPaths{i}, '*.m'));
+                for k = 1:numel(listing)
+                    className = [package listing(k).name(1:end-2)];
+                    try
+                        super = superclasses(className);
+                    catch
+                        continue;
+                    end
+
+                    if ~any(strcmp(super, obj.subtype))
+                        continue;
+                    end
+
+                    try
+                        constructor = str2func(className);
+                        loaded{end + 1} = constructor(); %#ok<AGROW>
+                    catch x
+                        obj.log.debug(x.message, x);
+                        continue;
+                    end
+                end
+            end
+            
+            obj.objects = loaded;
         end
         
         function o = getAll(obj)
@@ -34,38 +67,6 @@ classdef ObjectRepository < handle
 
     end
 
-end
-
-function objects = discover(type, paths)
-    objects = {};
-
-    for i = 1:numel(paths)
-        package = packageName(paths{i});
-        if ~isempty(package)
-            package = [package '.']; %#ok<AGROW>
-        end
-
-        listing = dir(fullfile(paths{i}, '*.m'));
-        for k = 1:numel(listing)
-            className = [package listing(k).name(1:end-2)];
-            try
-                super = superclasses(className);
-            catch
-                continue;
-            end
-
-            if ~any(strcmp(super, type))
-                continue;
-            end
-            
-            try
-                constructor = str2func(className);
-                objects{end + 1} = constructor(); %#ok<AGROW>
-            catch
-                continue;
-            end
-        end
-    end
 end
 
 function [name, parentPath] = packageName(path)

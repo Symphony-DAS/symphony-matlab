@@ -8,7 +8,7 @@ classdef Description < handle
         
         function obj = Description()
             split = strsplit(class(obj), '.');
-            obj.displayName = symphonyui.ui.util.humanize(split{end});
+            obj.displayName = symphonyui.core.util.humanize(split{end});
         end
         
     end
