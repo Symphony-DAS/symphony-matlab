@@ -136,7 +136,7 @@ classdef EntitySet < handle
                 k = keys{i};
                 v = {};
                 for j = 1:numel(obj.entities)
-                    p = obj.entities{j}.propertyMap(k);
+                    p = maps{j}(k);
                     if ~any(cellfun(@(c)isequal(c, p), v))
                         v{end + 1} = p; %#ok<AGROW>
                     end

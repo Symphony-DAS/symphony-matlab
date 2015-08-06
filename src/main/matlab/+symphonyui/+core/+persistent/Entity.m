@@ -12,7 +12,7 @@ classdef Entity < symphonyui.core.CoreObject
     end
     
     properties (Constant, Access = private)
-        STATIC_PROPERTY_DESCRIPTORS_NAME = 'descriptors'
+        STATIC_PROPERTY_DESCRIPTORS_NAME = 'STATIC_PROPERTY_DESCRIPTORS'
     end
     
     methods
@@ -42,14 +42,15 @@ classdef Entity < symphonyui.core.CoreObject
         end
         
         function p = getPropertyDescriptors(obj)
-            desc = obj.getStaticPropertyDescriptors();
+            desc = obj.getStaticPropertyDescriptors(); 
             map = obj.propertyMap;
             keys = map.keys;
             p = symphonyui.core.PropertyDescriptor.empty(0, numel(keys));
             for i = 1:numel(keys)
                 d = desc.findByName(keys{i});
                 if isempty(d)
-                    p(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}));
+                    p(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}), ...
+                        'readOnly', true);
                 else
                     d.value = map(d.name);
                     p(i) = d;
@@ -112,7 +113,12 @@ classdef Entity < symphonyui.core.CoreObject
         
         function p = getStaticPropertyDescriptors(obj)
             if isempty(obj.staticPropertyDescriptors)
-                obj.staticPropertyDescriptors = obj.getResource(obj.STATIC_PROPERTY_DESCRIPTORS_NAME);
+                if any(strcmp(obj.STATIC_PROPERTY_DESCRIPTORS_NAME, obj.getResourceNames()))
+                    d = obj.getResource(obj.STATIC_PROPERTY_DESCRIPTORS_NAME);
+                else
+                    d = symphonyui.core.PropertyDescriptor.empty();
+                end
+                obj.staticPropertyDescriptors = d;
             end
             p = obj.staticPropertyDescriptors;
         end
