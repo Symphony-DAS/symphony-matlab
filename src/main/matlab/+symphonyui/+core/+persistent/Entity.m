@@ -12,7 +12,8 @@ classdef Entity < symphonyui.core.CoreObject
     end
     
     properties (Constant, Access = private)
-        STATIC_PROPERTY_DESCRIPTORS_NAME = 'STATIC_PROPERTY_DESCRIPTORS'
+        DESCRIPTION_TYPE_KEY = 'descriptionType'
+        STATIC_PROPERTY_DESCRIPTORS_NAME = 'descriptors'
     end
     
     methods
@@ -34,6 +35,9 @@ classdef Entity < symphonyui.core.CoreObject
         end
         
         function tf = removeProperty(obj, key)
+            if strcmp(key, obj.DESCRIPTION_TYPE_KEY)
+                error('Cannot remove the description type property');
+            end
             desc = obj.getStaticPropertyDescriptors();
             if ~isempty(desc.findByName(key))
                 error('Cannot remove a property with a descriptor');
@@ -137,6 +141,7 @@ classdef Entity < symphonyui.core.CoreObject
                 desc = descriptors(i);
                 e.addProperty(desc.name, desc.value);
             end
+            e.addProperty(e.DESCRIPTION_TYPE_KEY, class(description));
         end
         
     end
