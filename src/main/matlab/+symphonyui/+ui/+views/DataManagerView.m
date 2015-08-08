@@ -506,6 +506,13 @@ classdef DataManagerView < symphonyui.ui.View
             set(mainLayout, 'Widths', [-1 -1.75]);
         end
         
+        function show(obj)
+            show@symphonyui.ui.View(obj);
+            drawnow;
+            set(obj.keywordsTab.table, 'ColumnHeaderVisible', false);
+            set(obj.notesTab.table, 'ColumnHeaderVisible', false);
+        end
+        
         function close(obj)
             close@symphonyui.ui.View(obj);
             obj.propertiesTab.grid.Close();

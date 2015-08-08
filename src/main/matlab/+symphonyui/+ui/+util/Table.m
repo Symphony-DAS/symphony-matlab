@@ -8,6 +8,7 @@ classdef Table < matlab.mixin.SetGet %#ok<*MCSUP>
         ColumnWidth
         Enable
         Editable
+        ColumnHeaderVisible % Must be set after the Table is displayed.
     end
     
     properties (SetAccess = private)
@@ -113,6 +114,21 @@ classdef Table < matlab.mixin.SetGet %#ok<*MCSUP>
         
         function set.Editable(obj, tf)
             set(obj.Control, 'Editable', tf);
+        end
+        
+        function tf = get.ColumnHeaderVisible(obj)
+            tf = true;
+            h = obj.Control.getTableScrollPane.getColumnHeader();
+            if ~isempty(h)
+                tf = h.getVisible();
+            end
+        end
+        
+        function set.ColumnHeaderVisible(obj, tf)
+            h = obj.Control.getTableScrollPane.getColumnHeader();
+            if ~isempty(h)
+                h.setVisible(tf);
+            end
         end
         
         function addRow(obj, rowData)
