@@ -40,7 +40,8 @@ classdef ObjectRepository < handle
                     className = [package listing(k).name(1:end-2)];
                     try
                         super = superclasses(className);
-                    catch
+                    catch x
+                        obj.log.debug(x.message, x);
                         continue;
                     end
 
@@ -49,8 +50,11 @@ classdef ObjectRepository < handle
                     end
 
                     try
-                        constructor = str2func(className);
-                        loaded{end + 1} = constructor(); %#ok<AGROW>
+                        m = meta.class.fromName(className);
+                        if ~m.Abstract
+                            constructor = str2func(className);
+                            loaded{end + 1} = constructor(); %#ok<AGROW>
+                        end
                     catch x
                         obj.log.debug(x.message, x);
                         continue;

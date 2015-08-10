@@ -54,6 +54,7 @@ classdef Entity < symphonyui.core.CoreObject
                 d = desc.findByName(keys{i});
                 if isempty(d)
                     p(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}), ...
+                        'hidden', strcmp(keys{i}, obj.DESCRIPTION_TYPE_KEY), ...
                         'readOnly', true);
                 else
                     d.value = map(d.name);
