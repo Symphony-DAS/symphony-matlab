@@ -46,7 +46,12 @@ classdef Persistor < symphonyui.core.CoreObject
                 cparent = parent.cobj;
             end
             csrc = obj.tryCoreWithReturn(@()obj.cobj.AddSource(description.label, cparent));
-            s = symphonyui.core.persistent.Source.newSource(csrc, description);
+            try
+                s = symphonyui.core.persistent.Source.newSource(csrc, description);
+            catch x
+                obj.tryCore(@()obj.cobj.Delete(csrc));
+                rethrow(x);
+            end
         end
 
         function g = beginEpochGroup(obj, source, description)
@@ -56,7 +61,12 @@ classdef Persistor < symphonyui.core.CoreObject
                 description.label = label;
             end
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochGroup(description.label, source.cobj));
-            g = symphonyui.core.persistent.EpochGroup.newEpochGroup(cgrp, description);
+            try
+                g = symphonyui.core.persistent.EpochGroup.newEpochGroup(cgrp, description);
+            catch x
+                obj.tryCore(@()obj.cobj.Delete(cgrp));
+                rethrow(x);
+            end
         end
 
         function g = endEpochGroup(obj)

@@ -11,6 +11,11 @@ classdef Description < handle
             obj.displayName = symphonyui.core.util.humanize(split{end});
         end
         
+        function set.displayName(obj, n)
+            validateattributes(n, {'char'}, {'nonempty', 'row'});
+            obj.displayName = n;
+        end
+        
     end
     
 end
