@@ -12,7 +12,10 @@ function main()
     fileDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.FileDescription', config.get(Options.GENERAL_FILE_DESCRIPTION_SEARCH_PATH));
     sourceDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.SourceDescription', config.get(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH));
     epochGroupDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.EpochGroupDescription', config.get(Options.GENERAL_EPOCH_GROUP_DESCRIPTION_SEARCH_PATH));
+    
     protocolRepository = ObjectRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
+    
+    rigDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.RigDescription', config.get(Options.GENERAL_RIG_DESCRIPTION_SEARCH_PATH));
     
     sessionData = SessionData();
     protocols = protocolRepository.getAll();
@@ -20,7 +23,7 @@ function main()
     
     documentationService = DocumentationService(sessionData, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRepository);
     acquisitionService = AcquisitionService(sessionData, protocolRepository);
-    configurationService = ConfigurationService();
+    configurationService = ConfigurationService(sessionData, rigDescriptionRepository);
 %     try %#ok<TRYNC>
 %         ids = acquisitionService.getAvailableProtocolIds();
 %         acquisitionService.selectProtocol(ids{2});
@@ -67,12 +70,12 @@ function d = getDefaultOptions()
     import symphonyui.app.App;
 
     d = containers.Map();
-
-    d(Options.GENERAL_RIG_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+rigs')};
+    
     d(Options.GENERAL_PROTOCOL_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+protocols')};
     d(Options.GENERAL_FILE_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+files')};
     d(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+sources')};
     d(Options.GENERAL_EPOCH_GROUP_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+epochgroups')};
+    d(Options.GENERAL_RIG_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+rigs')};
     d(Options.FILE_DEFAULT_NAME) = @()datestr(now, 'yyyy-mm-dd');
     d(Options.FILE_DEFAULT_LOCATION) = @()pwd();
     d(Options.EPOCH_GROUP_LABEL_LIST) = {'Control', 'Drug', 'Wash'};

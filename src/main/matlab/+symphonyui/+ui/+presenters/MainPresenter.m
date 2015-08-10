@@ -4,7 +4,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         documentationService
         acquisitionService
         configurationService
-        rigPresenter
         dataManagerPresenter
     end
     
@@ -53,9 +52,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'RecordProtocol', @obj.onViewSelectedRecordProtocol);
             obj.addListener(v, 'StopProtocol', @obj.onViewSelectedStopProtocol);
             obj.addListener(v, 'ShowProtocolPreview', @obj.onViewSelectedShowProtocolPreview);
+            obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
             obj.addListener(v, 'ConfigureDeviceBackgrounds', @obj.onViewSelectedConfigureDeviceBackgrounds);
-            obj.addListener(v, 'LoadRigConfiguration', @obj.onViewSelectedLoadRigConfiguration);
-            obj.addListener(v, 'CreateRigConfiguration', @obj.onViewSelectedCreateRigConfiguration);
             obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
             obj.addListener(v, 'ShowUserGroup', @obj.onViewSelectedShowUserGroup);
@@ -74,7 +72,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(a, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             obj.addListener(a, 'SetProtocolProperty', @obj.onServiceSetProtocolProperty);
             
-            %obj.addListener(s, 'LoadedRigConfiguration', @obj.onServiceLoadedRigConfiguration);
+            c = obj.configurationService;
+            obj.addListener(c, 'InitializedRig', @obj.onServiceInitializedRig);
         end
         
     end
@@ -89,7 +88,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onServiceCreatedFile(obj, ~, ~)
             obj.updateEnableStateOfControls();
             obj.showDataManager();
-            obj.dataManagerPresenter.requestExperimentPurposeFocus();
         end
         
         function onViewSelectedOpenFile(obj, ~, ~)
@@ -303,9 +301,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableRecordProtocol = false;
             enableStopProtocol = false;
             enableShowProtocolPreview = false;
+            enableInitializeRig = ~hasOpenFile && isRigStopped;
             enableConfigureDeviceBackgrounds = isRigStopped;
-            enableLoadRigConfiguration = ~hasOpenFile && isRigStopped;
-            enableCreateRigConfiguration = ~hasOpenFile && isRigStopped;
             status = '';
             
             canRecord = canEndEpochGroup;
@@ -346,88 +343,26 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableRecordProtocol(enableRecordProtocol);
             obj.view.enableStopProtocol(enableStopProtocol);
             obj.view.enableShowProtocolPreview(enableShowProtocolPreview);
+            obj.view.enableInitializeRig(enableInitializeRig);
             obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);
-            obj.view.enableLoadRigConfiguration(enableLoadRigConfiguration);
-            obj.view.enableCreateRigConfiguration(enableCreateRigConfiguration);
             obj.view.setStatus(status);
         end
         
-        function onViewSelectedConfigureDeviceBackgrounds(obj, ~, ~)
-            devices = obj.acquisitionService.getCurrentRig().devices;
-            presenter = symphonyui.ui.presenters.DeviceBackgroundsPresenter(devices, obj.app);
+        function onViewSelectedInitializeRig(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.InitializeRigPresenter(obj.configurationService, obj.app);
             presenter.goWaitStop();
         end
         
-        function onViewSelectedLoadRigConfiguration(obj, ~, ~)
-            path = obj.view.showGetFile('Load Rig Configuration', '*.mat');
-            if isempty(path)
-                return;
-            end
-            try
-                obj.acquisitionService.loadRigConfiguration(path);
-            catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-                return;
-            end
-        end
-        
-        function onServiceLoadedRigConfiguration(obj, ~, ~)
-            obj.removeRigListeners();
-            obj.addRigListeners();
+        function onServiceInitializedRig(obj, ~, ~)
             obj.updateEnableStateOfControls();
         end
         
-        function onViewSelectedCreateRigConfiguration(obj, ~, ~)
-            disp('Create rig config');
-        end
-        
-%         function addRigListeners(obj)
-%             rig = obj.acquisitionService.getCurrentRig();
-%             manager = obj.eventManagers.rig;
-%             manager.addListener(rig, 'Initialized', @obj.onRigInitialized);
-%             manager.addListener(rig, 'Closed', @obj.onRigClosed);
-%             manager.addListener(rig, 'state', 'PostSet', @obj.onRigSetState);
-%         end
-%         
-%         function removeRigListeners(obj)
-%             obj.eventManagers.rig.removeAllListeners();
-%         end
-        
-        function onRigInitialized(obj, ~, ~)
-            obj.updateEnableStateOfControls();
-        end
-        
-        function onRigClosed(obj, ~, ~)
-            obj.updateEnableStateOfControls();
-            
-            if ~isempty(obj.rigPresenter)
-                obj.rigPresenter.stop();
-                obj.rigPresenter = [];
-            end
-        end
-        
-        function onRigSetState(obj, ~, ~)
-            obj.updateEnableStateOfControls();
+        function onViewSelectedConfigureDeviceBackgrounds(obj, ~, ~)
+            disp('Selected configure device backgrounds');
         end
         
         function onViewSelectedConfigureOptions(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.OptionsPresenter(obj.app);
-            presenter.goWaitStop();
-        end
-        
-        function onViewSelectedShowRig(obj, ~, ~)
-            obj.showRig();
-        end
-        
-        function showRig(obj)
-            if isempty(obj.rigPresenter) || obj.rigPresenter.isStopped
-                rig = obj.acquisitionService.getCurrentRig();
-                obj.rigPresenter = symphonyui.ui.presenters.RigPresenter(rig, obj.app);
-                obj.rigPresenter.go();
-            else
-                obj.rigPresenter.show();
-            end
+            disp('Selected configure options');
         end
         
         function onViewSelectedShowDocumentation(obj, ~, ~)

@@ -1,12 +1,17 @@
-classdef SingleAmp < symphonyui.core.Rig
+classdef SingleAmp < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function configure(obj)
+        function obj = SingleAmp()
             import symphonyui.builtin.devices.*;
             
-            obj.addDevice(GenericDevice('LED'));
-            obj.addDevice(MultiClampDevice('Amp'));
+            obj.daqController = symphonyui.builtin.daq.HekaDaqController();
+            
+            obj.devices = { ...
+                MultiClampDevice(), ...
+                GenericDevice(), ...
+                GenericDevice(), ...
+            };
         end
         
     end

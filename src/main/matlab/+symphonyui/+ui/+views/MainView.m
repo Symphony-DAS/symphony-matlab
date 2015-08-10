@@ -15,9 +15,8 @@ classdef MainView < symphonyui.ui.View
         RecordProtocol
         StopProtocol
         ShowProtocolPreview
+        InitializeRig
         ConfigureDeviceBackgrounds
-        LoadRigConfiguration
-        CreateRigConfiguration
         ConfigureOptions
         ShowDocumentation
         ShowUserGroup
@@ -108,17 +107,13 @@ classdef MainView < symphonyui.ui.View
             % Configure menu.
             obj.configureMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Configure');
+            obj.configureMenu.initializeRig = uimenu(obj.configureMenu.root, ...
+                'Label', 'Initialize Rig...', ...
+                'Callback', @(h,d)notify(obj, 'InitializeRig'));
             obj.configureMenu.configureDeviceBackgrounds = uimenu(obj.configureMenu.root, ...
                 'Label', 'Device Backgrounds...', ...
                 'Accelerator', 'B', ...
                 'Callback', @(h,d)notify(obj, 'ConfigureDeviceBackgrounds'));
-            obj.configureMenu.loadRigConfiguration = uimenu(obj.configureMenu.root, ...
-                'Label', 'Load Rig Configuration...', ...
-                'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'LoadRigConfiguration'));
-            obj.configureMenu.createRigConfiguration = uimenu(obj.configureMenu.root, ...
-                'Label', 'Create Rig Configuration...', ...
-                'Callback', @(h,d)notify(obj, 'CreateRigConfiguration'));
             obj.configureMenu.configureOptions = uimenu(obj.configureMenu.root, ...
                 'Label', 'Options...', ...
                 'Separator', 'on', ...
@@ -268,16 +263,12 @@ classdef MainView < symphonyui.ui.View
             set(obj.acquireMenu.showProtocolPreview, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
+        function enableInitializeRig(obj, tf)
+            set(obj.configureMenu.initializeRig, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
         function enableConfigureDeviceBackgrounds(obj, tf)
             set(obj.configureMenu.configureDeviceBackgrounds, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-        
-        function enableLoadRigConfiguration(obj, tf)
-            set(obj.configureMenu.loadRigConfiguration, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-        
-        function enableCreateRigConfiguration(obj, tf)
-            set(obj.configureMenu.createRigConfiguration, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
         function enableConfigureOptions(obj, tf)

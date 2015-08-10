@@ -1,10 +1,5 @@
 classdef Rig < handle
     
-    events (NotifyAccess = private)
-        Initialized
-        Closed
-    end
-    
     properties
         daqController
     end
@@ -20,7 +15,7 @@ classdef Rig < handle
     
     methods
         
-        function obj = Rig()
+        function obj = Rig(description)
             obj.state = symphonyui.core.RigState.STOPPED;
             obj.isInitialized = false;
             obj.devices = {};
@@ -31,12 +26,10 @@ classdef Rig < handle
                 return;
             end
             obj.isInitialized = true;
-            notify(obj, 'Initialized');
         end
         
         function close(obj)
             obj.isInitialized = false;
-            notify(obj, 'Closed');
         end
         
         function addDevice(obj, device)
