@@ -31,6 +31,9 @@ classdef Entity < symphonyui.core.CoreObject
         end
         
         function addProperty(obj, key, value)
+            if isobject(value)
+                error('Object property values are not supported');
+            end
             obj.tryCore(@()obj.cobj.AddProperty(key, value));
         end
         

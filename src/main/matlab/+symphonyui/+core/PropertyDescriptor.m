@@ -18,6 +18,9 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
     methods
         
         function obj = PropertyDescriptor(name, value, varargin)
+            if isnumeric(value) && isempty(value)
+                error('Value may not be empty');
+            end
             obj.field = uiextras.jide.PropertyGridField(name, value, ...
                 'DisplayName', symphonyui.core.util.humanize(name));
             if nargin > 2

@@ -34,19 +34,27 @@ classdef (Abstract) CoreObject < handle
             obj.cobj = cobj;
         end
         
-        function tryCore(obj, call)
+        function tryCore(obj, call) %#ok<INUSL>
             try
                 call();
             catch x
-                error(char(x.ExceptionObject.Message));
+                if isa(x, 'NET.NetException')
+                    error(char(x.ExceptionObject.Message));
+                else
+                    rethrow(x)
+                end
             end
         end
         
-        function r = tryCoreWithReturn(obj, call)
+        function r = tryCoreWithReturn(obj, call) %#ok<INUSL>
             try
                 r = call();
             catch x
-                error(char(x.ExceptionObject.Message));
+                if isa(x, 'NET.NetException')
+                    error(char(x.ExceptionObject.Message));
+                else
+                    rethrow(x)
+                end
             end
         end
         

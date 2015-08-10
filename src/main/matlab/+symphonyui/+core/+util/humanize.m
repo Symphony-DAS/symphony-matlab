@@ -12,6 +12,9 @@ function out = humanize(in)
     
     % To sentence case.
     out = strtrim(out);
+    if isempty(out)
+        return;
+    end
     out(1) = upper(out(1));
     out(2:end) = lower(out(2:end));
 end
