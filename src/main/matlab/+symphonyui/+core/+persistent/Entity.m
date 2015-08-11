@@ -26,8 +26,8 @@ classdef Entity < symphonyui.core.CoreObject
             i = char(obj.cobj.UUID.ToString());
         end
         
-        function p = get.propertyMap(obj)
-            p = obj.mapFromKeyValueEnumerable(obj.cobj.Properties);
+        function m = get.propertyMap(obj)
+            m = obj.mapFromKeyValueEnumerable(obj.cobj.Properties);
         end
         
         function addProperty(obj, key, value)
@@ -48,20 +48,20 @@ classdef Entity < symphonyui.core.CoreObject
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(key));
         end
         
-        function p = getPropertyDescriptors(obj)
+        function d = getPropertyDescriptors(obj)
             desc = obj.getStaticPropertyDescriptors(); 
             map = obj.propertyMap;
             keys = map.keys;
-            p = symphonyui.core.PropertyDescriptor.empty(0, numel(keys));
+            d = symphonyui.core.PropertyDescriptor.empty(0, numel(keys));
             for i = 1:numel(keys)
                 d = desc.findByName(keys{i});
                 if isempty(d)
-                    p(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}), ...
+                    d(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}), ...
                         'hidden', strcmp(keys{i}, obj.DESCRIPTION_TYPE_KEY), ...
                         'readOnly', true);
                 else
                     d.value = map(d.name);
-                    p(i) = d;
+                    d(i) = d;
                 end
             end
         end

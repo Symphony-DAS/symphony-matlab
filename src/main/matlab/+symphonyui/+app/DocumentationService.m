@@ -31,10 +31,6 @@ classdef DocumentationService < handle
             obj.epochGroupDescriptionRepository = epochGroupDescriptionRespository;
         end
         
-        function tf = hasOpenFile(obj)
-            tf = obj.hasSessionPersistor();
-        end
-        
         function d = getAvailableFileDescriptions(obj)
             d = obj.fileDescriptionRepository.getAll();
         end
@@ -59,6 +55,10 @@ classdef DocumentationService < handle
             obj.getSessionPersistor().close();
             obj.sessionData.persistor = [];
             notify(obj, 'ClosedFile');
+        end
+        
+        function tf = hasOpenFile(obj)
+            tf = obj.hasSessionPersistor();
         end
         
         function e = getExperiment(obj)

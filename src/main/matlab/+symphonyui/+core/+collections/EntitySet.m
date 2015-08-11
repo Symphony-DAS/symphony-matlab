@@ -31,12 +31,12 @@ classdef EntitySet < handle
             e = obj.entities{index};
         end
         
-        function p = get.propertyMap(obj)
+        function m = get.propertyMap(obj)
             maps = cell(1, numel(obj.entities));
             for i = 1:numel(obj.entities)
                 maps{i} = obj.entities{i}.propertyMap;
             end
-            p = obj.intersectMaps(maps);
+            m = obj.intersectMaps(maps);
         end
         
         function addProperty(obj, key, value)
@@ -53,14 +53,14 @@ classdef EntitySet < handle
             end
         end
         
-        function p = getPropertyDescriptors(obj)
-            p = symphonyui.core.PropertyDescriptor.empty();
+        function d = getPropertyDescriptors(obj)
+            d = symphonyui.core.PropertyDescriptor.empty();
             if isempty(obj.entities)
                 return;
             end
             
             % TODO: Implement merging of property descriptors.
-            p = obj.entities{1}.getPropertyDescriptors();
+            d = obj.entities{1}.getPropertyDescriptors();
         end
         
         function k = get.keywords(obj)

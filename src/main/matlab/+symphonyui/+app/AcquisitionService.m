@@ -8,6 +8,7 @@ classdef AcquisitionService < handle
     properties (Access = private)
         sessionData
         protocolRepository
+        nullProtocol
     end
     
     methods
@@ -15,19 +16,37 @@ classdef AcquisitionService < handle
         function obj = AcquisitionService(sessionData, protocolRepository)
             obj.sessionData = sessionData;
             obj.protocolRepository = protocolRepository;
+            obj.nullProtocol = symphonyui.app.NullProtocol();
         end
         
-        function p = getAvailableProtocols(obj)
-            p = obj.protocolRepository.getAll();
+        function [cn, dn] = getAvailableProtocolNames(obj)
+            protocols = obj.protocolRepository.getAll();
+            cn = cell(1, numel(protocols));
+            dn = cell(1, numel(protocols));
+            for i = 1:numel(protocols)
+                cn{i} = class(protocols{i});
+                dn{i} = protocols{i}.getDisplayName();
+            end
         end
         
-        function selectProtocol(obj, protocol)
-            obj.sessionData.protocol = protocol;
+        function selectProtocol(obj, className)
+            if isempty(className)
+                p = obj.nullProtocol;
+            else
+                protocols = obj.protocolRepository.getAll();
+                index = strcmp(className, cellfun(@(p)class(p), protocols, 'UniformOutput', false));
+                p = protocols{index};
+            end
+            obj.sessionData.protocol = p;
             notify(obj, 'SelectedProtocol');
         end
         
-        function p = getSelectedProtocol(obj)
-            p = obj.getSessionProtocol();
+        function cn = getSelectedProtocol(obj)
+            if obj.getSessionProtocol() == obj.nullProtocol
+                cn = [];
+            else
+                cn = class(obj.getSessionProtocol());
+            end
         end
         
         function setProtocolProperty(obj, name, value)
@@ -35,8 +54,8 @@ classdef AcquisitionService < handle
             notify(obj, 'SetProtocolProperty');
         end
         
-        function p = getProtocolProperties(obj)
-            p = obj.getSessionProtocol().getParameters();
+        function d = getProtocolPropertyDescriptors(obj)
+            d = obj.getSessionProtocol().getPropertyDescriptors();
         end
 
         function viewProtocol(obj)

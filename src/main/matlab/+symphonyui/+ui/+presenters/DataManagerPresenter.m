@@ -457,7 +457,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 update = false;
             end
             try
-                fields = desc2field(entitySet.getPropertyDescriptors());
+                fields = symphonyui.ui.util.desc2field(entitySet.getPropertyDescriptors());
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
@@ -636,20 +636,5 @@ function map = map2pmap(map)
             end
             map(k) = v;
         end
-    end
-end
-
-function f = desc2field(desc)
-    f = uiextras.jide.PropertyGridField.empty(0, max(1, numel(desc)));
-    for i = 1:numel(desc)
-        d = desc(i);
-        t = d.type;
-        f(i) = uiextras.jide.PropertyGridField(d.name, d.value, ...
-            'Type', uiextras.jide.PropertyType(t.primitiveType, t.shape, t.domain), ...
-            'Category', d.category, ...
-            'DisplayName', d.displayName, ...
-            'Description', d.description, ...
-            'ReadOnly', d.readOnly, ...
-            'Hidden', d.hidden);
     end
 end

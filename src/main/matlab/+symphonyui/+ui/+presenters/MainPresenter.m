@@ -178,14 +178,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function populateProtocolList(obj)
-            protocols = obj.acquisitionService.getAvailableProtocols();
+            [classNames, displayNames] = obj.acquisitionService.getAvailableProtocolNames();
             
-            names = cell(1, numel(protocols));
-            for i = 1:numel(protocols)
-                names{i} = protocols{i}.getDisplayName();
-            end
-            names = ['(Empty)', names];
-            values = [{symphonyui.app.NullProtocol()}, protocols];
+            names = ['(Empty)', displayNames];
+            values = [{[]}, classNames];
             
             obj.view.setProtocolList(names, values);
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
@@ -194,7 +190,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onViewSelectedProtocol(obj, ~, ~)
             try
                 obj.acquisitionService.selectProtocol(obj.view.getSelectedProtocol());
-            catch
+            catch x
                 obj.view.showError(x.message);
                 return;
             end
@@ -264,16 +260,16 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 update = false;
             end
             try
-                properties = uiextras.jide.PropertyGridField.GenerateFrom(obj.acquisitionService.getProtocolProperties());
+                fields = symphonyui.ui.util.desc2field(obj.acquisitionService.getProtocolPropertyDescriptors());
             catch x
-                properties = uiextras.jide.PropertyGridField.empty(0, 1);
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
             if update
-                obj.view.updateProtocolProperties(properties);
+                obj.view.updateProtocolProperties(fields);
             else
-                obj.view.setProtocolProperties(properties);
+                obj.view.setProtocolProperties(fields);
             end
         end
         
@@ -283,7 +279,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             %rig = obj.acquisitionService.getCurrentRig();
             
             hasOpenFile = obj.documentationService.hasOpenFile();
-            canBegingEpochGroup = obj.documentationService.canBeginEpochGroup();
+            canBeginEpochGroup = obj.documentationService.canBeginEpochGroup();
             canEndEpochGroup = obj.documentationService.canEndEpochGroup();
             isRigStopped = true; %rig.state == RigState.STOPPED;
             isRigValid = true; %rig.isValid() == true;
@@ -292,7 +288,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableOpenFile = enableNewFile;
             enableCloseFile = hasOpenFile && isRigStopped;
             enableAddSource = hasOpenFile;
-            enableBeginEpochGroup = canBegingEpochGroup;
+            enableBeginEpochGroup = canBeginEpochGroup;
             enableEndEpochGroup = canEndEpochGroup;
             enableShowDataManager = hasOpenFile;
             enableSelectProtocol = isRigStopped;

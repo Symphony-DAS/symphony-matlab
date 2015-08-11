@@ -14,17 +14,20 @@ classdef Protocol < handle
         function setRig(obj, rig)
             obj.rig = rig;
         end
-
-        function p = getParameters(obj)
-            p = struct();
-
+        
+        function d = getPropertyDescriptors(obj)
             meta = metaclass(obj);
+            d = symphonyui.core.PropertyDescriptor.empty(0, 1);
             for i = 1:numel(meta.Properties)
                 property = meta.Properties{i};
                 if property.Abstract || property.Hidden || ~strcmp(property.GetAccess, 'public');
                     continue;
                 end
-                p.(property.Name) = obj.(property.Name);
+                name = property.Name;
+                value = obj.(name);
+                readOnly = property.Constant || ~strcmp(property.SetAccess, 'public') || property.Dependent && isempty(property.SetMethod);
+                d(end + 1) = symphonyui.core.PropertyDescriptor(name, value, ...
+                    'readOnly', readOnly);
             end
         end
 
