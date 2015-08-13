@@ -14,7 +14,7 @@ classdef DocumentationService < handle
     end
     
     properties (Access = private)
-        sessionData
+        session
         persistorFactory
         fileDescriptionRepository
         sourceDescriptionRepository
@@ -23,8 +23,8 @@ classdef DocumentationService < handle
 
     methods
         
-        function obj = DocumentationService(sessionData, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRespository)
-            obj.sessionData = sessionData;
+        function obj = DocumentationService(session, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRespository)
+            obj.session = session;
             obj.persistorFactory = persistorFactory;
             obj.fileDescriptionRepository = fileDescriptionRepository;
             obj.sourceDescriptionRepository = sourceDescriptionRepository;
@@ -39,7 +39,7 @@ classdef DocumentationService < handle
             if obj.hasOpenFile()
                 error('File already open');
             end
-            obj.sessionData.persistor = obj.persistorFactory.new(name, location, description);
+            obj.session.persistor = obj.persistorFactory.new(name, location, description);
             notify(obj, 'CreatedFile');
         end
         
@@ -47,26 +47,26 @@ classdef DocumentationService < handle
             if obj.hasOpenFile()
                 error('File already open');
             end
-            obj.sessionData.persistor = obj.persistorFactory.open(path);
+            obj.session.persistor = obj.persistorFactory.open(path);
             notify(obj, 'OpenedFile');
         end
         
         function closeFile(obj)
-            obj.getSessionPersistor().close();
-            obj.sessionData.persistor = [];
+            obj.session.getPersistor().close();
+            obj.session.persistor = [];
             notify(obj, 'ClosedFile');
         end
         
         function tf = hasOpenFile(obj)
-            tf = obj.hasSessionPersistor();
+            tf = obj.session.hasPersistor();
         end
         
         function e = getExperiment(obj)
-            e = obj.getSessionPersistor().experiment;
+            e = obj.session.getPersistor().experiment;
         end
         
         function d = addDevice(obj, name, manufacturer)
-            d = obj.getSessionPersistor().addDevice(name, manufacturer);
+            d = obj.session.getPersistor().addDevice(name, manufacturer);
             notify(obj, 'AddedDevice', symphonyui.app.AppEventData(d));
         end
         
@@ -75,7 +75,7 @@ classdef DocumentationService < handle
         end
         
         function s = addSource(obj, parent, description)
-            s = obj.getSessionPersistor().addSource(parent, description);
+            s = obj.session.getPersistor().addSource(parent, description);
             notify(obj, 'AddedSource', symphonyui.app.AppEventData(s));
         end
         
@@ -83,31 +83,23 @@ classdef DocumentationService < handle
             d = obj.epochGroupDescriptionRepository.getAll();
         end
         
-        function tf = canBeginEpochGroup(obj)
-            tf = obj.hasOpenFile() && ~isempty(obj.getExperiment().sources);
-        end
-        
         function g = beginEpochGroup(obj, source, description)
-            g = obj.getSessionPersistor().beginEpochGroup(source, description);
+            g = obj.session.getPersistor().beginEpochGroup(source, description);
             notify(obj, 'BeganEpochGroup', symphonyui.app.AppEventData(g));
         end
         
-        function tf = canEndEpochGroup(obj)
-            tf = obj.hasOpenFile() && ~isempty(obj.getCurrentEpochGroup());
-        end
-        
         function g = endEpochGroup(obj)
-            g = obj.getSessionPersistor().endEpochGroup();
+            g = obj.session.getPersistor().endEpochGroup();
             notify(obj, 'EndedEpochGroup', symphonyui.app.AppEventData(g));
         end
         
         function g = getCurrentEpochGroup(obj)
-            g = obj.getSessionPersistor().currentEpochGroup;
+            g = obj.session.getPersistor().currentEpochGroup;
         end
         
         function deleteEntity(obj, entity)
             uuid = entity.uuid;
-            obj.getSessionPersistor().deleteEntity(entity);
+            obj.session.getPersistor().deleteEntity(entity);
             notify(obj, 'DeletedEntity', symphonyui.app.AppEventData(uuid));
         end
         
@@ -115,21 +107,6 @@ classdef DocumentationService < handle
             name = matlab.lang.makeValidName(entity.uuid);
             assignin('base', name, entity);
             evalin('base', ['disp(''' name ' = ' class(entity) ''')']);
-        end
-        
-    end
-    
-    methods (Access = private)
-        
-        function p = getSessionPersistor(obj)
-            if ~obj.hasSessionPersistor()
-                error('No session protocol');
-            end
-            p = obj.sessionData.persistor;
-        end
-        
-        function tf = hasSessionPersistor(obj)
-            tf = ~isempty(obj.sessionData.persistor) && ~obj.sessionData.persistor.isClosed;
         end
         
     end

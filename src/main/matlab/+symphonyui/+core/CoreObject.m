@@ -58,7 +58,7 @@ classdef (Abstract) CoreObject < handle
             end
         end
         
-        function c = cellArrayFromEnumerable(~, enum, wrap)
+        function c = cellArrayFromEnumerable(obj, enum, wrap) %#ok<INUSL>
             if nargin < 3 || isempty(wrap)
                 wrap = @(e)e;
             end
@@ -87,7 +87,7 @@ classdef (Abstract) CoreObject < handle
             c = c(i);
         end
         
-        function m = mapFromKeyValueEnumerable(~, enum, wrap)
+        function m = mapFromKeyValueEnumerable(obj, enum, wrap) %#ok<INUSL>
             if nargin < 3
                 wrap = @(e)convert(e);
             end
@@ -101,7 +101,7 @@ classdef (Abstract) CoreObject < handle
             end
         end
         
-        function t = datetimeFromDateTimeOffset(~, dto)
+        function t = datetimeFromDateTimeOffset(obj, dto) %#ok<INUSL>
             second = double(dto.Second) + (double(dto.Millisecond) / 1000);
             t = datetime(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, second);
             tz = char(dto.Offset.ToString());
@@ -111,7 +111,7 @@ classdef (Abstract) CoreObject < handle
             t.TimeZone = tz;
         end
         
-        function dto = dateTimeOffsetFromDatetime(~, t)
+        function dto = dateTimeOffsetFromDatetime(obj, t) %#ok<INUSL>
             if isempty(t.TimeZone)
                 error('Datetime ''TimeZone'' must be set');
             end
@@ -122,6 +122,12 @@ classdef (Abstract) CoreObject < handle
             end
             offset = System.TimeSpan.Parse(tz);
             dto = System.DateTimeOffset(t.Year, t.Month, t.Day, t.Hour, t.Minute, floor(t.Second), round(1000*rem(t.Second, 1)), offset);
+        end
+        
+        function l = addNetListener(obj, target, eventName, eventType, callback) %#ok<INUSL>
+            event = target.GetType().GetEvent(eventName);
+            l = NET.createGeneric('System.EventHandler', {eventType}, callback);
+            event.AddEventHandler(target, l);
         end
         
     end

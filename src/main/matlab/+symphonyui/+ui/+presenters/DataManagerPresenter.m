@@ -25,7 +25,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
         function onGoing(obj)
             obj.populateEntityTree();            
-            obj.updateEnableStateOfControls();
+            obj.updateStateOfControls();
         end
         
         function onBind(obj)
@@ -97,7 +97,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedNodes(node);
             
             obj.populateDetailsWithDevices(device);
-            obj.updateEnableStateOfControls();
+            obj.updateStateOfControls();
         end
         
         function n = addDeviceNode(obj, device)
@@ -128,7 +128,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setSelectedNodes(node);
             
             obj.populateDetailsWithSources(source);
-            obj.updateEnableStateOfControls();
+            obj.updateStateOfControls();
         end
         
         function n = addSourceNode(obj, source)
@@ -228,7 +228,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setEpochGroupNodeCurrent(node);
             
             obj.populateDetailsWithEpochGroups(group);
-            obj.updateEnableStateOfControls();
+            obj.updateStateOfControls();
         end
         
         function onViewSelectedEndEpochGroup(obj, ~, ~)
@@ -249,7 +249,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setEpochGroupNodeNormal(node);
             
             obj.populateDetailsWithEpochGroups(group);
-            obj.updateEnableStateOfControls();
+            obj.updateStateOfControls();
         end
         
         function n = addEpochGroupNode(obj, group)
@@ -597,7 +597,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.uuidToNode.remove(uuid);
             
             obj.populateDetailsWithNodes(obj.view.getSelectedNodes());
-            obj.updateEnableStateOfControls();
+            obj.updateStateOfControls();
         end
         
         function onViewSelectedRefresh(obj, ~, ~)
@@ -609,9 +609,12 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.openEpochDataAxesInNewWindow();
         end
         
-        function updateEnableStateOfControls(obj)
-            obj.view.enableBeginEpochGroup(obj.documentationService.canBeginEpochGroup());
-            obj.view.enableEndEpochGroup(obj.documentationService.canEndEpochGroup());
+        function updateStateOfControls(obj)
+            hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
+            hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
+            
+            obj.view.enableBeginEpochGroup(hasSource);
+            obj.view.enableEndEpochGroup(hasEpochGroup);
         end
         
     end

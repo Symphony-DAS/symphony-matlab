@@ -17,20 +17,17 @@ function main()
     
     rigDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.RigDescription', config.get(Options.GENERAL_RIG_DESCRIPTION_SEARCH_PATH));
     
-    sessionData = SessionData();
-    protocols = protocolRepository.getAll();
-    sessionData.protocol = protocols{1};
+    session = Session();
     
-    documentationService = DocumentationService(sessionData, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRepository);
-    acquisitionService = AcquisitionService(sessionData, protocolRepository);
-    configurationService = ConfigurationService(sessionData, rigDescriptionRepository);
-%     try %#ok<TRYNC>
-%         ids = acquisitionService.getAvailableProtocolIds();
-%         acquisitionService.selectProtocol(ids{2});
-%     end
+    documentationService = DocumentationService(session, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRepository);
+    acquisitionService = AcquisitionService(session, protocolRepository);
+    configurationService = ConfigurationService(session, rigDescriptionRepository);
+    
+    acquisitionService.selectProtocol([]);
+    configurationService.initializeRig([]);
 
     app = App(config);
-
+    
     presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, app);
     presenter.go();
 end

@@ -54,14 +54,14 @@ classdef Entity < symphonyui.core.CoreObject
             keys = map.keys;
             d = symphonyui.core.PropertyDescriptor.empty(0, numel(keys));
             for i = 1:numel(keys)
-                d = desc.findByName(keys{i});
-                if isempty(d)
+                static = desc.findByName(keys{i});
+                if isempty(static)
                     d(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}), ...
                         'hidden', strcmp(keys{i}, obj.DESCRIPTION_TYPE_KEY), ...
                         'readOnly', true);
                 else
-                    d.value = map(d.name);
-                    d(i) = d;
+                    static.value = map(static.name);
+                    d(i) = static;
                 end
             end
         end

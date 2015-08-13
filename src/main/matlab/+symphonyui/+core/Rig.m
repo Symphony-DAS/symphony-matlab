@@ -1,64 +1,103 @@
 classdef Rig < handle
     
-    properties
-        daqController
-    end
-    
     properties (SetObservable, SetAccess = private)
-        state
+        state = symphonyui.core.RigState.STOPPED
     end
     
-    properties (SetAccess = private)
-        isInitialized
-        devices
+    properties
+        controller
     end
     
     methods
         
         function obj = Rig(description)
-            obj.state = symphonyui.core.RigState.STOPPED;
-            obj.isInitialized = false;
-            obj.devices = {};
+            if nargin < 1
+                description = symphonyui.core.descriptions.RigDescription();
+            end
+            
+            obj.controller = symphonyui.core.Controller(description.daqController);
+            
+            devs = description.devices;
+            for i = 1:numel(devs)
+                obj.controller.addDevice(devs{i});
+            end
         end
         
         function initialize(obj)
-            if obj.isInitialized
-                return;
+            daq = obj.controller.daqController;
+            if ~isempty(daq)
+                daq.initialize();
             end
-            obj.isInitialized = true;
         end
         
         function close(obj)
-            obj.isInitialized = false;
+            daq = obj.controller.daqController;
+            if ~isempty(daq)
+                daq.close();
+            end
         end
         
-        function addDevice(obj, device)
-            obj.devices{end + 1} = device;
+        function runProtocol(obj, protocol, persistor)
+            if obj.state ~= symphonyui.core.RigState.STOPPED
+                error('Rig is not stopped');
+            end
+            
+            protocol.prepareRun();
+            
+            if isempty(persistor)
+                obj.state = symphonyui.core.RigState.VIEWING;
+            else
+                obj.state = symphonyui.core.RigState.RECORDING;
+            end
+            
+            epochCompleted = addlistener(obj.controller, 'CompletedEpoch', @(h,d)obj.onCompletedEpoch(protocol, d.data));
+            deleteEpochCompleted = onCleanup(@()delete(epochCompleted));
+            
+            epochDiscarded = addlistener(obj.controller, 'DiscardedEpoch', @(h,d)obj.onDiscardedEpoch(protocol, d.data));
+            deleteEpochDiscarded = onCleanup(@()delete(epochDiscarded));
+            
+            obj.process(protocol, persistor);
+            
+            protocol.completeRun();
         end
         
-        function record(obj, protocol, experiment)
-            obj.state = symphonyui.core.RigState.RECORDING;
-            disp(protocol);
-            disp(experiment);
-        end
-        
-        function viewOnly(obj, protocol)
-            obj.state = symphonyui.core.RigState.VIEWING;
-            disp(protocol);
-        end
-        
-        function stop(obj)
-            obj.state = symphonyui.core.RigState.STOPPED;
+        function requestStop(obj)
+            obj.controller.requestStop();
+            obj.state = symphonyui.core.RigState.STOPPING;
         end
         
         function [tf, msg] = isValid(obj)
-            if ~obj.isInitialized
-                tf = false;
-                msg = 'Rig is not initialized';
-                return;
-            end
             tf = true;
             msg = [];
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function onCompletedEpoch(obj, protocol, epoch)
+            protocol.completeEpoch(epoch);
+            if ~protocol.continueRun()
+                obj.requestStop();
+            end
+        end
+        
+        function onDiscardedEpoch(obj, protocol, epoch) %#ok<INUSD>
+            obj.requestStop();
+        end
+        
+        function process(obj, protocol, persistor)
+            obj.controller.startAsync(persistor);
+            
+            while protocol.continueQueuing()
+                epoch = symphonyui.core.Epoch(Symphony.Core.Epoch(class(protocol)));
+                protocol.prepareEpoch(epoch);
+                obj.controller.enqueueEpoch(epoch);
+            end
+            
+            while obj.controller.isRunning
+                pause(0.01);
+            end
         end
         
     end

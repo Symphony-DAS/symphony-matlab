@@ -5,15 +5,17 @@ classdef ConfigurationService < handle
     end
     
     properties (Access = private)
-        sessionData
+        session
         rigDescriptionRepository
+        emptyRig
     end
     
     methods
         
-        function obj = ConfigurationService(sessionData, rigDescriptionRepository)
-            obj.sessionData = sessionData;
+        function obj = ConfigurationService(session, rigDescriptionRepository)
+            obj.session = session;
             obj.rigDescriptionRepository = rigDescriptionRepository;
+            obj.emptyRig = symphonyui.app.NullRig();
         end
         
         function d = getAvailableRigDescriptions(obj)
@@ -21,25 +23,17 @@ classdef ConfigurationService < handle
         end
         
         function initializeRig(obj, description)
-            rig = symphonyui.core.Rig(description);
-            rig.initialize();
-            obj.sessionData.rig = rig;
-            notify(obj, 'InitializedRig');
-        end
-        
-    end
-    
-    methods (Access = private)
-        
-        function r = getSessionRig(obj)
-            if ~obj.hasSessionRig()
-                error('No session rig');
+            if obj.session.hasRig()
+                obj.session.getRig().close();
             end
-            r = obj.sessionData.rig;
-        end
-        
-        function tf = hasSessionRig(obj)
-            tf = ~isempty(obj.sessionData.rig);
+            if isempty(description)
+                rig = obj.emptyRig;
+            else
+                rig = symphonyui.core.Rig(description);
+            end
+            rig.initialize();
+            obj.session.setRig(rig);
+            notify(obj, 'InitializedRig');
         end
         
     end
