@@ -15,7 +15,7 @@ classdef DataManagerView < symphonyui.ui.View
         AddKeyword
         RemoveKeyword
         AddNote
-        SendToWorkspace
+        SendEntityToWorkspace
         DeleteEntity
         Refresh
         OpenAxesInNewWindow
@@ -44,7 +44,7 @@ classdef DataManagerView < symphonyui.ui.View
         notesTab
         parametersTab
     end
-    
+
     properties (Constant)
         EMPTY_CARD         = 1
         DEVICE_CARD        = 2
@@ -54,7 +54,7 @@ classdef DataManagerView < symphonyui.ui.View
         EPOCH_BLOCK_CARD   = 6
         EPOCH_CARD         = 7
     end
-    
+
     methods
 
         function createUi(obj)
@@ -100,7 +100,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'SelectionChangeFcn', @(h,d)notify(obj, 'SelectedNodes'), ...
                 'SelectionType', 'discontiguous');
-            
+
             treeMenu = uicontextmenu('Parent', obj.figureHandle);
             obj.addSourceButtons.menu = uimenu( ...
                 'Parent', treeMenu, ...
@@ -121,12 +121,12 @@ classdef DataManagerView < symphonyui.ui.View
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'Refresh'));
             set(obj.entityTree, 'UIContextMenu', treeMenu);
-            
+
             root = obj.entityTree.Root;
             set(root, 'Value', struct('entity', [], 'type', EntityNodeType.EXPERIMENT));
             root.setIcon(symphonyui.app.App.getResource('icons/experiment.png'));
             set(root, 'UIContextMenu', obj.createEntityContextMenu());
-            
+
             devices = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
                 'Name', 'Devices', ...
@@ -147,13 +147,13 @@ classdef DataManagerView < symphonyui.ui.View
                 'Value', struct('entity', [], 'type', EntityNodeType.FOLDER));
             groups.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
             obj.epochGroupsFolderNode = groups;
-            
+
             detailLayout = uix.VBox( ...
                 'Parent', mainLayout);
-            
+
             obj.detailCardPanel = uix.CardPanel( ...
                 'Parent', detailLayout);
-            
+
             % Empty card.
             emptyLayout = uix.VBox( ...
                 'Parent', obj.detailCardPanel);
@@ -166,7 +166,7 @@ classdef DataManagerView < symphonyui.ui.View
             set(emptyLayout, ...
                 'Heights', [-1 25 -1], ...
                 'UserData', struct('Height', -1));
-            
+
             % Device card.
             deviceLayout = uix.VBox( ...
                 'Parent', obj.detailCardPanel, ...
@@ -197,7 +197,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', deviceLayout);
             set(deviceLayout, ...
                 'Heights', [layoutHeight(deviceGrid) -1]);
-            
+
             % Source card.
             sourceLayout = uix.VBox( ...
                 'Parent', obj.detailCardPanel, ...
@@ -306,7 +306,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', epochGroupLayout);
             set(epochGroupLayout, ...
                 'Heights', [layoutHeight(epochGroupGrid) -1]);
-            
+
             % Epoch block card.
             epochBlockLayout = uix.VBox( ...
                 'Parent', obj.detailCardPanel, ...
@@ -345,7 +345,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', epochBlockLayout);
             set(epochBlockLayout, ...
                 'Heights', [layoutHeight(epochBlockGrid) -1]);
-            
+
             % Epoch card.
             epochLayout = uix.VBox( ...
                 'Parent', obj.detailCardPanel, ...
@@ -370,7 +370,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', epochLayout);
             set(epochLayout, ...
                 'Heights', [-1 -1]);
-            
+
             % Tab group.
             obj.tabGroup = TabGroup( ...
                 'Parent', obj.experimentCard.annotationsLayout);
@@ -387,7 +387,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'BorderType', 'none', ...
                 'ShowDescription', true, ...
                 'Callback', @(h,d)notify(obj, 'SetProperty', symphonyui.ui.UiEventData(d)));
-            
+
             % Properties toolbar.
             propertiesToolbarLayout = uix.HBox( ...
                 'Parent', propertiesLayout, ...
@@ -416,7 +416,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
                 'Callback', @(h,d)notify(obj, 'RemoveProperty'));
             set(propertiesToolbarLayout, 'Widths', [-1 50]);
-            
+
             set(propertiesLayout, 'Heights', [-1 25]);
 
             % Keywords tab.
@@ -432,7 +432,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'ColumnName', {'Keyword'}, ...
                 'Editable', false);
             javacomponent('javax.swing.JSeparator', [], keywordsLayout);
-            
+
             % Keywords toolbar.
             keywordsToolbarLayout = uix.HBox( ...
                 'Parent', keywordsLayout, ...
@@ -453,9 +453,9 @@ classdef DataManagerView < symphonyui.ui.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
                 'Callback', @(h,d)notify(obj, 'RemoveKeyword'));
             set(keywordsToolbarLayout, 'Widths', [-1 50]);
-            
+
             set(keywordsLayout, 'Heights', [-1 1 25]);
-            
+
             % Notes tab.
             obj.notesTab.tab = uitab( ...
                 'Parent', [], ...
@@ -470,7 +470,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'ColumnWidth', {80}, ...
                 'Editable', false);
             javacomponent('javax.swing.JSeparator', [], notesLayout);
-            
+
             % Notes toolbar.
             notesToolbarLayout = uix.HBox( ...
                 'Parent', notesLayout, ...
@@ -491,9 +491,9 @@ classdef DataManagerView < symphonyui.ui.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
                 'Enable', 'off');
             set(notesToolbarLayout, 'Widths', [-1 50]);
-            
+
             set(notesLayout, 'Heights', [-1 1 25]);
-            
+
             % Parameters tab.
             obj.parametersTab.tab = uitab( ...
                 'Parent', [], ...
@@ -507,20 +507,20 @@ classdef DataManagerView < symphonyui.ui.View
 
             set(mainLayout, 'Widths', [-1 -1.75]);
         end
-        
+
         function show(obj)
             show@symphonyui.ui.View(obj);
             drawnow;
             set(obj.keywordsTab.table, 'ColumnHeaderVisible', false);
             set(obj.notesTab.table, 'ColumnHeaderVisible', false);
         end
-        
+
         function close(obj)
             close@symphonyui.ui.View(obj);
             obj.propertiesTab.grid.Close();
             obj.parametersTab.grid.Close();
         end
-        
+
         function enableBeginEpochGroup(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
             set(obj.beginEpochGroupButtons.tool, 'Enable', enable);
@@ -532,10 +532,10 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.endEpochGroupButtons.tool, 'Enable', enable);
             set(obj.endEpochGroupButtons.menu, 'Enable', enable);
         end
-        
+
         function setCardSelection(obj, index)
             set(obj.detailCardPanel, 'Selection', index);
-            
+
             switch index
                 case obj.DEVICE_CARD
                     set(obj.tabGroup, 'Parent', obj.deviceCard.annotationsLayout);
@@ -550,18 +550,18 @@ classdef DataManagerView < symphonyui.ui.View
                 case obj.EPOCH_CARD
                     set(obj.tabGroup, 'Parent', obj.epochCard.annotationsLayout);
             end
-            
+
             if index == obj.EPOCH_CARD
                 obj.tabGroup.addTab(obj.parametersTab.tab);
             else
                 obj.tabGroup.removeTab(obj.parametersTab.tab);
             end
         end
-        
+
         function setEmptyText(obj, t)
             set(obj.emptyCard.text, 'String', t);
         end
-        
+
         function n = getDevicesFolderNode(obj)
             n = obj.devicesFolderNode;
         end
@@ -580,11 +580,11 @@ classdef DataManagerView < symphonyui.ui.View
         function setDeviceName(obj, n)
             set(obj.deviceCard.nameField, 'String', n);
         end
-        
+
         function setDeviceManufacturer(obj, m)
             set(obj.deviceCard.manufacturerField, 'String', m);
         end
-        
+
         function n = getSourcesFolderNode(obj)
             n = obj.sourcesFolderNode;
         end
@@ -599,15 +599,15 @@ classdef DataManagerView < symphonyui.ui.View
             n.setIcon(symphonyui.app.App.getResource('icons/source.png'));
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
-        
+
         function enableSourceLabel(obj, tf)
             set(obj.sourceCard.labelField, 'Enable', symphonyui.ui.util.onOff(tf));
         end
-        
+
         function l = getSourceLabel(obj)
             l = get(obj.sourceCard.labelField, 'String');
         end
-        
+
         function setSourceLabel(obj, l)
             set(obj.sourceCard.labelField, 'String', l);
         end
@@ -619,15 +619,15 @@ classdef DataManagerView < symphonyui.ui.View
                 'Name', name, ...
                 'Value', value);
         end
-        
+
         function n = getExperimentNode(obj)
             n = obj.entityTree.Root;
         end
-        
+
         function enableExperimentPurpose(obj, tf)
             set(obj.experimentCard.purposeField, 'Enable', symphonyui.ui.util.onOff(tf));
         end
-        
+
         function p = getExperimentPurpose(obj)
             p = get(obj.experimentCard.purposeField, 'String');
         end
@@ -635,20 +635,20 @@ classdef DataManagerView < symphonyui.ui.View
         function setExperimentPurpose(obj, p)
             set(obj.experimentCard.purposeField, 'String', p);
         end
-        
+
         function requestExperimentPurposeFocus(obj)
             obj.update();
             uicontrol(obj.experimentCard.purposeField);
         end
-        
+
         function setExperimentStartTime(obj, t)
             set(obj.experimentCard.startTimeField, 'String', t);
         end
-        
+
         function setExperimentEndTime(obj, t)
             set(obj.experimentCard.endTimeField, 'String', t);
         end
-        
+
         function n = getEpochGroupsFolderNode(obj)
             n = obj.epochGroupsFolderNode;
         end
@@ -663,11 +663,11 @@ classdef DataManagerView < symphonyui.ui.View
             n.setIcon(symphonyui.app.App.getResource('icons/group.png'));
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
-        
+
         function enableEpochGroupLabel(obj, tf)
             set(obj.epochGroupCard.labelField, 'Enable', symphonyui.ui.util.onOff(tf));
         end
-        
+
         function l = getEpochGroupLabel(obj)
             l = get(obj.epochGroupCard.labelField, 'String');
         end
@@ -695,7 +695,7 @@ classdef DataManagerView < symphonyui.ui.View
         function setEpochGroupNodeNormal(obj, node) %#ok<INUSL>
             node.setIcon(symphonyui.app.App.getResource('icons/group.png'));
         end
-        
+
         function n = addEpochBlockNode(obj, parent, name, entity)
             value.entity = entity;
             value.type = symphonyui.ui.views.EntityNodeType.EPOCH_BLOCK;
@@ -706,11 +706,11 @@ classdef DataManagerView < symphonyui.ui.View
             n.setIcon(symphonyui.app.App.getResource('icons/block.png'));
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
-        
+
         function setEpochBlockProtocolId(obj, i)
             set(obj.epochBlockCard.protocolIdField, 'String', i);
         end
-        
+
         function setEpochBlockStartTime(obj, t)
             set(obj.epochBlockCard.startTimeField, 'String', t);
         end
@@ -729,11 +729,11 @@ classdef DataManagerView < symphonyui.ui.View
             n.setIcon(symphonyui.app.App.getResource('icons/epoch.png'));
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
-        
+
         function clearEpochDataAxes(obj)
             cla(obj.epochCard.axes);
         end
-        
+
         function setEpochDataAxesLabels(obj, x, y)
             xlabel(obj.epochCard.axes, x, ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
@@ -742,15 +742,15 @@ classdef DataManagerView < symphonyui.ui.View
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
         end
-        
+
         function addEpochDataLine(obj, x, y, color)
             line(x, y, 'Parent', obj.epochCard.axes, 'Color', color);
         end
-        
+
         function setEpochDataLegend(obj, labels, groups)
             clickableLegend(obj.epochCard.axes, labels{:}, 'groups', groups);
         end
-        
+
         function openEpochDataAxesInNewWindow(obj)
             fig = figure( ...
                 'MenuBar', 'figure', ...
@@ -762,29 +762,29 @@ classdef DataManagerView < symphonyui.ui.View
                 'Position', get(groot, 'defaultAxesPosition'));
             set(fig, 'Visible', 'on');
         end
-        
+
         function setEpochProtocolParameters(obj, properties)
             set(obj.parametersTab.grid, 'Properties', properties);
         end
-        
+
         function n = getNodeName(obj, node) %#ok<INUSL>
             n = get(node, 'Name');
         end
-        
+
         function setNodeName(obj, node, name) %#ok<INUSL>
             set(node, 'Name', name);
         end
-        
+
         function e = getNodeEntity(obj, node) %#ok<INUSL>
             v = get(node, 'Value');
             e = v.entity;
         end
-        
+
         function t = getNodeType(obj, node) %#ok<INUSL>
             v = get(node, 'Value');
             t = v.type;
         end
-        
+
         function removeNode(obj, node) %#ok<INUSL>
             node.delete();
         end
@@ -804,7 +804,7 @@ classdef DataManagerView < symphonyui.ui.View
         function setSelectedNodes(obj, nodes)
             obj.entityTree.SelectedNodes = nodes;
         end
-        
+
         function setPropertiesEditorStyle(obj, s)
             set(obj.propertiesTab.grid, 'EditorStyle', s);
         end
@@ -812,24 +812,24 @@ classdef DataManagerView < symphonyui.ui.View
         function setProperties(obj, fields)
             set(obj.propertiesTab.grid, 'Properties', fields);
         end
-        
+
         function updateProperties(obj, fields)
             obj.propertiesTab.grid.UpdateProperties(fields);
         end
-        
+
         function t = getSelectedPropertyTemplate(obj)
             t = get(obj.propertiesTab.templatePopupMenu, 'Value');
         end
-        
+
         function setSelectedPropertyTemplate(obj, t)
             set(obj.propertiesTab.templatePopupMenu, 'Value', t);
         end
-        
+
         function setPropertyTemplateList(obj, names, values)
             set(obj.propertiesTab.templatePopupMenu, 'String', names);
             set(obj.propertiesTab.templatePopupMenu, 'Values', values);
         end
-        
+
         function f = getProperties(obj)
             f = get(obj.propertiesTab.grid, 'Properties');
         end
@@ -868,13 +868,13 @@ classdef DataManagerView < symphonyui.ui.View
     end
 
     methods (Access = private)
-        
+
         function menu = createEntityContextMenu(obj)
             menu = uicontextmenu('Parent', obj.figureHandle);
             m.sendToWorkspaceMenu = uimenu( ...
                 'Parent', menu, ...
                 'Label', 'Send to Workspace', ...
-                'Callback', @(h,d)notify(obj, 'SendToWorkspace'));
+                'Callback', @(h,d)notify(obj, 'SendEntityToWorkspace'));
             m.deleteMenu = uimenu( ...
                 'Parent', menu, ...
                 'Label', 'Delete', ...

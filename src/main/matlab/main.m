@@ -23,8 +23,8 @@ function main()
     acquisitionService = AcquisitionService(session, protocolRepository);
     configurationService = ConfigurationService(session, rigDescriptionRepository);
     
-    acquisitionService.selectProtocol([]);
-    configurationService.initializeRig([]);
+    cn = acquisitionService.getAvailableProtocolNames();
+    acquisitionService.selectProtocol(cn{1});
 
     app = App(config);
     

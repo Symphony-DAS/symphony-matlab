@@ -45,7 +45,6 @@ classdef Device < symphonyui.core.CoreObject
         function set.sampleRate(obj, r)
             obj.cobj.InputSampleRate = r.cobj;
             obj.cobj.OutputSampleRate = r.cobj;
-            obj.updateBackgroundOutputDataStream(); 
         end
         
         function b = get.background(obj)
@@ -54,24 +53,10 @@ classdef Device < symphonyui.core.CoreObject
         
         function set.background(obj, b)
             obj.cobj.Background = b.cobj;
-            obj.updateBackgroundOutputDataStream();           
         end
         
         function applyBackground(obj)
             obj.tryCore(@()obj.cobj.ApplyBackground());
-        end
-        
-    end
-    
-    methods (Access = private)
-        
-        function updateBackgroundOutputDataStream(obj)
-            if isempty(obj.cobj.Controller)
-                return;
-            end
-            bg = Symphony.Core.Background(obj.cobj.Background, obj.cobj.OutputSampleRate);
-            stream = Symphony.Core.BackgroundOutputDataStream(bg);
-            obj.cobj.Controller.BackgroundDataStreams.Item(obj.cobj, stream);
         end
         
     end

@@ -1,12 +1,20 @@
 classdef Session < handle
     
-    properties (Access = private)
+    properties (SetObservable)
         rig
         protocol
         persistor
+        controller
     end
     
     methods
+        
+        function obj = Session(controller)
+            if nargin < 1
+                controller = symphonyui.core.Controller();
+            end
+            obj.controller = controller;
+        end
         
         function tf = hasRig(obj)
             tf = ~isempty(obj.rig);
@@ -17,10 +25,6 @@ classdef Session < handle
                 error('No current rig');
             end
             r = obj.rig;
-        end
-        
-        function setRig(obj, r)
-            obj.rig = r;
         end
         
         function tf = hasProtocol(obj)
@@ -34,10 +38,6 @@ classdef Session < handle
             p = obj.protocol;
         end
         
-        function setProtocol(obj, p)
-            obj.protocol = p;
-        end
-        
         function tf = hasPersistor(obj)
             tf = ~isempty(obj.persistor);
         end
@@ -49,8 +49,15 @@ classdef Session < handle
             p = obj.persistor;
         end
         
-        function setPersistor(obj, p)
-            obj.persistor = p;
+        function tf = hasController(obj)
+            tf = ~isempty(obj.controller);
+        end
+        
+        function c = getController(obj)
+            if ~obj.hasController()
+                error('No current controller');
+            end
+            c = obj.controller;
         end
         
     end

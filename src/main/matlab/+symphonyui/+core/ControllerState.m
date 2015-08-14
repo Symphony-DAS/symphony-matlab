@@ -1,4 +1,4 @@
-classdef RigState
+classdef ControllerState
     
     enumeration
         STOPPED
@@ -10,16 +10,16 @@ classdef RigState
     methods
         
         function c = char(obj)
-            import symphonyui.core.RigState;
+            import symphonyui.core.ControllerState;
             
             switch obj
-                case RigState.STOPPED
+                case ControllerState.STOPPED
                     c = 'Stopped';
-                case RigState.STOPPING
+                case ControllerState.STOPPING
                     c = 'Stopping...';
-                case RigState.VIEWING
+                case ControllerState.VIEWING
                     c = 'Viewing...';
-                case RigState.RECORDING
+                case ControllerState.RECORDING
                     c = 'Recording...';
                 otherwise
                     c = 'Unknown';

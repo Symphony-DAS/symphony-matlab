@@ -71,10 +71,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             a = obj.acquisitionService;
             obj.addListener(a, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             obj.addListener(a, 'SetProtocolProperty', @obj.onServiceSetProtocolProperty);
+            obj.addListener(a, 'ControllerChangedState', @obj.onServiceControllerChangedState);
             
             c = obj.configurationService;
             obj.addListener(c, 'InitializedRig', @obj.onServiceInitializedRig);
-            obj.addListener(c, 'ChangedRigState', @obj.onServiceChangedRigState);
         end
         
     end
@@ -180,11 +180,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function populateProtocolList(obj)
             [classNames, displayNames] = obj.acquisitionService.getAvailableProtocolNames();
-            
-            names = ['(Empty)', displayNames];
-            values = [{[]}, classNames];
-            
-            obj.view.setProtocolList(names, values);
+            obj.view.setProtocolList(displayNames, classNames);
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
         end
         
@@ -248,6 +244,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
         end
         
+        function onServiceControllerChangedState(obj, ~, ~)
+            obj.updateStateOfControls();
+        end
+        
         function onViewSelectedShowProtocolPreview(obj, ~, ~)
             obj.showProtocolPreview();
         end
@@ -275,41 +275,36 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function updateStateOfControls(obj)
-            import symphonyui.core.RigState;
+            import symphonyui.core.ControllerState;
             
             hasOpenFile = obj.documentationService.hasOpenFile();
             hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
-            hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
-            rigState = obj.configurationService.getRigState();
-            isRigStopping = rigState == RigState.STOPPING;
-            isRigStopped = rigState == RigState.STOPPED;
-            [isRigValid, rigStatus] = obj.configurationService.isRigValid();
-            [isProtocolValid, protocolStatus] = obj.acquisitionService.isProtocolValid();
+            hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());       
+            controllerState = obj.acquisitionService.getControllerState();
+            isControllerStopping = controllerState == ControllerState.STOPPING;
+            isControllerStopped = controllerState == ControllerState.STOPPED;
+            [isValid, validationMessage] = obj.acquisitionService.validate();
             
-            enableNewFile = ~hasOpenFile && isRigStopped && isRigValid;
+            enableNewFile = ~hasOpenFile && isControllerStopped;
             enableOpenFile = enableNewFile;
-            enableCloseFile = hasOpenFile && isRigStopped;
+            enableCloseFile = hasOpenFile && isControllerStopped;
             enableAddSource = hasOpenFile;
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasEpochGroup;
             enableShowDataManager = hasOpenFile;
-            enableSelectProtocol = isRigStopped;
-            enableProtocolProperties = isRigStopped;
-            enableViewProtocol = isRigStopped && isRigValid && isProtocolValid;
+            enableSelectProtocol = isControllerStopped;
+            enableProtocolProperties = isControllerStopped;
+            enableViewProtocol = isControllerStopped && isValid;
             enableRecordProtocol = enableViewProtocol && hasEpochGroup;
-            enableStopProtocol = ~isRigStopping && ~isRigStopped;
+            enableStopProtocol = ~isControllerStopping && ~isControllerStopped;
             enableShowProtocolPreview = enableViewProtocol;
-            enableInitializeRig = ~hasOpenFile && isRigStopped;
-            enableConfigureDeviceBackgrounds = isRigStopped;
+            enableInitializeRig = ~hasOpenFile && isControllerStopped;
+            enableConfigureDeviceBackgrounds = isControllerStopped;
             
-            if ~isRigValid
-                status = rigStatus;
-            elseif ~isProtocolValid
-                status = protocolStatus;
-            elseif isRigStopped
-                status = '';
+            if ~isValid
+                status = validationMessage;
             else
-                status = char(rigState);
+                status = char(controllerState);
             end
             
             obj.view.enableNewFile(enableNewFile);
@@ -336,10 +331,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceInitializedRig(obj, ~, ~)
-            obj.updateStateOfControls();
-        end
-        
-        function onServiceChangedRigState(obj, ~, ~)
             obj.updateStateOfControls();
         end
         

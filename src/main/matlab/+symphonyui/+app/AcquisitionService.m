@@ -3,12 +3,12 @@ classdef AcquisitionService < handle
     events (NotifyAccess = private)
         SelectedProtocol
         SetProtocolProperty
+        ControllerChangedState
     end
     
     properties (Access = private)
         session
         protocolRepository
-        emptyProtocol
     end
     
     methods
@@ -16,7 +16,6 @@ classdef AcquisitionService < handle
         function obj = AcquisitionService(session, protocolRepository)
             obj.session = session;
             obj.protocolRepository = protocolRepository;
-            obj.emptyProtocol = symphonyui.app.NullProtocol();
         end
         
         function [cn, dn] = getAvailableProtocolNames(obj)
@@ -30,52 +29,48 @@ classdef AcquisitionService < handle
         end
         
         function selectProtocol(obj, className)
-            if isempty(className)
-                protocol = obj.emptyProtocol;
-            else
-                protocols = obj.protocolRepository.getAll();
-                index = strcmp(className, cellfun(@(p)class(p), protocols, 'UniformOutput', false));
-                protocol = protocols{index};
-            end
-            obj.session.setProtocol(protocol);
+            protocols = obj.protocolRepository.getAll();
+            index = strcmp(className, cellfun(@(p)class(p), protocols, 'UniformOutput', false));
+            obj.session.protocol = protocols{index};
             notify(obj, 'SelectedProtocol');
         end
         
         function cn = getSelectedProtocol(obj)
-            protocol = obj.session.getProtocol();
-            if protocol == obj.emptyProtocol
-                cn = [];
-            else
-                cn = class(protocol);
-            end
-        end
-        
-        function setProtocolProperty(obj, name, value)
-            obj.session.getProtocol().(name) = value;
-            notify(obj, 'SetProtocolProperty');
+            cn = class(obj.session.getProtocol());
         end
         
         function d = getProtocolPropertyDescriptors(obj)
             d = obj.session.getProtocol().getPropertyDescriptors();
         end
         
-        function [tf, msg] = isProtocolValid(obj)
-            [tf, msg] = obj.session.getProtocol().isValid();
+        function setProtocolProperty(obj, name, value)
+            obj.session.getProtocol().(name) = value;
+            notify(obj, 'SetProtocolProperty');
         end
 
         function viewProtocol(obj)
             protocol = obj.session.getProtocol();
-            obj.session.getRig().runProtocol(protocol, []);
+            controller = obj.session.getController();
+            controller.runProtocol(protocol, []);
         end
         
         function recordProtocol(obj)
             protocol = obj.session.getProtocol();
             persistor = obj.session.getPersistor();
-            obj.session.getRig().runProtocol(protocol, persistor);
+            controller = obj.session.getController();
+            controller.runProtocol(protocol, persistor);
         end
 
         function stopProtocol(obj)
-            obj.session.getRig().requestStop();
+            obj.session.getController().requestStop();
+        end
+        
+        function s = getControllerState(obj)
+            s = obj.session.getController().state;
+        end
+        
+        function [tf, msg] = validate(obj)
+            [tf, msg] = obj.session.getProtocol().isValid();
         end
         
     end
