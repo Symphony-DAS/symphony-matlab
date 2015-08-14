@@ -4,6 +4,9 @@ classdef Session < handle
         rig
         protocol
         persistor
+    end
+    
+    properties (SetAccess = private)
         controller
     end
     
@@ -47,17 +50,6 @@ classdef Session < handle
                 error('No current persistor');
             end
             p = obj.persistor;
-        end
-        
-        function tf = hasController(obj)
-            tf = ~isempty(obj.controller);
-        end
-        
-        function c = getController(obj)
-            if ~obj.hasController()
-                error('No current controller');
-            end
-            c = obj.controller;
         end
         
     end

@@ -21,6 +21,9 @@ classdef ConfigurationService < handle
         end
         
         function initializeRig(obj, description)
+            if obj.session.hasRig()
+                obj.session.getRig().close();
+            end
             rig = symphonyui.core.Rig(description);
             rig.initialize();
             obj.session.rig = rig;

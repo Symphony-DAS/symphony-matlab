@@ -16,6 +16,10 @@ classdef Protocol < handle
             obj.displayName = n;
         end
         
+        function setRig(obj, rig)
+            
+        end
+        
         function d = getPropertyDescriptors(obj)
             d = symphonyui.core.util.introspect(obj);
         end

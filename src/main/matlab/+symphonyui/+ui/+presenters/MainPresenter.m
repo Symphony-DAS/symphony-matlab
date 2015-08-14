@@ -303,6 +303,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             if ~isValid
                 status = validationMessage;
+            elseif isControllerStopped
+                status = '';
             else
                 status = char(controllerState);
             end

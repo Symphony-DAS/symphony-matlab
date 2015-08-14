@@ -9,6 +9,7 @@ classdef AcquisitionService < handle
     properties (Access = private)
         session
         protocolRepository
+        listeners
     end
     
     methods
@@ -16,6 +17,10 @@ classdef AcquisitionService < handle
         function obj = AcquisitionService(session, protocolRepository)
             obj.session = session;
             obj.protocolRepository = protocolRepository;
+            
+            obj.listeners = {};
+            obj.listeners = addlistener(obj.session, 'rig', 'PostSet', @obj.onSessionSetRig);
+            obj.listeners = addlistener(obj.session.controller, 'state', 'PostSet', @(h,d)notify(obj, 'ControllerChangedState'));
         end
         
         function [cn, dn] = getAvailableProtocolNames(obj)
@@ -50,27 +55,45 @@ classdef AcquisitionService < handle
 
         function viewProtocol(obj)
             protocol = obj.session.getProtocol();
-            controller = obj.session.getController();
-            controller.runProtocol(protocol, []);
+            obj.session.controller.runProtocol(protocol, []);
         end
         
         function recordProtocol(obj)
             protocol = obj.session.getProtocol();
             persistor = obj.session.getPersistor();
-            controller = obj.session.getController();
-            controller.runProtocol(protocol, persistor);
+            obj.session.controller.runProtocol(protocol, persistor);
         end
 
         function stopProtocol(obj)
-            obj.session.getController().requestStop();
+            obj.session.controller.requestStop();
         end
         
         function s = getControllerState(obj)
-            s = obj.session.getController().state;
+            s = obj.session.controller.state;
         end
         
         function [tf, msg] = validate(obj)
+            tf = obj.session.hasRig();
+            if ~tf
+                msg = 'No rig';
+                return;
+            end
+            tf = obj.session.hasProtocol();
+            if ~tf
+                msg = 'No protocol';
+                return;
+            end
+            
             [tf, msg] = obj.session.getProtocol().isValid();
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function onSessionSetRig(obj, ~, ~)
+            obj.session.protocol.setRig(obj.session.rig);
+            obj.session.controller.setRig(obj.session.rig);
         end
         
     end

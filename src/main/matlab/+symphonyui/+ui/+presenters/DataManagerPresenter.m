@@ -610,6 +610,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
 
         function updateStateOfControls(obj)
+            hasOpenFile = obj.documentationService.hasOpenFile();
             hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
 
