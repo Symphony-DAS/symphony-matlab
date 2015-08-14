@@ -78,15 +78,14 @@ classdef AcquisitionService < handle
         end
         
         function recordProtocol(obj)
-
+            rig = obj.session.getRig();
+            protocol = obj.session.getProtocol();
+            persistor = obj.session.getPersistor();
+            rig.runProtocol(protocol, persistor);
         end
 
         function stopProtocol(obj)
-
-        end
-
-        function [tf, msg] = validate(obj)
-            [tf, msg] = obj.session.getProtocol().isValid();
+            obj.session.getRig().requestStop();
         end
         
     end

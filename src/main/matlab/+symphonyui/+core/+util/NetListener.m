@@ -9,9 +9,10 @@ classdef NetListener < handle
     methods
         
         function obj = NetListener(target, eventName, eventType, callback)
-            obj.event = target.GetType().GetEvent(eventName);
+            obj.target = target;
+            obj.event = obj.target.GetType().GetEvent(eventName);
             obj.listener = NET.createGeneric('System.EventHandler', {eventType}, callback);
-            obj.event.AddEventHandler(target, obj.listener);
+            obj.event.AddEventHandler(obj.target, obj.listener);
         end
         
         function delete(obj)

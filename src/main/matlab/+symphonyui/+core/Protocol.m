@@ -32,6 +32,10 @@ classdef Protocol < handle
             
         end
         
+        function tf = continueQueuing(obj)
+            tf = true;
+        end
+        
         function tf = continueRun(obj)
             tf = true;
         end

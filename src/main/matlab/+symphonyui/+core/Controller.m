@@ -1,6 +1,9 @@
 classdef Controller < symphonyui.core.CoreObject
     
     events
+        Started
+        RequestedStop
+        Stopped
         CompletedEpoch
         DiscardedEpoch
     end
@@ -20,21 +23,19 @@ classdef Controller < symphonyui.core.CoreObject
         function obj = Controller(daq)
             import symphonyui.core.util.*;
             
-            if nargin < 1
-                daq = [];
-            end
-            
-            if isempty(daq)
-                cobj = Symphony.Core.Controller();
-            else
-                cobj = Symphony.Core.Controller(daq.cobj, daq.cobj.Clock);
-            end
+            cobj = Symphony.Core.Controller(daq.cobj, daq.cobj.Clock);
             obj@symphonyui.core.CoreObject(cobj);
             
             obj.daqController = daq;
             obj.devices = {};
             
             obj.listeners = {};
+            obj.listeners{end + 1} = symphonyui.core.util.NetListener(obj.cobj, 'Started', 'Symphony.Core.TimeStampedEventArgs', ...
+                @(h,d)notify(obj, 'Started'));
+            obj.listeners{end + 1} = symphonyui.core.util.NetListener(obj.cobj, 'RequestedStop', 'Symphony.Core.TimeStampedEventArgs', ...
+                @(h,d)notify(obj, 'RequestedStop'));
+            obj.listeners{end + 1} = symphonyui.core.util.NetListener(obj.cobj, 'Stopped', 'Symphony.Core.TimeStampedEventArgs', ...
+                @(h,d)notify(obj, 'Stopped'));
             obj.listeners{end + 1} = symphonyui.core.util.NetListener(obj.cobj, 'CompletedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', ...
                 @(h,d)notify(obj, 'CompletedEpoch', symphonyui.core.CoreEventData(symphonyui.core.Epoch(d.Epoch))));
             obj.listeners{end + 1} = symphonyui.core.util.NetListener(obj.cobj, 'DiscardedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', ...
@@ -47,6 +48,7 @@ classdef Controller < symphonyui.core.CoreObject
         
         function addDevice(obj, device)
             obj.tryCore(@()obj.cobj.AddDevice(device.cobj));
+            device.cobj.Clock = obj.cobj.Clock;
             obj.devices{end + 1} = device;
         end
         
@@ -58,6 +60,14 @@ classdef Controller < symphonyui.core.CoreObject
                     return;
                 end
             end
+        end
+        
+        function clearEpochQueue(obj)
+            obj.tryCore(@()obj.cobj.ClearEpochQueue());
+        end
+        
+        function enqueueEpoch(obj, epoch)
+            obj.tryCore(@()obj.cobj.EnqueueEpoch(epoch.cobj));
         end
         
         function t = startAsync(obj, persistor)

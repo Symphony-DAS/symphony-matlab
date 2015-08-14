@@ -1,6 +1,7 @@
 classdef HekaDaqController < symphonyui.core.DaqController
     
     properties
+        sampleRate
     end
     
     methods
@@ -18,6 +19,10 @@ classdef HekaDaqController < symphonyui.core.DaqController
             obj.beginSetup();
         end
         
+        function delete(obj)
+            obj.tryCore(@()obj.cobj.Dispose());
+        end
+        
         function initialize(obj)
             obj.tryCore(@()obj.cobj.InitHardware());
         end
@@ -26,8 +31,17 @@ classdef HekaDaqController < symphonyui.core.DaqController
             obj.tryCore(@()obj.cobj.CloseHardware());
         end
         
-        function delete(obj)
-            obj.tryCore(@()obj.cobj.Dispose());
+        function m = get.sampleRate(obj)
+            cm = obj.cobj.SampleRate;
+            if isempty(cm)
+                m = [];
+            else
+                m = symphonyui.core.Measurement(cm);
+            end
+        end
+        
+        function set.sampleRate(obj, measurement)
+            obj.cobj.SampleRate = measurement.cobj;
         end
         
     end
