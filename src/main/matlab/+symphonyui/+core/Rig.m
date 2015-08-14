@@ -31,19 +31,21 @@ classdef Rig < handle
             obj.sampleRate = description.sampleRate;
             
             obj.listeners = {};
-            obj.listeners{end + 1} = addlistener(obj.controller, 'Started', @onControllerStarted);
-            obj.listeners{end + 1} = addlistener(obj.controller, 'RequestedStop', @onControllerRequestedStop);
-            obj.listeners{end + 1} = addlistener(obj.controller, 'Stopped', @onControllerStopped);
-            obj.listeners{end + 1} = addlistener(obj.controller, 'CompletedEpoch', @onControllerCompletedEpoch);
-            obj.listeners{end + 1} = addlistener(obj.controller, 'DiscardedEpoch', @onControllerDiscardedEpoch);
+            obj.listeners{end + 1} = addlistener(obj.controller, 'Started', @obj.onControllerStarted);
+            obj.listeners{end + 1} = addlistener(obj.controller, 'RequestedStop', @obj.onControllerRequestedStop);
+            obj.listeners{end + 1} = addlistener(obj.controller, 'Stopped', @obj.onControllerStopped);
+            obj.listeners{end + 1} = addlistener(obj.controller, 'CompletedEpoch', @obj.onControllerCompletedEpoch);
+            obj.listeners{end + 1} = addlistener(obj.controller, 'DiscardedEpoch', @obj.onControllerDiscardedEpoch);
         end
         
         function delete(obj)
+            obj.close();
+            while ~isempty(obj.listeners)
+                delete(obj.listeners{1});
+                obj.listeners(1) = [];
+            end
             delete(obj.controller);
-        end
-        
-        function initialize(obj)
-            obj.controller.daqController.initialize();
+            disp('deleted rig');
         end
         
         function close(obj)
@@ -67,15 +69,11 @@ classdef Rig < handle
             obj.currentPersistor = persistor;
             
             obj.controller.startAsync(persistor);
-            
-            while protocol.continueQueuing()
-                epoch = symphonyui.core.Epoch(Symphony.Core.Epoch(class(protocol)));
-                protocol.prepareEpoch(epoch);
-                obj.controller.enqueueEpoch(epoch);
-            end
-            
-            while obj.controller.isRunning
-                pause(0.01);
+            try
+                obj.processLoop();
+            catch x
+                obj.controller.requestStop();
+                rethrow(x);
             end
         end
         
@@ -91,6 +89,18 @@ classdef Rig < handle
     end
     
     methods (Access = private)
+        
+        function processLoop(obj)
+            while obj.currentProtocol.continueQueuing()
+                epoch = symphonyui.core.Epoch(class(obj.currentProtocol));
+                obj.currentProtocol.prepareEpoch(epoch);
+                obj.controller.enqueueEpoch(epoch);
+            end
+            
+            while obj.controller.isRunning
+                pause(0.01);
+            end
+        end
         
         function onControllerStarted(obj, ~, ~)
             if isempty(obj.currentPersistor)

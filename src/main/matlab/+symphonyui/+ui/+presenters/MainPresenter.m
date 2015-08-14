@@ -74,6 +74,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             c = obj.configurationService;
             obj.addListener(c, 'InitializedRig', @obj.onServiceInitializedRig);
+            obj.addListener(c, 'ChangedRigState', @obj.onServiceChangedRigState);
         end
         
     end
@@ -279,10 +280,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             hasOpenFile = obj.documentationService.hasOpenFile();
             hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
-            rigState = obj.acquisitionService.getRigState();
+            rigState = obj.configurationService.getRigState();
             isRigStopping = rigState == RigState.STOPPING;
             isRigStopped = rigState == RigState.STOPPED;
-            [isRigValid, rigStatus] = obj.acquisitionService.isRigValid();
+            [isRigValid, rigStatus] = obj.configurationService.isRigValid();
             [isProtocolValid, protocolStatus] = obj.acquisitionService.isProtocolValid();
             
             enableNewFile = ~hasOpenFile && isRigStopped && isRigValid;
@@ -335,6 +336,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceInitializedRig(obj, ~, ~)
+            obj.updateStateOfControls();
+        end
+        
+        function onServiceChangedRigState(obj, ~, ~)
             obj.updateStateOfControls();
         end
         

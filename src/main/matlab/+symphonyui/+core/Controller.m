@@ -42,6 +42,14 @@ classdef Controller < symphonyui.core.CoreObject
                 @(h,d)notify(obj, 'DiscardedEpoch', symphonyui.core.CoreEventData(symphonyui.core.Epoch(d.Epoch))));
         end
         
+        function delete(obj)
+            while ~isempty(obj.listeners)
+                delete(obj.listeners{1});
+                obj.listeners(1) = [];
+            end
+            disp('deleted controller');
+        end
+        
         function tf = get.isRunning(obj)
             tf = obj.cobj.IsRunning;
         end

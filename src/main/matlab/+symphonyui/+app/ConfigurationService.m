@@ -2,11 +2,13 @@ classdef ConfigurationService < handle
     
     events (NotifyAccess = private)
         InitializedRig
+        ChangedRigState
     end
     
     properties (Access = private)
         session
         rigDescriptionRepository
+        rigStateListener
         emptyRig
     end
     
@@ -24,7 +26,7 @@ classdef ConfigurationService < handle
         
         function initializeRig(obj, description)
             if obj.session.hasRig()
-                obj.session.getRig().close();
+                delete(obj.session.getRig());
             end
             if isempty(description)
                 rig = obj.emptyRig;
@@ -33,7 +35,16 @@ classdef ConfigurationService < handle
             end
             rig.initialize();
             obj.session.setRig(rig);
+            obj.rigStateListener = addlistener(rig, 'state', 'PostSet', @(h,d)notify(obj, 'ChangedRigState'));
             notify(obj, 'InitializedRig');
+        end
+        
+        function s = getRigState(obj)
+            s = obj.session.getRig().state;
+        end
+        
+        function [tf, msg] = isRigValid(obj)
+            [tf, msg] = obj.session.getRig().isValid();
         end
         
     end

@@ -59,29 +59,19 @@ classdef AcquisitionService < handle
             d = obj.session.getProtocol().getPropertyDescriptors();
         end
         
-        function s = getRigState(obj)
-            s = obj.session.getRig().state;
-        end
-        
-        function [tf, msg] = isRigValid(obj)
-            [tf, msg] = obj.session.getRig().isValid();
-        end
-        
         function [tf, msg] = isProtocolValid(obj)
             [tf, msg] = obj.session.getProtocol().isValid();
         end
 
         function viewProtocol(obj)
-            rig = obj.session.getRig();
             protocol = obj.session.getProtocol();
-            rig.runProtocol(protocol, []);
+            obj.session.getRig().runProtocol(protocol, []);
         end
         
         function recordProtocol(obj)
-            rig = obj.session.getRig();
             protocol = obj.session.getProtocol();
             persistor = obj.session.getPersistor();
-            rig.runProtocol(protocol, persistor);
+            obj.session.getRig().runProtocol(protocol, persistor);
         end
 
         function stopProtocol(obj)

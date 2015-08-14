@@ -21,6 +21,7 @@ classdef HekaDaqController < symphonyui.core.DaqController
         
         function delete(obj)
             obj.tryCore(@()obj.cobj.Dispose());
+            disp('deleted daq');
         end
         
         function initialize(obj)

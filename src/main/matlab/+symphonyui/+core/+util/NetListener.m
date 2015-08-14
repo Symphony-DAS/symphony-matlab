@@ -20,6 +20,7 @@ classdef NetListener < handle
 
             % We need to force .NET garbage collection or MATLAB's GC will not be able to collect the callback (locking 
             % class definitions and causing a possible memory leak).
+            delete(obj.listener);
             System.GC.Collect();
         end
         
