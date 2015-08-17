@@ -19,6 +19,16 @@ classdef Session < handle
             obj.controller = controller;
         end
         
+        function close(obj)
+            if obj.hasRig()
+                obj.rig.close();
+            end
+            if obj.hasPersistor()
+                obj.persistor.close();
+            end
+            delete(obj.controller);
+        end
+        
         function tf = hasRig(obj)
             tf = ~isempty(obj.rig);
         end

@@ -27,6 +27,8 @@ classdef ConfigurationService < handle
             rig = symphonyui.core.Rig(description);
             rig.initialize();
             obj.session.rig = rig;
+            obj.session.protocol.setRig(rig);
+            obj.session.controller.setRig(rig);
             notify(obj, 'InitializedRig');
         end
         

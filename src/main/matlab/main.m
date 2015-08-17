@@ -29,6 +29,7 @@ function main()
     app = App(config);
     
     presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, app);
+    addlistener(presenter, 'ObjectBeingDestroyed', @(h,d)session.close());
     presenter.go();
 end
 

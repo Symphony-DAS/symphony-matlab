@@ -3,7 +3,7 @@ classdef AcquisitionService < handle
     events (NotifyAccess = private)
         SelectedProtocol
         SetProtocolProperty
-        ControllerChangedState
+        ChangedState
     end
     
     properties (Access = private)
@@ -19,8 +19,7 @@ classdef AcquisitionService < handle
             obj.protocolRepository = protocolRepository;
             
             obj.listeners = {};
-            obj.listeners = addlistener(obj.session, 'rig', 'PostSet', @obj.onSessionSetRig);
-            obj.listeners = addlistener(obj.session.controller, 'state', 'PostSet', @(h,d)notify(obj, 'ControllerChangedState'));
+            obj.listeners = addlistener(obj.session.controller, 'state', 'PostSet', @(h,d)notify(obj, 'ChangedState'));
         end
         
         function [cn, dn] = getAvailableProtocolNames(obj)
@@ -37,6 +36,7 @@ classdef AcquisitionService < handle
             protocols = obj.protocolRepository.getAll();
             index = strcmp(className, cellfun(@(p)class(p), protocols, 'UniformOutput', false));
             obj.session.protocol = protocols{index};
+            obj.session.protocol.setRig(obj.session.rig);
             notify(obj, 'SelectedProtocol');
         end
         
@@ -53,22 +53,22 @@ classdef AcquisitionService < handle
             notify(obj, 'SetProtocolProperty');
         end
 
-        function viewProtocol(obj)
+        function viewOnly(obj)
             protocol = obj.session.getProtocol();
             obj.session.controller.runProtocol(protocol, []);
         end
         
-        function recordProtocol(obj)
+        function record(obj)
             protocol = obj.session.getProtocol();
             persistor = obj.session.getPersistor();
             obj.session.controller.runProtocol(protocol, persistor);
         end
 
-        function stopProtocol(obj)
+        function stop(obj)
             obj.session.controller.requestStop();
         end
         
-        function s = getControllerState(obj)
+        function s = getState(obj)
             s = obj.session.controller.state;
         end
         
@@ -89,13 +89,4 @@ classdef AcquisitionService < handle
         
     end
     
-    methods (Access = private)
-        
-        function onSessionSetRig(obj, ~, ~)
-            obj.session.protocol.setRig(obj.session.rig);
-            obj.session.controller.setRig(obj.session.rig);
-        end
-        
-    end
-
 end

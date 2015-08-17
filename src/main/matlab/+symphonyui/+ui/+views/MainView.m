@@ -11,9 +11,9 @@ classdef MainView < symphonyui.ui.View
         ShowDataManager
         SelectedProtocol
         SetProtocolProperty
-        ViewProtocol
-        RecordProtocol
-        StopProtocol
+        ViewOnly
+        Record
+        Stop
         ShowProtocolPreview
         InitializeRig
         ConfigureDeviceBackgrounds
@@ -31,9 +31,9 @@ classdef MainView < symphonyui.ui.View
         helpMenu
         protocolPopupMenu
         protocolPropertyGrid
-        viewProtocolButton
-        recordProtocolButton
-        stopProtocolButton
+        viewOnlyButton
+        recordButton
+        stopButton
     end
 
     methods
@@ -87,17 +87,17 @@ classdef MainView < symphonyui.ui.View
             % Acquire menu.
             obj.acquireMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Acquire');
-            obj.acquireMenu.viewProtocol = uimenu(obj.acquireMenu.root, ...
+            obj.acquireMenu.viewOnly = uimenu(obj.acquireMenu.root, ...
                 'Label', 'View Only', ...
                 'Accelerator', 'V', ...
-                'Callback', @(h,d)notify(obj, 'ViewProtocol'));
-            obj.acquireMenu.recordProtocol = uimenu(obj.acquireMenu.root, ...
+                'Callback', @(h,d)notify(obj, 'ViewOnly'));
+            obj.acquireMenu.record = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Record', ...
                 'Accelerator', 'R', ...
-                'Callback', @(h,d)notify(obj, 'RecordProtocol'));
-            obj.acquireMenu.stopProtocol = uimenu(obj.acquireMenu.root, ...
+                'Callback', @(h,d)notify(obj, 'Record'));
+            obj.acquireMenu.stop = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Stop', ...
-                'Callback', @(h,d)notify(obj, 'StopProtocol'));
+                'Callback', @(h,d)notify(obj, 'Stop'));
             obj.acquireMenu.showProtocolPreview = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Protocol Preview', ...
                 'Separator', 'on', ...
@@ -154,24 +154,24 @@ classdef MainView < symphonyui.ui.View
             
             path2Url = @(path)strrep(['file:/' path '/'],'\','/');
             
-            obj.viewProtocolButton = uicontrol( ...
+            obj.viewOnlyButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' path2Url(App.getResource('icons/view_only_big.png')) '"/></html>'], ...
                 'TooltipString', 'View Only', ...
-                'Callback', @(h,d)notify(obj, 'ViewProtocol'));
-            obj.recordProtocolButton = uicontrol( ...
+                'Callback', @(h,d)notify(obj, 'ViewOnly'));
+            obj.recordButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' path2Url(App.getResource('icons/record_big.png')) '"/></html>'], ...
                 'TooltipString', 'Record', ...
-                'Callback', @(h,d)notify(obj, 'RecordProtocol'));
-            obj.stopProtocolButton = uicontrol( ...
+                'Callback', @(h,d)notify(obj, 'Record'));
+            obj.stopButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' path2Url(App.getResource('icons/stop_big.png')) '"/></html>'], ...
                 'TooltipString', 'Stop', ...
-                'Callback', @(h,d)notify(obj, 'StopProtocol'));
+                'Callback', @(h,d)notify(obj, 'Stop'));
 
             set(mainLayout, 'Sizes', [25 -1 34]);
         end
@@ -242,22 +242,22 @@ classdef MainView < symphonyui.ui.View
             obj.protocolPropertyGrid.UpdateProperties(properties);
         end
 
-        function enableViewProtocol(obj, tf)
+        function enableViewOnly(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
-            set(obj.acquireMenu.viewProtocol, 'Enable', enable);
-            set(obj.viewProtocolButton, 'Enable', enable);
+            set(obj.acquireMenu.viewOnly, 'Enable', enable);
+            set(obj.viewOnlyButton, 'Enable', enable);
         end
         
-        function enableRecordProtocol(obj, tf)
+        function enableRecord(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
-            set(obj.acquireMenu.recordProtocol, 'Enable', enable);
-            set(obj.recordProtocolButton, 'Enable', enable);
+            set(obj.acquireMenu.record, 'Enable', enable);
+            set(obj.recordButton, 'Enable', enable);
         end
 
-        function enableStopProtocol(obj, tf)
+        function enableStop(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
-            set(obj.acquireMenu.stopProtocol, 'Enable', enable);
-            set(obj.stopProtocolButton, 'Enable', enable);
+            set(obj.acquireMenu.stop, 'Enable', enable);
+            set(obj.stopButton, 'Enable', enable);
         end
 
         function enableShowProtocolPreview(obj, tf)
