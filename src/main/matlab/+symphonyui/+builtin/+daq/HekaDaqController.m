@@ -1,9 +1,5 @@
 classdef HekaDaqController < symphonyui.core.DaqController
     
-    properties
-        sampleRate
-    end
-    
     methods
         
         function obj = HekaDaqController()
@@ -30,19 +26,6 @@ classdef HekaDaqController < symphonyui.core.DaqController
         
         function close(obj)
             obj.tryCore(@()obj.cobj.CloseHardware());
-        end
-        
-        function m = get.sampleRate(obj)
-            cm = obj.cobj.SampleRate;
-            if isempty(cm)
-                m = [];
-            else
-                m = symphonyui.core.Measurement(cm);
-            end
-        end
-        
-        function set.sampleRate(obj, measurement)
-            obj.cobj.SampleRate = measurement.cobj;
         end
         
     end

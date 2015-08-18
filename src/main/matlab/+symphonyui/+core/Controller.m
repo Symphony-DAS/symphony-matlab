@@ -6,6 +6,8 @@ classdef Controller < symphonyui.core.CoreObject
     
     properties (Access = private)
         listeners
+        devices
+        epochQueueCount
         currentProtocol
         currentPersistor
     end
@@ -45,10 +47,10 @@ classdef Controller < symphonyui.core.CoreObject
 
             obj.cobj.DAQController = rig.daqController.cobj;
             obj.cobj.Clock = rig.daqController.cobj.Clock;
-
-            devices = rig.devices;
-            for i = 1:numel(devices)
-                d = devices{i};
+            
+            devs = rig.devices;
+            for i = 1:numel(devs)
+                d = devs{i};
                 obj.addDevice(d);
                 d.cobj.Clock = rig.daqController.cobj.Clock;
             end
@@ -62,14 +64,39 @@ classdef Controller < symphonyui.core.CoreObject
             
             task = obj.startAsync(persistor);
             
-            while protocol.continueQueuing()
+            n = 1;
+            while obj.state ~= symphonyui.core.ControllerState.STOPPED && protocol.continueQueuing()
                 epoch = symphonyui.core.Epoch(class(protocol));
+                
+                devs = obj.devices;
+                for i = 1:numel(devs)
+                    epoch.setBackground(devs{i}, devs{i}.background);
+                end
+                
                 protocol.prepareEpoch(epoch);
                 obj.enqueueEpoch(epoch);
+                
+                while obj.state ~= symphonyui.core.ControllerState.STOPPED
+                    pause(1);
+                end
+                
+                disp(['q: ' num2str(n)]);
+                n = n + 1;
             end
-
+            
+            disp('here');
             while obj.isRunning
                 pause(0.01);
+            end
+                        
+            if task.IsFaulted
+                x = task.Exception.Flatten();
+                msg = char(x.Message);
+                while ~isempty(x.InnerException)
+                    x = x.InnerException;
+                    msg = [msg char(10) char(x.Message)]; %#ok<AGROW>
+                end
+                error(msg);
             end
             
             protocol.completeRun();
@@ -77,6 +104,14 @@ classdef Controller < symphonyui.core.CoreObject
                 
         function requestStop(obj)
             obj.tryCore(@()obj.cobj.RequestStop());
+        end
+        
+        function d = get.devices(obj)
+            d = obj.cellArrayFromEnumerable(obj.cobj.Devices, @symphonyui.core.Device);
+        end
+        
+        function c = get.epochQueueCount(obj)
+            c = obj.cobj.EpochQueueCount;
         end
         
     end
@@ -105,7 +140,7 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function tf = isRunning(obj)
-            tf = obj.cobj.isRunning;
+            tf = obj.cobj.IsRunning;
         end
         
         function onStarted(obj, ~, ~)

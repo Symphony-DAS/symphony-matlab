@@ -16,6 +16,10 @@ classdef Epoch < symphonyui.core.CoreObject
             obj@symphonyui.core.CoreObject(cobj);
         end
         
+        function setBackground(obj, device, background)
+            obj.tryCore(@()obj.cobj.SetBackground(device.cobj, background.cobj, device.cobj.OutputSampleRate)); 
+        end
+        
     end
     
 end

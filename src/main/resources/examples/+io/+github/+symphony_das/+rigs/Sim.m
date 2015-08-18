@@ -1,16 +1,15 @@
-classdef SingleAmp < symphonyui.core.descriptions.RigDescription
+classdef Sim < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function obj = SingleAmp()
+        function obj = Sim()
             import symphonyui.builtin.devices.*;
             
-            daq = symphonyui.builtin.daq.HekaDaqController();
+            daq = symphonyui.builtin.daq.HekaSimulationDaqController();
             obj.daqController = daq;
             
             obj.devices = { ...
                 GenericDevice('led1').bindStream(daq.getStream('ANALOG_OUT.0')), ...
-                GenericDevice('led2').bindStream(daq.getStream('ANALOG_OUT.1')), ...
             };
         end
         
