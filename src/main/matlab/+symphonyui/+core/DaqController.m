@@ -12,6 +12,7 @@ classdef DaqController < symphonyui.core.CoreObject
 
         function obj = DaqController(cobj)
             obj@symphonyui.core.CoreObject(cobj);
+            obj.beginSetup();
         end
 
         function delete(obj)

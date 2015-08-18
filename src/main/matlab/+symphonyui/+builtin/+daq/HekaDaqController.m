@@ -11,13 +11,10 @@ classdef HekaDaqController < symphonyui.core.DaqController
             
             Heka.HekaDAQInputStream.RegisterConverters();
             Heka.HekaDAQOutputStream.RegisterConverters();
-            
-            obj.beginSetup();
         end
         
         function delete(obj)
             obj.tryCore(@()obj.cobj.Dispose());
-            disp('deleted daq');
         end
         
         function initialize(obj)

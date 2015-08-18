@@ -33,7 +33,6 @@ classdef Controller < symphonyui.core.CoreObject
                 delete(obj.listeners{1});
                 obj.listeners(1) = [];
             end
-            disp('deleted controller');
         end
         
         function setRig(obj, rig)
@@ -64,7 +63,6 @@ classdef Controller < symphonyui.core.CoreObject
             
             task = obj.startAsync(persistor);
             
-            n = 1;
             while obj.state ~= symphonyui.core.ControllerState.STOPPED && protocol.continueQueuing()
                 epoch = symphonyui.core.Epoch(class(protocol));
                 
@@ -79,12 +77,8 @@ classdef Controller < symphonyui.core.CoreObject
                 while obj.state ~= symphonyui.core.ControllerState.STOPPED
                     pause(1);
                 end
-                
-                disp(['q: ' num2str(n)]);
-                n = n + 1;
             end
             
-            disp('here');
             while obj.isRunning
                 pause(0.01);
             end
