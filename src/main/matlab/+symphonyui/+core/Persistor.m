@@ -110,10 +110,6 @@ classdef Persistor < symphonyui.core.CoreObject
             end
         end
 
-        function e = serialize(obj, epoch)
-            e = symphonyui.core.persistent.Epoch(obj.cobj.Serialize(epoch.cobj));
-        end
-
         function deleteEntity(obj, entity)
             obj.tryCore(@()obj.cobj.Delete(entity.cobj));
         end

@@ -746,6 +746,11 @@ classdef DataManagerView < symphonyui.ui.View
         function addEpochDataLine(obj, x, y, color)
             line(x, y, 'Parent', obj.epochCard.axes, 'Color', color);
         end
+        
+        function clearEpochDataLegend(obj)
+            l = legend(obj.epochCard.axes);
+            delete(l);
+        end
 
         function setEpochDataLegend(obj, labels, groups)
             clickableLegend(obj.epochCard.axes, labels{:}, 'groups', groups);

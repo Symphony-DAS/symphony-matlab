@@ -56,8 +56,14 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function runProtocol(obj, protocol, persistor)
+            obj.clearEpochQueue();
+            
             obj.currentProtocol = protocol;
             obj.currentPersistor = persistor;
+            
+            if ~isempty(persistor)
+                persistor.beginEpochBlock(class(protocol));
+            end
             
             protocol.prepareRun();
             
@@ -73,15 +79,18 @@ classdef Controller < symphonyui.core.CoreObject
                 
                 protocol.prepareEpoch(epoch);
                 obj.enqueueEpoch(epoch);
+                disp('q');
                 
-                while obj.state ~= symphonyui.core.ControllerState.STOPPED
-                    pause(1);
+                while obj.state ~= symphonyui.core.ControllerState.STOPPED && obj.epochQueueCount >= 6
+                    pause(0.01);
                 end
             end
             
             while obj.isRunning
                 pause(0.01);
             end
+            
+            obj.tryCore(@()obj.cobj.WaitForCompletedEpochTasks());
                         
             if task.IsFaulted
                 x = task.Exception.Flatten();
@@ -94,6 +103,10 @@ classdef Controller < symphonyui.core.CoreObject
             end
             
             protocol.completeRun();
+            
+            if ~isempty(persistor)
+                persistor.endEpochBlock();
+            end
         end
                 
         function requestStop(obj)
@@ -131,6 +144,10 @@ classdef Controller < symphonyui.core.CoreObject
         
         function enqueueEpoch(obj, epoch)
             obj.tryCore(@()obj.cobj.EnqueueEpoch(epoch.cobj));
+        end
+        
+        function clearEpochQueue(obj)
+            obj.tryCore(@()obj.cobj.ClearEpochQueue());
         end
         
         function tf = isRunning(obj)

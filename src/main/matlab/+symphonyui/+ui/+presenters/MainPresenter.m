@@ -240,6 +240,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onServiceChangedState(obj, ~, ~)
             obj.updateStateOfControls();
+            
+            state = obj.acquisitionService.getState();
+            if state == symphonyui.core.ControllerState.STOPPED && ~isempty(obj.dataManagerPresenter)
+                obj.dataManagerPresenter.updateCurrentEpochGroupBlocks();
+            end
         end
         
         function onViewSelectedShowProtocolPreview(obj, ~, ~)

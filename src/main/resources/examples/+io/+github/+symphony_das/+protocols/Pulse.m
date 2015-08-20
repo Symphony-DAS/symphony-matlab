@@ -13,6 +13,10 @@ classdef Pulse < symphonyui.core.Protocol
     
     methods
         
+        function completeEpoch(obj, epoch)
+            disp('Completed epoch!');
+        end
+        
     end
     
 end

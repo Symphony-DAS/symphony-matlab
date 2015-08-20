@@ -18,6 +18,20 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.detailedEntitySet = symphonyui.core.collections.EntitySet();
             obj.uuidToNode = containers.Map();
         end
+        
+        function updateCurrentEpochGroupBlocks(obj)
+            group = obj.documentationService.getCurrentEpochGroup();
+            if isempty(group)
+                return;
+            end
+            blocks = group.epochBlocks;
+            for i = 1:numel(blocks)
+                b = blocks{i};
+                if ~obj.uuidToNode.isKey(b.uuid)
+                    obj.addEpochBlockNode(b);
+                end
+            end
+        end
 
     end
 
@@ -54,8 +68,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
-            obj.addListener(d, 'BeganEpochBlock', @obj.onServiceBeganEpochBlock);
-            obj.addListener(d, 'EndedEpochBlock', @obj.onServiceEndedEpochBlock);
             obj.addListener(d, 'DeletedEntity', @obj.onServiceDeletedEntity);
         end
 
@@ -307,14 +319,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             end
         end
 
-        function onServiceAddedEpochBlock(obj, ~, event)
-            block = event.data;
-            obj.addEpochBlockNode(block);
-        end
-
         function n = addEpochBlockNode(obj, block)
             parent = obj.uuidToNode(block.epochGroup.uuid);
-            n = obj.view.addEpochBlockNode(parent, block.protocolId, block);
+            split = strsplit(block.protocolId, '.');
+            n = obj.view.addEpochBlockNode(parent, split{end}, block);
             obj.uuidToNode(block.uuid) = n;
 
             epochs = block.epochs;
@@ -333,11 +341,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
             obj.populateAnnotationsWithEntitySet(blockSet);
             obj.detailedEntitySet = blockSet;
-        end
-
-        function onServiceAddedEpoch(obj, ~, event)
-            epoch = event.data;
-            obj.addEpochNode(epoch);
         end
 
         function n = addEpochNode(obj, epoch)
@@ -369,7 +372,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                     groups = [groups i]; %#ok<AGROW>
                 end
             end
-            obj.view.setEpochDataLegend(devices, groups);
+            obj.view.clearEpochDataAxes();
+            if ~isempty(devices)
+                obj.view.setEpochDataLegend(devices, groups);
+            end
 
             % Protocol parameters
             map = map2pmap(epochSet.protocolParameters);

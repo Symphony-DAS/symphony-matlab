@@ -8,8 +8,6 @@ classdef DocumentationService < handle
         AddedSource
         BeganEpochGroup
         EndedEpochGroup
-        BeganEpochBlock
-        EndedEpochBlock
         DeletedEntity
     end
 
