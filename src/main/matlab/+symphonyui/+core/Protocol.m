@@ -2,6 +2,8 @@ classdef Protocol < handle
     
     properties (Hidden)
         displayName
+        numEpochsPrepared
+        numEpochsCompleted
     end
     
     methods
@@ -25,27 +27,29 @@ classdef Protocol < handle
         end
         
         function prepareRun(obj)
-            
+            obj.numEpochsPrepared = 0;
+            obj.numEpochsCompleted = 0;
         end
         
         function prepareEpoch(obj, epoch)
-            
+            obj.numEpochsPrepared = obj.numEpochsPrepared + 1;
         end
         
         function completeEpoch(obj, epoch)
-            
+            obj.numEpochsCompleted = obj.numEpochsCompleted + 1;
         end
         
-        function tf = continueQueuing(obj)
-            tf = true;
+        function tf = continuePreparingEpochs(obj)
+            tf = false;
         end
         
         function tf = continueRun(obj)
-            tf = true;
+            tf = false;
         end
         
         function completeRun(obj)
-            
+            disp(['Num epochs prepared: ' num2str(obj.numEpochsPrepared)]);
+            disp(['Num epochs completed: ' num2str(obj.numEpochsCompleted)]);
         end
 
         function [tf, msg] = isValid(obj)

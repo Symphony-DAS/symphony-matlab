@@ -86,26 +86,25 @@ classdef Controller < symphonyui.core.CoreObject
         function process(obj, protocol, persistor)
             if ~isempty(persistor)
                 persistor.beginEpochBlock(class(protocol));
+                endBlock = onCleanup(@()persistor.endEpochBlock());
             end
             
             try
                 obj.processLoop(protocol);
             catch x
-                if ~isempty(persistor)
-                    persistor.endEpochBlock();
-                end
+                obj.stop();
                 rethrow(x);
-            end
-            
-            if ~isempty(persistor)
-                persistor.endEpochBlock();
             end
         end
         
         function processLoop(obj, protocol)
             import symphonyui.core.ControllerState;
             
-            while obj.state.isViewingOrRecording() && protocol.continueQueuing()
+            if ~protocol.continueRun()
+                obj.requestStop();
+            end
+            
+            while obj.state.isViewingOrRecording() && protocol.continuePreparingEpochs()
                 epoch = symphonyui.core.Epoch(class(protocol));
                 
                 devs = obj.devices;
@@ -115,7 +114,6 @@ classdef Controller < symphonyui.core.CoreObject
                 
                 protocol.prepareEpoch(epoch);
                 obj.enqueueEpoch(epoch);
-                disp('q');
                 
                 while obj.state.isViewingOrRecording() && obj.epochQueueCount >= 6
                     pause(0.01);
@@ -168,7 +166,10 @@ classdef Controller < symphonyui.core.CoreObject
             while obj.isRunning
                 pause(0.01);
             end
-            obj.waitForCompletedEpochTasks();
+            try %#ok<TRYNC>
+                obj.waitForCompletedEpochTasks();
+            end
+            obj.clearEpochQueue();
             obj.state = symphonyui.core.ControllerState.STOPPED;
         end
         
