@@ -1,6 +1,11 @@
 classdef Protocol < handle
     
-    properties (Hidden)
+    properties
+        sampleRate = 10000;     % Acquisition sample rate (Hz)
+    end
+    
+    properties (Hidden, SetAccess = protected)
+        rig
         displayName
         numEpochsPrepared
         numEpochsCompleted
@@ -19,7 +24,7 @@ classdef Protocol < handle
         end
         
         function setRig(obj, rig)
-            
+            obj.rig = rig;
         end
         
         function d = getPropertyDescriptors(obj)

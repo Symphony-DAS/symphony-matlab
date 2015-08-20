@@ -57,7 +57,7 @@ classdef Controller < symphonyui.core.CoreObject
             obj.stop();
             
             if task.IsFaulted
-                error(char(task.Exception.Message));
+                error(symphonyui.core.util.netReport(task.Exception.Flatten()));
             end
             
             protocol.completeRun();

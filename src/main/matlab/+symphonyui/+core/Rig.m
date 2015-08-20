@@ -37,6 +37,16 @@ classdef Rig < handle
             obj.sampleRate = r;
         end
         
+        function d = getDevice(obj, name)
+            for i = 1:numel(obj.devices)
+                if strcmp(obj.devices{i}.name, name)
+                    d = obj.devices{i};
+                    return;
+                end
+            end
+            error(['A device named ''' name ''' does not exist']);
+        end
+        
     end
     
 end

@@ -22,7 +22,8 @@ classdef Measurement < symphonyui.core.CoreObject
         end
         
         function u = get.displayUnits(obj)
-            u = char(obj.cobj.DisplayUnits);
+            % TODO: This should be changed in the core to be DisplayUnits (plural)
+            u = char(obj.cobj.DisplayUnit);
         end
         
     end

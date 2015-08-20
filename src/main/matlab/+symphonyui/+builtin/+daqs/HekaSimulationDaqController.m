@@ -1,4 +1,4 @@
-classdef HekaSimulationDaqController < symphonyui.builtin.daq.SimulationDaqController
+classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqController
     
     properties
     end

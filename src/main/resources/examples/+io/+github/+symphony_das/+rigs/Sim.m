@@ -5,7 +5,7 @@ classdef Sim < symphonyui.core.descriptions.RigDescription
         function obj = Sim()
             import symphonyui.builtin.devices.*;
             
-            daq = symphonyui.builtin.daq.HekaSimulationDaqController();
+            daq = symphonyui.builtin.daqs.HekaSimulationDaqController();
             obj.daqController = daq;
             
             obj.devices = { ...

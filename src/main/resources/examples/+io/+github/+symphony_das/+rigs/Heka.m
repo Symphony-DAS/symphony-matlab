@@ -5,11 +5,11 @@ classdef Heka < symphonyui.core.descriptions.RigDescription
         function obj = Heka()
             import symphonyui.builtin.devices.*;
             
-            daq = symphonyui.builtin.daq.HekaDaqController();
+            daq = symphonyui.builtin.daqs.HekaDaqController();
             obj.daqController = daq;
             
             obj.devices = { ...
-                GenericDevice('led1').bindStream(daq.getStream('ANALOG_IN.0')), ...
+                GenericDevice('led1').bindStream(daq.getStream('ANALOG_OUT.0')), ...
             };
         end
         

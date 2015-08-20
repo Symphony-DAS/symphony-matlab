@@ -9,7 +9,7 @@ classdef RigDescription < symphonyui.core.Description
     methods
         
         function obj = RigDescription()
-            obj.daqController = symphonyui.builtin.daq.SimulationDaqController();
+            obj.daqController = symphonyui.builtin.daqs.SimulationDaqController();
             obj.devices = {};
             obj.sampleRate = symphonyui.core.Measurement(10000, 'Hz');
         end
