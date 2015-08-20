@@ -30,6 +30,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateStateOfControls();
         end
         
+        function onStopping(obj)
+            if ~isempty(obj.dataManagerPresenter)
+                obj.dataManagerPresenter.stop();
+                obj.dataManagerPresenter = [];
+            end
+        end
+        
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'NewFile', @obj.onViewSelectedNewFile);
