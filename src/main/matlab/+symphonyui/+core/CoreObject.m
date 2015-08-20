@@ -124,12 +124,6 @@ classdef (Abstract) CoreObject < handle
             dto = System.DateTimeOffset(t.Year, t.Month, t.Day, t.Hour, t.Minute, floor(t.Second), round(1000*rem(t.Second, 1)), offset);
         end
         
-        function l = addNetListener(obj, target, eventName, eventType, callback) %#ok<INUSL>
-            event = target.GetType().GetEvent(eventName);
-            l = NET.createGeneric('System.EventHandler', {eventType}, callback);
-            event.AddEventHandler(target, l);
-        end
-        
     end
     
 end

@@ -26,7 +26,6 @@ classdef Session < handle
             if obj.hasPersistor()
                 obj.persistor.close();
             end
-            delete(obj.controller);
         end
         
         function tf = hasRig(obj)

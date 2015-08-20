@@ -26,6 +26,11 @@ classdef ControllerState
             end
         end
         
+        function tf = isViewingOrRecording(obj)
+            import symphonyui.core.ControllerState;
+            tf = obj == ControllerState.VIEWING || obj == ControllerState.RECORDING;
+        end
+        
     end
     
 end
