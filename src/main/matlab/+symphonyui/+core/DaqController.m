@@ -26,6 +26,10 @@ classdef DaqController < symphonyui.core.CoreObject
             s = obj.cellArrayFromEnumerable(obj.cobj.Streams, @symphonyui.core.DaqStream);
         end
         
+        function setStreamsBackground(obj)
+            obj.tryCore(@()obj.cobj.SetStreamsBackground());
+        end
+        
         function m = get.sampleRate(obj)
             cm = obj.cobj.SampleRate;
             if isempty(cm)

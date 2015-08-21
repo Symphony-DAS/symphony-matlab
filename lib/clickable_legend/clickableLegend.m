@@ -74,10 +74,10 @@ function varargout = clickableLegend(varargin)
 [groups, plotObj, varargin] = processGroups(groupmem, varargin{:});
 
 % Replace axes with plotObj so that legend color/style is correct
-if numel(varargin) > 0 && isa(varargin{1}, 'matlab.graphics.axis.Axes')
-    [~, i] = unique(groupmem);
-    varargin{1} = plotObj(i);
-end
+% if numel(varargin) > 0 && isa(varargin{1}, 'matlab.graphics.axis.Axes')
+%     [~, i] = unique(groupmem);
+%     varargin{1} = plotObj(i);
+% end
 
 % Create legend
 [varargout{1:nargout(@legend)}] = legend(varargin{:});

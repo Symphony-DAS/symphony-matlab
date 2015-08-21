@@ -22,13 +22,17 @@ classdef MultiClampDevice < symphonyui.core.Device
         
         function delete(obj)
             obj.tryCore(@()obj.cobj.Dispose());
+            disp('bye bye multiclamp');
         end
         
         function m = getMode(obj)
-            if ~obj.cobj.HasDeviceOutputParameters
+            if obj.cobj.HasDeviceOutputParameters()
+                m = char(obj.cobj.CurrentDeviceOutputParameters.Data.OperatingMode);
+            elseif obj.cobj.HasDeviceInputParameters()
+                m = char(obj.cobj.CurrentDeviceInputParameters.Data.OperatingMode);
+            else
                 error('Cannot get MultiClamp mode. Make sure MultiClamp Commander is open.');
             end
-            m = char(obj.cobj.CurrentDeviceOutputParameters.Data.OperatingMode);
         end
         
     end

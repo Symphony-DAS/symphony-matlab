@@ -20,6 +20,18 @@ classdef Epoch < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.Stimuli.Add(device.cobj, stimulus.cobj));
         end
         
+        function addResponse(obj, device)
+            obj.tryCore(@()obj.cobj.Responses.Add(device.cobj, Symphony.Core.Response()));
+        end
+        
+        function addParameter(obj, name, value)
+            obj.tryCore(@()obj.cobj.ProtocolParameters.Add(name, value));
+        end
+        
+        function addKeyword(obj, keyword)
+            obj.tryCore(@()obj.cobj.Keywords.Add(keyword));
+        end
+        
         function setBackground(obj, device, background)
             obj.tryCore(@()obj.cobj.SetBackground(device.cobj, background.cobj, device.cobj.OutputSampleRate)); 
         end

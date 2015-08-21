@@ -1,7 +1,7 @@
 classdef Pulse < symphonyui.core.Protocol
     
     properties
-        amp = 'amp'                    % Output amplifier
+        amp = 'Amp'                     % Output amplifier
         preTime = 50                    % Pulse leading duration (ms)
         stimTime = 500                  % Pulse duration (ms)
         tailTime = 50                   % Pulse trailing duration (ms)
@@ -31,14 +31,15 @@ classdef Pulse < symphonyui.core.Protocol
             prepareEpoch@symphonyui.core.Protocol(obj, epoch);
             
             epoch.addStimulus(obj.rig.getDevice(obj.amp), obj.ampStimulus());
+            epoch.addResponse(obj.rig.getDevice(obj.amp));
         end
         
         function tf = continuePreparingEpochs(obj)
-            tf = true;
+            tf = obj.numEpochsPrepared < obj.numberOfAverages;
         end
         
         function tf = continueRun(obj)
-            tf = true;
+            tf = obj.numEpochsCompleted < obj.numberOfAverages;
         end
         
     end

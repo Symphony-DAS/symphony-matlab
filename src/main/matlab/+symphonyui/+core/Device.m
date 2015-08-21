@@ -3,6 +3,8 @@ classdef Device < symphonyui.core.CoreObject
     properties (SetAccess = private)
         name
         manufacturer
+        inputStreams
+        outputStreams
     end
     
     properties
@@ -27,6 +29,14 @@ classdef Device < symphonyui.core.CoreObject
         function d = bindStream(obj, stream)
             obj.tryCore(@()obj.cobj.BindStream(stream.cobj));
             d = obj;
+        end
+        
+        function s = get.inputStreams(obj)
+            s = obj.cellArrayFromEnumerable(obj.cobj.InputStreams, @symphonyui.core.DaqStream);
+        end
+        
+        function s = get.outputStreams(obj)
+            s = obj.cellArrayFromEnumerable(obj.cobj.OutputStreams, @symphonyui.core.DaqStream);
         end
         
         function r = get.sampleRate(obj)

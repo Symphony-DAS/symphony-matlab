@@ -7,7 +7,7 @@ classdef Controller < symphonyui.core.CoreObject
     properties (Access = private)
         devices
         epochQueueCount
-        listeners
+        currentProtocol
     end
     
     methods
@@ -17,6 +17,10 @@ classdef Controller < symphonyui.core.CoreObject
             obj@symphonyui.core.CoreObject(cobj);
             
             obj.state = symphonyui.core.ControllerState.STOPPED;
+        end
+        
+        function delete(obj)
+            disp('deleted controller');
         end
         
         function setRig(obj, rig)
@@ -37,36 +41,52 @@ classdef Controller < symphonyui.core.CoreObject
             end
         end
         
-        function runProtocol(obj, protocol, persistor)            
-            obj.bind(protocol);
-            unbind = onCleanup(@()obj.unbind());
+        function runProtocol(obj, protocol, persistor)
+            import symphonyui.core.util.NetListener;
             
-            protocol.prepareRun();
+            obj.currentProtocol = protocol;
             
-            task = obj.startAsync(persistor);
+            listeners = NetListener.empty(0, 3);
+            
+            listeners(end + 1) = NetListener(obj.cobj, 'RequestedStop', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onRequestedStop(obj,h,d));
+            function onRequestedStop(obj, ~, ~)
+                obj.state = symphonyui.core.ControllerState.STOPPING;
+            end
+                        
+            listeners(end + 1) = NetListener(obj.cobj, 'CompletedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onCompletedEpoch(obj,h,d));
+            function onCompletedEpoch(obj, ~, event)
+                epoch = symphonyui.core.Epoch(event.Epoch);
+                obj.currentProtocol.completeEpoch(epoch);
+                if ~obj.currentProtocol.continueRun()
+                    obj.requestStop();
+                end
+            end
+            
+            listeners(end + 1) = NetListener(obj.cobj, 'DiscardedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onDiscardedEpoch(obj,h,d));
+            function onDiscardedEpoch(obj, ~, ~)
+                obj.requestStop();
+            end
+            
+            if isempty(persistor)
+                obj.state = symphonyui.core.ControllerState.VIEWING;
+            else
+                obj.state = symphonyui.core.ControllerState.RECORDING;
+            end
             
             try
-                obj.process(protocol, persistor)
+                obj.process(persistor)
             catch x
-                obj.stop();
+                delete(listeners);
+                obj.state = symphonyui.core.ControllerState.STOPPED;
                 rethrow(x);
             end
             
-            obj.stop();
-            
-            if task.IsFaulted
-                error(symphonyui.core.util.netReport(task.Exception.Flatten()));
-            end
-            
-            protocol.completeRun();
+            delete(listeners);
+            obj.state = symphonyui.core.ControllerState.STOPPED;
         end
                 
         function requestStop(obj)
-            if obj.state == symphonyui.core.ControllerState.STOPPED
-                return;
-            end
             obj.tryCore(@()obj.cobj.RequestStop());
-            obj.state = symphonyui.core.ControllerState.STOPPING;
         end
         
         function d = get.devices(obj)
@@ -81,50 +101,6 @@ classdef Controller < symphonyui.core.CoreObject
     
     methods (Access = private)
         
-        function process(obj, protocol, persistor)
-            if ~isempty(persistor)
-                persistor.beginEpochBlock(class(protocol));
-                endBlock = onCleanup(@()persistor.endEpochBlock());
-            end
-            
-            try
-                obj.processLoop(protocol);
-            catch x
-                obj.stop();
-                rethrow(x);
-            end
-        end
-        
-        function processLoop(obj, protocol)
-            import symphonyui.core.ControllerState;
-            
-            if ~protocol.continueRun()
-                obj.requestStop();
-            end
-            
-            while obj.state.isViewingOrRecording() && protocol.continuePreparingEpochs()
-                epoch = symphonyui.core.Epoch(class(protocol));
-                
-                devs = obj.devices;
-                for i = 1:numel(devs)
-                    epoch.setBackground(devs{i}, devs{i}.background);
-                end
-                
-                protocol.prepareEpoch(epoch);
-                obj.enqueueEpoch(epoch);
-                
-                while obj.state.isViewingOrRecording() && obj.epochQueueCount >= 6
-                    pause(0.01);
-                end
-            end
-            
-            while obj.isRunning
-                pause(0.01);
-            end
-            
-            obj.waitForCompletedEpochTasks();
-        end
-        
         function addDevice(obj, device)
             obj.tryCore(@()obj.cobj.AddDevice(device.cobj));
         end
@@ -133,17 +109,79 @@ classdef Controller < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.RemoveAllDevices());
         end
         
-        function t = startAsync(obj, persistor)
+        function process(obj, persistor) 
+            obj.clearEpochQueue();
+            
+            obj.currentProtocol.prepareRun();
+            
+            obj.preload();
+            
             if isempty(persistor)
-                cper = [];
+                task = obj.tryCoreWithReturn(@()obj.cobj.StartAsync([]));
             else
-                cper = persistor.cobj;
+                task = obj.tryCoreWithReturn(@()obj.cobj.StartAsync(persistor.cobj));
             end
-            t = obj.tryCoreWithReturn(@()obj.cobj.StartAsync(cper));
-            if isempty(persistor)
-                obj.state = symphonyui.core.ControllerState.VIEWING;
-            else
-                obj.state = symphonyui.core.ControllerState.RECORDING;
+                        
+            try
+                obj.processLoop();
+            catch x
+                obj.requestStop();
+                while obj.cobj.IsRunning
+                    pause(0.01);
+                end
+                obj.tryCore(@()obj.cobj.WaitForCompletedEpochTasks());
+                rethrow(x);
+            end
+            
+            while obj.cobj.IsRunning
+                pause(0.01);
+            end
+            obj.tryCore(@()obj.cobj.WaitForCompletedEpochTasks());
+            
+            if task.IsFaulted
+                error(symphonyui.core.util.netReport(task.Exception.Flatten()));
+            end
+            
+            obj.currentProtocol.completeRun();
+        end
+        
+        function preload(obj)
+            while obj.epochQueueCount < 6 && obj.currentProtocol.continuePreparingEpochs() && obj.state.isViewingOrRecording()
+                epoch = obj.nextEpoch();
+                obj.enqueueEpoch(epoch);
+                drawnow();
+            end
+        end
+        
+        function processLoop(obj)
+            while obj.currentProtocol.continuePreparingEpochs() && obj.state.isViewingOrRecording();
+                epoch = obj.nextEpoch();
+                obj.enqueueEpoch(epoch);
+                while obj.epochQueueCount >= 6 && obj.state.isViewingOrRecording()
+                    pause(0.01);
+                end
+            end
+        end
+        
+        function e = nextEpoch(obj)
+            e = symphonyui.core.Epoch(class(obj.currentProtocol));
+            
+            for i = 1:numel(obj.devices)
+                d = obj.devices{i};
+                if ~isempty(d.outputStreams)
+                    e.setBackground(d, d.background);
+                end
+            end
+            
+            obj.currentProtocol.prepareEpoch(e);
+            
+            meta = metaclass(obj.currentProtocol);
+            for i = 1:numel(meta.Properties)
+                mpo = meta.Properties{i};
+                if mpo.Abstract || mpo.Hidden || ~strcmp(mpo.GetAccess, 'public');
+                    continue;
+                end
+                e.addParameter(mpo.Name, obj.currentProtocol.(mpo.Name));
             end
         end
         
@@ -153,51 +191,6 @@ classdef Controller < symphonyui.core.CoreObject
         
         function clearEpochQueue(obj)
             obj.tryCore(@()obj.cobj.ClearEpochQueue());
-        end
-        
-        function tf = isRunning(obj)
-            tf = obj.cobj.IsRunning;
-        end
-        
-        function stop(obj)
-            obj.requestStop();
-            while obj.isRunning
-                pause(0.01);
-            end
-            try %#ok<TRYNC>
-                obj.waitForCompletedEpochTasks();
-            end
-            obj.clearEpochQueue();
-            obj.state = symphonyui.core.ControllerState.STOPPED;
-        end
-        
-        function waitForCompletedEpochTasks(obj)
-            obj.tryCore(@()obj.cobj.WaitForCompletedEpochTasks());
-        end
-        
-        function bind(obj, protocol)
-            import symphonyui.core.util.NetListener;
-            obj.listeners = {};
-            obj.listeners{end + 1} = NetListener(obj.cobj, 'CompletedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)obj.onCompletedEpoch(protocol, symphonyui.core.Epoch(d.Epoch)));            
-            obj.listeners{end + 1} = NetListener(obj.cobj, 'DiscardedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)obj.onDiscardedEpoch(protocol, symphonyui.core.Epoch(d.Epoch)));
-        end
-        
-        function unbind(obj)
-            while ~isempty(obj.listeners)
-                delete(obj.listeners{1});
-                obj.listeners(1) = [];
-            end
-        end
-        
-        function onCompletedEpoch(obj, protocol, epoch)
-            protocol.completeEpoch(epoch);
-            if ~protocol.continueRun()
-                obj.requestStop();
-            end
-        end
-        
-        function onDiscardedEpoch(obj, protocol, epoch) %#ok<INUSD>
-            obj.requestStop();
         end
         
     end

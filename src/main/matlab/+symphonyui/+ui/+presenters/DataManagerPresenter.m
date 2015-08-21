@@ -372,7 +372,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                     groups = [groups i]; %#ok<AGROW>
                 end
             end
-            obj.view.clearEpochDataAxes();
+            obj.view.clearEpochDataLegend();
             if ~isempty(devices)
                 obj.view.setEpochDataLegend(devices, groups);
             end

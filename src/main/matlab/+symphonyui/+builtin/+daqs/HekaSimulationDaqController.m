@@ -16,7 +16,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
             
             for i = 1:8
                 name = ['ANALOG_OUT.' num2str(i-1)];
-                cstr = Symphony.Core.DAQInputStream(name, obj.cobj);
+                cstr = Symphony.Core.DAQOutputStream(name, obj.cobj);
                 cstr.MeasurementConversionTarget = 'V';
                 cstr.Clock = obj.cobj.Clock;
                 obj.addStream(symphonyui.core.DaqStream(cstr));

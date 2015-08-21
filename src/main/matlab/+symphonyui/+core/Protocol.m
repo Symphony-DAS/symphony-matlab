@@ -23,6 +23,8 @@ classdef Protocol < handle
         function prepareRun(obj)
             obj.numEpochsPrepared = 0;
             obj.numEpochsCompleted = 0;
+            
+            obj.rig.sampleRate = obj.sampleRate;
         end
         
         function prepareEpoch(obj, epoch)

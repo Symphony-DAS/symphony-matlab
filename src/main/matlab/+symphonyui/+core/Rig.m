@@ -22,6 +22,9 @@ classdef Rig < handle
         end
         
         function set.sampleRate(obj, r)
+            if isnumeric(r)
+                r = symphonyui.core.Measurement(r, 'Hz');
+            end
             daq = obj.daqController; %#ok<MCSUP>
             if isprop(daq, 'sampleRate')
                 daq.sampleRate = r;
