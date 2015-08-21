@@ -27,15 +27,13 @@ classdef Controller < symphonyui.core.CoreObject
             if isempty(rig)
                 return;
             end
-
+            
             obj.cobj.DAQController = rig.daqController.cobj;
             obj.cobj.Clock = rig.daqController.cobj.Clock;
             
             devs = rig.devices;
             for i = 1:numel(devs)
-                d = devs{i};
-                obj.addDevice(d);
-                d.cobj.Clock = rig.daqController.cobj.Clock;
+                obj.addDevice(devs{i});
             end
         end
         

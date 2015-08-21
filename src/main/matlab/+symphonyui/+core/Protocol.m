@@ -6,22 +6,11 @@ classdef Protocol < handle
     
     properties (Hidden, SetAccess = protected)
         rig
-        displayName
         numEpochsPrepared
         numEpochsCompleted
     end
     
     methods
-        
-        function obj = Protocol()
-            split = strsplit(class(obj), '.');
-            obj.displayName = symphonyui.core.util.humanize(split{end});
-        end
-        
-        function set.displayName(obj, n)
-            validateattributes(n, {'char'}, {'nonempty', 'row'});
-            obj.displayName = n;
-        end
         
         function setRig(obj, rig)
             obj.rig = rig;

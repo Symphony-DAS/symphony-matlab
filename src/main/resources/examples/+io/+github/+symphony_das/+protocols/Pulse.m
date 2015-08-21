@@ -1,7 +1,7 @@
 classdef Pulse < symphonyui.core.Protocol
     
     properties
-        amp = 'led1'                    % Output amplifier
+        amp = 'amp'                    % Output amplifier
         preTime = 50                    % Pulse leading duration (ms)
         stimTime = 500                  % Pulse duration (ms)
         tailTime = 50                   % Pulse trailing duration (ms)

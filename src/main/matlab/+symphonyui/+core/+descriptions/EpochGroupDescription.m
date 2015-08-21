@@ -7,7 +7,8 @@ classdef EpochGroupDescription < symphonyui.core.descriptions.EntityDescription
     methods
         
         function obj = EpochGroupDescription()
-            obj.label = obj.displayName;
+            split = strsplit(class(obj), '.');
+            obj.label = split{end};
         end
         
         function set.label(obj, l)

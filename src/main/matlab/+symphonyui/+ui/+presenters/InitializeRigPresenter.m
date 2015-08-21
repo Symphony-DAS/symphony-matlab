@@ -36,15 +36,16 @@ classdef InitializeRigPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateDescriptionList(obj)
-            descriptions = obj.configurationService.getAvailableRigDescriptions();
+            classNames = obj.configurationService.getAvailableRigDescriptions();
             
-            names = cell(1, numel(descriptions));
-            for i = 1:numel(descriptions)
-                names{i} = descriptions{i}.displayName;
+            displayNames = cell(1, numel(classNames));
+            for i = 1:numel(classNames)
+                split = strsplit(classNames{i}, '.');
+                displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
             
-            obj.view.setDescriptionList(names, descriptions);
-            obj.view.setSelectedDescription(descriptions{end});
+            obj.view.setDescriptionList(displayNames, classNames);
+            obj.view.setSelectedDescription(classNames{end});
         end
         
         function onViewKeyPress(obj, ~, event)

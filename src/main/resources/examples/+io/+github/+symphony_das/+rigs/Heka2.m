@@ -1,16 +1,16 @@
-classdef Sim < symphonyui.core.descriptions.RigDescription
+classdef Heka2 < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function obj = Sim()
+        function obj = Heka2()
             import symphonyui.builtin.devices.*;
             
-            daq = symphonyui.builtin.daqs.HekaSimulationDaqController();
+            daq = symphonyui.builtin.daqs.HekaDaqController();
             obj.daqController = daq;
             
             obj.devices = { ...
                 MultiClampDevice('amp', 1, 0).bindStream(daq.getStream('ANALOG_OUT.0')), ...
-                GenericDevice('led1').bindStream(daq.getStream('ANALOG_OUT.0')), ...
+                GenericDevice('led1').bindStream(daq.getStream('ANALOG_OUT.1')), ...
             };
         end
         

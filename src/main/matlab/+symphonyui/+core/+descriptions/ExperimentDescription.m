@@ -5,9 +5,6 @@ classdef ExperimentDescription < symphonyui.core.descriptions.EntityDescription
     
     methods
         
-        function obj = ExperimentDescription()
-        end
-        
     end
     
 end

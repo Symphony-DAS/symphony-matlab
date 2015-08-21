@@ -12,23 +12,6 @@ classdef DaqController < symphonyui.core.CoreObject
 
         function obj = DaqController(cobj)
             obj@symphonyui.core.CoreObject(cobj);
-            obj.beginSetup();
-        end
-
-        function delete(obj)
-            obj.close();
-        end
-
-        function beginSetup(obj)
-            obj.tryCore(@()obj.cobj.BeginSetup());
-        end
-
-        function initialize(obj)
-
-        end
-
-        function close(obj)
-
         end
         
         function s = getStream(obj, name)

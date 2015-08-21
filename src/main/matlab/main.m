@@ -9,13 +9,13 @@ function main()
     config.setDefaults(getDefaultOptions());
     
     persistorFactory = PersistorFactory();
-    fileDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.FileDescription', config.get(Options.GENERAL_FILE_DESCRIPTION_SEARCH_PATH));
-    sourceDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.SourceDescription', config.get(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH));
-    epochGroupDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.EpochGroupDescription', config.get(Options.GENERAL_EPOCH_GROUP_DESCRIPTION_SEARCH_PATH));
+    fileDescriptionRepository = ClassRepository('symphonyui.core.descriptions.FileDescription', config.get(Options.GENERAL_FILE_DESCRIPTION_SEARCH_PATH));
+    sourceDescriptionRepository = ClassRepository('symphonyui.core.descriptions.SourceDescription', config.get(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH));
+    epochGroupDescriptionRepository = ClassRepository('symphonyui.core.descriptions.EpochGroupDescription', config.get(Options.GENERAL_EPOCH_GROUP_DESCRIPTION_SEARCH_PATH));
     
-    protocolRepository = ObjectRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
+    protocolRepository = ClassRepository('symphonyui.core.Protocol', config.get(Options.GENERAL_PROTOCOL_SEARCH_PATH));
     
-    rigDescriptionRepository = ObjectRepository('symphonyui.core.descriptions.RigDescription', config.get(Options.GENERAL_RIG_DESCRIPTION_SEARCH_PATH));
+    rigDescriptionRepository = ClassRepository('symphonyui.core.descriptions.RigDescription', config.get(Options.GENERAL_RIG_DESCRIPTION_SEARCH_PATH));
     
     session = Session();
     
@@ -23,7 +23,7 @@ function main()
     acquisitionService = AcquisitionService(session, protocolRepository);
     configurationService = ConfigurationService(session, rigDescriptionRepository);
     
-    cn = acquisitionService.getAvailableProtocolNames();
+    cn = acquisitionService.getAvailableProtocols();
     acquisitionService.selectProtocol(cn{1});
 
     app = App(config);
@@ -36,7 +36,7 @@ end
 function setupDotNetPath()
     import symphonyui.app.App;
 
-    asm = {'Symphony.Core.dll', 'Symphony.ExternalDevices.dll'};
+    asm = {'Symphony.Core.dll'};
 
     for i = 1:numel(asm)
         path = which(asm{i});

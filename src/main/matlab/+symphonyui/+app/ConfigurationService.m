@@ -16,19 +16,22 @@ classdef ConfigurationService < handle
             obj.rigDescriptionRepository = rigDescriptionRepository;
         end
         
-        function d = getAvailableRigDescriptions(obj)
-            d = obj.rigDescriptionRepository.getAll();
+        function cn = getAvailableRigDescriptions(obj)
+            cn = obj.rigDescriptionRepository.getAll();
         end
         
         function initializeRig(obj, description)
             if obj.session.hasRig()
-                obj.session.getRig().close();
+                delete(obj.session.getRig());
+                obj.session.rig = [];
             end
-            rig = symphonyui.core.Rig(description);
-            rig.initialize();
+            constructor = str2func(description);
+            rig = symphonyui.core.Rig(constructor());
             obj.session.rig = rig;
-            obj.session.protocol.setRig(rig);
             obj.session.controller.setRig(rig);
+            if obj.session.hasProtocol()
+                obj.session.protocol.setRig(rig);
+            end
             notify(obj, 'InitializedRig');
         end
         

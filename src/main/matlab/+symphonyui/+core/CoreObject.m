@@ -39,7 +39,7 @@ classdef (Abstract) CoreObject < handle
                 call();
             catch x
                 if isa(x, 'NET.NetException')
-                    error(char(x.ExceptionObject.Message));
+                    error(symphonyui.core.util.netReport(x));
                 else
                     rethrow(x)
                 end
@@ -51,7 +51,7 @@ classdef (Abstract) CoreObject < handle
                 r = call();
             catch x
                 if isa(x, 'NET.NetException')
-                    error(char(x.ExceptionObject.Message));
+                    error(symphonyui.core.util.netReport(x));
                 else
                     rethrow(x)
                 end

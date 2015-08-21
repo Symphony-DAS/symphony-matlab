@@ -37,7 +37,11 @@ classdef DocumentationService < handle
             if obj.hasOpenFile()
                 error('File already open');
             end
-            obj.session.persistor = obj.persistorFactory.new(name, location, description);
+            if ~any(strcmp(description, obj.getAvailableFileDescriptions()))
+                error([description ' is not an available file description']);
+            end
+            constructor = str2func(description);
+            obj.session.persistor = obj.persistorFactory.new(name, location, constructor());
             notify(obj, 'CreatedFile');
         end
 
@@ -73,7 +77,11 @@ classdef DocumentationService < handle
         end
 
         function s = addSource(obj, parent, description)
-            s = obj.session.getPersistor().addSource(parent, description);
+            if ~any(strcmp(description, obj.getAvailableSourceDescriptions()))
+                error([description ' is not an available source description']);
+            end
+            constructor = str2func(description);
+            s = obj.session.getPersistor().addSource(parent, constructor());
             notify(obj, 'AddedSource', symphonyui.app.AppEventData(s));
         end
 
@@ -82,7 +90,11 @@ classdef DocumentationService < handle
         end
 
         function g = beginEpochGroup(obj, source, description)
-            g = obj.session.getPersistor().beginEpochGroup(source, description);
+            if ~any(strcmp(description, obj.getAvailableEpochGroupDescriptions()))
+                error([description ' is not an available epoch group description']);
+            end
+            constructor = str2func(description);
+            g = obj.session.getPersistor().beginEpochGroup(source, constructor());
             notify(obj, 'BeganEpochGroup', symphonyui.app.AppEventData(g));
         end
 

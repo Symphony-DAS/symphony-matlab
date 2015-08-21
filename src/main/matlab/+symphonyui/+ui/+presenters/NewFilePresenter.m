@@ -58,19 +58,16 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
         end
         
         function populateDescriptionList(obj)
-            descriptions = obj.documentationService.getAvailableFileDescriptions();
+            classNames = obj.documentationService.getAvailableFileDescriptions();
             
-            emptyDescription = symphonyui.core.descriptions.FileDescription();
-            
-            names = cell(1, numel(descriptions));
-            for i = 1:numel(descriptions)
-                names{i} = descriptions{i}.displayName;
+            displayNames = cell(1, numel(classNames));
+            for i = 1:numel(classNames)
+                split = strsplit(classNames{i}, '.');
+                displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
-            names = ['(Empty)', names];
-            values = [{emptyDescription}, descriptions];
             
-            obj.view.setDescriptionList(names, values);
-            obj.view.setSelectedDescription(values{end});
+            obj.view.setDescriptionList(displayNames, classNames);
+            obj.view.setSelectedDescription(classNames{end});
         end
         
         function onViewKeyPress(obj, ~, event)

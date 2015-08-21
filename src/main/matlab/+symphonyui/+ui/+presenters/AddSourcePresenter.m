@@ -55,20 +55,16 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
         end
         
         function populateDescriptionList(obj)
-            descriptions = obj.documentationService.getAvailableSourceDescriptions();
+            classNames = obj.documentationService.getAvailableSourceDescriptions();
             
-            emptyDescription = symphonyui.core.descriptions.SourceDescription();
-            emptyDescription.label = 'Source';
-            
-            names = cell(1, numel(descriptions));
-            for i = 1:numel(descriptions)
-                names{i} = descriptions{i}.displayName;
+            displayNames = cell(1, numel(classNames));
+            for i = 1:numel(classNames)
+                split = strsplit(classNames{i}, '.');
+                displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
-            names = ['(Empty)', names];
-            values = [{emptyDescription}, descriptions];
             
-            obj.view.setDescriptionList(names, values);
-            obj.view.setSelectedDescription(values{end});
+            obj.view.setDescriptionList(displayNames, classNames);
+            obj.view.setSelectedDescription(classNames{end});
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -88,6 +84,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             try
                 source = obj.documentationService.addSource(parent, description);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

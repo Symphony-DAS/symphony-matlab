@@ -22,20 +22,16 @@ classdef AcquisitionService < handle
             obj.listeners = addlistener(obj.session.controller, 'state', 'PostSet', @(h,d)notify(obj, 'ChangedState'));
         end
         
-        function [cn, dn] = getAvailableProtocolNames(obj)
-            protocols = obj.protocolRepository.getAll();
-            cn = cell(1, numel(protocols));
-            dn = cell(1, numel(protocols));
-            for i = 1:numel(protocols)
-                cn{i} = class(protocols{i});
-                dn{i} = protocols{i}.displayName;
-            end
+        function cn = getAvailableProtocols(obj)
+            cn = obj.protocolRepository.getAll();
         end
         
         function selectProtocol(obj, className)
-            protocols = obj.protocolRepository.getAll();
-            index = strcmp(className, cellfun(@(p)class(p), protocols, 'UniformOutput', false));
-            obj.session.protocol = protocols{index};
+            if ~any(strcmp(className, obj.getAvailableProtocols()))
+                error([className ' is not an available protocol']);
+            end
+            constructor = str2func(className);
+            obj.session.protocol = constructor();
             obj.session.protocol.setRig(obj.session.rig);
             notify(obj, 'SelectedProtocol');
         end
@@ -83,7 +79,6 @@ classdef AcquisitionService < handle
                 msg = 'No protocol';
                 return;
             end
-            
             [tf, msg] = obj.session.getProtocol().isValid();
         end
         

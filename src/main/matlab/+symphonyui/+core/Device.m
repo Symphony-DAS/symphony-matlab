@@ -48,7 +48,12 @@ classdef Device < symphonyui.core.CoreObject
         end
         
         function b = get.background(obj)
-            b = symphonyui.core.Measurement(obj.cobj.Background);
+            cbg = obj.cobj.Background;
+            if isempty(cbg)
+                b = [];
+            else
+                b = symphonyui.core.Measurement(cbg);
+            end
         end
         
         function set.background(obj, b)

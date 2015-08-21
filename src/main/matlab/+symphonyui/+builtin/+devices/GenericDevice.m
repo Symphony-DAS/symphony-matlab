@@ -8,7 +8,7 @@ classdef GenericDevice < symphonyui.core.Device
         
         function obj = GenericDevice(name, manufacturer)
             if nargin < 2
-                manufacturer = 'unspecified';
+                manufacturer = 'Unspecified';
             end
             cobj = Symphony.Core.UnitConvertingExternalDevice(name, manufacturer, Symphony.Core.Measurement(0, 'V'));
             obj@symphonyui.core.Device(cobj);

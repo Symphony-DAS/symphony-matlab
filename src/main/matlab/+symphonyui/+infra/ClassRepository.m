@@ -1,15 +1,15 @@
-classdef ObjectRepository < handle
+classdef ClassRepository < handle
 
     properties (Access = private)
         log
         subtype
         searchPaths
-        objects
+        classes
     end
 
     methods
         
-        function obj = ObjectRepository(subtype, searchPaths)
+        function obj = ClassRepository(subtype, searchPaths)
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.subtype = subtype;
             obj.setSearchPaths(searchPaths);
@@ -52,8 +52,7 @@ classdef ObjectRepository < handle
                     try
                         m = meta.class.fromName(className);
                         if ~m.Abstract
-                            constructor = str2func(className);
-                            loaded{end + 1} = constructor(); %#ok<AGROW>
+                            loaded{end + 1} = className; %#ok<AGROW>
                         end
                     catch x
                         obj.log.debug(x.message, x);
@@ -62,11 +61,11 @@ classdef ObjectRepository < handle
                 end
             end
             
-            obj.objects = loaded;
+            obj.classes = loaded;
         end
         
         function o = getAll(obj)
-            o = obj.objects;
+            o = obj.classes;
         end
 
     end

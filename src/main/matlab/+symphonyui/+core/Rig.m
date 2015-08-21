@@ -15,14 +15,10 @@ classdef Rig < handle
             obj.daqController = description.daqController;
             obj.devices = description.devices;
             obj.sampleRate = description.sampleRate;
-        end
-        
-        function initialize(obj)
-            obj.daqController.initialize();
-        end
-        
-        function close(obj)
-            obj.daqController.close();
+            
+            for i = 1:numel(obj.devices)
+                obj.devices{i}.cobj.Clock = obj.daqController.cobj.Clock;
+            end
         end
         
         function set.sampleRate(obj, r)

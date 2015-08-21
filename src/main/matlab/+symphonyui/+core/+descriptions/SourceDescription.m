@@ -5,9 +5,10 @@ classdef SourceDescription < symphonyui.core.descriptions.EntityDescription
     end
     
     methods
-        
+
         function obj = SourceDescription()
-            obj.label = obj.displayName;
+            split = strsplit(class(obj), '.');
+            obj.label = split{end};
         end
         
         function set.label(obj, l)
