@@ -77,7 +77,12 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
         function populateEntityTree(obj)
             experiment = obj.documentationService.getExperiment();
-            obj.view.setExperimentNode([experiment.purpose ' (' datestr(experiment.startTime, 1) ')'], experiment);
+            if isempty(experiment.purpose)
+                name = datestr(experiment.startTime, 1);
+            else
+                name = [experiment.purpose ' [' datestr(experiment.startTime, 1) ']'];
+            end
+            obj.view.setExperimentNode(name, experiment);
             obj.uuidToNode(experiment.uuid) = obj.view.getExperimentNode();
 
             devices = experiment.devices;
@@ -223,7 +228,12 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 experiment = experimentSet.get(i);
 
                 enode = obj.uuidToNode(experiment.uuid);
-                obj.view.setNodeName(enode, [experiment.purpose ' (' datestr(experiment.startTime, 1) ')']);
+                if isempty(experiment.purpose)
+                    name = datestr(experiment.startTime, 1);
+                else
+                    name = [experiment.purpose ' [' datestr(experiment.startTime, 1) ']'];
+                end
+                obj.view.setNodeName(enode, name);
             end
         end
 
@@ -322,7 +332,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         function n = addEpochBlockNode(obj, block)
             parent = obj.uuidToNode(block.epochGroup.uuid);
             split = strsplit(block.protocolId, '.');
-            n = obj.view.addEpochBlockNode(parent, split{end}, block);
+            n = obj.view.addEpochBlockNode(parent, [split{end} ' [' datestr(block.startTime, 13) ']'], block);
             obj.uuidToNode(block.uuid) = n;
 
             epochs = block.epochs;
