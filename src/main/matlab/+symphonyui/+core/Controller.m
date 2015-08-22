@@ -119,6 +119,9 @@ classdef Controller < symphonyui.core.CoreObject
             if isempty(persistor)
                 task = obj.tryCoreWithReturn(@()obj.cobj.StartAsync([]));
             else
+                persistor.beginEpochBlock(class(obj.currentProtocol));
+                endBlock = onCleanup(@()persistor.endEpochBlock());
+                
                 task = obj.tryCoreWithReturn(@()obj.cobj.StartAsync(persistor.cobj));
             end
                         
