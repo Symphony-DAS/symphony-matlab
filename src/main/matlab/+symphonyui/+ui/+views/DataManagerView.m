@@ -27,12 +27,10 @@ classdef DataManagerView < symphonyui.ui.View
         endEpochGroupButtons
         refreshButtons
         entityTree
-        devicesFolderNode
         sourcesFolderNode
         epochGroupsFolderNode
         detailCardPanel
         emptyCard
-        deviceCard
         sourceCard
         experimentCard
         epochGroupCard
@@ -47,12 +45,11 @@ classdef DataManagerView < symphonyui.ui.View
 
     properties (Constant)
         EMPTY_CARD         = 1
-        DEVICE_CARD        = 2
-        SOURCE_CARD        = 3
-        EXPERIMENT_CARD    = 4
-        EPOCH_GROUP_CARD   = 5
-        EPOCH_BLOCK_CARD   = 6
-        EPOCH_CARD         = 7
+        SOURCE_CARD        = 2
+        EXPERIMENT_CARD    = 3
+        EPOCH_GROUP_CARD   = 4
+        EPOCH_BLOCK_CARD   = 5
+        EPOCH_CARD         = 6
     end
 
     methods
@@ -127,13 +124,6 @@ classdef DataManagerView < symphonyui.ui.View
             root.setIcon(symphonyui.app.App.getResource('icons/experiment.png'));
             set(root, 'UIContextMenu', obj.createEntityContextMenu());
 
-            devices = uiextras.jTree.TreeNode( ...
-                'Parent', root, ...
-                'Name', 'Devices', ...
-                'Value', struct('entity', [], 'type', EntityNodeType.FOLDER));
-            devices.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
-            obj.devicesFolderNode = devices;
-
             sources = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
                 'Name', 'Sources', ...
@@ -166,37 +156,6 @@ classdef DataManagerView < symphonyui.ui.View
             set(emptyLayout, ...
                 'Heights', [-1 25 -1], ...
                 'UserData', struct('Height', -1));
-
-            % Device card.
-            deviceLayout = uix.VBox( ...
-                'Parent', obj.detailCardPanel, ...
-                'Spacing', 7);
-            deviceGrid = uix.Grid( ...
-                'Parent', deviceLayout, ...
-                'Spacing', 7);
-            Label( ...
-                'Parent', deviceGrid, ...
-                'String', 'Name:');
-            Label( ...
-                'Parent', deviceGrid, ...
-                'String', 'Manufacturer:');
-            obj.deviceCard.nameField = uicontrol( ...
-                'Parent', deviceGrid, ...
-                'Style', 'edit', ...
-                'Enable', 'off', ...
-                'HorizontalAlignment', 'left');
-            obj.deviceCard.manufacturerField = uicontrol( ...
-                'Parent', deviceGrid, ...
-                'Style', 'edit', ...
-                'Enable', 'off', ...
-                'HorizontalAlignment', 'left');
-            set(deviceGrid, ...
-                'Widths', [80 -1], ...
-                'Heights', [25 25]);
-            obj.deviceCard.annotationsLayout = uix.VBox( ...
-                'Parent', deviceLayout);
-            set(deviceLayout, ...
-                'Heights', [layoutHeight(deviceGrid) -1]);
 
             % Source card.
             sourceLayout = uix.VBox( ...
@@ -537,8 +496,6 @@ classdef DataManagerView < symphonyui.ui.View
             set(obj.detailCardPanel, 'Selection', index);
 
             switch index
-                case obj.DEVICE_CARD
-                    set(obj.tabGroup, 'Parent', obj.deviceCard.annotationsLayout);
                 case obj.SOURCE_CARD
                     set(obj.tabGroup, 'Parent', obj.sourceCard.annotationsLayout);
                 case obj.EXPERIMENT_CARD
@@ -560,29 +517,6 @@ classdef DataManagerView < symphonyui.ui.View
 
         function setEmptyText(obj, t)
             set(obj.emptyCard.text, 'String', t);
-        end
-
-        function n = getDevicesFolderNode(obj)
-            n = obj.devicesFolderNode;
-        end
-
-        function n = addDeviceNode(obj, parent, name, entity)
-            value.entity = entity;
-            value.type = symphonyui.ui.views.EntityNodeType.DEVICE;
-            n = uiextras.jTree.TreeNode( ...
-                'Parent', parent, ...
-                'Name', name, ...
-                'Value', value);
-            n.setIcon(symphonyui.app.App.getResource('icons/device.png'));
-            set(n, 'UIContextMenu', obj.createEntityContextMenu());
-        end
-
-        function setDeviceName(obj, n)
-            set(obj.deviceCard.nameField, 'String', n);
-        end
-
-        function setDeviceManufacturer(obj, m)
-            set(obj.deviceCard.manufacturerField, 'String', m);
         end
 
         function n = getSourcesFolderNode(obj)

@@ -2,7 +2,6 @@ classdef EntityNodeType
     
     enumeration
         FOLDER
-        DEVICE
         SOURCE
         EXPERIMENT
         EPOCH_GROUP
@@ -18,8 +17,6 @@ classdef EntityNodeType
             switch obj
                 case EntityNodeType.FOLDER
                     c = 'Folder';
-                case EntityNodeType.DEVICE
-                    c = 'Device';
                 case EntityNodeType.SOURCE
                     c = 'Source';
                 case EntityNodeType.EXPERIMENT

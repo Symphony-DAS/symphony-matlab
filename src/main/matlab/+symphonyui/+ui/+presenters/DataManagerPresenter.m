@@ -64,7 +64,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'OpenAxesInNewWindow', @obj.onViewSelectedOpenAxesInNewWindow);
 
             d = obj.documentationService;
-            obj.addListener(d, 'AddedDevice', @obj.onServiceAddedDevice);
             obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
@@ -85,12 +84,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setExperimentNode(name, experiment);
             obj.uuidToNode(experiment.uuid) = obj.view.getExperimentNode();
 
-            devices = experiment.devices;
-            for i = 1:numel(devices)
-                obj.addDeviceNode(devices{i});
-            end
-            obj.view.expandNode(obj.view.getDevicesFolderNode());
-
             sources = experiment.sources;
             for i = 1:numel(sources)
                 obj.addSourceNode(sources{i});
@@ -105,32 +98,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
             obj.view.setSelectedNodes(obj.uuidToNode(experiment.uuid));
             obj.populateDetailsWithExperiments(experiment);
-        end
-
-        function onServiceAddedDevice(obj, ~, event)
-            device = event.data;
-            node = obj.addDeviceNode(device);
-
-            obj.view.setSelectedNodes(node);
-
-            obj.populateDetailsWithDevices(device);
-            obj.updateStateOfControls();
-        end
-
-        function n = addDeviceNode(obj, device)
-            n = obj.view.addDeviceNode(obj.view.getDevicesFolderNode(), device.name, device);
-            obj.uuidToNode(device.uuid) = n;
-        end
-
-        function populateDetailsWithDevices(obj, devices)
-            deviceSet = symphonyui.core.collections.DeviceSet(devices);
-
-            obj.view.setDeviceName(deviceSet.name);
-            obj.view.setDeviceManufacturer(deviceSet.manufacturer);
-            obj.view.setCardSelection(obj.view.DEVICE_CARD);
-
-            obj.populateAnnotationsWithEntitySet(deviceSet);
-            obj.detailedEntitySet = deviceSet;
         end
 
         function onViewSelectedAddSource(obj, ~, ~)
@@ -448,8 +415,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             end
 
             switch types
-                case EntityNodeType.DEVICE
-                    obj.populateDetailsWithDevices(entities);
                 case EntityNodeType.SOURCE
                     obj.populateDetailsWithSources(entities);
                 case EntityNodeType.EXPERIMENT

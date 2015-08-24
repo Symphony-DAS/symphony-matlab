@@ -311,7 +311,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableRecord = enableViewOnly && hasEpochGroup;
             enableStop = ~isStopping && ~isStopped;
             enableShowProtocolPreview = enableViewOnly;
-            enableInitializeRig = ~hasOpenFile && isStopped;
+            enableInitializeRig = isStopped;
             enableConfigureDeviceBackgrounds = isStopped;
             
             if ~isValid

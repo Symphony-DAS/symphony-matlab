@@ -4,7 +4,6 @@ classdef DocumentationService < handle
         CreatedFile
         OpenedFile
         ClosedFile
-        AddedDevice
         AddedSource
         BeganEpochGroup
         EndedEpochGroup
@@ -65,11 +64,6 @@ classdef DocumentationService < handle
 
         function e = getExperiment(obj)
             e = obj.session.getPersistor().experiment;
-        end
-
-        function d = addDevice(obj, name, manufacturer)
-            d = obj.session.getPersistor().addDevice(name, manufacturer);
-            notify(obj, 'AddedDevice', symphonyui.app.AppEventData(d));
         end
 
         function d = getAvailableSourceDescriptions(obj)
