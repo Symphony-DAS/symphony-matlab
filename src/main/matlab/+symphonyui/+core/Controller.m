@@ -119,7 +119,17 @@ classdef Controller < symphonyui.core.CoreObject
             if isempty(persistor)
                 task = obj.tryCoreWithReturn(@()obj.cobj.StartAsync([]));
             else
-                persistor.beginEpochBlock(class(obj.currentProtocol));
+                parameters = containers.Map();
+                meta = metaclass(obj.currentProtocol);
+                for i = 1:numel(meta.Properties)
+                    mpo = meta.Properties{i};
+                    if mpo.Abstract || mpo.Hidden || ~strcmp(mpo.GetAccess, 'public');
+                        continue;
+                    end
+                    parameters(mpo.Name) = obj.currentProtocol.(mpo.Name);
+                end
+                
+                persistor.beginEpochBlock(class(obj.currentProtocol), parameters);
                 endBlock = onCleanup(@()persistor.endEpochBlock());
                 
                 task = obj.tryCoreWithReturn(@()obj.cobj.StartAsync(persistor.cobj));
@@ -177,15 +187,6 @@ classdef Controller < symphonyui.core.CoreObject
             end
             
             obj.currentProtocol.prepareEpoch(e);
-            
-            meta = metaclass(obj.currentProtocol);
-            for i = 1:numel(meta.Properties)
-                mpo = meta.Properties{i};
-                if mpo.Abstract || mpo.Hidden || ~strcmp(mpo.GetAccess, 'public');
-                    continue;
-                end
-                e.addParameter(mpo.Name, obj.currentProtocol.(mpo.Name));
-            end
         end
         
         function enqueueEpoch(obj, epoch)

@@ -347,6 +347,18 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.view.setEpochBlockProtocolId(blockSet.protocolId);
             obj.view.setEpochBlockStartTime(strtrim(datestr(blockSet.startTime, 14)));
             obj.view.setEpochBlockEndTime(strtrim(datestr(blockSet.endTime, 14)));
+            
+            % Protocol parameters
+            map = map2pmap(blockSet.protocolParameters);
+            try
+                properties = uiextras.jide.PropertyGridField.GenerateFrom(map);
+            catch x
+                properties = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
+            obj.view.setEpochBlockProtocolParameters(properties);
+            
             obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
 
             obj.populateAnnotationsWithEntitySet(blockSet);

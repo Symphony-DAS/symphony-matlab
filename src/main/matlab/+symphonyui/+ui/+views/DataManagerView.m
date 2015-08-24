@@ -551,7 +551,7 @@ classdef DataManagerView < symphonyui.ui.View
                     set(obj.tabGroup, 'Parent', obj.epochCard.annotationsLayout);
             end
 
-            if index == obj.EPOCH_CARD
+            if index == obj.EPOCH_CARD || index == obj.EPOCH_BLOCK_CARD
                 obj.tabGroup.addTab(obj.parametersTab.tab);
             else
                 obj.tabGroup.removeTab(obj.parametersTab.tab);
@@ -709,6 +709,10 @@ classdef DataManagerView < symphonyui.ui.View
 
         function setEpochBlockProtocolId(obj, i)
             set(obj.epochBlockCard.protocolIdField, 'String', i);
+        end
+        
+        function setEpochBlockProtocolParameters(obj, properties)
+            set(obj.parametersTab.grid, 'Properties', properties);
         end
 
         function setEpochBlockStartTime(obj, t)

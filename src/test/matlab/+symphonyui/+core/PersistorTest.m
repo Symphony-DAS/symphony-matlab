@@ -8,6 +8,7 @@ classdef PersistorTest < symphonyui.TestBase
         TEST_FILE = 'test.h5'
         TEST_START_TIME = datetime([2016,10,24,11,45,07], 'TimeZone', 'America/Denver');
         TEST_END_TIME = datetime([2016,10,24,12,48,32], 'TimeZone', 'Asia/Tokyo');
+        TEST_PARAMETERS = containers.Map({'one', 'two', 'three'}, {1, 2.222, 'three'});
     end
     
     methods (TestMethodSetup)
@@ -174,9 +175,9 @@ classdef PersistorTest < symphonyui.TestBase
             obj.verifyEqual(grp2.parent, grp);
             obj.verifyCellsAreEquivalent(grp.epochGroups, {grp1, grp2});
             
-            blk1 = obj.persistor.beginEpochBlock('blk1', obj.TEST_START_TIME);
+            blk1 = obj.persistor.beginEpochBlock('blk1', obj.TEST_PARAMETERS, obj.TEST_START_TIME);
             obj.persistor.endEpochBlock(obj.TEST_END_TIME);
-            blk2 = obj.persistor.beginEpochBlock('blk2', obj.TEST_START_TIME);
+            blk2 = obj.persistor.beginEpochBlock('blk2', obj.TEST_PARAMETERS, obj.TEST_START_TIME);
             
             obj.verifyCellsAreEquivalent(grp.epochBlocks, {blk1, blk2});
         end
@@ -186,10 +187,11 @@ classdef PersistorTest < symphonyui.TestBase
             
             src = obj.persistor.addSource([], 'src');
             grp = obj.persistor.beginEpochGroup(src, 'grp');
-            blk = obj.persistor.beginEpochBlock('blk', obj.TEST_START_TIME);
+            blk = obj.persistor.beginEpochBlock('blk', obj.TEST_PARAMETERS, obj.TEST_START_TIME);
             
             obj.verifyEqual(obj.persistor.currentEpochBlock, blk);
             obj.verifyEqual(blk.protocolId, 'blk');
+            obj.verifyEqual(blk.protocolParameters, obj.TEST_PARAMETERS);
             obj.verifyEmpty(blk.epochs);
             obj.verifyEqual(blk.epochGroup, grp);
             obj.verifyDatetimesEqual(blk.startTime, obj.TEST_START_TIME);

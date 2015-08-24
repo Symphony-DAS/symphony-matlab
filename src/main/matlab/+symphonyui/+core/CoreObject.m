@@ -101,6 +101,15 @@ classdef (Abstract) CoreObject < handle
             end
         end
         
+        function d = dictionaryFromMap(obj, map) %#ok<INUSL>
+            d = NET.createGeneric('System.Collections.Generic.Dictionary', {'System.String', 'System.Object'});
+            keys = map.keys;
+            for i = 1:numel(keys);
+                key = keys{i};
+                d.Add(key, map(key));
+            end
+        end
+        
         function t = datetimeFromDateTimeOffset(obj, dto) %#ok<INUSL>
             second = double(dto.Second) + (double(dto.Millisecond) / 1000);
             t = datetime(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, second);

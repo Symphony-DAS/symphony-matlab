@@ -38,6 +38,9 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
                 obj.addStream(symphonyui.core.DaqStream(cstr));
             end
             
+            Symphony.Core.Converters.Register(Symphony.Core.Measurement.UNITLESS, Symphony.Core.Measurement.UNITLESS, @(m)m);
+            Symphony.Core.Converters.Register('V', 'V', @(m)m);
+            
             obj.simulationRunner = @(output, timeStep)obj.runner(output, timeStep);
         end
         
