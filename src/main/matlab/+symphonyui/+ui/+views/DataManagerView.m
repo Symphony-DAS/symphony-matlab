@@ -8,7 +8,7 @@ classdef DataManagerView < symphonyui.ui.View
         SetSourceLabel
         SetExperimentPurpose
         SetEpochGroupLabel
-        SelectedPropertyTemplate
+        SelectedPropertiesPreset
         SetProperty
         AddProperty
         RemoveProperty
@@ -354,11 +354,11 @@ classdef DataManagerView < symphonyui.ui.View
             v = uix.VBox( ...
                 'Parent', propertiesToolbarLayout);
             uix.Empty('Parent', v);
-            obj.propertiesTab.templatePopupMenu = MappedPopupMenu( ...
+            obj.propertiesTab.presetPopupMenu = MappedPopupMenu( ...
                 'Parent', v, ...
                 'String', {' '}, ...
                 'HorizontalAlignment', 'left', ...
-                'Callback', @(h,d)notify(obj, 'SelectedPropertyTemplate'));
+                'Callback', @(h,d)notify(obj, 'SelectedPropertiesPreset'));
             set(v, 'Heights', [1 -1]);
             propertiesButtonLayout = uix.HBox( ...
                 'Parent', propertiesToolbarLayout);
@@ -760,17 +760,17 @@ classdef DataManagerView < symphonyui.ui.View
             obj.propertiesTab.grid.UpdateProperties(fields);
         end
 
-        function t = getSelectedPropertyTemplate(obj)
-            t = get(obj.propertiesTab.templatePopupMenu, 'Value');
+        function t = getSelectedPropertiesPreset(obj)
+            t = get(obj.propertiesTab.presetPopupMenu, 'Value');
         end
 
-        function setSelectedPropertyTemplate(obj, t)
-            set(obj.propertiesTab.templatePopupMenu, 'Value', t);
+        function setSelectedPropertiesPreset(obj, t)
+            set(obj.propertiesTab.presetPopupMenu, 'Value', t);
         end
 
-        function setPropertyTemplateList(obj, names, values)
-            set(obj.propertiesTab.templatePopupMenu, 'String', names);
-            set(obj.propertiesTab.templatePopupMenu, 'Values', values);
+        function setPropertiesPresetList(obj, names, values)
+            set(obj.propertiesTab.presetPopupMenu, 'String', names);
+            set(obj.propertiesTab.presetPopupMenu, 'Values', values);
         end
 
         function f = getProperties(obj)

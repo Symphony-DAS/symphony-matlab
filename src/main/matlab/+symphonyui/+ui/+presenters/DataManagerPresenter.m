@@ -51,7 +51,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'SetSourceLabel', @obj.onViewSetSourceLabel);
             obj.addListener(v, 'SetExperimentPurpose', @obj.onViewSetExperimentPurpose);
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
-            obj.addListener(v, 'SelectedPropertyTemplate', @obj.onViewSelectedPropertyTemplate);
+            obj.addListener(v, 'SelectedPropertiesPreset', @obj.onViewSelectedPropertiesPreset);
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
@@ -431,18 +431,18 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
 
         function populateAnnotationsWithEntitySet(obj, entitySet)
-            obj.populatePropertyTemplateList();
+            obj.populatePropertiesPresetList();
             obj.populatePropertiesWithEntitySet(entitySet);
             obj.populateKeywordsWithEntitySet(entitySet);
             obj.populateNotesWithEntitySet(entitySet);
         end
 
-        function populatePropertyTemplateList(obj)
-            obj.view.setPropertyTemplateList({'Select template...'}, {'Select template...'});
+        function populatePropertiesPresetList(obj)
+            obj.view.setPropertiesPresetList({'Select properties preset...'}, {'Select properties preset...'});
         end
 
-        function onViewSelectedPropertyTemplate(obj, ~, ~)
-            disp(obj.view.getSelectedPropertyTemplate());
+        function onViewSelectedPropertiesPreset(obj, ~, ~)
+            disp(obj.view.getSelectedPropertiesPreset());
         end
 
         function populatePropertiesWithEntitySet(obj, entitySet, update)
