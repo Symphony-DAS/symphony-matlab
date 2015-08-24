@@ -19,10 +19,6 @@ classdef Controller < symphonyui.core.CoreObject
             obj.state = symphonyui.core.ControllerState.STOPPED;
         end
         
-        function delete(obj)
-            disp('deleted controller');
-        end
-        
         function setRig(obj, rig)
             obj.cobj.DAQController = [];
             obj.cobj.Clock = [];

@@ -22,7 +22,6 @@ classdef MultiClampDevice < symphonyui.core.Device
         
         function delete(obj)
             obj.tryCore(@()obj.cobj.Dispose());
-            disp('bye bye multiclamp');
         end
         
         function m = getMode(obj)
