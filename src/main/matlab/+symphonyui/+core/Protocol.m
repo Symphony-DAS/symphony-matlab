@@ -35,6 +35,10 @@ classdef Protocol < handle
             obj.numEpochsCompleted = obj.numEpochsCompleted + 1;
         end
         
+        function tf = continuePreloadingEpochs(obj)
+            tf = obj.numEpochsPrepared < 6 && obj.continuePreparingEpochs();
+        end
+        
         function tf = continuePreparingEpochs(obj)
             tf = false;
         end

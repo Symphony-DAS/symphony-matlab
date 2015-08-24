@@ -510,7 +510,7 @@ classdef DataManagerView < symphonyui.ui.View
 
         function show(obj)
             show@symphonyui.ui.View(obj);
-            drawnow;
+            drawnow();
             set(obj.keywordsTab.table, 'ColumnHeaderVisible', false);
             set(obj.notesTab.table, 'ColumnHeaderVisible', false);
         end

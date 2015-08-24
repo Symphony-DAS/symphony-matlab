@@ -114,11 +114,7 @@ classdef Controller < symphonyui.core.CoreObject
             
             obj.currentProtocol.prepareRun();
             
-            obj.preload();
-            
-            if isempty(persistor)
-                task = obj.tryCoreWithReturn(@()obj.cobj.StartAsync([]));
-            else
+            if ~isempty(persistor)
                 parameters = containers.Map();
                 meta = metaclass(obj.currentProtocol);
                 for i = 1:numel(meta.Properties)
@@ -131,9 +127,11 @@ classdef Controller < symphonyui.core.CoreObject
                 
                 persistor.beginEpochBlock(class(obj.currentProtocol), parameters);
                 endBlock = onCleanup(@()persistor.endEpochBlock());
-                
-                task = obj.tryCoreWithReturn(@()obj.cobj.StartAsync(persistor.cobj));
             end
+            
+            obj.preload();
+            
+            task = obj.startAsync(persistor);
                         
             try
                 obj.processLoop();
@@ -159,7 +157,10 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function preload(obj)
-            while obj.epochQueueCount < 6 && obj.currentProtocol.continuePreparingEpochs() && obj.state.isViewingOrRecording()
+            while obj.currentProtocol.continuePreloadingEpochs()
+                if ~obj.state.isViewingOrRecording()
+                    break;
+                end
                 epoch = obj.nextEpoch();
                 obj.enqueueEpoch(epoch);
                 drawnow();
@@ -167,12 +168,13 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function processLoop(obj)
-            while obj.currentProtocol.continuePreparingEpochs() && obj.state.isViewingOrRecording();
+            while obj.currentProtocol.continuePreparingEpochs()
+                if ~obj.state.isViewingOrRecording();
+                    break;
+                end
                 epoch = obj.nextEpoch();
                 obj.enqueueEpoch(epoch);
-                while obj.epochQueueCount >= 6 && obj.state.isViewingOrRecording()
-                    pause(0.01);
-                end
+                drawnow();
             end
         end
         
@@ -195,6 +197,15 @@ classdef Controller < symphonyui.core.CoreObject
         
         function clearEpochQueue(obj)
             obj.tryCore(@()obj.cobj.ClearEpochQueue());
+        end
+        
+        function t = startAsync(obj, persistor)
+            if isempty(persistor)
+                cper = [];
+            else
+                cper = persistor.cobj;
+            end
+            t = obj.tryCoreWithReturn(@()obj.cobj.StartAsync(cper));
         end
         
     end
