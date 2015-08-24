@@ -59,8 +59,16 @@ classdef EntitySet < handle
                 return;
             end
             
-            % TODO: Implement merging of property descriptors.
             d = obj.entities{1}.getPropertyDescriptors();
+            for i = 2:numel(obj.entities)
+                keep = false(1, numel(d));
+                for j = 1:numel(d)
+                    if any(arrayfun(@(c)isequal(c,d(j)), obj.entities{i}.getPropertyDescriptors()))
+                        keep(j) = true;
+                    end
+                end
+                d = d(keep);
+            end
         end
         
         function k = get.keywords(obj)
