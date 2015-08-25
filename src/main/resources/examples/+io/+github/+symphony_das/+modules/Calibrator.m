@@ -109,6 +109,10 @@ classdef Calibrator < symphonyui.ui.Module
         
         function d = getSelectedDevice(obj)
             devices = get(obj.deviceListBox, 'String');
+            if isempty(devices)
+                d = [];
+                return;
+            end
             index = get(obj.deviceListBox, 'Value');
             d = devices{index};
         end
@@ -119,9 +123,12 @@ classdef Calibrator < symphonyui.ui.Module
         end
         
         function selectNextDevice(obj)
-            string = get(obj.deviceListBox, 'String');
+            devices = get(obj.deviceListBox, 'String');
+            if isempty(devices)
+                return;
+            end
             index = get(obj.deviceListBox, 'Value');
-            next = mod(index, numel(string)) + 1;
+            next = mod(index, numel(devices)) + 1;
             set(obj.deviceListBox, 'Value', next);
         end
         
