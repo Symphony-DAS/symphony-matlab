@@ -1,0 +1,178 @@
+2015-08-25 13:44:30,527 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Registering for WM_COPYDATA messages
+2015-08-25 13:44:30,659 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Registering for MCTG_RECONNECT_MESSAGE messages...
+2015-08-25 13:44:30,759 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Opening MultiClamp conversation...
+2015-08-25 13:44:30,762 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander -   result = 1
+2015-08-25 13:44:30,770 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Requesting telegraph data...
+2015-08-25 13:44:30,774 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander -   result = 1
+2015-08-25 13:44:30,795 [MessageEvents message loop] DEBUG Symphony.ExternalDevices.Win32Interop - Handling message: msg=0x4a (WM_COPYDATA) hwnd=0x2d9034a wparam=0x0 lparam=0x1b401ecc0 result=0x0
+2015-08-25 13:44:30,796 [22] DEBUG Symphony.ExternalDevices.MultiClampCommander - WM_COPYDATA message received from MCCommander
+2015-08-25 13:44:30,796 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice - MultiClamp parameters changed. Mode = IClamp, External Command Sensistivity Units = A_V Timestamp = 08/25/2015 13:44:30 -07:00
+2015-08-25 13:44:30,796 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice - Setting new background for stream ANALOG_OUT.0
+2015-08-25 13:44:30,796 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:30 -07:00
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice - Output background value: 0 x 10^-12 V (0 pV)
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:30 -07:00
+2015-08-25 13:44:30,797 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:30,798 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:30,798 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:30,798 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:30,798 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:30,798 [22] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:30 -07:00
+2015-08-25 13:44:30,803 [MessageEvents message loop] DEBUG Symphony.ExternalDevices.Win32Interop - Handling message: msg=0x4a (WM_COPYDATA) hwnd=0x2d9034a wparam=0xd30c86 lparam=0x1b401ec90 result=0x0
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampCommander - WM_COPYDATA message received from MCCommander
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice - MultiClamp parameters changed. Mode = IClamp, External Command Sensistivity Units = A_V Timestamp = 08/25/2015 13:44:30 -07:00
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice - Setting new background for stream ANALOG_OUT.0
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:30 -07:00
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice - Output background value: 0 x 10^-12 V (0 pV)
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:30,803 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:30 -07:00
+2015-08-25 13:44:30,804 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:30,804 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:30,804 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:30,804 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:30,804 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:30,804 [23] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:30 -07:00
+2015-08-25 13:44:50,211 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Unregistering for WM_COPYDATA messages
+2015-08-25 13:44:50,311 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Unregistering for MCTG_RECONNECT_MESSAGE messages...
+2015-08-25 13:44:51,077 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Registering for WM_COPYDATA messages
+2015-08-25 13:44:51,177 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Registering for MCTG_RECONNECT_MESSAGE messages...
+2015-08-25 13:44:51,277 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Opening MultiClamp conversation...
+2015-08-25 13:44:51,281 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander -   result = 1
+2015-08-25 13:44:51,282 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Requesting telegraph data...
+2015-08-25 13:44:51,287 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander -   result = 1
+2015-08-25 13:44:51,303 [MessageEvents message loop] DEBUG Symphony.ExternalDevices.Win32Interop - Handling message: msg=0x4a (WM_COPYDATA) hwnd=0x2d9034a wparam=0x0 lparam=0x1b401ecc0 result=0x0
+2015-08-25 13:44:51,303 [25] DEBUG Symphony.ExternalDevices.MultiClampCommander - WM_COPYDATA message received from MCCommander
+2015-08-25 13:44:51,303 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - MultiClamp parameters changed. Mode = IClamp, External Command Sensistivity Units = A_V Timestamp = 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,303 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Setting new background for stream ANALOG_OUT.0
+2015-08-25 13:44:51,303 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,303 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,303 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,303 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,303 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Output background value: 0 x 10^-12 V (0 pV)
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Output background value: 0 x 10^-12 V (0 pV)
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,304 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,305 [25] DEBUG Heka.HekaDAQController - Setting stream background: 0.000000000000 x 10^0 V
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Output background value: 0 x 10^-12 V (0 pV)
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,305 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,306 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,306 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,306 [25] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,310 [MessageEvents message loop] DEBUG Symphony.ExternalDevices.Win32Interop - Handling message: msg=0x4a (WM_COPYDATA) hwnd=0x2d9034a wparam=0xd30c86 lparam=0x1b401ec90 result=0x0
+2015-08-25 13:44:51,310 [26] DEBUG Symphony.ExternalDevices.MultiClampCommander - WM_COPYDATA message received from MCCommander
+2015-08-25 13:44:51,310 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - MultiClamp parameters changed. Mode = IClamp, External Command Sensistivity Units = A_V Timestamp = 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,310 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Setting new background for stream ANALOG_OUT.0
+2015-08-25 13:44:51,310 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Output background value: 0 x 10^-12 V (0 pV)
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,311 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Output background value: 0 x 10^-12 V (0 pV)
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,312 [26] DEBUG Heka.HekaDAQController - Setting stream background: 0.000000000000 x 10^0 V
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Output background value: 0 x 10^-12 V (0 pV)
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,312 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,313 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:44:51,313 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice - Desired background value: 0 x 10^-12 A (0 pA)
+2015-08-25 13:44:51,313 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Current parameters:
+2015-08-25 13:44:51,313 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      Mode: IClamp
+2015-08-25 13:44:51,313 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdSensitivity: 4E-10
+2015-08-25 13:44:51,313 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -      ExtCmdUnits: A_V
+2015-08-25 13:44:51,313 [26] DEBUG Symphony.ExternalDevices.MultiClampDevice -   Parameters timestamp: 08/25/2015 13:44:51 -07:00
+2015-08-25 13:45:04,025 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Unregistering for WM_COPYDATA messages
+2015-08-25 13:45:04,126 [1] DEBUG Symphony.ExternalDevices.MultiClampCommander - Unregistering for MCTG_RECONNECT_MESSAGE messages...

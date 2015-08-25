@@ -1,13 +1,12 @@
-classdef DeviceBackgroundsView < symphonyui.ui.View
+classdef HoldingLevelsView < symphonyui.ui.View
 
     events
         Apply
         Cancel
     end
-
+    
     properties (Access = private)
-        backgroundsLayout
-        textFields
+        levelsPropertyGrid
         applyButton
         cancelButton
     end
@@ -16,21 +15,21 @@ classdef DeviceBackgroundsView < symphonyui.ui.View
 
         function createUi(obj)
             import symphonyui.ui.util.*;
-
+            
             set(obj.figureHandle, ...
-                'Name', 'Device Backgrounds', ...
-                'Position', screenCenter(260, 200));
+                'Name', 'Holding Levels', ...
+                'Position', screenCenter(260, 210));
 
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
+
+            levelsLayout = uix.VBox( ...
+                'Parent', mainLayout);
             
-            obj.backgroundsLayout = uix.VBox( ...
-                'Parent', mainLayout, ...
-                'Spacing', 7);
-            
-            obj.textFields = struct();
+            obj.levelsPropertyGrid = uiextras.jide.PropertyGrid(levelsLayout, ...
+                'ShowDescription', false);
 
             % Apply/Cancel controls.
             controlsLayout = uix.HBox( ...
@@ -51,29 +50,11 @@ classdef DeviceBackgroundsView < symphonyui.ui.View
 
             set(mainLayout, 'Heights', [-1 25]);
 
-            % Set OK button to appear as the default button.
+            % Set apply button to appear as the default button.
             try %#ok<TRYNC>
                 h = handle(obj.figureHandle);
                 h.setDefaultButton(obj.applyButton);
             end
-        end
-        
-        function addBackground(obj, name, quantity, units)
-            layout = uix.HBox( ...
-                'Parent', obj.backgroundsLayout, ...
-                'Spacing', 7);
-            symphonyui.ui.util.Label( ...
-                'Parent', layout, ...
-                'String', [name ' (' units '):']);
-            obj.textFields.(name) = uicontrol( ...
-                'Parent', layout, ...
-                'Style', 'edit', ...
-                'String', quantity, ...
-                'HorizontalAlignment', 'left');
-        end
-        
-        function q = getBackground(obj, name)
-            q = get(obj.textFields.(name), 'String');
         end
 
     end

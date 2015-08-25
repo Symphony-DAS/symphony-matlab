@@ -8,6 +8,8 @@ function main()
     config = Config();
     config.setDefaults(getDefaultOptions());
     
+    Symphony.Core.Logging.ConfigureLogging(config.get(Options.LOG4NET_CONFIGURATION_FILE), config.get(Options.LOG4NET_LOG_DIRECTORY));
+    
     persistorFactory = PersistorFactory();
     fileDescriptionRepository = ClassRepository('symphonyui.core.descriptions.FileDescription', config.get(Options.GENERAL_FILE_DESCRIPTION_SEARCH_PATH));
     sourceDescriptionRepository = ClassRepository('symphonyui.core.descriptions.SourceDescription', config.get(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH));
@@ -78,6 +80,8 @@ function d = getDefaultOptions()
     d(Options.GENERAL_EPOCH_GROUP_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+epochgroups')};
     d(Options.GENERAL_RIG_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+rigs')};
     d(Options.GENERAL_MODULE_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+modules')};
+    d(Options.LOG4NET_CONFIGURATION_FILE) = App.getResource('examples/+io/+github/+symphony_das/log.xml');
+    d(Options.LOG4NET_LOG_DIRECTORY) = App.getResource('examples/+io/+github/+symphony_das/logs');
     d(Options.FILE_DEFAULT_NAME) = @()datestr(now, 'yyyy-mm-dd');
     d(Options.FILE_DEFAULT_LOCATION) = @()pwd();
     d(Options.EPOCH_GROUP_LABEL_LIST) = {'Control', 'Drug', 'Wash'};

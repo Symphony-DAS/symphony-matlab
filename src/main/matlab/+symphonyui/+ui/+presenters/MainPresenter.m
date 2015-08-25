@@ -57,7 +57,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
             obj.addListener(v, 'ShowProtocolPreview', @obj.onViewSelectedShowProtocolPreview);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
-            obj.addListener(v, 'ConfigureDeviceBackgrounds', @obj.onViewSelectedConfigureDeviceBackgrounds);
+            obj.addListener(v, 'ConfigureHoldingLevels', @obj.onViewSelectedConfigureHoldingLevels);
             obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
             obj.addListener(v, 'SelectedModule', @obj.onViewSelectedModule);
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
@@ -316,7 +316,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableStop = ~isStopping && ~isStopped;
             enableShowProtocolPreview = enableViewOnly;
             enableInitializeRig = isStopped;
-            enableConfigureDeviceBackgrounds = isStopped;
+            enableConfigureHoldingLevels = isStopped;
             
             if ~isValid
                 status = validationMessage;
@@ -340,7 +340,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableStop(enableStop);
             obj.view.enableShowProtocolPreview(enableShowProtocolPreview);
             obj.view.enableInitializeRig(enableInitializeRig);
-            obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);
+            obj.view.enableConfigureHoldingLevels(enableConfigureHoldingLevels);
             obj.view.setStatus(status);
         end
         
@@ -353,8 +353,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateStateOfControls();
         end
         
-        function onViewSelectedConfigureDeviceBackgrounds(obj, ~, ~)
-            disp('Selected configure device backgrounds');
+        function onViewSelectedConfigureHoldingLevels(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.HoldingLevelsPresenter(obj.configurationService, obj.app);
+            presenter.goWaitStop();
         end
         
         function onViewSelectedConfigureOptions(obj, ~, ~)
