@@ -7,6 +7,9 @@
 # Binary
 *.mlappinstall
 *.h5
-
 /lib/Core Framework/
 target/
+
+# Logs
+*.log
+logs/
