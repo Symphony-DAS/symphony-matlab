@@ -32,10 +32,6 @@ classdef Module < symphonyui.ui.Presenter
             obj.configurationService = service;
         end
         
-        function delete(obj)
-            disp('deleting!');
-        end
-        
     end
     
     methods (Abstract)

@@ -46,6 +46,19 @@ classdef Rig < handle
             error(['A device named ''' name ''' does not exist']);
         end
         
+        function d = getDevices(obj, name)
+            if nargin < 2
+                name = '.';
+            end
+            
+            d = {};
+            for i = 1:numel(obj.devices)
+                if regexpi(obj.devices{i}.name, name, 'once')
+                    d{end + 1} = obj.devices{i}; %#ok<AGROW>
+                end
+            end
+        end
+        
     end
     
 end

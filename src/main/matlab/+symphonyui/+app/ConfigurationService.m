@@ -35,6 +35,17 @@ classdef ConfigurationService < handle
             notify(obj, 'InitializedRig');
         end
         
+        function tf = hasRig(obj)
+            tf = obj.session.hasRig();
+        end
+        
+        function d = getDevices(obj, name)
+            if nargin < 2
+                name = '.';
+            end
+            d = obj.session.getRig().getDevices(name);
+        end
+        
     end
 
 end
