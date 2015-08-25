@@ -4,13 +4,14 @@ classdef MainPresenter < symphonyui.ui.Presenter
         documentationService
         acquisitionService
         configurationService
+        moduleService
         dataManagerPresenter
     end
     
     methods
         
-        function obj = MainPresenter(documentationService, acquisitionService, configurationService, app, view)            
-            if nargin < 5
+        function obj = MainPresenter(documentationService, acquisitionService, configurationService, moduleService, app, view)            
+            if nargin < 6
                 view = symphonyui.ui.views.MainView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
@@ -18,6 +19,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
             obj.configurationService = configurationService;
+            obj.moduleService = moduleService;
         end
         
     end
@@ -27,6 +29,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onGoing(obj)
             obj.populateProtocolList();
             obj.populateProtocolProperties();
+            obj.populateModuleList();
             obj.updateStateOfControls();
         end
         
@@ -56,6 +59,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
             obj.addListener(v, 'ConfigureDeviceBackgrounds', @obj.onViewSelectedConfigureDeviceBackgrounds);
             obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
+            obj.addListener(v, 'SelectedModule', @obj.onViewSelectedModule);
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
             obj.addListener(v, 'ShowUserGroup', @obj.onViewSelectedShowUserGroup);
             obj.addListener(v, 'ShowAbout', @obj.onViewSelectedShowAbout);
@@ -355,6 +359,30 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedConfigureOptions(obj, ~, ~)
             disp('Selected configure options');
+        end
+        
+        function populateModuleList(obj)
+            classNames = obj.moduleService.getAvailableModules();
+            
+            displayNames = cell(1, numel(classNames));
+            for i = 1:numel(classNames)
+                split = strsplit(classNames{i}, '.');
+                displayNames{i} = symphonyui.core.util.humanize(split{end});
+            end
+            
+            for i = 1:numel(classNames)
+                obj.view.addModule(displayNames{i}, classNames{i});
+            end
+        end
+        
+        function onViewSelectedModule(obj, ~, event)
+            module = event.data;
+            try
+                obj.moduleService.showModule(module);
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
         end
         
         function onViewSelectedShowDocumentation(obj, ~, ~)

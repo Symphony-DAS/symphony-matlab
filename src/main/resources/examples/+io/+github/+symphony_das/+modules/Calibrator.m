@@ -1,0 +1,86 @@
+classdef Calibrator < symphonyui.ui.Module
+    
+    properties (Access = private)
+        devicePopupMenu
+        calibrateButton
+        cancelButton
+    end
+    
+    methods
+        
+        function createUi(obj, figureHandle)
+            import symphonyui.ui.util.*;
+            
+            set(figureHandle, ...
+                'Name', 'Calibrator', ...
+                'Position', screenCenter(260, 160));
+            
+            mainLayout = uix.VBox( ...
+                'Parent', figureHandle, ...
+                'Padding', 11, ...
+                'Spacing', 7);
+            
+            calibrationLayout = uix.Grid( ...
+                'Parent', mainLayout, ...
+                'Spacing', 7);
+            Label( ...
+                'Parent', calibrationLayout, ...
+                'String', 'Device:');
+            obj.devicePopupMenu = uicontrol( ...
+                'Parent', calibrationLayout, ...
+                'Style', 'popupmenu', ...
+                'String', {' '}, ...
+                'HorizontalAlignment', 'left', ...
+                'Callback', @obj.onSelectedDevice);
+            set(calibrationLayout, ...
+                'Widths', [50 -1], ...
+                'Heights', [25]);
+            
+            % Calibrate/Cancel controls.
+            controlsLayout = uix.HBox( ...
+                'Parent', mainLayout, ...
+                'Spacing', 7);
+            uix.Empty('Parent', controlsLayout);
+            obj.calibrateButton = uicontrol( ...
+                'Parent', controlsLayout, ...
+                'Style', 'pushbutton', ...
+                'String', 'Calibrate', ...
+                'Callback', @obj.onCalibrate);
+            obj.cancelButton = uicontrol( ...
+                'Parent', controlsLayout, ...
+                'Style', 'pushbutton', ...
+                'String', 'Cancel', ...
+                'Callback', @obj.onCancel);
+            set(controlsLayout, 'Widths', [-1 75 75]);
+            
+            set(mainLayout, 'Heights', [-1 25]);
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function onGoing(obj)
+            disp('Going!');
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function onSelectedDevice(obj, ~, ~)
+            disp('Selected device');
+        end
+        
+        function onCalibrate(obj, ~, ~)
+            disp('Calibrate');
+        end
+        
+        function onCancel(obj, ~, ~)
+            disp('Cancel');
+        end
+        
+    end
+    
+end
+

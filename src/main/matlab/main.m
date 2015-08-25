@@ -17,18 +17,21 @@ function main()
     
     rigDescriptionRepository = ClassRepository('symphonyui.core.descriptions.RigDescription', config.get(Options.GENERAL_RIG_DESCRIPTION_SEARCH_PATH));
     
+    moduleRepository = ClassRepository('symphonyui.ui.Module', config.get(Options.GENERAL_MODULE_SEARCH_PATH));
+    
     session = Session();
     
     documentationService = DocumentationService(session, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRepository);
     acquisitionService = AcquisitionService(session, protocolRepository);
     configurationService = ConfigurationService(session, rigDescriptionRepository);
+    moduleService = ModuleService(session, moduleRepository, documentationService, acquisitionService, configurationService);
     
     cn = acquisitionService.getAvailableProtocols();
     acquisitionService.selectProtocol(cn{1});
 
     app = App(config);
     
-    presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, app);
+    presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, moduleService, app);
     addlistener(presenter, 'ObjectBeingDestroyed', @(h,d)session.close());
     presenter.go();
 end
@@ -74,6 +77,7 @@ function d = getDefaultOptions()
     d(Options.GENERAL_SOURCE_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+sources')};
     d(Options.GENERAL_EPOCH_GROUP_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+epochgroups')};
     d(Options.GENERAL_RIG_DESCRIPTION_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+rigs')};
+    d(Options.GENERAL_MODULE_SEARCH_PATH) = {App.getResource('examples/+io/+github/+symphony_das/+modules')};
     d(Options.FILE_DEFAULT_NAME) = @()datestr(now, 'yyyy-mm-dd');
     d(Options.FILE_DEFAULT_LOCATION) = @()pwd();
     d(Options.EPOCH_GROUP_LABEL_LIST) = {'Control', 'Drug', 'Wash'};

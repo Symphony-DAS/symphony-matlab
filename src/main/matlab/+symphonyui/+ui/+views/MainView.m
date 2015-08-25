@@ -18,6 +18,7 @@ classdef MainView < symphonyui.ui.View
         InitializeRig
         ConfigureDeviceBackgrounds
         ConfigureOptions
+        SelectedModule
         ShowDocumentation
         ShowUserGroup
         ShowAbout
@@ -28,6 +29,7 @@ classdef MainView < symphonyui.ui.View
         documentMenu
         acquireMenu
         configureMenu
+        modulesMenu
         helpMenu
         protocolPopupMenu
         protocolPropertyGrid
@@ -44,7 +46,7 @@ classdef MainView < symphonyui.ui.View
 
             set(obj.figureHandle, ...
                 'Name', 'Symphony', ...
-            	'Position', screenCenter(320, 300));
+            	'Position', screenCenter(360, 320));
 
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
@@ -118,6 +120,10 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'Options...', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'ConfigureOptions'));
+            
+            % Modules menu.
+            obj.modulesMenu.root = uimenu(obj.figureHandle, ...
+                'Label', 'Modules');
             
             % Help menu.
             obj.helpMenu.root = uimenu(obj.figureHandle, ...
@@ -274,6 +280,12 @@ classdef MainView < symphonyui.ui.View
         
         function enableConfigureOptions(obj, tf)
             set(obj.configureMenu.configureOptions, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
+        function addModule(obj, name, value)
+            uimenu(obj.modulesMenu.root, ...
+                'Label', name, ...
+                'Callback', @(h,d)notify(obj, 'SelectedModule', symphonyui.ui.UiEventData(value)));
         end
 
         function setStatus(obj, s)
