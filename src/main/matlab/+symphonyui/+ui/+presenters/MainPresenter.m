@@ -296,7 +296,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             hasOpenFile = obj.documentationService.hasOpenFile();
             hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
-            hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());       
+            hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
+            hasRig = obj.configurationService.hasRig();
             state = obj.acquisitionService.getState();
             isStopping = state == ControllerState.STOPPING;
             isStopped = state == ControllerState.STOPPED;
@@ -316,7 +317,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableStop = ~isStopping && ~isStopped;
             enableShowProtocolPreview = enableViewOnly;
             enableInitializeRig = isStopped;
-            enableConfigureHoldingLevels = isStopped;
+            enableConfigureHoldingLevels = isStopped && hasRig;
             
             if ~isValid
                 status = validationMessage;

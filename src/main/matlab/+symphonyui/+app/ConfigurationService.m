@@ -39,7 +39,19 @@ classdef ConfigurationService < handle
             tf = obj.session.hasRig();
         end
         
+        function d = getDevice(obj, name)
+            if ~obj.session.hasRig()
+                d = [];
+                return;
+            end
+            d = obj.session.getRig().getDevice(name);
+        end
+        
         function d = getDevices(obj, name)
+            if ~obj.session.hasRig()
+                d = {};
+                return;
+            end
             if nargin < 2
                 name = '.';
             end

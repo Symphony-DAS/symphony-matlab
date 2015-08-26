@@ -750,6 +750,14 @@ classdef DataManagerView < symphonyui.ui.View
         function setPropertiesEditorStyle(obj, s)
             set(obj.propertiesTab.grid, 'EditorStyle', s);
         end
+        
+        function p = getSelectedProperty(obj)
+            p = obj.propertiesTab.grid.GetSelectedProperty();
+        end
+        
+        function f = getProperties(obj)
+            f = get(obj.propertiesTab.grid, 'Properties');
+        end
 
         function setProperties(obj, fields)
             set(obj.propertiesTab.grid, 'Properties', fields);
@@ -770,14 +778,6 @@ classdef DataManagerView < symphonyui.ui.View
         function setPropertiesPresetList(obj, names, values)
             set(obj.propertiesTab.presetPopupMenu, 'String', names);
             set(obj.propertiesTab.presetPopupMenu, 'Values', values);
-        end
-
-        function f = getProperties(obj)
-            f = get(obj.propertiesTab.grid, 'Properties');
-        end
-
-        function p = getSelectedProperty(obj)
-            p = obj.propertiesTab.grid.GetSelectedProperty();
         end
 
         function setKeywords(obj, data)

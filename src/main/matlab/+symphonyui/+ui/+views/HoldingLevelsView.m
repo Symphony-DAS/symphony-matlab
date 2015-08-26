@@ -18,7 +18,7 @@ classdef HoldingLevelsView < symphonyui.ui.View
             
             set(obj.figureHandle, ...
                 'Name', 'Holding Levels', ...
-                'Position', screenCenter(260, 210));
+                'Position', screenCenter(240, 150));
 
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
@@ -55,6 +55,14 @@ classdef HoldingLevelsView < symphonyui.ui.View
                 h = handle(obj.figureHandle);
                 h.setDefaultButton(obj.applyButton);
             end
+        end
+        
+        function f = getHoldingLevels(obj)
+            f = get(obj.levelsPropertyGrid, 'Properties');
+        end
+        
+        function setHoldingLevels(obj, fields)
+            set(obj.levelsPropertyGrid, 'Properties', fields);
         end
 
     end

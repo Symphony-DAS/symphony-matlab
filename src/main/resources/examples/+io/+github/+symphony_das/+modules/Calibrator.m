@@ -94,10 +94,6 @@ classdef Calibrator < symphonyui.ui.Module
     methods (Access = private)
         
         function populateDeviceList(obj)
-            if ~obj.configurationService.hasRig()
-                set(obj.deviceListBox, 'String', {});
-                return;
-            end
             devices = obj.configurationService.getDevices('LED');
             names = cellfun(@(d)d.name, devices, 'UniformOutput', false);
             set(obj.deviceListBox, 'String', names);

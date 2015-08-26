@@ -50,7 +50,6 @@ classdef Rig < handle
             if nargin < 2
                 name = '.';
             end
-            
             d = {};
             for i = 1:numel(obj.devices)
                 if regexpi(obj.devices{i}.name, name, 'once')

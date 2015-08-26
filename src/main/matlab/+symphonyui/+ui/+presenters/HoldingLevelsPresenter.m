@@ -21,7 +21,7 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj, ~, ~)
-            
+            obj.populateHoldingLevels();
         end
         
         function onBind(obj)
@@ -35,6 +35,18 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
+        function populateHoldingLevels(obj)
+            devices = obj.configurationService.getDevices();
+            
+            fields = uiextras.jide.PropertyGridField.empty(0, max(numel(devices), 1));
+            for i = 1:numel(devices)
+                d = devices{i};
+                fields(i) = uiextras.jide.PropertyGridField(d.name, d.background.quantity);
+            end
+            
+            obj.view.setHoldingLevels(fields);
+        end
+        
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
                 case 'return'
@@ -47,12 +59,24 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
         function onViewSelectedApply(obj, ~, ~)
             obj.view.update();
             
+            levels = obj.view.getHoldingLevels();
+            try
+                for i = 1:numel(levels)
+                    d = obj.configurationService.getDevice(levels(i).Name);
+                    d.background = symphonyui.core.Measurement(levels(i).Value, d.background.displayUnits);
+                    d.applyBackground();
+                end
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
+            
             obj.result = true;
-            obj.stop();
+            obj.close();
         end
         
         function onViewSelectedCancel(obj, ~, ~)
-            obj.stop();
+            obj.close();
         end
         
     end

@@ -236,12 +236,12 @@ classdef MainView < symphonyui.ui.View
             set(obj.protocolPropertyGrid, 'Enable', tf);
         end
 
-        function p = getProtocolProperties(obj)
-            p = get(obj.protocolPropertyGrid, 'Properties');
+        function f = getProtocolProperties(obj)
+            f = get(obj.protocolPropertyGrid, 'Properties');
         end
 
-        function setProtocolProperties(obj, properties)
-            set(obj.protocolPropertyGrid, 'Properties', properties);
+        function setProtocolProperties(obj, fields)
+            set(obj.protocolPropertyGrid, 'Properties', fields);
         end
 
         function updateProtocolProperties(obj, properties)

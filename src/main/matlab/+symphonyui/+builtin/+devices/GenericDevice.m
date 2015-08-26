@@ -22,7 +22,8 @@ classdef GenericDevice < symphonyui.core.Device
         
         function set.measurementConversionTarget(obj, t)
             obj.cobj.MeasurementConversionTarget = t;
-        end        
+        end
+        
     end
     
 end
