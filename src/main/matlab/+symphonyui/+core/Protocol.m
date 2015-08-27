@@ -5,7 +5,6 @@ classdef Protocol < handle
     end
     
     properties (Access = protected)
-        log
         rig
         numEpochsPrepared
         numEpochsCompleted
@@ -15,8 +14,11 @@ classdef Protocol < handle
     methods
         
         function obj = Protocol()
-            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.figureHandlerManager = symphonyui.core.FigureHandlerManager();
+        end
+        
+        function delete(obj)
+            obj.figureHandlerManager.closeFigures();
         end
         
         function setRig(obj, rig)

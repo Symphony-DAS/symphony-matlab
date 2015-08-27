@@ -1,12 +1,14 @@
 classdef FigureHandlerManager < handle
     
-    properties
+    properties (Access = private)
+        log
         figureHandlers
     end
     
     methods
         
         function obj = FigureHandlerManager()
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.figureHandlers = {};
         end
         

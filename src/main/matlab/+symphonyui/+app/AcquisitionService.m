@@ -30,6 +30,10 @@ classdef AcquisitionService < handle
             if ~any(strcmp(className, obj.getAvailableProtocols()))
                 error([className ' is not an available protocol']);
             end
+            if obj.session.hasProtocol()
+                delete(obj.session.getProtocol());
+                obj.session.protocol = [];
+            end
             constructor = str2func(className);
             obj.session.protocol = constructor();
             obj.session.protocol.setRig(obj.session.rig);

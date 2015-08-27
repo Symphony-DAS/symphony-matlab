@@ -13,10 +13,12 @@ classdef Pulse < symphonyui.core.Protocol
     methods
         
         function prepareRun(obj)
+            import symphonyui.builtin.figures.*;
+            
             prepareRun@symphonyui.core.Protocol(obj);
             
-            obj.openFigure(symphonyui.builtin.figures.ResponseFigureHandler(obj.rig.getDevice(obj.amp)));
-            obj.openFigure(symphonyui.builtin.figures.ResponseFigureHandler(obj.rig.getDevice('Red LED')));
+            obj.openFigure(ResponseFigureHandler(obj.rig.getDevice(obj.amp)));
+            obj.openFigure(ResponseFigureHandler(obj.rig.getDevice('Red LED')));
         end
         
         function stim = ampStimulus(obj)

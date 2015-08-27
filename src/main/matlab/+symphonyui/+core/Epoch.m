@@ -24,6 +24,15 @@ classdef Epoch < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.Responses.Add(device.cobj, Symphony.Core.Response()));
         end
         
+        function r = getResponse(obj, device)
+            cres = obj.tryCoreWithReturn(@()obj.cobj.Responses.Item(device.cobj));
+            r = symphonyui.core.Response(cres);
+        end
+        
+        function tf = hasResponse(obj, device)
+            tf = obj.tryCoreWithReturn(@()obj.cobj.Responses.ContainsKey(device.cobj));
+        end
+        
         function addParameter(obj, name, value)
             obj.tryCore(@()obj.cobj.ProtocolParameters.Add(name, value));
         end
