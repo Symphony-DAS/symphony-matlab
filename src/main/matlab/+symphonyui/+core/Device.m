@@ -31,7 +31,7 @@ classdef Device < symphonyui.core.CoreObject
             c = obj.mapFromKeyValueEnumerable(obj.cobj.Configuration);
         end
         
-        function addConfigurationSetting(obj, name, value)
+        function addConfigurationParameter(obj, name, value)
             obj.tryCore(@()obj.cobj.Configuration.Add(name, value));
         end
         
