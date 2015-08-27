@@ -38,10 +38,16 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
         function populateHoldingLevels(obj)
             devices = obj.configurationService.getDevices();
             
-            fields = uiextras.jide.PropertyGridField.empty(0, max(numel(devices), 1));
-            for i = 1:numel(devices)
-                d = devices{i};
-                fields(i) = uiextras.jide.PropertyGridField(d.name, d.background.quantity);
+            try
+                fields = uiextras.jide.PropertyGridField.empty(0, max(numel(devices), 1));
+                for i = 1:numel(devices)
+                    d = devices{i};
+                    fields(i) = uiextras.jide.PropertyGridField(d.name, d.background.quantity);
+                end
+            catch x
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
             end
             
             obj.view.setHoldingLevels(fields);

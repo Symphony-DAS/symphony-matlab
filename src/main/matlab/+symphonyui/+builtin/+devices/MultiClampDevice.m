@@ -3,6 +3,10 @@ classdef MultiClampDevice < symphonyui.core.Device
     methods
         
         function obj = MultiClampDevice(name, channel, serialNumber)
+            if nargin < 3
+                serialNumber = 0;
+            end
+            
             NET.addAssembly(which('Symphony.ExternalDevices.dll'));
             
             modes = NET.createArray('System.String', 3);
@@ -30,7 +34,7 @@ classdef MultiClampDevice < symphonyui.core.Device
             elseif obj.cobj.HasDeviceInputParameters()
                 m = char(obj.cobj.CurrentDeviceInputParameters.Data.OperatingMode);
             else
-                error('Cannot get MultiClamp mode. Make sure MultiClamp Commander is open.');
+                error('Cannot get MultiClamp mode. Make sure MultiClamp Commander is open or try toggling the mode.');
             end
         end
         

@@ -19,6 +19,13 @@ classdef HekaDaqController < symphonyui.core.DaqController
             obj.tryCore(@()obj.cobj.Dispose());
         end
         
+        function s = getStream(obj, name)
+            s = getStream@symphonyui.core.DaqController(obj, name);
+            if strncmp(name, 'DIGITAL', 7)
+                s = symphonyui.builtin.daqs.HekaDigitalDaqStream(s.cobj);
+            end
+        end
+        
     end
     
 end

@@ -1,5 +1,9 @@
 classdef Measurement < symphonyui.core.CoreObject
     
+    properties (Constant)
+        UNITLESS = char(Symphony.Core.Measurement.UNITLESS);
+    end
+    
     properties (SetAccess = private)
         quantity
         displayUnits

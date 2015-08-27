@@ -1,8 +1,5 @@
 classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqController
     
-    properties
-    end
-    
     methods
         
         function obj = HekaSimulationDaqController()            
@@ -41,14 +38,21 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
             Symphony.Core.Converters.Register(Symphony.Core.Measurement.UNITLESS, Symphony.Core.Measurement.UNITLESS, @(m)m);
             Symphony.Core.Converters.Register('V', 'V', @(m)m);
             
-            obj.simulationRunner = @(output, timeStep)obj.runner(output, timeStep);
+            obj.simulationRunner = @(output, timeStep)obj.loopbackRunner(output, timeStep);
+        end
+        
+        function s = getStream(obj, name)
+            s = getStream@symphonyui.core.DaqController(obj, name);
+            if strncmp(name, 'DIGITAL', 7)
+                s = symphonyui.builtin.daqs.HekaSimulationDigitalDaqStream(s.cobj);
+            end
         end
         
     end
     
     methods (Access = private)
         
-        function input = runner(obj, output, timeStep)
+        function input = loopbackRunner(obj, output, timeStep)
             import Symphony.Core.*;
 
             % Create the input Dictionary to return.

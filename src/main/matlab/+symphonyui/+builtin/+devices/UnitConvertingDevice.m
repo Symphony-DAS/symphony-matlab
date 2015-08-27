@@ -1,4 +1,4 @@
-classdef GenericDevice < symphonyui.core.Device
+classdef UnitConvertingDevice < symphonyui.core.Device
     
     properties
         measurementConversionTarget
@@ -6,14 +6,14 @@ classdef GenericDevice < symphonyui.core.Device
     
     methods
         
-        function obj = GenericDevice(name, manufacturer)
-            if nargin < 2
+        function obj = UnitConvertingDevice(name, measurementConversionTarget, manufacturer)
+            if nargin < 3
                 manufacturer = 'Unspecified';
             end
-            cobj = Symphony.Core.UnitConvertingExternalDevice(name, manufacturer, Symphony.Core.Measurement(0, 'V'));
+            cobj = Symphony.Core.UnitConvertingExternalDevice(name, manufacturer, Symphony.Core.Measurement(0, measurementConversionTarget));
             obj@symphonyui.core.Device(cobj);
             
-            obj.measurementConversionTarget = 'V';
+            obj.measurementConversionTarget = measurementConversionTarget;
         end
         
         function t = get.measurementConversionTarget(obj)
