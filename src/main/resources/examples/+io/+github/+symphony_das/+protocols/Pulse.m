@@ -6,12 +6,18 @@ classdef Pulse < symphonyui.core.Protocol
         stimTime = 500                  % Pulse duration (ms)
         tailTime = 50                   % Pulse trailing duration (ms)
         pulseAmplitude = 100            % Pulse amplitude (mV)
-        preAndTailSignal = -60          % Mean signal (mV)
         numberOfAverages = uint16(5)    % Number of epochs
         interpulseInterval = 2          % Duration between pulses (s)
     end
     
     methods
+        
+        function prepareRun(obj)
+            prepareRun@symphonyui.core.Protocol(obj);
+            
+            obj.openFigure(symphonyui.builtin.figures.ResponseFigureHandler(obj.rig.getDevice(obj.amp)));
+            obj.openFigure(symphonyui.builtin.figures.ResponseFigureHandler(obj.rig.getDevice('Red LED')));
+        end
         
         function stim = ampStimulus(obj)
             p = symphonyui.builtin.stimuli.PulseGenerator();
@@ -20,7 +26,7 @@ classdef Pulse < symphonyui.core.Protocol
             p.stimTime = obj.stimTime;
             p.tailTime = obj.tailTime;
             p.amplitude = obj.pulseAmplitude;
-            p.mean = obj.preAndTailSignal;
+            p.mean = obj.rig.getDevice(obj.amp).background.quantity;
             p.sampleRate = obj.sampleRate;
             p.units = obj.rig.getDevice(obj.amp).background.displayUnits;
             

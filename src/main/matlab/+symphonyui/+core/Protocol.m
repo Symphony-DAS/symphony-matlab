@@ -4,13 +4,20 @@ classdef Protocol < handle
         sampleRate = 10000;     % Acquisition sample rate (Hz)
     end
     
-    properties (Hidden, SetAccess = protected)
+    properties (Access = protected)
+        log
         rig
         numEpochsPrepared
         numEpochsCompleted
+        figureHandlerManager
     end
     
     methods
+        
+        function obj = Protocol()
+            obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.figureHandlerManager = symphonyui.core.FigureHandlerManager();
+        end
         
         function setRig(obj, rig)
             obj.rig = rig;
@@ -33,6 +40,7 @@ classdef Protocol < handle
         
         function completeEpoch(obj, epoch)
             obj.numEpochsCompleted = obj.numEpochsCompleted + 1;
+            obj.figureHandlerManager.updateFigures(epoch);
         end
         
         function tf = continuePreloadingEpochs(obj)
@@ -56,7 +64,15 @@ classdef Protocol < handle
             tf = true;
             msg = [];
         end
-
+        
+    end
+    
+    methods (Access = protected)
+        
+        function openFigure(obj, handler)
+            obj.figureHandlerManager.openFigure(handler);
+        end
+        
     end
 
 end

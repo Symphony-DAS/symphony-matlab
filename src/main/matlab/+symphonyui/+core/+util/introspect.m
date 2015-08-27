@@ -10,7 +10,7 @@ function d = introspect(obj)
         
         comment = uiextras.jide.helptext([class(obj) '.' mpo.Name]);
         if ~isempty(comment)
-            comment{1} = strtrim(regexprep(comment{1}, ['^' mpo.Name ' - '], ''));
+            comment{1} = strtrim(regexprep(comment{1}, ['^' mpo.Name ' -'], ''));
         end
         comment = strjoin(comment, '\n');
         

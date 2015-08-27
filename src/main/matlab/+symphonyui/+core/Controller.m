@@ -44,6 +44,13 @@ classdef Controller < symphonyui.core.CoreObject
             
             listeners = NetListener.empty(0, 3);
             
+            listeners(end + 1) = NetListener(obj.cobj, 'Started', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onStarted(obj,h,d));
+            function onStarted(obj, ~, ~)
+                if ~obj.currentProtocol.continueRun()
+                    obj.requestStop();
+                end
+            end
+            
             listeners(end + 1) = NetListener(obj.cobj, 'RequestedStop', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onRequestedStop(obj,h,d));
             function onRequestedStop(obj, ~, ~)
                 obj.state = symphonyui.core.ControllerState.STOPPING;
