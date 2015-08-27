@@ -3,6 +3,7 @@ classdef Device < symphonyui.core.CoreObject
     properties (SetAccess = private)
         name
         manufacturer
+        configuration
         inputStreams
         outputStreams
     end
@@ -24,6 +25,14 @@ classdef Device < symphonyui.core.CoreObject
 
         function m = get.manufacturer(obj)
             m = char(obj.cobj.Manufacturer);
+        end
+        
+        function c = get.configuration(obj)
+            c = obj.mapFromKeyValueEnumerable(obj.cobj.Configuration);
+        end
+        
+        function addConfigurationSetting(obj, name, value)
+            obj.tryCore(@()obj.cobj.Configuration.Add(name, value));
         end
         
         function d = bindStream(obj, stream)
