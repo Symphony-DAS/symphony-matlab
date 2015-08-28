@@ -299,7 +299,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         function n = addEpochBlockNode(obj, block)
             parent = obj.uuidToNode(block.epochGroup.uuid);
             split = strsplit(block.protocolId, '.');
-            n = obj.view.addEpochBlockNode(parent, [split{end} ' [' datestr(block.startTime, 13) ']'], block);
+            n = obj.view.addEpochBlockNode(parent, [symphonyui.core.util.humanize(split{end}) ' [' datestr(block.startTime, 13) ']'], block);
             obj.uuidToNode(block.uuid) = n;
 
             epochs = block.epochs;

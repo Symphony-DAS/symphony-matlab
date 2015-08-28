@@ -117,6 +117,8 @@ classdef Controller < symphonyui.core.CoreObject
             
             obj.currentProtocol.prepareRun();
             
+            obj.preload();
+            
             if ~isempty(persistor)
                 parameters = containers.Map();
                 meta = metaclass(obj.currentProtocol);
@@ -131,8 +133,6 @@ classdef Controller < symphonyui.core.CoreObject
                 persistor.beginEpochBlock(class(obj.currentProtocol), parameters);
                 endBlock = onCleanup(@()persistor.endEpochBlock());
             end
-            
-            obj.preload();
             
             task = obj.startAsync(persistor);
                         
