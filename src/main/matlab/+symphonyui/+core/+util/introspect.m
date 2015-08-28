@@ -2,8 +2,9 @@ function d = introspect(obj)
     d = symphonyui.core.PropertyDescriptor.empty(0, 1);
     
     meta = metaclass(obj);
-    for i = 1:numel(meta.Properties)
-        mpo = meta.Properties{i};
+    names = {meta.PropertyList.Name};
+    for i = 1:numel(meta.PropertyList)
+        mpo = meta.PropertyList(i);
         if mpo.Abstract || mpo.Hidden || ~strcmp(mpo.GetAccess, 'public');
             continue;
         end
@@ -14,9 +15,16 @@ function d = introspect(obj)
         end
         comment = strjoin(comment, '\n');
         
-        d(end + 1) = symphonyui.core.PropertyDescriptor(mpo.Name, obj.(mpo.Name), ...
+        descriptor = symphonyui.core.PropertyDescriptor(mpo.Name, obj.(mpo.Name), ...
             'description', comment, ...
-            'readOnly', mpo.Constant || ~strcmp(mpo.SetAccess, 'public') || mpo.Dependent && isempty(mpo.SetMethod)); %#ok<AGROW>
+            'readOnly', mpo.Constant || ~strcmp(mpo.SetAccess, 'public') || mpo.Dependent && isempty(mpo.SetMethod));
+        
+        mto = meta.PropertyList(strcmp([mpo.Name 'Type'], names));
+        if ~isempty(mto) && mto.Hidden && isa(mto.DefaultValue, 'symphonyui.core.PropertyType')
+            descriptor.type = mto.DefaultValue;
+        end
+        
+        d(end + 1) = descriptor; %#ok<AGROW>
     end
 end
 

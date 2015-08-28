@@ -17,7 +17,7 @@ classdef Pulse < symphonyui.core.Protocol
             
             prepareRun@symphonyui.core.Protocol(obj);
             
-            obj.openFigure(ResponseFigureHandler(obj.rig.getDevice(obj.amp)));
+            %obj.openFigure(ResponseFigureHandler(obj.rig.getDevice(obj.amp)));
             obj.openFigure(ResponseFigureHandler(obj.rig.getDevice('Red LED')));
         end
         

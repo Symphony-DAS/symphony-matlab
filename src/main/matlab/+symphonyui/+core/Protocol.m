@@ -4,6 +4,10 @@ classdef Protocol < handle
         sampleRate = 10000;     % Acquisition sample rate (Hz)
     end
     
+    properties (Hidden)
+        sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {10000, 20000, 50000});
+    end
+    
     properties (Access = protected)
         rig
         numEpochsPrepared
