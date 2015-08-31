@@ -5,6 +5,14 @@ classdef StimulusGenerator < handle
     
     methods
         
+        function obj = StimulusGenerator(map)            
+            keys = map.keys;
+            for i = 1:numel(keys)
+                k = keys{i};
+                obj.(k) = map(k);
+            end
+        end
+        
         function p = propertyMap(obj)
             p = containers.Map();
             meta = metaclass(obj);

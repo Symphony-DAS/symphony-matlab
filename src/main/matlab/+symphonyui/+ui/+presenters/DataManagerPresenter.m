@@ -344,13 +344,17 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             % Plot
             obj.view.clearEpochDataAxes();
             obj.view.setEpochDataAxesLabels('Time (s)', 'Data');
-            responseMap = epochSet.responseMap;
+            
             colorOrder = get(groot, 'defaultAxesColorOrder');
-            devices = responseMap.keys;
-            groups = [];
-            for i = 1:numel(devices)
-                color = colorOrder(mod(i, size(colorOrder, 1)), :);
-                responses = responseMap(devices{i});
+            colorIndex = 1;
+            
+            responseMap = epochSet.responseMap;
+            responseDevices = responseMap.keys;
+            responseGroups = [];
+            for i = 1:numel(responseDevices)
+                color = colorOrder(mod(colorIndex, size(colorOrder, 1)), :);
+                colorIndex = colorIndex + 1;
+                responses = responseMap(responseDevices{i});
                 for k = 1:numel(responses)
                     r = responses{k};
                     ydata = r.getData();
@@ -358,12 +362,33 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                     xdata = (1:numel(ydata))/rate;
 
                     obj.view.addEpochDataLine(xdata, ydata, color);
-                    groups = [groups i]; %#ok<AGROW>
+                    responseGroups = [responseGroups i]; %#ok<AGROW>
                 end
             end
+            
+            stimulusMap = epochSet.stimulusMap;
+            stimulusDevices = stimulusMap.keys;
+            stimulusGroups = [];
+            for i = 1:numel(stimulusDevices)
+                color = colorOrder(mod(colorIndex, size(colorOrder, 1)), :);
+                colorIndex = colorIndex + 1;
+                stimuli = stimulusMap(stimulusDevices{i});
+                for k = 1:numel(stimuli)
+                    s = stimuli{k};
+                    ydata = s.getData();
+                    rate = s.getSampleRate();
+                    xdata = (1:numel(ydata))/rate;
+
+                    obj.view.addEpochDataLine(xdata, ydata, color);
+                    stimulusGroups = [stimulusGroups i]; %#ok<AGROW>
+                end
+            end
+            
             obj.view.clearEpochDataLegend();
-            if ~isempty(devices)
-                obj.view.setEpochDataLegend(devices, groups);
+            labels = [strcat(responseDevices, ' response'), strcat(stimulusDevices, ' stimulus')];
+            groups = [responseGroups, stimulusGroups + numel(responseDevices)];
+            if ~isempty(labels)
+                obj.view.setEpochDataLegend(labels, groups);
             end
 
             % Protocol parameters

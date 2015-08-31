@@ -38,13 +38,19 @@ classdef Stimulus < symphonyui.core.persistent.IoBase
         function [q, u] = getData(obj)
             import Symphony.Core.*;
             d = obj.cobj.Data;
-            if d.HasValue
+            if d.IsSome
                 q = double(Measurement.ToQuantityArray(d));
                 u = char(Measurement.HomogenousDisplayUnits(d));
             else
-                q = [];
-                u = [];
+                s = obj.regenerate();
+                [q, u] = s.getData();
             end
+        end
+        
+        function s = regenerate(obj)
+            constructor = str2func(obj.stimulusId);
+            generator = constructor(obj.parameters);
+            s = generator.generate();
         end
         
     end

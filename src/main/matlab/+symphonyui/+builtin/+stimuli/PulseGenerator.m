@@ -12,6 +12,17 @@ classdef PulseGenerator < symphonyui.core.StimulusGenerator
         units       % Units of generated stimulus
     end
     
+    methods
+        
+        function obj = PulseGenerator(map)
+            if nargin < 1
+                map = containers.Map();
+            end
+            obj@symphonyui.core.StimulusGenerator(map);
+        end
+        
+    end
+    
     methods (Access = protected)
         
         function s = generateStimulus(obj)
