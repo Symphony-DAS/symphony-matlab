@@ -15,16 +15,8 @@ classdef SealTest < symphonyui.core.Protocol
     
     methods
         
-        function prepareRun(obj)
-            import symphonyui.builtin.figures.*;
-            
-            prepareRun@symphonyui.core.Protocol(obj);
-            
-            obj.openFigure(ResponseFigureHandler(obj.rig.getDevice(obj.amp)));
-        end
-        
         function stim = ampStimulus(obj)
-            p = symphonyui.builtin.stimuli.PulseGenerator();
+            p = symphonyui.builtin.stimuli.RepeatingPulseGenerator();
             
             p.preTime = obj.preTime;
             p.stimTime = obj.stimTime;
@@ -41,11 +33,10 @@ classdef SealTest < symphonyui.core.Protocol
             prepareEpoch@symphonyui.core.Protocol(obj, epoch);
             
             epoch.addStimulus(obj.rig.getDevice(obj.amp), obj.ampStimulus());
-            epoch.addResponse(obj.rig.getDevice(obj.amp));
         end
         
         function tf = continuePreparingEpochs(obj)
-            tf = true;
+            tf = obj.numEpochsPrepared < 1;
         end
         
         function tf = continueRun(obj)
