@@ -6,8 +6,12 @@ classdef Controller < symphonyui.core.CoreObject
     
     properties (Access = private)
         devices
-        epochQueueCount
+        epochQueueDuration
         currentProtocol
+    end
+    
+    properties (Constant, Access = private)
+        PRELOAD_DURATION = seconds(3)
     end
     
     methods
@@ -96,8 +100,13 @@ classdef Controller < symphonyui.core.CoreObject
             d = obj.cellArrayFromEnumerable(obj.cobj.Devices, @symphonyui.core.Device);
         end
         
-        function c = get.epochQueueCount(obj)
-            c = obj.cobj.EpochQueueCount;
+        function d = get.epochQueueDuration(obj)
+            cdur = obj.cobj.EpochQueueDuration;
+            if cdur.IsNone()
+                d = seconds(inf);
+            else
+                d = obj.durationFromTimeSpan(cdur.Item2);
+            end
         end
         
     end
@@ -160,8 +169,8 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function preload(obj)
-            while obj.currentProtocol.continuePreloadingEpochs()
-                if ~obj.state.isViewingOrRecording()
+            while obj.epochQueueDuration < obj.PRELOAD_DURATION
+                if ~obj.state.isViewingOrRecording() || ~obj.currentProtocol.continuePreparingEpochs()
                     break;
                 end
                 epoch = obj.nextEpoch();
@@ -177,7 +186,12 @@ classdef Controller < symphonyui.core.CoreObject
                 end
                 epoch = obj.nextEpoch();
                 obj.enqueueEpoch(epoch);
-                drawnow();
+                while obj.epochQueueDuration > obj.PRELOAD_DURATION
+                    if ~obj.state.isViewingOrRecording();
+                        break;
+                    end
+                    pause(0.01);
+                end
             end
         end
         

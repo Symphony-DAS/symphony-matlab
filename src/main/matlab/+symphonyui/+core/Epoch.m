@@ -1,7 +1,7 @@
 classdef Epoch < symphonyui.core.CoreObject
     
     properties (SetAccess = private)
-
+        duration
     end
     
     methods
@@ -14,6 +14,15 @@ classdef Epoch < symphonyui.core.CoreObject
             end
             
             obj@symphonyui.core.CoreObject(cobj);
+        end
+        
+        function d = get.duration(obj)
+            cdur = obj.cobj.Duration;
+            if cdur.IsNone()
+                d = seconds(inf);
+            else
+                d = obj.durationFromTimeSpan(cdur.Item2);
+            end
         end
         
         function addStimulus(obj, device, stimulus)

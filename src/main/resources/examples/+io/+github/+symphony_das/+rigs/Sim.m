@@ -8,9 +8,9 @@ classdef Sim < symphonyui.core.descriptions.RigDescription
             
             daq = HekaSimulationDaqController();
             
-            amp = MultiClampDevice('Amp', 1).bindStream(daq.getStream('ANALOG_OUT.0')).bindStream(daq.getStream('ANALOG_IN.0'));
+            amp1 = MultiClampDevice('Amp1', 1).bindStream(daq.getStream('ANALOG_OUT.0')).bindStream(daq.getStream('ANALOG_IN.0'));
+            amp2 = MultiClampDevice('Amp2', 2).bindStream(daq.getStream('ANALOG_OUT.1')).bindStream(daq.getStream('ANALOG_IN.1'));
             
-            red = UnitConvertingDevice('Red LED', 'V').bindStream(daq.getStream('ANALOG_OUT.1'));
             green = UnitConvertingDevice('Green LED', 'V').bindStream(daq.getStream('ANALOG_OUT.2'));
             blue = UnitConvertingDevice('Blue LED', 'V').bindStream(daq.getStream('ANALOG_OUT.3'));
             
@@ -21,7 +21,7 @@ classdef Sim < symphonyui.core.descriptions.RigDescription
             daq.getStream('DIGITAL_OUT.1').setBitPosition(trigger2, 2);
             
             obj.daqController = daq;
-            obj.devices = {amp, red, green, blue, trigger1, trigger2};
+            obj.devices = {amp1, amp2, green, blue, trigger1, trigger2};
         end
         
     end

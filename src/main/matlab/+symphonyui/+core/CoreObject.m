@@ -133,6 +133,10 @@ classdef (Abstract) CoreObject < handle
             dto = System.DateTimeOffset(t.Year, t.Month, t.Day, t.Hour, t.Minute, floor(t.Second), round(1000*rem(t.Second, 1)), offset);
         end
         
+        function d = durationFromTimeSpan(obj, t) %#ok<INUSL>
+            d = seconds(t.TotalSeconds);
+        end
+        
     end
     
 end

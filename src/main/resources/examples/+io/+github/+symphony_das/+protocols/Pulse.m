@@ -1,13 +1,17 @@
 classdef Pulse < symphonyui.core.Protocol
     
     properties
-        amp = 'Amp'                     % Output amplifier
+        amp = 'Amp1'                    % Output amplifier
         preTime = 50                    % Pulse leading duration (ms)
         stimTime = 500                  % Pulse duration (ms)
         tailTime = 50                   % Pulse trailing duration (ms)
         pulseAmplitude = 100            % Pulse amplitude (mV)
         numberOfAverages = uint16(5)    % Number of epochs
         interpulseInterval = 2          % Duration between pulses (s)
+    end
+    
+    properties (Hidden)
+        ampType = symphonyui.core.PropertyType('char', 'row', {'Amp1', 'Amp2'});
     end
     
     methods
@@ -17,8 +21,7 @@ classdef Pulse < symphonyui.core.Protocol
             
             prepareRun@symphonyui.core.Protocol(obj);
             
-            %obj.openFigure(ResponseFigureHandler(obj.rig.getDevice(obj.amp)));
-            obj.openFigure(ResponseFigureHandler(obj.rig.getDevice('Red LED')));
+            obj.openFigure(ResponseFigureHandler(obj.rig.getDevice(obj.amp)));
         end
         
         function stim = ampStimulus(obj)

@@ -49,10 +49,6 @@ classdef Protocol < handle
             obj.figureHandlerManager.updateFigures(epoch);
         end
         
-        function tf = continuePreloadingEpochs(obj)
-            tf = obj.numEpochsPrepared < 6 && obj.continuePreparingEpochs();
-        end
-        
         function tf = continuePreparingEpochs(obj)
             tf = false;
         end

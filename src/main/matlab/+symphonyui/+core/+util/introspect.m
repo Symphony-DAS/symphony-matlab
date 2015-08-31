@@ -20,8 +20,8 @@ function d = introspect(obj)
             'readOnly', mpo.Constant || ~strcmp(mpo.SetAccess, 'public') || mpo.Dependent && isempty(mpo.SetMethod));
         
         mto = meta.PropertyList(strcmp([mpo.Name 'Type'], names));
-        if ~isempty(mto) && mto.Hidden && isa(mto.DefaultValue, 'symphonyui.core.PropertyType')
-            descriptor.type = mto.DefaultValue;
+        if ~isempty(mto) && mto.Hidden && isa(obj.(mto.Name), 'symphonyui.core.PropertyType')
+            descriptor.type = obj.(mto.Name);
         end
         
         d(end + 1) = descriptor; %#ok<AGROW>

@@ -6,6 +6,7 @@ classdef DaqController < symphonyui.core.CoreObject
     
     properties (SetAccess = private)
         streams
+        processInterval
     end
 
     methods
@@ -41,6 +42,10 @@ classdef DaqController < symphonyui.core.CoreObject
         
         function set.sampleRate(obj, measurement)
             obj.setSampleRate(measurement);
+        end
+        
+        function i = get.processInterval(obj)
+            i = obj.durationFromTimeSpan(obj.cobj.ProcessInterval);
         end
 
     end
