@@ -347,6 +347,10 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             
             names = [strcat(responseMap.keys, ' response'), strcat(stimulusMap.keys, ' stimulus')];
             values = [responseMap.values, stimulusMap.values];
+            if isempty(names)
+                names = {'(None)'};
+                values = {[]};
+            end
             obj.view.setEpochSignalList(names, values);
             
             obj.populateDetailsWithSignals(obj.view.getSelectedEpochSignal());

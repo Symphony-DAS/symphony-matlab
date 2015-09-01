@@ -682,6 +682,10 @@ classdef DataManagerView < symphonyui.ui.View
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
         
+        function enableSelectEpochSignal(obj, tf)
+            set(obj.epochCard.signalPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
         function s = getSelectedEpochSignal(obj)
             s = get(obj.epochCard.signalPopupMenu, 'Value');
         end

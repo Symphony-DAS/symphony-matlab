@@ -28,6 +28,9 @@ classdef MappedPopupMenu < symphonyui.ui.util.UIControl %#ok<*MCSUP>
                 error('String and Values must have the same number of elements');
             end
             obj.Values = values;
+            if get(obj.Control, 'Value') > numel(values)
+                set(obj.Control, 'Value', numel(values));
+            end
         end
         
         function v = getValue(obj)
