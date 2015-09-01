@@ -51,6 +51,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'SetSourceLabel', @obj.onViewSetSourceLabel);
             obj.addListener(v, 'SetExperimentPurpose', @obj.onViewSetExperimentPurpose);
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
+            obj.addListener(v, 'SelectedEpochSignal', @obj.onViewSelectedEpochSignal);
             obj.addListener(v, 'SelectedPropertiesPreset', @obj.onViewSelectedPropertiesPreset);
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
@@ -340,56 +341,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
         function populateDetailsWithEpochs(obj, epochs)
             epochSet = symphonyui.core.collections.EpochSet(epochs);
-
-            % Plot
-            obj.view.clearEpochDataAxes();
-            obj.view.setEpochDataAxesLabels('Time (s)', 'Data');
-            
-            colorOrder = get(groot, 'defaultAxesColorOrder');
-            colorIndex = 1;
             
             responseMap = epochSet.responseMap;
-            responseDevices = responseMap.keys;
-            responseGroups = [];
-            for i = 1:numel(responseDevices)
-                color = colorOrder(mod(colorIndex, size(colorOrder, 1)), :);
-                colorIndex = colorIndex + 1;
-                responses = responseMap(responseDevices{i});
-                for k = 1:numel(responses)
-                    r = responses{k};
-                    ydata = r.getData();
-                    rate = r.getSampleRate();
-                    xdata = (1:numel(ydata))/rate;
-
-                    obj.view.addEpochDataLine(xdata, ydata, color);
-                    responseGroups = [responseGroups i]; %#ok<AGROW>
-                end
-            end
-            
             stimulusMap = epochSet.stimulusMap;
-            stimulusDevices = stimulusMap.keys;
-            stimulusGroups = [];
-            for i = 1:numel(stimulusDevices)
-                color = colorOrder(mod(colorIndex, size(colorOrder, 1)), :);
-                colorIndex = colorIndex + 1;
-                stimuli = stimulusMap(stimulusDevices{i});
-                for k = 1:numel(stimuli)
-                    s = stimuli{k};
-                    ydata = s.getData();
-                    rate = s.getSampleRate();
-                    xdata = (1:numel(ydata))/rate;
-
-                    obj.view.addEpochDataLine(xdata, ydata, color);
-                    stimulusGroups = [stimulusGroups i]; %#ok<AGROW>
-                end
-            end
             
-            obj.view.clearEpochDataLegend();
-            labels = [strcat(responseDevices, ' response'), strcat(stimulusDevices, ' stimulus')];
-            groups = [responseGroups, stimulusGroups + numel(responseDevices)];
-            if ~isempty(labels)
-                obj.view.setEpochDataLegend(labels, groups);
-            end
+            names = [strcat(responseMap.keys, ' response'), strcat(stimulusMap.keys, ' stimulus')];
+            values = [responseMap.values, stimulusMap.values];
+            obj.view.setEpochSignalList(names, values);
+            
+            obj.populateDetailsWithSignals(obj.view.getSelectedEpochSignal());
 
             % Protocol parameters
             map = map2pmap(epochSet.protocolParameters);
@@ -406,6 +366,28 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
             obj.populateAnnotationsWithEntitySet(epochSet);
             obj.detailedEntitySet = epochSet;
+        end
+        
+        function onViewSelectedEpochSignal(obj, ~, ~)
+            obj.populateDetailsWithSignals(obj.view.getSelectedEpochSignal());
+        end
+        
+        function populateDetailsWithSignals(obj, signals)
+            obj.view.clearEpochDataAxes();
+            
+            ylabels = cell(1, numel(signals));
+            colorOrder = get(groot, 'defaultAxesColorOrder');
+            for i = 1:numel(signals)
+                s = signals{i};
+                [ydata, yunits] = s.getData();
+                rate = s.getSampleRate();
+                xdata = (1:numel(ydata))/rate;
+                color = colorOrder(mod(i - 1, size(colorOrder, 1)) + 1, :);
+                ylabels{i} = [s.device.name ' (' yunits ')'];  
+                obj.view.addEpochDataLine(xdata, ydata, color);
+            end
+            
+            obj.view.setEpochDataAxesLabels('Time (s)', strjoin(unique(ylabels), ', '));
         end
 
         function populateDetailsWithEmpty(obj, text)

@@ -8,6 +8,7 @@ classdef DataManagerView < symphonyui.ui.View
         SetSourceLabel
         SetExperimentPurpose
         SetEpochGroupLabel
+        SelectedEpochSignal
         SelectedPropertiesPreset
         SetProperty
         AddProperty
@@ -308,6 +309,20 @@ classdef DataManagerView < symphonyui.ui.View
             epochLayout = uix.VBox( ...
                 'Parent', obj.detailCardPanel, ...
                 'Spacing', 7);
+            epochGrid = uix.Grid( ...
+                'Parent', epochLayout, ...
+                'Spacing', 7);
+            Label( ...
+                'Parent', epochGrid, ...
+                'String', 'Plotted signal:');
+            obj.epochCard.signalPopupMenu = MappedPopupMenu( ...
+                'Parent', epochGrid, ...
+                'String', {' '}, ...
+                'HorizontalAlignment', 'left', ...
+                'Callback', @(h,d)notify(obj, 'SelectedEpochSignal'));
+            set(epochGrid, ...
+                'Widths', [80 -1], ...
+                'Heights', 25);
             obj.epochCard.panel = uipanel( ...
                 'Parent', epochLayout, ...
                 'BorderType', 'line', ...
@@ -327,7 +342,7 @@ classdef DataManagerView < symphonyui.ui.View
             obj.epochCard.annotationsLayout = uix.VBox( ...
                 'Parent', epochLayout);
             set(epochLayout, ...
-                'Heights', [-1 -1]);
+                'Heights', [layoutHeight(epochGrid) -1 -1]);
 
             % Tab group.
             obj.tabGroup = TabGroup( ...
@@ -666,6 +681,19 @@ classdef DataManagerView < symphonyui.ui.View
             n.setIcon(symphonyui.app.App.getResource('icons/epoch.png'));
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
+        
+        function s = getSelectedEpochSignal(obj)
+            s = get(obj.epochCard.signalPopupMenu, 'Value');
+        end
+
+        function setSelectedEpochSignal(obj, s)
+            set(obj.epochCard.signalPopupMenu, 'Value', s);
+        end
+        
+        function setEpochSignalList(obj, names, values)
+            set(obj.epochCard.signalPopupMenu, 'String', names);
+            set(obj.epochCard.signalPopupMenu, 'Values', values);
+        end
 
         function clearEpochDataAxes(obj)
             cla(obj.epochCard.axes);
@@ -682,15 +710,6 @@ classdef DataManagerView < symphonyui.ui.View
 
         function addEpochDataLine(obj, x, y, color)
             line(x, y, 'Parent', obj.epochCard.axes, 'Color', color);
-        end
-        
-        function clearEpochDataLegend(obj)
-            l = legend(obj.epochCard.axes);
-            delete(l);
-        end
-
-        function setEpochDataLegend(obj, labels, groups)
-            clickableLegend(obj.epochCard.axes, labels{:}, 'groups', groups);
         end
 
         function openEpochDataAxesInNewWindow(obj)
