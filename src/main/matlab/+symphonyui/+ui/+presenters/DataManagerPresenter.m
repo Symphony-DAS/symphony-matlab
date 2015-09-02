@@ -587,6 +587,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         function onViewSelectedDeleteEntity(obj, ~, ~)
             nodes = obj.view.getSelectedNodes();
             assert(numel(nodes) == 1, 'Expected a single entity');
+            
+            name = obj.view.getNodeName(nodes(1));
+            result = obj.view.showMessage( ...
+                ['Are you sure you want to delete ''' name '''?'], ...
+                'Delete Entity', ...
+                'Cancel', 'Delete');
+            if ~strcmp(result, 'Delete')
+                return;
+            end
 
             entity = obj.view.getNodeEntity(nodes(1));
             try

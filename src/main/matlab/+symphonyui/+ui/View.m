@@ -80,9 +80,25 @@ classdef View < handle
             obj.showMessage(msg, 'Error');
         end
 
-        function showMessage(obj, msg, title) %#ok<INUSL>
-            presenter = symphonyui.ui.presenters.MessageBoxPresenter(msg, title);
+        function r = showMessage(obj, text, title, button1, button2, button3, default) %#ok<INUSL>
+            if nargin < 3
+                title = '';
+            end
+            if nargin < 4
+                button1 = 'OK';
+            end
+            if nargin < 5
+                button2 = [];
+            end
+            if nargin < 6
+                button3 = [];
+            end
+            if nargin < 7
+                default = 1;
+            end
+            presenter = symphonyui.ui.presenters.MessageBoxPresenter(text, title, button1, button2, button3, default);
             presenter.goWaitStop();
+            r = presenter.result;
         end
 
         function showWeb(obj, url) %#ok<INUSL>
