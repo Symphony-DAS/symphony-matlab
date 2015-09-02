@@ -247,6 +247,10 @@ classdef MainView < symphonyui.ui.View
         function updateProtocolProperties(obj, properties)
             obj.protocolPropertyGrid.UpdateProperties(properties);
         end
+        
+        function stopEditingProtocolProperties(obj)
+            obj.protocolPropertyGrid.StopEditing();
+        end
 
         function enableViewOnly(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);

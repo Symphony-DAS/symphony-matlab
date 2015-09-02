@@ -258,6 +258,12 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
             end
             self.EditorStyle = s;
         end
+        
+        function StopEditing(self)
+            if self.Table.isEditing()
+                self.Table.getCellEditor().stopCellEditing();
+            end
+        end
 
         function self = Bind(self, item, properties)
         % Binds an object to the property grid with a custom property list.

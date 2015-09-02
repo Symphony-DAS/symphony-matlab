@@ -63,6 +63,7 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedApply(obj, ~, ~)
+            obj.view.stopEditingHoldingLevels();
             obj.view.update();
             
             levels = obj.view.getHoldingLevels();

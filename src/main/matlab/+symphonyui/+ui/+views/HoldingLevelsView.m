@@ -66,6 +66,10 @@ classdef HoldingLevelsView < symphonyui.ui.View
         function setHoldingLevels(obj, fields)
             set(obj.levelsPropertyGrid, 'Properties', fields);
         end
+        
+        function stopEditingHoldingLevels(obj)
+            obj.levelsPropertyGrid.StopEditing();
+        end
 
     end
 

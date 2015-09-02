@@ -73,7 +73,7 @@ classdef View < handle
         end
 
         function update(obj) %#ok<MANU>
-            drawnow;
+            drawnow();
         end
 
         function showError(obj, msg)

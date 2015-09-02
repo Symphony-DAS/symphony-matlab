@@ -789,6 +789,10 @@ classdef DataManagerView < symphonyui.ui.View
         function updateProperties(obj, fields)
             obj.propertiesTab.grid.UpdateProperties(fields);
         end
+        
+        function stopEditingProperties(obj)
+            obj.propertiesTab.grid.StopEditing();
+        end
 
         function t = getSelectedPropertiesPreset(obj)
             t = get(obj.propertiesTab.presetPopupMenu, 'Value');
