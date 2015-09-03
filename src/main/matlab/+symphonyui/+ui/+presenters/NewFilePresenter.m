@@ -80,8 +80,8 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedBrowseLocation(obj, ~, ~)
-            location = obj.view.showGetFile(pwd, 'File Location');
-            if location == 0
+            location = obj.view.showGetDirectory('Select Location');
+            if isempty(location)
                 return;
             end
             obj.view.setLocation(location);

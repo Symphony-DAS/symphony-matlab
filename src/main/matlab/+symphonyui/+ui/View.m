@@ -104,6 +104,18 @@ classdef View < handle
         function showWeb(obj, url) %#ok<INUSL>
             web(url);
         end
+        
+        function p = showGetDirectory(obj, title, startPath) %#ok<INUSL>
+            if nargin < 3
+                startPath = pwd();
+            end
+            folderName = uigetdir(startPath, title);
+            if folderName == 0
+                p = [];
+                return;
+            end
+            p = folderName;
+        end
 
         function p = showGetFile(obj, title, filter, defaultName) %#ok<INUSL>
             if nargin < 3
