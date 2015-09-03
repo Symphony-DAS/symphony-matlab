@@ -67,6 +67,19 @@ classdef Protocol < handle
             msg = [];
         end
         
+        function createPreview(obj, panel)
+            panel.UserData.axes = axes( ...
+                'Parent', panel, ...
+                'FontName', get(panel, 'DefaultUicontrolFontName'), ...
+                'FontSize', get(panel, 'DefaultUicontrolFontSize'));
+            xlabel(panel.UserData.axes, 'sec');
+            obj.updatePreview(panel);
+        end
+        
+        function updatePreview(obj, panel)
+            plot3(0, 0, 0, 'Parent', panel.UserData.axes);
+        end
+        
     end
     
     methods (Access = protected)

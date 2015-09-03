@@ -20,6 +20,7 @@ classdef ProtocolPreviewPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj)
+            obj.createPreview();
         end
 
         function onBind(obj)
@@ -33,11 +34,26 @@ classdef ProtocolPreviewPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function onServiceSelectedProtocol(obj, ~, ~)
-            disp('Selected protocol');
+            obj.createPreview();
+        end
+        
+        function createPreview(obj)
+            className = obj.acquisitionService.getSelectedProtocol();
+            obj.view.setTitle([className ' Preview']);
+            
+            panel = obj.view.getPreviewPanel();
+            delete(get(panel, 'Children'));
+            set(panel, 'UserData', []);
+            obj.acquisitionService.createProtocolPreview(panel);
         end
         
         function onServiceSetProtocolProperty(obj, ~, ~)
-            disp('Set protocol property');
+            obj.updatePreview();
+        end
+        
+        function updatePreview(obj)
+            panel = obj.view.getPreviewPanel();
+            obj.acquisitionService.updateProtocolPreview(panel);
         end
         
     end

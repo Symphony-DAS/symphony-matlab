@@ -52,6 +52,14 @@ classdef AcquisitionService < handle
             obj.session.getProtocol().(name) = value;
             notify(obj, 'SetProtocolProperty');
         end
+        
+        function createProtocolPreview(obj, panel)
+            obj.session.getProtocol().createPreview(panel);
+        end
+        
+        function updateProtocolPreview(obj, panel)
+            obj.session.getProtocol().updatePreview(panel);
+        end
 
         function viewOnly(obj)
             protocol = obj.session.getProtocol();

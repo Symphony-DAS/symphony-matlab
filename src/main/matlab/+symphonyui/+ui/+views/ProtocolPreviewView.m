@@ -10,12 +10,20 @@ classdef ProtocolPreviewView < symphonyui.ui.View
             import symphonyui.ui.util.*;
 
             set(obj.figureHandle, ...
-                'Name', 'Protocol Preview', ...
-                'Position', screenCenter(600, 400));
-            
+                'Position', screenCenter(600, 400), ...
+                'Toolbar', 'figure');
+           
             obj.previewPanel = uipanel( ...
                 'Parent', obj.figureHandle, ...
                 'BorderType', 'none');
+        end
+        
+        function setTitle(obj, t)
+            set(obj.figureHandle, 'Name', t);
+        end
+        
+        function p = getPreviewPanel(obj)
+            p = obj.previewPanel;
         end
 
     end
