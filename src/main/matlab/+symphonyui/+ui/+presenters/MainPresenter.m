@@ -6,6 +6,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         configurationService
         moduleService
         dataManagerPresenter
+        protocolPreviewPresenter
     end
     
     methods
@@ -34,10 +35,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onStopping(obj)
-            if ~isempty(obj.dataManagerPresenter)
-                obj.dataManagerPresenter.stop();
-                obj.dataManagerPresenter = [];
-            end
+            obj.closeDataManager();
+            obj.closeProtocolPreview();
         end
         
         function onBind(obj)
@@ -125,10 +124,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onServiceClosedFile(obj, ~, ~)
             obj.updateStateOfControls();
-            if ~isempty(obj.dataManagerPresenter)
-                obj.dataManagerPresenter.stop();
-                obj.dataManagerPresenter = [];
-            end
+            obj.closeDataManager();
         end
         
         function onViewSelectedExit(obj, ~, ~)
@@ -176,10 +172,18 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function showDataManager(obj)
             if isempty(obj.dataManagerPresenter) || obj.dataManagerPresenter.isStopped
-                obj.dataManagerPresenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.app);
-                obj.dataManagerPresenter.go();
+                presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.app);
+                presenter.go();
+                obj.dataManagerPresenter = presenter;
             else
                 obj.dataManagerPresenter.show();
+            end
+        end
+        
+        function closeDataManager(obj)
+            if ~isempty(obj.dataManagerPresenter)
+                obj.dataManagerPresenter.stop();
+                obj.dataManagerPresenter = [];
             end
         end
         
@@ -272,7 +276,20 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function showProtocolPreview(obj)
-            disp('Show protocol preview');
+            if isempty(obj.protocolPreviewPresenter) || obj.protocolPreviewPresenter.isStopped
+                presenter = symphonyui.ui.presenters.ProtocolPreviewPresenter(obj.acquisitionService, obj.app);
+                presenter.go();
+                obj.protocolPreviewPresenter = presenter;
+            else
+                obj.protocolPreviewPresenter.show();
+            end
+        end
+        
+        function closeProtocolPreview(obj)
+            if ~isempty(obj.protocolPreviewPresenter)
+                obj.protocolPreviewPresenter.stop();
+                obj.protocolPreviewPresenter = [];
+            end
         end
         
         function populateProtocolProperties(obj, update)
