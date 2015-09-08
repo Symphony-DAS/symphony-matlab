@@ -11,10 +11,10 @@ classdef MainView < symphonyui.ui.View
         ShowDataManager
         SelectedProtocol
         SetProtocolProperty
+        MinimizeProtocolPreview
         ViewOnly
         Record
         Stop
-        ShowProtocolPreview
         InitializeRig
         ConfigureHoldingLevels
         ConfigureOptions
@@ -31,8 +31,10 @@ classdef MainView < symphonyui.ui.View
         configureMenu
         modulesMenu
         helpMenu
+        protocolLayout
         protocolPopupMenu
         protocolPropertyGrid
+        protocolPreviewPanel
         viewOnlyButton
         recordButton
         stopButton
@@ -46,7 +48,7 @@ classdef MainView < symphonyui.ui.View
 
             set(obj.figureHandle, ...
                 'Name', 'Symphony', ...
-            	'Position', screenCenter(360, 320));
+            	'Position', screenCenter(360, 340));
 
             % File menu.
             obj.fileMenu.root = uimenu(obj.figureHandle, ...
@@ -100,11 +102,6 @@ classdef MainView < symphonyui.ui.View
             obj.acquireMenu.stop = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
-            obj.acquireMenu.showProtocolPreview = uimenu(obj.acquireMenu.root, ...
-                'Label', 'Protocol Preview', ...
-                'Separator', 'on', ...
-                'Accelerator', 'P', ...
-                'Callback', @(h,d)notify(obj, 'ShowProtocolPreview'));
             
             % Configure menu.
             obj.configureMenu.root = uimenu(obj.figureHandle, ...
@@ -139,22 +136,40 @@ classdef MainView < symphonyui.ui.View
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'ShowAbout'));
 
-            mainLayout = uiextras.VBox( ...
+            mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
+            
+            obj.protocolLayout = uix.VBox( ...
+                'Parent', mainLayout, ...
+                'Spacing', 4);
 
             obj.protocolPopupMenu = MappedPopupMenu( ...
-                'Parent', mainLayout, ...
+                'Parent', obj.protocolLayout, ...
                 'String', {' '}, ...
                 'HorizontalAlignment', 'left', ...
                 'Callback', @(h,d)notify(obj, 'SelectedProtocol'));
 
-            obj.protocolPropertyGrid = uiextras.jide.PropertyGrid(mainLayout, ...
+            obj.protocolPropertyGrid = uiextras.jide.PropertyGrid(obj.protocolLayout, ...
                 'Callback', @(h,d)notify(obj, 'SetProtocolProperty', d), ...
                 'ShowDescription', true);
             
-            controlsLayout = uiextras.HBox( ...
+            obj.protocolPreviewPanel = uix.BoxPanel( ...
+                'Parent', obj.protocolLayout, ...
+                'Title', 'Preview', ...
+                'ForegroundColor', [0/255, 0/255, 0/255], ...
+                'TitleColor', [240/255, 240/255, 240/255], ...
+                'BorderType', 'line', ...
+                'HighlightColor', [160/255 160/255 160/255], ...
+                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
+                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
+                'Minimized', true, ...
+                'MinimizeFcn', @(h,d)notify(obj, 'MinimizeProtocolPreview'));
+            
+            set(obj.protocolLayout, 'Heights', [25 -1 20]);
+            
+            controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 1);
             
@@ -179,12 +194,23 @@ classdef MainView < symphonyui.ui.View
                 'TooltipString', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
 
-            set(mainLayout, 'Sizes', [25 -1 34]);
+            set(mainLayout, 'Heights', [-1 34]);
         end
 
         function close(obj)
             close@symphonyui.ui.View(obj);
             obj.protocolPropertyGrid.Close();
+        end
+        
+        function h = getHeight(obj)
+            p = get(obj.figureHandle, 'Position');
+            h = p(4);
+        end
+        
+        function setHeight(obj, h)
+            p = get(obj.figureHandle, 'Position');
+            delta = p(4) - h;
+            set(obj.figureHandle, 'Position', p + [0 delta 0 -delta]);
         end
 
         function enableNewFile(obj, tf)
@@ -251,6 +277,25 @@ classdef MainView < symphonyui.ui.View
         function stopEditingProtocolProperties(obj)
             obj.protocolPropertyGrid.StopEditing();
         end
+        
+        function tf = isProtocolPreviewMinimized(obj)
+            tf = get(obj.protocolPreviewPanel, 'Minimized');
+        end
+        
+        function setProtocolPreviewMinimized(obj, tf)
+            set(obj.protocolPreviewPanel, 'Minimized', tf);
+        end
+        
+        function h = getProtocolPreviewHeight(obj)
+            heights = get(obj.protocolLayout, 'Heights');
+            h = heights(3);
+        end
+        
+        function setProtocolPreviewHeight(obj, h)
+            heights = get(obj.protocolLayout, 'Heights');
+            heights(3) = h;
+            set(obj.protocolLayout, 'Heights', heights);
+        end
 
         function enableViewOnly(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
@@ -268,10 +313,6 @@ classdef MainView < symphonyui.ui.View
             enable = symphonyui.ui.util.onOff(tf);
             set(obj.acquireMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
-        end
-
-        function enableShowProtocolPreview(obj, tf)
-            set(obj.acquireMenu.showProtocolPreview, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
         function enableInitializeRig(obj, tf)

@@ -6,7 +6,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         configurationService
         moduleService
         dataManagerPresenter
-        protocolPreviewPresenter
     end
     
     methods
@@ -36,7 +35,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onStopping(obj)
             obj.closeDataManager();
-            obj.closeProtocolPreview();
         end
         
         function onBind(obj)
@@ -51,10 +49,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'ShowDataManager', @obj.onViewSelectedShowDataManager);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(v, 'SetProtocolProperty', @obj.onViewSetProtocolProperty);
+            obj.addListener(v, 'MinimizeProtocolPreview', @obj.onViewSelectedMinimizeProtocolPreview);
             obj.addListener(v, 'ViewOnly', @obj.onViewSelectedViewOnly);
             obj.addListener(v, 'Record', @obj.onViewSelectedRecord);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
-            obj.addListener(v, 'ShowProtocolPreview', @obj.onViewSelectedShowProtocolPreview);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
             obj.addListener(v, 'ConfigureHoldingLevels', @obj.onViewSelectedConfigureHoldingLevels);
             obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
@@ -230,6 +228,19 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateStateOfControls();
         end
         
+        function onViewSelectedMinimizeProtocolPreview(obj, ~, ~)
+            delta = 200;
+            if obj.view.isProtocolPreviewMinimized()
+                obj.view.setHeight(obj.view.getHeight() + delta);
+                obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() + delta);
+                obj.view.setProtocolPreviewMinimized(false);
+            else
+                obj.view.setHeight(obj.view.getHeight() - delta);
+                obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() - delta);
+                obj.view.setProtocolPreviewMinimized(true);
+            end
+        end
+        
         function onViewSelectedViewOnly(obj, ~, ~)
             obj.view.stopEditingProtocolProperties();
             try
@@ -268,27 +279,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             state = obj.acquisitionService.getState();
             if state == symphonyui.core.ControllerState.STOPPED && ~isempty(obj.dataManagerPresenter)
                 obj.dataManagerPresenter.updateCurrentEpochGroupBlocks();
-            end
-        end
-        
-        function onViewSelectedShowProtocolPreview(obj, ~, ~)
-            obj.showProtocolPreview();
-        end
-        
-        function showProtocolPreview(obj)
-            if isempty(obj.protocolPreviewPresenter) || obj.protocolPreviewPresenter.isStopped
-                presenter = symphonyui.ui.presenters.ProtocolPreviewPresenter(obj.acquisitionService, obj.app);
-                presenter.go();
-                obj.protocolPreviewPresenter = presenter;
-            else
-                obj.protocolPreviewPresenter.show();
-            end
-        end
-        
-        function closeProtocolPreview(obj)
-            if ~isempty(obj.protocolPreviewPresenter)
-                obj.protocolPreviewPresenter.stop();
-                obj.protocolPreviewPresenter = [];
             end
         end
         
@@ -334,7 +324,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableViewOnly = isStopped && isValid;
             enableRecord = enableViewOnly && hasEpochGroup;
             enableStop = ~isStopping && ~isStopped;
-            enableShowProtocolPreview = enableViewOnly;
             enableInitializeRig = isStopped;
             enableConfigureHoldingLevels = isStopped && hasRig;
             
@@ -358,7 +347,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableViewOnly(enableViewOnly);
             obj.view.enableRecord(enableRecord);
             obj.view.enableStop(enableStop);
-            obj.view.enableShowProtocolPreview(enableShowProtocolPreview);
             obj.view.enableInitializeRig(enableInitializeRig);
             obj.view.enableConfigureHoldingLevels(enableConfigureHoldingLevels);
             obj.view.setStatus(status);
