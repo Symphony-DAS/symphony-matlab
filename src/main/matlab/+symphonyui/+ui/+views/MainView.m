@@ -8,7 +8,6 @@ classdef MainView < symphonyui.ui.View
         AddSource
         BeginEpochGroup
         EndEpochGroup
-        ShowDataManager
         SelectedProtocol
         SetProtocolProperty
         MinimizeProtocolPreview
@@ -82,11 +81,6 @@ classdef MainView < symphonyui.ui.View
             obj.documentMenu.endEpochGroup = uimenu(obj.documentMenu.root, ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
-            obj.documentMenu.showDataManager = uimenu(obj.documentMenu.root, ...
-                'Label', 'Data Manager', ...
-                'Separator', 'on', ...
-                'Accelerator', 'D', ...
-                'Callback', @(h,d)notify(obj, 'ShowDataManager'));
 
             % Acquire menu.
             obj.acquireMenu.root = uimenu(obj.figureHandle, ...
@@ -253,10 +247,6 @@ classdef MainView < symphonyui.ui.View
 
         function enableEndEpochGroup(obj, tf)
             set(obj.documentMenu.endEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
-        end
-        
-        function enableShowDataManager(obj, tf)
-            set(obj.documentMenu.showDataManager, 'Enable', symphonyui.ui.util.onOff(tf));
         end
 
         function enableSelectProtocol(obj, tf)

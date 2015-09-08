@@ -46,7 +46,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
-            obj.addListener(v, 'ShowDataManager', @obj.onViewSelectedShowDataManager);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(v, 'SetProtocolProperty', @obj.onViewSetProtocolProperty);
             obj.addListener(v, 'MinimizeProtocolPreview', @obj.onViewSelectedMinimizeProtocolPreview);
@@ -164,10 +163,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateStateOfControls();
         end
         
-        function onViewSelectedShowDataManager(obj, ~, ~)
-            obj.showDataManager();
-        end
-        
         function showDataManager(obj)
             if isempty(obj.dataManagerPresenter) || obj.dataManagerPresenter.isStopped
                 presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.app);
@@ -271,7 +266,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function maximizeProtocolPreview(obj)
-            delta = 300;
+            delta = 250;
             obj.view.setHeight(obj.view.getHeight() + delta);
             obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() + delta);
             obj.view.enableProtocolLayoutDivider(true);
@@ -337,7 +332,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableAddSource = hasOpenFile;
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasEpochGroup;
-            enableShowDataManager = hasOpenFile;
             enableSelectProtocol = isStopped;
             enableProtocolProperties = isStopped;
             enableViewOnly = isStopped && isValid;
@@ -360,7 +354,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableAddSource(enableAddSource);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
-            obj.view.enableShowDataManager(enableShowDataManager);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolProperties(enableProtocolProperties);
             obj.view.enableViewOnly(enableViewOnly);

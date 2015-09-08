@@ -41,6 +41,12 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.populateEntityTree();
             obj.updateStateOfControls();
         end
+        
+        function onStopping(obj)
+            if obj.documentationService.hasOpenFile()
+                obj.documentationService.closeFile();
+            end
+        end
 
         function onBind(obj)
             v = obj.view;
