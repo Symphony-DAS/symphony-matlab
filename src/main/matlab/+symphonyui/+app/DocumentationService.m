@@ -31,6 +31,10 @@ classdef DocumentationService < handle
         function d = getAvailableFileDescriptions(obj)
             d = obj.fileDescriptionRepository.getAll();
         end
+        
+        function p = getFilePath(obj, name, location)
+            p = obj.persistorFactory.getPath(name, location);
+        end
 
         function newFile(obj, name, location, description)
             if obj.hasOpenFile()

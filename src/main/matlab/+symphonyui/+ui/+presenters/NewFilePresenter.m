@@ -94,6 +94,16 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             location = obj.view.getLocation();
             description = obj.view.getSelectedDescription();
             try
+                path = obj.documentationService.getFilePath(name, location);
+                if exist(path, 'file')
+                    result = obj.view.showMessage(['''' path ''' already exists. Overwrite?'], ...
+                        'Overwrite File', ...
+                        'Cancel', 'Overwrite');
+                    if ~strcmp(result, 'Overwrite')
+                        return;
+                    end
+                    delete(path);
+                end
                 obj.documentationService.newFile(name, location, description);
             catch x
                 obj.view.showError(x.message);

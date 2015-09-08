@@ -2,8 +2,16 @@ classdef PersistorFactory < handle
     
     methods
         
+        function p = getPath(obj, name, location)
+            p = fullfile(location, name);
+            [~, ~, ext] = fileparts(p);
+            if ~strcmpi(ext, '.h5')
+                p = [p '.h5'];
+            end
+        end
+        
         function p = new(obj, name, location, description)
-            path = fullfile(location, [name '.h5']);
+            path = obj.getPath(name, location);
             if exist(path, 'file')
                 error('File exists');
             end
