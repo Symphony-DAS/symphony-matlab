@@ -210,7 +210,26 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onServiceSelectedProtocol(obj, ~, ~)
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
             obj.populateProtocolProperties();
+            obj.createProtocolPreview();
             obj.updateStateOfControls();
+        end
+        
+        function populateProtocolProperties(obj, update)
+            if nargin < 2
+                update = false;
+            end
+            try
+                fields = symphonyui.ui.util.desc2field(obj.acquisitionService.getProtocolPropertyDescriptors());
+            catch x
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
+            if update
+                obj.view.updateProtocolProperties(fields);
+            else
+                obj.view.setProtocolProperties(fields);
+            end
         end
         
         function onViewSetProtocolProperty(obj, ~, event)
@@ -228,17 +247,35 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateStateOfControls();
         end
         
+        function createProtocolPreview(obj)
+            panel = obj.view.getProtocolPreviewPanel();
+            delete(get(panel, 'Children'));
+            set(panel, 'UserData', []);
+            obj.acquisitionService.createProtocolPreview(panel);
+        end
+        
         function onViewSelectedMinimizeProtocolPreview(obj, ~, ~)
-            delta = 200;
             if obj.view.isProtocolPreviewMinimized()
-                obj.view.setHeight(obj.view.getHeight() + delta);
-                obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() + delta);
-                obj.view.setProtocolPreviewMinimized(false);
+                obj.maximizeProtocolPreview();
             else
-                obj.view.setHeight(obj.view.getHeight() - delta);
-                obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() - delta);
-                obj.view.setProtocolPreviewMinimized(true);
+                obj.minimizeProtocolPreview();
             end
+        end
+        
+        function minimizeProtocolPreview(obj)
+            delta = obj.view.getProtocolPreviewHeight() - obj.view.getProtocolPreviewMinimumHeight();
+            obj.view.setHeight(obj.view.getHeight() - delta);
+            obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() - delta);
+            obj.view.enableProtocolLayoutDivider(false);
+            obj.view.setProtocolPreviewMinimized(true);
+        end
+        
+        function maximizeProtocolPreview(obj)
+            delta = 300;
+            obj.view.setHeight(obj.view.getHeight() + delta);
+            obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() + delta);
+            obj.view.enableProtocolLayoutDivider(true);
+            obj.view.setProtocolPreviewMinimized(false);
         end
         
         function onViewSelectedViewOnly(obj, ~, ~)
@@ -279,24 +316,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             state = obj.acquisitionService.getState();
             if state == symphonyui.core.ControllerState.STOPPED && ~isempty(obj.dataManagerPresenter)
                 obj.dataManagerPresenter.updateCurrentEpochGroupBlocks();
-            end
-        end
-        
-        function populateProtocolProperties(obj, update)
-            if nargin < 2
-                update = false;
-            end
-            try
-                fields = symphonyui.ui.util.desc2field(obj.acquisitionService.getProtocolPropertyDescriptors());
-            catch x
-                fields = uiextras.jide.PropertyGridField.empty(0, 1);
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-            end
-            if update
-                obj.view.updateProtocolProperties(fields);
-            else
-                obj.view.setProtocolProperties(fields);
             end
         end
         

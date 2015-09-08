@@ -14,6 +14,7 @@ classdef VBoxFlex < uix.VBox
     
     properties( Access = public, Dependent, AbortSet )
         DividerMarkings % divider markings [on|off]
+        DividerEnable % divider can be dragged [on|off]
     end
     
     properties( Access = private )
@@ -94,6 +95,44 @@ classdef VBoxFlex < uix.VBox
             obj.Dirty = true;
             
         end % set.DividerMarkings
+        
+        function value = get.DividerEnable( obj )
+            
+            tf = ~isempty(obj.MousePressListener) && ~isempty(obj.MouseReleaseListener) && ~isempty(obj.MouseMotionListener);
+            if tf
+                value = 'on';
+            else
+                value = 'off';
+            end
+            
+        end % get.DividerEnable
+        
+        function set.DividerEnable( obj, value )
+            
+            % Check
+            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+                'uix:InvalidArgument', ...
+                'Property ''DividerEnable'' must be ''on'' or ''off'.' )
+            
+            % Set
+            if strcmp(value, 'off')
+                mousePressListener = event.listener.empty( [0 0] );
+                mouseReleaseListener = event.listener.empty( [0 0] );
+                mouseMotionListener = event.listener.empty( [0 0] );
+            else
+                fig = ancestor( obj, 'figure' );
+                mousePressListener = event.listener( fig, ...
+                    'WindowMousePress', @obj.onMousePress );
+                mouseReleaseListener = event.listener( fig, ...
+                    'WindowMouseRelease', @obj.onMouseRelease );
+                mouseMotionListener = event.listener( fig, ...
+                    'WindowMouseMotion', @obj.onMouseMotion );
+            end
+            obj.MousePressListener = mousePressListener;
+            obj.MouseReleaseListener = mouseReleaseListener;
+            obj.MouseMotionListener = mouseMotionListener;
+            
+        end % set.DividerEnable
         
     end % accessors
     
