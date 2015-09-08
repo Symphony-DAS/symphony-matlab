@@ -204,9 +204,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onServiceSelectedProtocol(obj, ~, ~)
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
-            obj.populateProtocolProperties();
-            obj.createProtocolPreview();
             obj.updateStateOfControls();
+            obj.populateProtocolProperties();
+            if ~obj.view.isProtocolPreviewMinimized()
+                obj.createProtocolPreview();
+            end
         end
         
         function populateProtocolProperties(obj, update)
@@ -238,15 +240,21 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onServiceSetProtocolProperty(obj, ~, ~)
-            obj.populateProtocolProperties(true);
             obj.updateStateOfControls();
+            obj.populateProtocolProperties(true);
+            if ~obj.view.isProtocolPreviewMinimized()
+                obj.updateProtocolPreview();
+            end
         end
         
         function createProtocolPreview(obj)
             panel = obj.view.getProtocolPreviewPanel();
-            delete(get(panel, 'Children'));
-            set(panel, 'UserData', []);
             obj.acquisitionService.createProtocolPreview(panel);
+        end
+        
+        function updateProtocolPreview(obj)
+            panel = obj.view.getProtocolPreviewPanel();
+            obj.acquisitionService.updateProtocolPreview(panel);
         end
         
         function onViewSelectedMinimizeProtocolPreview(obj, ~, ~)
@@ -271,6 +279,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() + delta);
             obj.view.enableProtocolLayoutDivider(true);
             obj.view.setProtocolPreviewMinimized(false);
+            obj.createProtocolPreview();
         end
         
         function onViewSelectedViewOnly(obj, ~, ~)
