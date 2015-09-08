@@ -54,6 +54,8 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
         ShowDescription;
         % Border type of grid outline
         BorderType
+        % Border type of description panel
+        DescriptionBorderType
         % Editor style
         EditorStyle
     end
@@ -223,7 +225,7 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
         end
 
         function tf = get.ShowDescription(self)
-            tf = self.Pane.getShowDescription();
+            tf = self.Pane.isShowDescription();
         end
 
         function set.ShowDescription(self, tf)
@@ -242,6 +244,16 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
                     error('Unsupported type');
             end
             self.Pane.getScrollPane().setBorder(t);
+        end
+        
+        function set.DescriptionBorderType(self, t)
+            switch t
+                case 'none'
+                    t = javax.swing.BorderFactory.createEmptyBorder();
+                otherwise
+                    error('Unsupported type');
+            end
+            self.Pane.getComponent(0).getComponent(2).setBorder(t);
         end
         
         function set.EditorStyle(self, s)            

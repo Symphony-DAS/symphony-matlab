@@ -61,7 +61,7 @@ classdef DataManagerView < symphonyui.ui.View
 
             set(obj.figureHandle, ...
                 'Name', 'Data Manager', ...
-                'Position', screenCenter(611, 550));
+                'Position', screenCenter(611, 450));
 
             % Toolbar.
             toolbar = uitoolbar( ...
@@ -360,6 +360,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Spacing', 1);
             obj.propertiesTab.grid = uiextras.jide.PropertyGrid(propertiesLayout, ...
                 'BorderType', 'none', ...
+                'DescriptionBorderType', 'none', ...
                 'ShowDescription', true, ...
                 'Callback', @(h,d)notify(obj, 'SetProperty', symphonyui.ui.UiEventData(d)));
 
@@ -406,7 +407,6 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', keywordsLayout, ...
                 'ColumnName', {'Keyword'}, ...
                 'Editable', false);
-            javacomponent('javax.swing.JSeparator', [], keywordsLayout);
 
             % Keywords toolbar.
             keywordsToolbarLayout = uix.HBox( ...
@@ -429,7 +429,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Callback', @(h,d)notify(obj, 'RemoveKeyword'));
             set(keywordsToolbarLayout, 'Widths', [-1 50]);
 
-            set(keywordsLayout, 'Heights', [-1 1 25]);
+            set(keywordsLayout, 'Heights', [-1 25]);
 
             % Notes tab.
             obj.notesTab.tab = uitab( ...
@@ -444,7 +444,6 @@ classdef DataManagerView < symphonyui.ui.View
                 'ColumnName', {'Time', 'Text'}, ...
                 'ColumnWidth', {80}, ...
                 'Editable', false);
-            javacomponent('javax.swing.JSeparator', [], notesLayout);
 
             % Notes toolbar.
             notesToolbarLayout = uix.HBox( ...
@@ -467,7 +466,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'Enable', 'off');
             set(notesToolbarLayout, 'Widths', [-1 50]);
 
-            set(notesLayout, 'Heights', [-1 1 25]);
+            set(notesLayout, 'Heights', [-1 25]);
 
             % Parameters tab.
             obj.parametersTab.tab = uitab( ...
