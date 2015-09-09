@@ -18,12 +18,14 @@ classdef PulseFamily < symphonyui.core.Protocol
     
     methods
         
+        function p = getPreview(obj, panel)
+            p = symphonyui.builtin.previews.StimulusPreview(panel, @()obj.ampStimulus(1));
+        end
+        
         function prepareRun(obj)
-            import symphonyui.builtin.figures.*;
-            
             prepareRun@symphonyui.core.Protocol(obj);
             
-            obj.openFigure(ResponseFigureHandler(obj.rig.getDevice(obj.amp)));
+            obj.openFigure(symphonyui.builtin.figures.ResponseFigure(obj.rig.getDevice(obj.amp)));
         end
         
         function [stim, pulseSignal] = ampStimulus(obj, pulseNum)

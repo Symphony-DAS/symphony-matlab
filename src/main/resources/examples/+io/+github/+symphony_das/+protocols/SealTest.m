@@ -40,7 +40,7 @@ classdef SealTest < symphonyui.core.Protocol
         end
         
         function tf = continueRun(obj)
-            tf = true;
+            tf = obj.numEpochsCompleted < 1;
         end
         
     end

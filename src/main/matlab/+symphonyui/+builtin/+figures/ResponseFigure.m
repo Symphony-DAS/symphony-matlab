@@ -1,4 +1,4 @@
-classdef ResponseFigureHandler < symphonyui.core.FigureHandler
+classdef ResponseFigure < symphonyui.core.FigureHandler
     
     properties (Access = private)
         device
@@ -8,15 +8,9 @@ classdef ResponseFigureHandler < symphonyui.core.FigureHandler
     
     methods
         
-        function obj = ResponseFigureHandler(device)
+        function obj = ResponseFigure(device)
             obj.device = device;
-            
-            try
-                obj.createUi();
-            catch x
-                obj.close();
-                rethrow(x);
-            end
+            obj.createUi();
         end
         
         function createUi(obj)
@@ -29,6 +23,7 @@ classdef ResponseFigureHandler < symphonyui.core.FigureHandler
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'XTickMode', 'auto'); %#ok<CPROP>
             title(obj.axes, [obj.device.name, ' Response']);
+            obj.line = line(0, 0, 'Parent', obj.axes); %#ok<CPROP>
             xlabel(obj.axes, 'sec');
         end
         
@@ -41,11 +36,7 @@ classdef ResponseFigureHandler < symphonyui.core.FigureHandler
             [quantities, units] = response.getData();
             x = (1:numel(quantities)) / response.sampleRate.quantityInBaseUnits;
             y = quantities;
-            if isempty(obj.line)
-                obj.line = line(x, y, 'Parent', obj.axes); %#ok<CPROP>
-            else
-                set(obj.line, 'XData', x, 'YData', y);
-            end
+            set(obj.line, 'XData', x, 'YData', y);
             ylabel(obj.axes, units, 'Interpreter', 'none');
         end
         

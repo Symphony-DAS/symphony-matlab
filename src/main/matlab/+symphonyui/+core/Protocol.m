@@ -33,6 +33,10 @@ classdef Protocol < handle
             d = symphonyui.core.util.introspect(obj);
         end
         
+        function p = getPreview(obj, panel) %#ok<INUSD>
+            p = [];
+        end
+        
         function prepareRun(obj)
             obj.numEpochsPrepared = 0;
             obj.numEpochsCompleted = 0;
@@ -40,7 +44,7 @@ classdef Protocol < handle
             obj.rig.sampleRate = obj.sampleRate;
         end
         
-        function prepareEpoch(obj, epoch)
+        function prepareEpoch(obj, epoch) %#ok<INUSD>
             obj.numEpochsPrepared = obj.numEpochsPrepared + 1;
         end
         
@@ -49,11 +53,11 @@ classdef Protocol < handle
             obj.figureHandlerManager.updateFigures(epoch);
         end
         
-        function tf = continuePreparingEpochs(obj)
+        function tf = continuePreparingEpochs(obj) %#ok<MANU>
             tf = false;
         end
         
-        function tf = continueRun(obj)
+        function tf = continueRun(obj) %#ok<MANU>
             tf = false;
         end
         
@@ -62,22 +66,9 @@ classdef Protocol < handle
             disp(['Num epochs completed: ' num2str(obj.numEpochsCompleted)]);
         end
 
-        function [tf, msg] = isValid(obj)
+        function [tf, msg] = isValid(obj) %#ok<MANU>
             tf = true;
             msg = [];
-        end
-        
-        function createPreview(obj, panel)
-            panel.UserData.axes = axes( ...
-                'Parent', panel, ...
-                'FontName', get(panel, 'DefaultUicontrolFontName'), ...
-                'FontSize', get(panel, 'DefaultUicontrolFontSize'));
-            xlabel(panel.UserData.axes, 'sec');
-            obj.updatePreview(panel);
-        end
-        
-        function updatePreview(obj, panel)
-            plot3(0, 0, 0, 'Parent', panel.UserData.axes);
         end
         
     end

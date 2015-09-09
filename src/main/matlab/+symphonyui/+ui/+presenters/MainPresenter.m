@@ -6,6 +6,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         configurationService
         moduleService
         dataManagerPresenter
+        protocolPreview
     end
     
     methods
@@ -27,10 +28,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
+            obj.updateStateOfControls();
             obj.populateProtocolList();
             obj.populateProtocolProperties();
             obj.populateModuleList();
-            obj.updateStateOfControls();
         end
         
         function onStopping(obj)
@@ -207,14 +208,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateStateOfControls();
             obj.populateProtocolProperties();
             if ~obj.view.isProtocolPreviewMinimized()
-                obj.createProtocolPreview();
+                obj.populateProtocolPreview();
             end
         end
         
-        function populateProtocolProperties(obj, update)
-            if nargin < 2
-                update = false;
-            end
+        function populateProtocolProperties(obj)
             try
                 fields = symphonyui.ui.util.desc2field(obj.acquisitionService.getProtocolPropertyDescriptors());
             catch x
@@ -222,11 +220,18 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
-            if update
-                obj.view.updateProtocolProperties(fields);
-            else
-                obj.view.setProtocolProperties(fields);
+            obj.view.setProtocolProperties(fields);
+        end
+        
+        function updateProtocolProperties(obj)
+            try
+                fields = symphonyui.ui.util.desc2field(obj.acquisitionService.getProtocolPropertyDescriptors());
+            catch x
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
             end
+            obj.view.updateProtocolProperties(fields);
         end
         
         function onViewSetProtocolProperty(obj, ~, event)
@@ -241,20 +246,30 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onServiceSetProtocolProperty(obj, ~, ~)
             obj.updateStateOfControls();
-            obj.populateProtocolProperties(true);
+            obj.updateProtocolProperties();
             if ~obj.view.isProtocolPreviewMinimized()
                 obj.updateProtocolPreview();
             end
         end
         
-        function createProtocolPreview(obj)
+        function populateProtocolPreview(obj)
+            obj.view.clearProtocolPreviewPanel();
             panel = obj.view.getProtocolPreviewPanel();
-            obj.acquisitionService.createProtocolPreview(panel);
+            try
+                obj.protocolPreview = obj.acquisitionService.getProtocolPreview(panel);
+            catch x
+                obj.log.debug(x.message, x);
+                return;
+            end
         end
         
         function updateProtocolPreview(obj)
-            panel = obj.view.getProtocolPreviewPanel();
-            obj.acquisitionService.updateProtocolPreview(panel);
+            try
+                obj.protocolPreview.update();
+            catch x
+                obj.log.debug(x.message, x);
+                return;
+            end
         end
         
         function onViewSelectedMinimizeProtocolPreview(obj, ~, ~)
@@ -279,7 +294,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() + delta);
             obj.view.enableProtocolLayoutDivider(true);
             obj.view.setProtocolPreviewMinimized(false);
-            obj.createProtocolPreview();
+            obj.protocolPreview = obj.acquisitionService.getProtocolPreview(obj.view.getProtocolPreviewPanel());
         end
         
         function onViewSelectedViewOnly(obj, ~, ~)
@@ -380,6 +395,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onServiceInitializedRig(obj, ~, ~)
             obj.updateStateOfControls();
+            obj.populateProtocolProperties();
+            if ~obj.view.isProtocolPreviewMinimized()
+                obj.populateProtocolPreview();
+            end
         end
         
         function onViewSelectedConfigureHoldingLevels(obj, ~, ~)
