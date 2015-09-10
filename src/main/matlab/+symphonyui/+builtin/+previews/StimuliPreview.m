@@ -1,7 +1,7 @@
-classdef StimulusPreview < symphonyui.core.ProtocolPreview
+classdef StimuliPreview < symphonyui.core.ProtocolPreview
     
     properties
-        createStimulusFcn
+        createStimuliFcn
     end
     
     properties (Access = private)
@@ -11,9 +11,9 @@ classdef StimulusPreview < symphonyui.core.ProtocolPreview
     
     methods
         
-        function obj = StimulusPreview(panel, createStimulusFcn)
+        function obj = StimuliPreview(panel, createStimuliFcn)
             obj@symphonyui.core.ProtocolPreview(panel);
-            obj.createStimulusFcn = createStimulusFcn;
+            obj.createStimuliFcn = createStimuliFcn;
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.createUi();
         end
@@ -30,10 +30,11 @@ classdef StimulusPreview < symphonyui.core.ProtocolPreview
         
         function update(obj)
             cla(obj.axes);
+            
             try
-                stimulus = obj.createStimulusFcn();
+                stimuli = obj.createStimuliFcn();
             catch x
-                text(0.5, 0.5, 'Cannot create stimulus', ...
+                text(0.5, 0.5, 'Cannot create stimuli', ...
                     'Parent', obj.axes, ...
                     'FontName', get(obj.panel, 'DefaultUicontrolFontName'), ...
                     'FontSize', get(obj.panel, 'DefaultUicontrolFontSize'), ...
@@ -41,11 +42,16 @@ classdef StimulusPreview < symphonyui.core.ProtocolPreview
                 obj.log.debug(x.message, x);
                 return;
             end
-            [quantities, units] = stimulus.getData();
-            x = (1:numel(quantities)) / stimulus.sampleRate.quantityInBaseUnits;
-            y = quantities;
-            line(x, y, 'Parent', obj.axes);
-            ylabel(obj.axes, units, 'Interpreter', 'none');
+            
+            ylabels = cell(1, numel(stimuli));
+            for i = 1:numel(stimuli)
+                [quantities, units] = stimuli{i}.getData();
+                x = (1:numel(quantities)) / stimuli{i}.sampleRate.quantityInBaseUnits;
+                y = quantities;
+                line(x, y, 'Parent', obj.axes);
+                ylabels{i} = units;  
+            end
+            ylabel(obj.axes, strjoin(unique(ylabels), ', '), 'Interpreter', 'none');
         end
         
     end

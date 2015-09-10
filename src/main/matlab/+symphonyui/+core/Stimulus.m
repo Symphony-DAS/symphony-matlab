@@ -2,6 +2,7 @@ classdef Stimulus < symphonyui.core.CoreObject
     
     properties (SetAccess = private)
         sampleRate
+        parameters
     end
     
     methods
@@ -19,9 +20,19 @@ classdef Stimulus < symphonyui.core.CoreObject
             end
         end
         
+        function p = get.parameters(obj)
+            p = obj.mapFromKeyValueEnumerable(obj.cobj.Parameters);
+        end
+        
         function [q, u] = getData(obj)
             import Symphony.Core.*;
-            enum = obj.tryCoreWithReturn(@()obj.cobj.DataBlocks(obj.cobj.Duration.Item2));
+            cdur = obj.cobj.Duration;
+            if cdur.IsNone()
+                q = [];
+                u = '';
+                return;
+            end
+            enum = obj.tryCoreWithReturn(@()obj.cobj.DataBlocks(cdur.Item2));
             cblk = obj.cellArrayFromEnumerable(enum);
             d = cblk{1}.Data;
             q = double(Measurement.ToQuantityArray(d));

@@ -1,8 +1,5 @@
 classdef StimulusGenerator < handle
     
-    properties
-    end
-    
     methods
         
         function obj = StimulusGenerator(map)            

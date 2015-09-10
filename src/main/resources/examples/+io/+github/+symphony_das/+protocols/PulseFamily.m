@@ -19,7 +19,13 @@ classdef PulseFamily < symphonyui.core.Protocol
     methods
         
         function p = getPreview(obj, panel)
-            p = symphonyui.builtin.previews.StimulusPreview(panel, @()obj.ampStimulus(1));
+            p = symphonyui.builtin.previews.StimuliPreview(panel, @()createPreviewStimuli(obj));
+            function s = createPreviewStimuli(obj)
+                s = cell(1, obj.pulsesInFamily);
+                for i = 1:numel(s)
+                    s{i} = obj.ampStimulus(i);
+                end
+            end
         end
         
         function prepareRun(obj)

@@ -17,7 +17,10 @@ classdef Pulse < symphonyui.core.Protocol
     methods
         
         function p = getPreview(obj, panel)
-            p = symphonyui.builtin.previews.StimulusPreview(panel, @obj.ampStimulus);
+            p = symphonyui.builtin.previews.StimuliPreview(panel, @()createPreviewStimuli(obj));
+            function s = createPreviewStimuli(obj)
+                s = {obj.ampStimulus()};
+            end
         end
         
         function prepareRun(obj)
