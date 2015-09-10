@@ -264,6 +264,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function updateProtocolPreview(obj)
+            if isempty(obj.protocolPreview)
+                return;
+            end
             try
                 obj.protocolPreview.update();
             catch x
@@ -275,8 +278,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onViewSelectedMinimizeProtocolPreview(obj, ~, ~)
             if obj.view.isProtocolPreviewMinimized()
                 obj.maximizeProtocolPreview();
+                obj.populateProtocolPreview();
             else
                 obj.minimizeProtocolPreview();
+                obj.protocolPreview = [];
             end
         end
         
@@ -294,7 +299,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() + delta);
             obj.view.enableProtocolLayoutDivider(true);
             obj.view.setProtocolPreviewMinimized(false);
-            obj.protocolPreview = obj.acquisitionService.getProtocolPreview(obj.view.getProtocolPreviewPanel());
         end
         
         function onViewSelectedViewOnly(obj, ~, ~)
