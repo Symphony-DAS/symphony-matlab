@@ -9,7 +9,7 @@ classdef PulseFamily < symphonyui.core.Protocol
         incrementPerPulse = 10
         pulsesInFamily = uint16(11)
         numberOfAverages = uint16(5)    % Number of families
-        interpulseInterval = 2          % Duration between pulses (s)
+        interpulseInterval = 0          % Duration between pulses (s)
     end
     
     properties (Hidden)

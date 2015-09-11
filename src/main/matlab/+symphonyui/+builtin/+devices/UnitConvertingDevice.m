@@ -6,11 +6,12 @@ classdef UnitConvertingDevice < symphonyui.core.Device
     
     methods
         
-        function obj = UnitConvertingDevice(name, measurementConversionTarget, manufacturer)
-            if nargin < 3
-                manufacturer = 'Unspecified';
-            end
-            cobj = Symphony.Core.UnitConvertingExternalDevice(name, manufacturer, Symphony.Core.Measurement(0, measurementConversionTarget));
+        function obj = UnitConvertingDevice(name, measurementConversionTarget, varargin)
+            ip = inputParser();
+            ip.addParameter('manufacturer', 'Unspecified');
+            ip.parse(varargin{:});
+            
+            cobj = Symphony.Core.UnitConvertingExternalDevice(name, ip.Results.manufacturer, Symphony.Core.Measurement(0, measurementConversionTarget));
             obj@symphonyui.core.Device(cobj);
             
             obj.measurementConversionTarget = measurementConversionTarget;

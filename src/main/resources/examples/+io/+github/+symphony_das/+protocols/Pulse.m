@@ -7,7 +7,7 @@ classdef Pulse < symphonyui.core.Protocol
         tailTime = 50                   % Pulse trailing duration (ms)
         pulseAmplitude = 100            % Pulse amplitude (mV)
         numberOfAverages = uint16(5)    % Number of epochs
-        interpulseInterval = 2          % Duration between pulses (s)
+        interpulseInterval = 0          % Duration between pulses (s)
     end
     
     properties (Hidden)

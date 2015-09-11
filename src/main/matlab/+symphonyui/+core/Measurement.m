@@ -2,6 +2,7 @@ classdef Measurement < symphonyui.core.CoreObject
     
     properties (Constant)
         UNITLESS = char(Symphony.Core.Measurement.UNITLESS);
+        NORMALIZED = char(Symphony.Core.Measurement.NORMALIZED);
     end
     
     properties (SetAccess = private)
