@@ -30,8 +30,13 @@ classdef Response < symphonyui.core.CoreObject
                 return;
             end
             cdata = obj.tryCoreWithReturn(@()obj.cobj.Data);
-            q = double(Symphony.Core.Measurement.ToQuantityArray(cdata));
-            u = char(Symphony.Core.Measurement.HomogenousDisplayUnits(cdata));
+            if NET.invokeGenericMethod('System.Linq.Enumerable', 'Any', {'Symphony.Core.IMeasurement'}, cdata)
+                q = double(Symphony.Core.Measurement.ToQuantityArray(cdata));
+                u = char(Symphony.Core.Measurement.HomogenousDisplayUnits(cdata));
+            else
+                q = [];
+                u = '';
+            end
             obj.dataCache = struct('q', q, 'u', u);
         end
         

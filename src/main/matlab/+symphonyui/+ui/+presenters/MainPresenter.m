@@ -258,6 +258,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             try
                 obj.protocolPreview = obj.acquisitionService.getProtocolPreview(panel);
             catch x
+                obj.protocolPreview = [];
                 obj.log.debug(x.message, x);
                 return;
             end
@@ -294,7 +295,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function maximizeProtocolPreview(obj)
-            delta = 250;
+            delta = 253;
             obj.view.setHeight(obj.view.getHeight() + delta);
             obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() + delta);
             obj.view.enableProtocolLayoutDivider(true);

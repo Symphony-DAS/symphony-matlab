@@ -34,8 +34,13 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
             
             response = epoch.getResponse(obj.device);
             [quantities, units] = response.getData();
-            x = (1:numel(quantities)) / response.sampleRate.quantityInBaseUnits;
-            y = quantities;
+            if numel(quantities) > 0
+                x = (1:numel(quantities)) / response.sampleRate.quantityInBaseUnits;
+                y = quantities;
+            else
+                x = [];
+                y = [];
+            end
             set(obj.line, 'XData', x, 'YData', y);
             ylabel(obj.axes, units, 'Interpreter', 'none');
         end
