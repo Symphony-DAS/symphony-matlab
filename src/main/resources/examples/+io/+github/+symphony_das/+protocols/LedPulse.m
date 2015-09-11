@@ -1,7 +1,7 @@
 classdef LedPulse < symphonyui.core.Protocol
     
     properties
-        led = 'Red LED'                 % Output LED
+        led = 'Green LED'               % Output LED
         preTime = 10                    % Pulse leading duration (ms)
         stimTime = 100                  % Pulse duration (ms)
         tailTime = 400                  % Pulse trailing duration (ms)
@@ -13,7 +13,7 @@ classdef LedPulse < symphonyui.core.Protocol
     end
     
     properties (Hidden)
-        ledType = symphonyui.core.PropertyType('char', 'row', {'Red LED', 'Green LED', 'Blue LED'});
+        ledType = symphonyui.core.PropertyType('char', 'row', {'Green LED', 'Blue LED'});
         ampType = symphonyui.core.PropertyType('char', 'row', {'Amp1', 'Amp2'});
     end
     

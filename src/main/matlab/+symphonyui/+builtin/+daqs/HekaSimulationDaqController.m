@@ -35,10 +35,10 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
                 obj.addStream(symphonyui.core.DaqStream(cstr));
             end
             
-            % TODO: Converters need to be defined in .NET because they're too slow here
-            Symphony.Core.Converters.Register(Symphony.Core.Measurement.UNITLESS, Symphony.Core.Measurement.UNITLESS, @(m)m);
-            Symphony.Core.Converters.Register('V', 'V', @(m)m);
-            Symphony.Core.Converters.Register(Symphony.Core.Measurement.NORMALIZED, 'V', @(m)Symphony.Core.MeasurementPool.GetMeasurement(m.QuantityInBaseUnit * 10.24, 0, 'V'));
+            Symphony.Core.Converters.Register(Symphony.Core.Measurement.UNITLESS, Symphony.Core.Measurement.UNITLESS, Symphony.Core.ConvertProcs.Scale(1, Symphony.Core.Measurement.UNITLESS));
+            Symphony.Core.Converters.Register('V', 'V', Symphony.Core.ConvertProcs.Scale(1, 'V'));
+            Symphony.Core.Converters.Register(Symphony.Core.Measurement.NORMALIZED, 'V', Symphony.Core.ConvertProcs.Scale(10.24, 'V'));
+            Symphony.Core.Converters.Register('V', Symphony.Core.Measurement.NORMALIZED, Symphony.Core.ConvertProcs.Scale(1/10.24, Symphony.Core.Measurement.NORMALIZED));
             
             obj.simulationRunner = @(output, timeStep)obj.loopbackRunner(output, timeStep);
         end
