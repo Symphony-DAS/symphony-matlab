@@ -27,8 +27,8 @@ classdef ConfigurationService < handle
             end
             constructor = str2func(description);
             rig = symphonyui.core.Rig(constructor());
-            obj.session.rig = rig;
             obj.session.controller.setRig(rig);
+            obj.session.rig = rig;
             notify(obj, 'InitializedRig');
         end
         

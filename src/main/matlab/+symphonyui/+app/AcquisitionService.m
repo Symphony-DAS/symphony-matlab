@@ -36,8 +36,9 @@ classdef AcquisitionService < handle
                 obj.session.protocol = [];
             end
             constructor = str2func(className);
-            obj.session.protocol = constructor();
-            obj.session.protocol.setRig(obj.session.rig);
+            protocol = constructor();
+            protocol.setRig(obj.session.rig);
+            obj.session.protocol = protocol;
             notify(obj, 'SelectedProtocol');
         end
         
