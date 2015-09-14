@@ -54,7 +54,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Record', @obj.onViewSelectedRecord);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
-            obj.addListener(v, 'ConfigureHoldingLevels', @obj.onViewSelectedConfigureHoldingLevels);
+            obj.addListener(v, 'ConfigureDeviceBackgrounds', @obj.onViewSelectedConfigureDeviceBackgrounds);
             obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
             obj.addListener(v, 'SelectedModule', @obj.onViewSelectedModule);
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
@@ -367,7 +367,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableRecord = enableViewOnly && hasEpochGroup;
             enableStop = ~isStopping && ~isStopped;
             enableInitializeRig = isStopped;
-            enableConfigureHoldingLevels = isStopped && hasRig;
+            enableConfigureDeviceBackgrounds = isStopped && hasRig;
             
             if ~isValid
                 status = validationMessage;
@@ -389,7 +389,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableRecord(enableRecord);
             obj.view.enableStop(enableStop);
             obj.view.enableInitializeRig(enableInitializeRig);
-            obj.view.enableConfigureHoldingLevels(enableConfigureHoldingLevels);
+            obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);
             obj.view.setStatus(status);
         end
         
@@ -406,8 +406,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
         end
         
-        function onViewSelectedConfigureHoldingLevels(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.HoldingLevelsPresenter(obj.configurationService, obj.app);
+        function onViewSelectedConfigureDeviceBackgrounds(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.DeviceBackgroundsPresenter(obj.configurationService, obj.app);
             presenter.goWaitStop();
         end
         

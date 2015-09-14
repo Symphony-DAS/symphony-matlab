@@ -1,4 +1,4 @@
-classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
+classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
         configurationService
@@ -6,9 +6,9 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
     
     methods
         
-        function obj = HoldingLevelsPresenter(configurationService, app, view)
+        function obj = DeviceBackgroundsPresenter(configurationService, app, view)
             if nargin < 3
-                view = symphonyui.ui.views.HoldingLevelsView();
+                view = symphonyui.ui.views.DeviceBackgroundsView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
             obj.view.setWindowStyle('modal');
@@ -21,7 +21,7 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj, ~, ~)
-            obj.populateHoldingLevels();
+            obj.populateDeviceBackgrounds();
         end
         
         function onBind(obj)
@@ -35,7 +35,7 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
-        function populateHoldingLevels(obj)
+        function populateDeviceBackgrounds(obj)
             devices = obj.configurationService.getDevices();
             
             try
@@ -50,7 +50,7 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
                 obj.view.showError(x.message);
             end
             
-            obj.view.setHoldingLevels(fields);
+            obj.view.setDeviceBackgrounds(fields);
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -63,14 +63,14 @@ classdef HoldingLevelsPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedApply(obj, ~, ~)
-            obj.view.stopEditingHoldingLevels();
+            obj.view.stopEditingDeviceBackgrounds();
             obj.view.update();
             
-            levels = obj.view.getHoldingLevels();
+            backgrounds = obj.view.getDeviceBackgrounds();
             try
-                for i = 1:numel(levels)
-                    d = obj.configurationService.getDevice(levels(i).Name);
-                    d.background = symphonyui.core.Measurement(levels(i).Value, d.background.displayUnits);
+                for i = 1:numel(backgrounds)
+                    d = obj.configurationService.getDevice(backgrounds(i).Name);
+                    d.background = symphonyui.core.Measurement(backgrounds(i).Value, d.background.displayUnits);
                     d.applyBackground();
                 end
             catch x

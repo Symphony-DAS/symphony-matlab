@@ -1,4 +1,4 @@
-classdef HoldingLevelsView < symphonyui.ui.View
+classdef DeviceBackgroundsView < symphonyui.ui.View
 
     events
         Apply
@@ -6,7 +6,7 @@ classdef HoldingLevelsView < symphonyui.ui.View
     end
     
     properties (Access = private)
-        levelsPropertyGrid
+        backgroundsPropertyGrid
         applyButton
         cancelButton
     end
@@ -17,7 +17,7 @@ classdef HoldingLevelsView < symphonyui.ui.View
             import symphonyui.ui.util.*;
             
             set(obj.figureHandle, ...
-                'Name', 'Holding Levels', ...
+                'Name', 'Device Backgrounds', ...
                 'Position', screenCenter(240, 150));
 
             mainLayout = uix.VBox( ...
@@ -25,10 +25,10 @@ classdef HoldingLevelsView < symphonyui.ui.View
                 'Padding', 11, ...
                 'Spacing', 7);
 
-            levelsLayout = uix.VBox( ...
+            backgroundsLayout = uix.VBox( ...
                 'Parent', mainLayout);
             
-            obj.levelsPropertyGrid = uiextras.jide.PropertyGrid(levelsLayout, ...
+            obj.backgroundsPropertyGrid = uiextras.jide.PropertyGrid(backgroundsLayout, ...
                 'ShowDescription', false);
 
             % Apply/Cancel controls.
@@ -59,16 +59,16 @@ classdef HoldingLevelsView < symphonyui.ui.View
             end
         end
         
-        function f = getHoldingLevels(obj)
-            f = get(obj.levelsPropertyGrid, 'Properties');
+        function f = getDeviceBackgrounds(obj)
+            f = get(obj.backgroundsPropertyGrid, 'Properties');
         end
         
-        function setHoldingLevels(obj, fields)
-            set(obj.levelsPropertyGrid, 'Properties', fields);
+        function setDeviceBackgrounds(obj, fields)
+            set(obj.backgroundsPropertyGrid, 'Properties', fields);
         end
         
-        function stopEditingHoldingLevels(obj)
-            obj.levelsPropertyGrid.StopEditing();
+        function stopEditingDeviceBackgrounds(obj)
+            obj.backgroundsPropertyGrid.StopEditing();
         end
 
     end
