@@ -27,11 +27,6 @@ function main()
     acquisitionService = AcquisitionService(session, protocolRepository);
     configurationService = ConfigurationService(session, rigDescriptionRepository);
     moduleService = ModuleService(session, moduleRepository, documentationService, acquisitionService, configurationService);
-    
-    cn = acquisitionService.getAvailableProtocols();
-    if numel(cn) > 0
-        acquisitionService.selectProtocol(cn{1});
-    end
 
     app = App(config);
     

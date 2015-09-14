@@ -192,7 +192,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             if numel(classNames) > 0
                 obj.view.setProtocolList(displayNames, classNames);
-                obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
+                obj.selectProtocol(obj.view.getSelectedProtocol());
             else
                 obj.view.setProtocolList('(None)', '(None)');
             end
@@ -200,9 +200,19 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
+            obj.selectProtocol(obj.view.getSelectedProtocol());
+        end
+        
+        function selectProtocol(obj, className)
             try
-                obj.acquisitionService.selectProtocol(obj.view.getSelectedProtocol());
+                obj.acquisitionService.selectProtocol(className);
             catch x
+                obj.updateStateOfControls();
+                obj.populateProtocolProperties();
+                if ~obj.view.isProtocolPreviewMinimized()
+                    obj.populateProtocolPreview();
+                end
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

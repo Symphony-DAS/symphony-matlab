@@ -46,7 +46,7 @@ classdef InitializeRigPresenter < symphonyui.ui.Presenter
             
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
-                obj.view.setSelectedDescription(classNames{end});
+                obj.view.setSelectedDescription(classNames{1});
             else
                 obj.view.setDescriptionList('(None)', '(None)');
             end
