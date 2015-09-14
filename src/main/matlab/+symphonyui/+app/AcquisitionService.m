@@ -19,7 +19,8 @@ classdef AcquisitionService < handle
             obj.protocolRepository = protocolRepository;
             
             obj.listeners = {};
-            obj.listeners = addlistener(obj.session.controller, 'state', 'PostSet', @(h,d)notify(obj, 'ChangedState'));
+            obj.listeners = addlistener(obj.session, 'rig', 'PostSet', @obj.onSessionSetRig);
+            obj.listeners = addlistener(obj.session.controller, 'state', 'PostSet', @obj.onControllerSetState);
         end
         
         function cn = getAvailableProtocols(obj)
@@ -42,6 +43,10 @@ classdef AcquisitionService < handle
         
         function cn = getSelectedProtocol(obj)
             cn = class(obj.session.getProtocol());
+        end
+        
+        function tf = hasSelectedProtocol(obj)
+            tf = obj.session.hasProtocol();
         end
         
         function d = getProtocolPropertyDescriptors(obj)
@@ -88,6 +93,20 @@ classdef AcquisitionService < handle
                 return;
             end
             [tf, msg] = obj.session.getProtocol().isValid();
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function onSessionSetRig(obj, ~, ~)
+            if obj.hasSelectedProtocol()
+                obj.selectProtocol(obj.getSelectedProtocol());
+            end
+        end
+        
+        function onControllerSetState(obj, ~, ~)
+            notify(obj, 'ChangedState');
         end
         
     end
