@@ -42,7 +42,8 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
                 fields = uiextras.jide.PropertyGridField.empty(0, max(numel(devices), 1));
                 for i = 1:numel(devices)
                     d = devices{i};
-                    fields(i) = uiextras.jide.PropertyGridField(d.name, d.background.quantity);
+                    fields(i) = uiextras.jide.PropertyGridField(d.name, d.background.quantity , ...
+                        'DisplayName', [d.name ' (' d.background.displayUnits ')']);
                 end
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
