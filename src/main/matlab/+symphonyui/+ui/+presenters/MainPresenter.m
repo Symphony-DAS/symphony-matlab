@@ -190,8 +190,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
             
-            obj.view.setProtocolList(displayNames, classNames);
-            obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
+            if numel(classNames) > 0
+                obj.view.setProtocolList(displayNames, classNames);
+                obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
+            else
+                obj.view.setProtocolList('(None)', '(None)');
+            end
+            obj.view.enableSelectProtocol(numel(classNames) > 0);
         end
         
         function onViewSelectedProtocol(obj, ~, ~)
@@ -213,6 +218,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function populateProtocolProperties(obj)
+            if ~obj.acquisitionService.hasSelectedProtocol()
+                obj.view.setProtocolProperties(uiextras.jide.PropertyGridField.empty(0, 1));
+                return;
+            end
             try
                 fields = symphonyui.ui.util.desc2field(obj.acquisitionService.getProtocolPropertyDescriptors());
             catch x
@@ -224,6 +233,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function updateProtocolProperties(obj)
+            if ~obj.acquisitionService.hasSelectedProtocol()
+                obj.view.updateProtocolProperties(uiextras.jide.PropertyGridField.empty(0, 1));
+                return;
+            end
             try
                 fields = symphonyui.ui.util.desc2field(obj.acquisitionService.getProtocolPropertyDescriptors());
             catch x
@@ -253,6 +266,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function populateProtocolPreview(obj)
+            if ~obj.acquisitionService.hasSelectedProtocol()
+                obj.view.clearProtocolPreviewPanel();
+                obj.protocolPreview = [];
+                return;
+            end
             obj.view.clearProtocolPreviewPanel();
             panel = obj.view.getProtocolPreviewPanel();
             try
@@ -349,6 +367,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             hasOpenFile = obj.documentationService.hasOpenFile();
             hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
+            hasAvailableProtocol = ~isempty(obj.acquisitionService.getAvailableProtocols());
             hasRig = obj.configurationService.hasRig();
             state = obj.acquisitionService.getState();
             isStopping = state == ControllerState.STOPPING;
@@ -361,7 +380,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableAddSource = hasOpenFile;
             enableBeginEpochGroup = hasSource;
             enableEndEpochGroup = hasEpochGroup;
-            enableSelectProtocol = isStopped;
+            enableSelectProtocol = isStopped && hasAvailableProtocol;
             enableProtocolProperties = isStopped;
             enableViewOnly = isStopped && isValid;
             enableRecord = enableViewOnly && hasEpochGroup;

@@ -29,7 +29,9 @@ function main()
     moduleService = ModuleService(session, moduleRepository, documentationService, acquisitionService, configurationService);
     
     cn = acquisitionService.getAvailableProtocols();
-    acquisitionService.selectProtocol(cn{1});
+    if numel(cn) > 0
+        acquisitionService.selectProtocol(cn{1});
+    end
 
     app = App(config);
     
