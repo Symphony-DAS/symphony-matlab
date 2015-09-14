@@ -1,8 +1,8 @@
-classdef Heka < symphonyui.core.descriptions.RigDescription
+classdef HekaMultiClamp2 < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function obj = Heka()
+        function obj = HekaMultiClamp2()
             import symphonyui.builtin.daqs.*;
             import symphonyui.builtin.devices.*;
             

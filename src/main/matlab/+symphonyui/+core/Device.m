@@ -35,8 +35,12 @@ classdef Device < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.Configuration.Add(name, value));
         end
         
-        function d = bindStream(obj, stream)
-            obj.tryCore(@()obj.cobj.BindStream(stream.cobj));
+        function d = bindStream(obj, stream, name)
+            if nargin < 3
+                obj.tryCore(@()obj.cobj.BindStream(stream.cobj));
+            else
+                obj.tryCore(@()obj.cobj.BindStream(name, stream.cobj));
+            end
             d = obj;
         end
         
