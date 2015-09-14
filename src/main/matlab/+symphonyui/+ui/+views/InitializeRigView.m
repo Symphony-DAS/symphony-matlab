@@ -64,6 +64,14 @@ classdef InitializeRigView < symphonyui.ui.View
             end
         end
         
+        function enableInitialize(obj, tf)
+            set(obj.initializeButton, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
+        function enableSelectDescription(obj, tf)
+            set(obj.descriptionPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
         function t = getSelectedDescription(obj)
             t = get(obj.descriptionPopupMenu, 'Value');
         end

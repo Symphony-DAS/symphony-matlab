@@ -44,8 +44,14 @@ classdef InitializeRigPresenter < symphonyui.ui.Presenter
                 displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
             
-            obj.view.setDescriptionList(displayNames, classNames);
-            obj.view.setSelectedDescription(classNames{end});
+            if numel(classNames) > 0
+                obj.view.setDescriptionList(displayNames, classNames);
+                obj.view.setSelectedDescription(classNames{end});
+            else
+                obj.view.setDescriptionList('(None)', '(None)');
+            end
+            obj.view.enableInitialize(numel(classNames) > 0);
+            obj.view.enableSelectDescription(numel(classNames) > 0);
         end
         
         function onViewKeyPress(obj, ~, event)
