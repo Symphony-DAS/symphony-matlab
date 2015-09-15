@@ -23,12 +23,16 @@ classdef ConfigurationService < handle
         function initializeRig(obj, description)
             if obj.session.hasRig()
                 delete(obj.session.getRig());
-                obj.session.rig = [];
             end
-            constructor = str2func(description);
-            rig = symphonyui.core.Rig(constructor());
-            obj.session.controller.setRig(rig);
-            obj.session.rig = rig;
+            try
+                constructor = str2func(description);
+                rig = symphonyui.core.Rig(constructor());
+                obj.session.controller.setRig(rig);
+                obj.session.rig = rig;
+            catch x
+                obj.session.rig = [];
+                rethrow(x);
+            end
             notify(obj, 'InitializedRig');
         end
         

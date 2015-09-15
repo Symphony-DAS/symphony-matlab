@@ -429,10 +429,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onServiceInitializedRig(obj, ~, ~)
             obj.updateStateOfControls();
-            obj.populateProtocolProperties();
-            if ~obj.view.isProtocolPreviewMinimized()
-                obj.populateProtocolPreview();
-            end
         end
         
         function onViewSelectedConfigureDeviceBackgrounds(obj, ~, ~)

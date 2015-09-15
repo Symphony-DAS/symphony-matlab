@@ -33,12 +33,16 @@ classdef AcquisitionService < handle
             end
             if obj.session.hasProtocol()
                 delete(obj.session.getProtocol());
-                obj.session.protocol = [];
             end
-            constructor = str2func(className);
-            protocol = constructor();
-            protocol.setRig(obj.session.rig);
-            obj.session.protocol = protocol;
+            try
+                constructor = str2func(className);
+                protocol = constructor();
+                protocol.setRig(obj.session.rig);
+                obj.session.protocol = protocol;
+            catch x
+                obj.session.protocol = [];
+                rethrow(x);
+            end
             notify(obj, 'SelectedProtocol');
         end
         
