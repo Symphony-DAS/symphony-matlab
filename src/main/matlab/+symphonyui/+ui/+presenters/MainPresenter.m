@@ -437,7 +437,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
         
         function onViewSelectedConfigureOptions(obj, ~, ~)
-            disp('Selected configure options');
+            presenter = symphonyui.ui.presenters.OptionsPresenter(obj.configurationService, obj.app);
+            presenter.goWaitStop();
         end
         
         function populateModuleList(obj)

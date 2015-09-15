@@ -1,13 +1,19 @@
 classdef OptionsPresenter < symphonyui.ui.Presenter
-
+    
+    properties (Access = private)
+        configurationService
+    end
+    
     methods
 
-        function obj = OptionsPresenter(app, view)
-            if nargin < 2
+        function obj = OptionsPresenter(configurationService, app, view)
+            if nargin < 3
                 view = symphonyui.ui.views.OptionsView();
             end
             obj = obj@symphonyui.ui.Presenter(app, view);
             obj.view.setWindowStyle('modal');
+            
+            obj.configurationService = configurationService;
         end
 
     end
@@ -18,7 +24,7 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
-            obj.addListener(v, 'Ok', @obj.onViewSelectedOk);
+            obj.addListener(v, 'Apply', @obj.onViewSelectedApply);
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
 
@@ -29,27 +35,24 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
                 case 'return'
-                    obj.onViewSelectedOk();
+                    obj.onViewSelectedApply();
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
         end
 
         function onViewSelectedNode(obj, ~, ~)
-            node = obj.view.getSelectedNode();
-            list = obj.view.getCardList();
-            index = find(strcmp(list, node));
-            obj.view.setSelectedCard(index); %#ok<FNDSB>
+            disp('Selected node');
         end
 
-        function onViewSelectedOk(obj, ~, ~)
+        function onViewSelectedApply(obj, ~, ~)
             obj.view.update();
 
-            obj.view.hide();
+            obj.view.close();
         end
 
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.hide();
+            obj.view.close();
         end
 
     end
