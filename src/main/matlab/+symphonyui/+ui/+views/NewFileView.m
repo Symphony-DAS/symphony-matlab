@@ -91,6 +91,10 @@ classdef NewFileView < symphonyui.ui.View
                 h.setDefaultButton(obj.okButton);
             end
         end
+        
+        function enableOk(obj, tf)
+            set(obj.okButton, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
 
         function n = getName(obj)
             n = get(obj.nameField, 'String');
@@ -111,6 +115,10 @@ classdef NewFileView < symphonyui.ui.View
 
         function setLocation(obj, l)
             set(obj.locationField, 'String', l);
+        end
+        
+        function enableSelectDescription(obj, tf)
+            set(obj.descriptionPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
         function t = getSelectedDescription(obj)

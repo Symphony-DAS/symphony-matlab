@@ -75,6 +75,10 @@ classdef AddSourceView < symphonyui.ui.View
             end
         end
         
+        function enableAdd(obj, tf)
+            set(obj.addButton, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
         function enableSelectParent(obj, tf)
             set(obj.parentPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
         end
@@ -90,6 +94,10 @@ classdef AddSourceView < symphonyui.ui.View
         function setParentList(obj, names, values)
             set(obj.parentPopupMenu, 'String', names);
             set(obj.parentPopupMenu, 'Values', values);
+        end
+        
+        function enableSelectDescription(obj, tf)
+            set(obj.descriptionPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
         function t = getSelectedDescription(obj)

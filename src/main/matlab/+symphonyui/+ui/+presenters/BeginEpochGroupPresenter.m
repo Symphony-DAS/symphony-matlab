@@ -68,8 +68,14 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
                 displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
             
-            obj.view.setDescriptionList(displayNames, classNames);
-            obj.view.setSelectedDescription(classNames{end});
+            if numel(classNames) > 0
+                obj.view.setDescriptionList(displayNames, classNames);
+                obj.view.setSelectedDescription(classNames{1});
+            else
+                obj.view.setDescriptionList('(None)', '(None)');
+            end
+            obj.view.enableBegin(numel(classNames) > 0);
+            obj.view.enableSelectDescription(numel(classNames) > 0);
         end
         
         function onViewKeyPress(obj, ~, event)

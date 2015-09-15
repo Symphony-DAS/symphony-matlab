@@ -84,6 +84,10 @@ classdef BeginEpochGroupView < symphonyui.ui.View
             end
         end
         
+        function enableBegin(obj, tf)
+            set(obj.beginButton, 'Enable', symphonyui.ui.util.onOff(tf));
+        end
+        
         function setParent(obj, p)
             set(obj.parentField, 'String', p);
         end
@@ -99,6 +103,10 @@ classdef BeginEpochGroupView < symphonyui.ui.View
         function setSourceList(obj, names, values)
             set(obj.sourcePopupMenu, 'String', names);
             set(obj.sourcePopupMenu, 'Values', values);
+        end
+        
+        function enableSelectDescription(obj, tf)
+            set(obj.descriptionPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
         end
         
         function t = getSelectedDescription(obj)
