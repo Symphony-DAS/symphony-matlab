@@ -1,5 +1,5 @@
 classdef MessageBoxPresenter < symphonyui.ui.Presenter
-    
+
     properties (Access = private)
         text
         title
@@ -8,16 +8,16 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
         button3
         default
     end
-    
+
     methods
-        
+
         function obj = MessageBoxPresenter(text, title, button1, button2, button3, default, view)
             if nargin < 7
                 view = symphonyui.ui.views.MessageBoxView();
             end
             obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
-            
+
             obj.text = text;
             obj.title = title;
             obj.button1 = button1;
@@ -25,11 +25,11 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
             obj.button3 = button3;
             obj.default = default;
         end
-        
+
     end
-    
+
     methods (Access = protected)
-        
+
         function onGoing(obj)
             obj.view.setText(obj.text);
             obj.view.setTitle(obj.title);
@@ -47,7 +47,7 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
                 obj.view.setButton3Default();
             end
         end
-        
+
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
@@ -55,11 +55,11 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Button2', @obj.onViewSelectedButton2);
             obj.addListener(v, 'Button3', @obj.onViewSelectedButton3);
         end
-        
+
     end
-    
+
     methods (Access = private)
-        
+
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
                 case 'return'
@@ -71,26 +71,25 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
                         obj.onViewSelectedButton3();
                     end
                 case 'escape'
-                    obj.close();
+                    obj.stop();
             end
         end
-        
+
         function onViewSelectedButton1(obj, ~, ~)
             obj.result = obj.button1;
-            obj.close();
+            obj.stop();
         end
-        
+
         function onViewSelectedButton2(obj, ~, ~)
             obj.result = obj.button2;
-            obj.close();
+            obj.stop();
         end
-        
+
         function onViewSelectedButton3(obj, ~, ~)
             obj.result = obj.button3;
-            obj.close();
+            obj.stop();
         end
-        
-    end
-    
-end
 
+    end
+
+end

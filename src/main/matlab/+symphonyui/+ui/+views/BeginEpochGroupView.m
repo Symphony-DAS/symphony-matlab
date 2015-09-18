@@ -99,6 +99,10 @@ classdef BeginEpochGroupView < symphonyui.ui.View
         function setSelectedSource(obj, s)
             set(obj.sourcePopupMenu, 'Value', s);
         end
+        
+        function l = getSourceList(obj)
+            l = get(obj.sourcePopupMenu, 'Values');
+        end
 
         function setSourceList(obj, names, values)
             set(obj.sourcePopupMenu, 'String', names);
@@ -115,6 +119,10 @@ classdef BeginEpochGroupView < symphonyui.ui.View
         
         function setSelectedDescription(obj, t)
             set(obj.descriptionPopupMenu, 'Value', t);
+        end
+        
+        function l = getDescriptionList(obj)
+            l = get(obj.descriptionPopupMenu, 'Values');
         end
         
         function setDescriptionList(obj, names, values)

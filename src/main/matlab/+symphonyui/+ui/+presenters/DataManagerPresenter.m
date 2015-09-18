@@ -47,12 +47,16 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             try
                 obj.loadSettings();
             catch x
-                obj.log.debug(x.message, x);
+                obj.log.debug(['Failed to load presenter settings: ' x.message], x);
             end
         end
         
         function onStopping(obj)
-            obj.saveSettings();
+            try
+                obj.saveSettings();
+            catch x
+                obj.log.debug(['Failed to save presenter settings: ' x.message], x);
+            end
         end
 
         function onBind(obj)
@@ -87,17 +91,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
     end
 
     methods (Access = private)
-        
-        function loadSettings(obj)
-            if ~isempty(obj.settings.viewPosition)
-                obj.view.position = obj.settings.viewPosition;
-            end
-        end
-        
-        function saveSettings(obj)
-            obj.settings.viewPosition = obj.view.position;
-            obj.settings.save();
-        end
 
         function populateEntityTree(obj)
             experiment = obj.documentationService.getExperiment();
@@ -665,6 +658,17 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
             obj.view.enableBeginEpochGroup(hasSource);
             obj.view.enableEndEpochGroup(hasEpochGroup);
+        end
+        
+        function loadSettings(obj)
+            if ~isempty(obj.settings.viewPosition)
+                obj.view.position = obj.settings.viewPosition;
+            end
+        end
+        
+        function saveSettings(obj)
+            obj.settings.viewPosition = obj.view.position;
+            obj.settings.save();
         end
 
     end

@@ -13,7 +13,7 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
             end
             obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
-            
+
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.entitySet = entitySet;
         end
@@ -25,7 +25,7 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
         function onGoing(obj)
             obj.populateTextCompletionList();
         end
-        
+
         function onGo(obj)
             obj.view.requestTextFocus();
         end
@@ -37,9 +37,9 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
     end
-    
+
     methods (Access = private)
-        
+
         function populateTextCompletionList(obj)
             list = symphonyui.app.Options.getDefault().keywordList;
             try
@@ -60,7 +60,7 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
 
         function onViewSelectedAdd(obj, ~, ~)
             obj.view.update();
-            
+
             keyword = obj.view.getText();
             try
                 tf = obj.entitySet.addKeyword(keyword);
@@ -69,16 +69,16 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-            
+
             if tf
                 obj.result = keyword;
             end
-            
-            obj.close();
+
+            obj.stop();
         end
 
         function onViewSelectedCancel(obj, ~, ~)
-            obj.close();
+            obj.stop();
         end
 
     end

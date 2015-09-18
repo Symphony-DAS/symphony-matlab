@@ -13,7 +13,7 @@ classdef AddPropertyPresenter < symphonyui.ui.Presenter
             end
             obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
-            
+
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.entitySet = entitySet;
         end
@@ -47,7 +47,7 @@ classdef AddPropertyPresenter < symphonyui.ui.Presenter
 
         function onViewSelectedAdd(obj, ~, ~)
             obj.view.update();
-            
+
             key = obj.view.getKey();
             valueStr = obj.view.getValue();
             value = str2num(valueStr); %#ok<ST2NM>
@@ -61,15 +61,14 @@ classdef AddPropertyPresenter < symphonyui.ui.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-            
+
             obj.result.key = key;
             obj.result.value = value;
-            
-            obj.close();
+            obj.stop();
         end
 
         function onViewSelectedCancel(obj, ~, ~)
-            obj.close();
+            obj.stop();
         end
 
     end

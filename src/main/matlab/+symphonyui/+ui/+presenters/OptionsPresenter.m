@@ -1,9 +1,9 @@
 classdef OptionsPresenter < symphonyui.ui.Presenter
-    
+
     properties (Access = private)
         configurationService
     end
-    
+
     methods
 
         function obj = OptionsPresenter(configurationService, view)
@@ -12,18 +12,18 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
             end
             obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
-            
+
             obj.configurationService = configurationService;
         end
 
     end
 
     methods (Access = protected)
-        
+
         function onGoing(obj)
             obj.populateDetails();
         end
-        
+
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
@@ -35,11 +35,11 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
     end
 
     methods (Access = private)
-        
+
         function populateDetails(obj)
-            
+
         end
-        
+
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
                 case 'return'
@@ -56,14 +56,14 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
 
         function onViewSelectedApply(obj, ~, ~)
             obj.view.update();
-            
-            
 
-            obj.view.close();
+
+
+            obj.stop();
         end
 
         function onViewSelectedCancel(obj, ~, ~)
-            obj.view.close();
+            obj.stop();
         end
 
     end

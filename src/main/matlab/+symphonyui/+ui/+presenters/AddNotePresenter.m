@@ -13,7 +13,7 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
             end
             obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
-            
+
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.entitySet = entitySet;
         end
@@ -47,7 +47,7 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
 
         function onViewSelectedAdd(obj, ~, ~)
             obj.view.update();
-            
+
             text = obj.view.getText();
             time = datetime('now', 'TimeZone', 'local');
             try
@@ -57,14 +57,13 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-            
+
             obj.result = note;
-            
-            obj.close();
+            obj.stop();
         end
 
         function onViewSelectedCancel(obj, ~, ~)
-            obj.close();
+            obj.stop();
         end
 
     end

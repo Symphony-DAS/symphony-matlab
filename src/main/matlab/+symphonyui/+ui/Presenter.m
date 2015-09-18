@@ -46,7 +46,7 @@ classdef Presenter < handle
             end
             obj.onStopping();
             obj.unbind();
-            obj.close();
+            obj.view.close();
             obj.isStopped = true;
             obj.onStop();
             notify(obj, 'Stopped');
@@ -54,14 +54,6 @@ classdef Presenter < handle
         
         function show(obj)
             obj.view.show();
-        end
-        
-        function hide(obj)
-            obj.view.hide();
-        end
-        
-        function close(obj)
-            obj.view.close();
         end
         
         function goWaitStop(obj)

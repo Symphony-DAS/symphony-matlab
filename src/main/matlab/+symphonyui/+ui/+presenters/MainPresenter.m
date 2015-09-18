@@ -59,7 +59,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             try
                 obj.loadSettings();
             catch x
-                obj.log.debug(x.message, x);
+                obj.log.debug(['Failed to load presenter settings: ' x.message], x);
             end
         end
 
@@ -67,7 +67,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
             if ~isempty(obj.dataManagerPresenter)
                 obj.closeDataManager();
             end
-            obj.saveSettings();
+            try
+                obj.saveSettings();
+            catch x
+                obj.log.debug(['Failed to save presenter settings: ' x.message], x);
+            end
         end
 
         function onBind(obj)
@@ -114,23 +118,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
     end
 
     methods (Access = private)
-        
-        function loadSettings(obj)
-            if ~isempty(obj.settings.viewPosition)
-                obj.view.position = obj.settings.viewPosition;
-            end
-        end
-        
-        function saveSettings(obj)
-            position = obj.view.position;
-            if ~obj.view.isProtocolPreviewMinimized()
-                delta = obj.view.getProtocolPreviewHeight() - obj.view.getProtocolPreviewMinimumHeight();
-                position(2) = position(2) + delta;
-                position(4) = position(4) - delta;
-            end
-            obj.settings.viewPosition = position;
-            obj.settings.save();
-        end
 
         function onViewSelectedNewFile(obj, ~, ~)
             presenter = symphonyui.ui.presenters.NewFilePresenter(obj.documentationService);
@@ -524,6 +511,23 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 sprintf('Version %s', symphonyui.app.App.version), ...
                 sprintf('%s', symphonyui.app.App.copyright)};
             obj.view.showMessage(message, 'About Symphony');
+        end
+        
+        function loadSettings(obj)
+            if ~isempty(obj.settings.viewPosition)
+                obj.view.position = obj.settings.viewPosition;
+            end
+        end
+        
+        function saveSettings(obj)
+            position = obj.view.position;
+            if ~obj.view.isProtocolPreviewMinimized()
+                delta = obj.view.getProtocolPreviewHeight() - obj.view.getProtocolPreviewMinimumHeight();
+                position(2) = position(2) + delta;
+                position(4) = position(4) - delta;
+            end
+            obj.settings.viewPosition = position;
+            obj.settings.save();
         end
 
     end
