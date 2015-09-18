@@ -51,6 +51,17 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
+        function loadSettings(obj)
+            if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
+                obj.view.setSelectedDescription(obj.settings.selectedDescription);
+            end
+        end
+        
+        function saveSettings(obj)
+            obj.settings.selectedDescription = obj.view.getSelectedDescription();
+            obj.settings.save();
+        end
+        
         function populateName(obj)
             name = symphonyui.app.Options.getDefault().defaultFileName;
             try
@@ -85,17 +96,6 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             end
             obj.view.enableOk(numel(classNames) > 0);
             obj.view.enableSelectDescription(numel(classNames) > 0);
-        end
-        
-        function loadSettings(obj)
-            if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
-                obj.view.setSelectedDescription(obj.settings.selectedDescription);
-            end
-        end
-        
-        function saveSettings(obj)
-            obj.settings.selectedDescription = obj.view.getSelectedDescription();
-            obj.settings.save();
         end
         
         function onViewKeyPress(obj, ~, event)

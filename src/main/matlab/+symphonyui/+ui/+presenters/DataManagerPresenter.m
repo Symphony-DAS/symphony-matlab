@@ -2,6 +2,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
         log
+        settings
         documentationService
         uuidToNode
         detailedEntitySet
@@ -16,6 +17,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj = obj@symphonyui.ui.Presenter(view);
             
             obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.settings = symphonyui.ui.settings.DataManagerSettings();
             obj.documentationService = documentationService;
             obj.detailedEntitySet = symphonyui.core.collections.EntitySet();
             obj.uuidToNode = containers.Map();
@@ -42,12 +44,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         function onGoing(obj)
             obj.populateEntityTree();
             obj.updateStateOfControls();
+            try
+                obj.loadSettings();
+            catch x
+                obj.log.debug(x.message, x);
+            end
         end
         
         function onStopping(obj)
-            if obj.documentationService.hasOpenFile()
-                obj.documentationService.closeFile();
-            end
+            obj.saveSettings();
         end
 
         function onBind(obj)
@@ -82,6 +87,17 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
     end
 
     methods (Access = private)
+        
+        function loadSettings(obj)
+            if ~isempty(obj.settings.viewPosition)
+                obj.view.position = obj.settings.viewPosition;
+            end
+        end
+        
+        function saveSettings(obj)
+            obj.settings.viewPosition = obj.view.position;
+            obj.settings.save();
+        end
 
         function populateEntityTree(obj)
             experiment = obj.documentationService.getExperiment();

@@ -143,6 +143,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
 
         function onViewSelectedOpenFile(obj, ~, ~)
+            obj.openFile();
+        end
+        
+        function openFile(obj)
             path = obj.view.showGetFile('File Location');
             if isempty(path)
                 return;
@@ -162,6 +166,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
 
         function onViewSelectedCloseFile(obj, ~, ~)
+            obj.closeFile();
+        end
+        
+        function closeFile(obj)
+            if ~obj.documentationService.hasOpenFile()
+                return;
+            end
             try
                 obj.documentationService.closeFile();
             catch x
@@ -218,6 +229,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
 
         function openDataManager(obj)
             presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService);
+            addlistener(presenter, 'Stopped', @(h,d)obj.closeFile());
             presenter.go();
             obj.dataManagerPresenter = presenter;
         end

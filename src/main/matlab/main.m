@@ -24,7 +24,7 @@ function main()
     moduleService = ModuleService(session, moduleRepository, documentationService, acquisitionService, configurationService);
     
     presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, moduleService);
-    addlistener(presenter, 'ObjectBeingDestroyed', @(h,d)session.close());
+    addlistener(presenter, 'Stopped', @(h,d)session.close());
     
     presenter.openInitializeRig();
     

@@ -1,5 +1,9 @@
 classdef Presenter < handle
     
+    events
+        Stopped
+    end
+    
     properties (SetAccess = protected)
         result
     end
@@ -42,9 +46,10 @@ classdef Presenter < handle
             end
             obj.onStopping();
             obj.unbind();
-            obj.view.close();
+            obj.close();
             obj.isStopped = true;
             obj.onStop();
+            notify(obj, 'Stopped');
         end
         
         function show(obj)
