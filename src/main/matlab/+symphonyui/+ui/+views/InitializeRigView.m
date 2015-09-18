@@ -80,6 +80,10 @@ classdef InitializeRigView < symphonyui.ui.View
             set(obj.descriptionPopupMenu, 'Value', t);
         end
         
+        function l = getDescriptionList(obj)
+            l = get(obj.descriptionPopupMenu, 'Values');
+        end
+        
         function setDescriptionList(obj, names, values)
             set(obj.descriptionPopupMenu, 'String', names);
             set(obj.descriptionPopupMenu, 'Values', values);

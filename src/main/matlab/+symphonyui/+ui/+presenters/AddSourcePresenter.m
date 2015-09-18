@@ -1,18 +1,20 @@
 classdef AddSourcePresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
+        log
         documentationService
     end
     
     methods
         
-        function obj = AddSourcePresenter(documentationService, app, view)
-            if nargin < 3
+        function obj = AddSourcePresenter(documentationService, view)
+            if nargin < 2
                 view = symphonyui.ui.views.AddSourceView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.documentationService = documentationService;
         end
         
@@ -47,11 +49,7 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             values = [{[]}, sources];
             
             obj.view.setParentList(names, values);
-            obj.view.setSelectedParent(values{end});
-            
-            if numel(names) <= 1
-                obj.view.enableSelectParent(false);
-            end
+            obj.view.enableSelectParent(numel(sources) > 0);
         end
         
         function populateDescriptionList(obj)
@@ -65,9 +63,8 @@ classdef AddSourcePresenter < symphonyui.ui.Presenter
             
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
-                obj.view.setSelectedDescription(classNames{1});
             else
-                obj.view.setDescriptionList('(None)', '(None)');
+                obj.view.setDescriptionList({'(None)'}, {[]});
             end
             obj.view.enableAdd(numel(classNames) > 0);
             obj.view.enableSelectDescription(numel(classNames) > 0);

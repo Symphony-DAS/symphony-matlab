@@ -1,18 +1,20 @@
 classdef AddKeywordPresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
+        log
         entitySet
     end
 
     methods
 
-        function obj = AddKeywordPresenter(entitySet, app, view)
-            if nargin < 3
+        function obj = AddKeywordPresenter(entitySet, view)
+            if nargin < 2
                 view = symphonyui.ui.views.AddKeywordView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.entitySet = entitySet;
         end
 
@@ -39,11 +41,11 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateTextCompletionList(obj)
-            list = obj.app.config.get(symphonyui.app.Options.KEYWORD_LIST);
+            list = symphonyui.app.Options.getDefault().keywordList;
             try
                 obj.view.setTextCompletionList(list());
             catch x
-                obj.log.debug(['Unable to populate completion list from config: ' x.message], x);
+                obj.log.debug(['Unable to populate text completion list: ' x.message], x);
             end
         end
 
@@ -63,6 +65,7 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
             try
                 tf = obj.entitySet.addKeyword(keyword);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

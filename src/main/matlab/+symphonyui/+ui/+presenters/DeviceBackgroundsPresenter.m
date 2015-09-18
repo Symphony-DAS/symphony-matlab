@@ -1,18 +1,20 @@
 classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
+        log
         configurationService
     end
     
     methods
         
-        function obj = DeviceBackgroundsPresenter(configurationService, app, view)
-            if nargin < 3
+        function obj = DeviceBackgroundsPresenter(configurationService, view)
+            if nargin < 2
                 view = symphonyui.ui.views.DeviceBackgroundsView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.configurationService = configurationService;
         end
         
@@ -75,6 +77,7 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
                     d.applyBackground();
                 end
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

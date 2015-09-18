@@ -15,7 +15,7 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
             if nargin < 7
                 view = symphonyui.ui.views.MessageBoxView();
             end
-            obj = obj@symphonyui.ui.Presenter([], view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
             obj.text = text;

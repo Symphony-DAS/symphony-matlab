@@ -6,11 +6,11 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
     
     methods
 
-        function obj = OptionsPresenter(configurationService, app, view)
-            if nargin < 3
+        function obj = OptionsPresenter(configurationService, view)
+            if nargin < 2
                 view = symphonyui.ui.views.OptionsView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
             obj.configurationService = configurationService;
@@ -37,12 +37,7 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
     methods (Access = private)
         
         function populateDetails(obj)
-            import symphonyui.app.Options;
             
-            c = obj.app.config;
-            
-            obj.view.setFileDefaultName(char(c.get(Options.FILE_DEFAULT_NAME)));
-            obj.view.setFileDefaultLocation(char(c.get(Options.FILE_DEFAULT_LOCATION)));
         end
         
         function onViewKeyPress(obj, ~, event)

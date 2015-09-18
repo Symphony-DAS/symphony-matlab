@@ -1,18 +1,20 @@
 classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
+        log
         documentationService
     end
     
     methods
         
-        function obj = BeginEpochGroupPresenter(documentationService, app, view)
-            if nargin < 3
+        function obj = BeginEpochGroupPresenter(documentationService, view)
+            if nargin < 2
                 view = symphonyui.ui.views.BeginEpochGroupView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.documentationService = documentationService;
         end
         
@@ -56,7 +58,6 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             end
             
             obj.view.setSourceList(names, sources);
-            obj.view.setSelectedSource(sources{end});
         end
         
         function populateDescriptionList(obj)
@@ -70,9 +71,8 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
-                obj.view.setSelectedDescription(classNames{1});
             else
-                obj.view.setDescriptionList('(None)', '(None)');
+                obj.view.setDescriptionList({'(None)'}, {[]});
             end
             obj.view.enableBegin(numel(classNames) > 0);
             obj.view.enableSelectDescription(numel(classNames) > 0);
@@ -95,6 +95,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             try
                 group = obj.documentationService.beginEpochGroup(source, description);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

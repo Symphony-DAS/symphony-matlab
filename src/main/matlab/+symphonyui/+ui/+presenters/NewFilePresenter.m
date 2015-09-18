@@ -1,18 +1,22 @@
 classdef NewFilePresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
+        log
+        settings
         documentationService
     end
     
     methods
         
-        function obj = NewFilePresenter(documentationService, app, view)
+        function obj = NewFilePresenter(documentationService, view)
             if nargin < 3
                 view = symphonyui.ui.views.NewFileView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
+            obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.settings = symphonyui.ui.settings.NewFileSettings();
             obj.documentationService = documentationService;
         end
         
@@ -21,8 +25,10 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
     methods (Access = protected)
         
         function onGoing(obj)
-            obj.populateFromConfig();
+            obj.populateName();
+            obj.populateLocation();
             obj.populateDescriptionList();
+            obj.loadSettings();
         end
         
         function onGo(obj)
@@ -41,19 +47,21 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
     
     methods (Access = private)
         
-        function populateFromConfig(obj)
-            import symphonyui.app.Options;
-            
-            config = obj.app.config;
-            name = config.get(Options.FILE_DEFAULT_NAME);
-            location = config.get(Options.FILE_DEFAULT_LOCATION);
+        function populateName(obj)
+            name = symphonyui.app.Options.getDefault().defaultFileName;
             try
                 obj.view.setName(name());
+            catch x
+                obj.log.debug(['Unable to populate name: ' x.message], x);
+            end
+        end
+        
+        function populateLocation(obj)
+            location = symphonyui.app.Options.getDefault().defaultFileLocation;
+            try
                 obj.view.setLocation(location());
             catch x
-                msg = ['Unable to populate view from config: ' x.message];
-                obj.log.debug(msg, x);
-                obj.view.showError(msg);
+                obj.log.debug(['Unable to populate location: ' x.message], x);
             end
         end
         
@@ -68,12 +76,22 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
-                obj.view.setSelectedDescription(classNames{1});
             else
-                obj.view.setDescriptionList('(None)', '(None)');
+                obj.view.setDescriptionList({'(None)'}, {[]});
             end
             obj.view.enableOk(numel(classNames) > 0);
             obj.view.enableSelectDescription(numel(classNames) > 0);
+        end
+        
+        function loadSettings(obj)
+            if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
+                obj.view.setSelectedDescription(obj.settings.selectedDescription);
+            end
+        end
+        
+        function saveSettings(obj)
+            obj.settings.selectedDescription = obj.view.getSelectedDescription();
+            obj.settings.save();
         end
         
         function onViewKeyPress(obj, ~, event)

@@ -9,7 +9,6 @@ classdef AcquisitionService < handle
     properties (Access = private)
         session
         protocolRepository
-        listeners
     end
     
     methods
@@ -18,9 +17,8 @@ classdef AcquisitionService < handle
             obj.session = session;
             obj.protocolRepository = protocolRepository;
             
-            obj.listeners = {};
-            obj.listeners = addlistener(obj.session, 'rig', 'PostSet', @obj.onSessionSetRig);
-            obj.listeners = addlistener(obj.session.controller, 'state', 'PostSet', @obj.onControllerSetState);
+            addlistener(obj.session, 'rig', 'PostSet', @obj.onSessionSetRig);
+            addlistener(obj.session.controller, 'state', 'PostSet', @obj.onControllerSetState);
         end
         
         function cn = getAvailableProtocols(obj)

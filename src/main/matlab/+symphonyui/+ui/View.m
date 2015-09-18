@@ -155,18 +155,6 @@ classdef View < handle
             set(obj.figureHandle, 'Position', p); %#ok<MCSUP>
         end
 
-        function savePosition(obj)
-            pref = [strrep(class(obj), '.', '_') '_Position'];
-            setpref('symphonyui', pref, obj.position);
-        end
-
-        function loadPosition(obj)
-            pref = [strrep(class(obj), '.', '_') '_Position'];
-            if ispref('symphonyui', pref)
-                obj.position = getpref('symphonyui', pref);
-            end
-        end
-
     end
 
     methods (Abstract)

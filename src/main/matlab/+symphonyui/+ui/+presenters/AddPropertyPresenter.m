@@ -1,18 +1,20 @@
 classdef AddPropertyPresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
+        log
         entitySet
     end
 
     methods
 
-        function obj = AddPropertyPresenter(entitySet, app, view)
-            if nargin < 3
+        function obj = AddPropertyPresenter(entitySet, view)
+            if nargin < 2
                 view = symphonyui.ui.views.AddPropertyView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.entitySet = entitySet;
         end
 
@@ -55,6 +57,7 @@ classdef AddPropertyPresenter < symphonyui.ui.Presenter
             try
                 obj.entitySet.addProperty(key, value);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

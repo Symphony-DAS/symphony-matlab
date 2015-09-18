@@ -10,7 +10,7 @@ classdef Module < symphonyui.ui.Presenter
         
         function obj = Module()
             view = symphonyui.ui.views.FigureView();
-            obj = obj@symphonyui.ui.Presenter([], view);
+            obj = obj@symphonyui.ui.Presenter(view);
             
             try
                 obj.createUi(view.getFigureHandle());

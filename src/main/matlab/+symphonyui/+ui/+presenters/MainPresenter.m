@@ -1,6 +1,7 @@
 classdef MainPresenter < symphonyui.ui.Presenter
-    
+
     properties (Access = private)
+        log
         documentationService
         acquisitionService
         configurationService
@@ -8,36 +9,59 @@ classdef MainPresenter < symphonyui.ui.Presenter
         dataManagerPresenter
         protocolPreview
     end
-    
+
     methods
-        
-        function obj = MainPresenter(documentationService, acquisitionService, configurationService, moduleService, app, view)            
-            if nargin < 6
+
+        function obj = MainPresenter(documentationService, acquisitionService, configurationService, moduleService, view)
+            if nargin < 5
                 view = symphonyui.ui.views.MainView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
-            
+            obj = obj@symphonyui.ui.Presenter(view);
+
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
             obj.configurationService = configurationService;
             obj.moduleService = moduleService;
         end
         
-    end
-    
-    methods (Access = protected)
+        function openInitializeRig(obj)
+            presenter = symphonyui.ui.presenters.InitializeRigPresenter(obj.configurationService);
+            presenter.goWaitStop();
+        end
         
+        function selectProtocol(obj, className)
+            try
+                obj.acquisitionService.selectProtocol(className);
+            catch x
+                obj.updateStateOfControls();
+                obj.populateProtocolProperties();
+                if ~obj.view.isProtocolPreviewMinimized()
+                    obj.populateProtocolPreview();
+                end
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+        end
+
+    end
+
+    methods (Access = protected)
+
         function onGoing(obj)
             obj.updateStateOfControls();
             obj.populateProtocolList();
             obj.populateProtocolProperties();
             obj.populateModuleList();
         end
-        
+
         function onStopping(obj)
-            obj.closeDataManager();
+            if ~isempty(obj.dataManagerPresenter)
+                obj.closeDataManager();
+            end
         end
-        
+
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'NewFile', @obj.onViewSelectedNewFile);
@@ -60,7 +84,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
             obj.addListener(v, 'ShowUserGroup', @obj.onViewSelectedShowUserGroup);
             obj.addListener(v, 'ShowAbout', @obj.onViewSelectedShowAbout);
-            
+
             d = obj.documentationService;
             obj.addListener(d, 'CreatedFile', @obj.onServiceCreatedFile);
             obj.addListener(d, 'OpenedFile', @obj.onServiceOpenedFile);
@@ -69,30 +93,30 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
             obj.addListener(d, 'DeletedEntity', @obj.onServiceDeletedEntity);
-            
+
             a = obj.acquisitionService;
             obj.addListener(a, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             obj.addListener(a, 'SetProtocolProperty', @obj.onServiceSetProtocolProperty);
             obj.addListener(a, 'ChangedState', @obj.onServiceChangedState);
-            
+
             c = obj.configurationService;
             obj.addListener(c, 'InitializedRig', @obj.onServiceInitializedRig);
         end
-        
+
     end
-    
+
     methods (Access = private)
-        
+
         function onViewSelectedNewFile(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.NewFilePresenter(obj.documentationService, obj.app);
+            presenter = symphonyui.ui.presenters.NewFilePresenter(obj.documentationService);
             presenter.goWaitStop();
         end
-        
+
         function onServiceCreatedFile(obj, ~, ~)
             obj.updateStateOfControls();
-            obj.showDataManager();
+            obj.openDataManager();
         end
-        
+
         function onViewSelectedOpenFile(obj, ~, ~)
             path = obj.view.showGetFile('File Location');
             if isempty(path)
@@ -101,89 +125,86 @@ classdef MainPresenter < symphonyui.ui.Presenter
             try
                 obj.documentationService.openFile(path);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
         end
-        
+
         function onServiceOpenedFile(obj, ~, ~)
             obj.updateStateOfControls();
-            obj.showDataManager();
+            obj.openDataManager();
         end
-        
+
         function onViewSelectedCloseFile(obj, ~, ~)
             try
                 obj.documentationService.closeFile();
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
         end
-        
+
         function onServiceClosedFile(obj, ~, ~)
             obj.updateStateOfControls();
             obj.closeDataManager();
         end
-        
+
         function onViewSelectedExit(obj, ~, ~)
             obj.stop();
         end
-        
+
         function onViewSelectedAddSource(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.documentationService, obj.app);
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.documentationService);
             presenter.goWaitStop();
         end
-        
+
         function onServiceAddedSource(obj, ~, ~)
             obj.updateStateOfControls();
         end
-        
+
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.documentationService, obj.app);
+            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.documentationService);
             presenter.goWaitStop();
         end
-        
+
         function onServiceBeganEpochGroup(obj, ~, ~)
             obj.updateStateOfControls();
         end
-        
+
         function onViewSelectedEndEpochGroup(obj, ~, ~)
             try
                 obj.documentationService.endEpochGroup();
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
         end
-        
+
         function onServiceEndedEpochGroup(obj, ~, ~)
             obj.updateStateOfControls();
         end
-        
+
         function onServiceDeletedEntity(obj, ~, ~)
             obj.updateStateOfControls();
         end
-        
-        function showDataManager(obj)
-            if isempty(obj.dataManagerPresenter) || obj.dataManagerPresenter.isStopped
-                presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.app);
-                presenter.go();
-                obj.dataManagerPresenter = presenter;
-            else
-                obj.dataManagerPresenter.show();
-            end
+
+        function openDataManager(obj)
+            presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService);
+            presenter.go();
+            obj.dataManagerPresenter = presenter;
         end
-        
+
         function closeDataManager(obj)
-            if ~isempty(obj.dataManagerPresenter)
-                obj.dataManagerPresenter.stop();
-                obj.dataManagerPresenter = [];
-            end
+            obj.dataManagerPresenter.stop();
+            obj.dataManagerPresenter = [];
         end
-        
+
         function populateProtocolList(obj)
             classNames = obj.acquisitionService.getAvailableProtocols();
-            
+
             displayNames = cell(1, numel(classNames));
             for i = 1:numel(classNames)
                 split = strsplit(classNames{i}, '.');
@@ -192,32 +213,19 @@ classdef MainPresenter < symphonyui.ui.Presenter
             
             if numel(classNames) > 0
                 obj.view.setProtocolList(displayNames, classNames);
-                obj.selectProtocol(obj.view.getSelectedProtocol());
             else
-                obj.view.setProtocolList('(None)', '(None)');
+                obj.view.setProtocolList({'(None)'}, {[]});
+            end
+            if obj.acquisitionService.hasSelectedProtocol()
+                obj.view.setSelectedProtocol(obj.acquisition.getSelectedProtocol());
             end
             obj.view.enableSelectProtocol(numel(classNames) > 0);
         end
-        
+
         function onViewSelectedProtocol(obj, ~, ~)
             obj.selectProtocol(obj.view.getSelectedProtocol());
         end
-        
-        function selectProtocol(obj, className)
-            try
-                obj.acquisitionService.selectProtocol(className);
-            catch x
-                obj.updateStateOfControls();
-                obj.populateProtocolProperties();
-                if ~obj.view.isProtocolPreviewMinimized()
-                    obj.populateProtocolPreview();
-                end
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-                return;
-            end
-        end
-        
+
         function onServiceSelectedProtocol(obj, ~, ~)
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
             obj.updateStateOfControls();
@@ -226,7 +234,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 obj.populateProtocolPreview();
             end
         end
-        
+
         function populateProtocolProperties(obj)
             if ~obj.acquisitionService.hasSelectedProtocol()
                 obj.view.setProtocolProperties(uiextras.jide.PropertyGridField.empty(0, 1));
@@ -241,7 +249,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
             obj.view.setProtocolProperties(fields);
         end
-        
+
         function updateProtocolProperties(obj)
             if ~obj.acquisitionService.hasSelectedProtocol()
                 obj.view.updateProtocolProperties(uiextras.jide.PropertyGridField.empty(0, 1));
@@ -256,17 +264,18 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
             obj.view.updateProtocolProperties(fields);
         end
-        
+
         function onViewSetProtocolProperty(obj, ~, event)
             p = event.Property;
             try
                 obj.acquisitionService.setProtocolProperty(p.Name, p.Value);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
         end
-        
+
         function onServiceSetProtocolProperty(obj, ~, ~)
             obj.updateStateOfControls();
             obj.updateProtocolProperties();
@@ -274,7 +283,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 obj.updateProtocolPreview();
             end
         end
-        
+
         function populateProtocolPreview(obj)
             if ~obj.acquisitionService.hasSelectedProtocol()
                 obj.view.clearProtocolPreviewPanel();
@@ -291,7 +300,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 return;
             end
         end
-        
+
         function updateProtocolPreview(obj)
             if isempty(obj.protocolPreview)
                 return;
@@ -303,7 +312,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 return;
             end
         end
-        
+
         function onViewSelectedMinimizeProtocolPreview(obj, ~, ~)
             if obj.view.isProtocolPreviewMinimized()
                 obj.maximizeProtocolPreview();
@@ -313,7 +322,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 obj.protocolPreview = [];
             end
         end
-        
+
         function minimizeProtocolPreview(obj)
             delta = obj.view.getProtocolPreviewHeight() - obj.view.getProtocolPreviewMinimumHeight();
             obj.view.setHeight(obj.view.getHeight() - delta);
@@ -321,7 +330,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableProtocolLayoutDivider(false);
             obj.view.setProtocolPreviewMinimized(true);
         end
-        
+
         function maximizeProtocolPreview(obj)
             delta = 253;
             obj.view.setHeight(obj.view.getHeight() + delta);
@@ -329,7 +338,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableProtocolLayoutDivider(true);
             obj.view.setProtocolPreviewMinimized(false);
         end
-        
+
         function onViewSelectedViewOnly(obj, ~, ~)
             obj.view.stopEditingProtocolProperties();
             try
@@ -340,7 +349,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 return;
             end
         end
-        
+
         function onViewSelectedRecord(obj, ~, ~)
             obj.view.stopEditingProtocolProperties();
             try
@@ -351,7 +360,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 return;
             end
         end
-        
+
         function onViewSelectedStop(obj, ~, ~)
             try
                 obj.acquisitionService.stop();
@@ -361,19 +370,19 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 return;
             end
         end
-        
+
         function onServiceChangedState(obj, ~, ~)
             obj.updateStateOfControls();
-            
+
             state = obj.acquisitionService.getState();
             if state == symphonyui.core.ControllerState.STOPPED && ~isempty(obj.dataManagerPresenter)
                 obj.dataManagerPresenter.updateCurrentEpochGroupBlocks();
             end
         end
-        
+
         function updateStateOfControls(obj)
             import symphonyui.core.ControllerState;
-            
+
             hasOpenFile = obj.documentationService.hasOpenFile();
             hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
@@ -383,7 +392,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             isStopping = state == ControllerState.STOPPING;
             isStopped = state == ControllerState.STOPPED;
             [isValid, validationMessage] = obj.acquisitionService.validate();
-            
+
             enableNewFile = ~hasOpenFile && isStopped;
             enableOpenFile = enableNewFile;
             enableCloseFile = hasOpenFile && isStopped;
@@ -397,7 +406,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableStop = ~isStopping && ~isStopped;
             enableInitializeRig = isStopped;
             enableConfigureDeviceBackgrounds = isStopped && hasRig;
-            
+
             if ~isValid
                 status = validationMessage;
             elseif isStopped
@@ -405,7 +414,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             else
                 status = char(state);
             end
-            
+
             obj.view.enableNewFile(enableNewFile);
             obj.view.enableOpenFile(enableOpenFile);
             obj.view.enableCloseFile(enableCloseFile);
@@ -421,40 +430,39 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);
             obj.view.setStatus(status);
         end
-        
+
         function onViewSelectedInitializeRig(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.InitializeRigPresenter(obj.configurationService, obj.app);
-            presenter.goWaitStop();
+            obj.openInitializeRig();
         end
-        
+
         function onServiceInitializedRig(obj, ~, ~)
             obj.updateStateOfControls();
         end
-        
+
         function onViewSelectedConfigureDeviceBackgrounds(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.DeviceBackgroundsPresenter(obj.configurationService, obj.app);
+            presenter = symphonyui.ui.presenters.DeviceBackgroundsPresenter(obj.configurationService);
             presenter.goWaitStop();
         end
-        
+
         function onViewSelectedConfigureOptions(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.OptionsPresenter(obj.configurationService, obj.app);
+            presenter = symphonyui.ui.presenters.OptionsPresenter(obj.configurationService);
             presenter.goWaitStop();
         end
-        
+
         function populateModuleList(obj)
             classNames = obj.moduleService.getAvailableModules();
-            
+
             displayNames = cell(1, numel(classNames));
             for i = 1:numel(classNames)
                 split = strsplit(classNames{i}, '.');
                 displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
-            
+
             for i = 1:numel(classNames)
                 obj.view.addModule(displayNames{i}, classNames{i});
             end
         end
-        
+
         function onViewSelectedModule(obj, ~, event)
             module = event.data;
             try
@@ -464,24 +472,23 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 obj.view.showError(x.message);
             end
         end
-        
+
         function onViewSelectedShowDocumentation(obj, ~, ~)
-            obj.view.showWeb(obj.app.getDocumentationUrl);
+            obj.view.showWeb(symphonyui.app.App.documentationUrl);
         end
-        
+
         function onViewSelectedShowUserGroup(obj, ~, ~)
-            obj.view.showWeb(obj.app.getUserGroupUrl);
+            obj.view.showWeb(symphonyui.app.App.userGroupUrl);
         end
-        
+
         function onViewSelectedShowAbout(obj, ~, ~)
             message = { ...
-                sprintf('Symphony Data Acquisition System'), ...
-                sprintf('Version %s', obj.app.getVersion()), ...
-                sprintf('%c %s Symphony-DAS', 169, datestr(now, 'YYYY'))};
+                sprintf('%s', symphonyui.app.App.title), ...
+                sprintf('Version %s', symphonyui.app.App.version), ...
+                sprintf('%s', symphonyui.app.App.copyright)};
             obj.view.showMessage(message, 'About Symphony');
         end
-        
-    end
-    
-end
 
+    end
+
+end

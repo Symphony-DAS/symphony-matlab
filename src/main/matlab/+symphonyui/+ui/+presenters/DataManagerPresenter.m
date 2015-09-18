@@ -1,6 +1,7 @@
 classdef DataManagerPresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
+        log
         documentationService
         uuidToNode
         detailedEntitySet
@@ -8,12 +9,13 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
     methods
 
-        function obj = DataManagerPresenter(documentationService, app, view)
-            if nargin < 3
+        function obj = DataManagerPresenter(documentationService, view)
+            if nargin < 2
                 view = symphonyui.ui.views.DataManagerView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
-
+            obj = obj@symphonyui.ui.Presenter(view);
+            
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.documentationService = documentationService;
             obj.detailedEntitySet = symphonyui.core.collections.EntitySet();
             obj.uuidToNode = containers.Map();
@@ -108,7 +110,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
 
         function onViewSelectedAddSource(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.documentationService, obj.app);
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.documentationService);
             presenter.goWaitStop();
         end
 
@@ -156,6 +158,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             try
                 sourceSet.label = obj.view.getSourceLabel();
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
@@ -195,6 +198,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             try
                 experimentSet.purpose = purpose;
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
@@ -213,7 +217,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
 
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.documentationService, obj.app);
+            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.documentationService);
             presenter.goWaitStop();
         end
 
@@ -233,6 +237,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             try
                 obj.documentationService.endEpochGroup();
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
@@ -294,6 +299,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             try
                 groupSet.label = label;
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
@@ -503,7 +509,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
 
         function onViewSelectedAddProperty(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddPropertyPresenter(obj.detailedEntitySet, obj.app);
+            presenter = symphonyui.ui.presenters.AddPropertyPresenter(obj.detailedEntitySet);
             presenter.goWaitStop();
 
             if ~isempty(presenter.result)
@@ -519,6 +525,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             try
                 tf = obj.detailedEntitySet.removeProperty(key);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
@@ -533,7 +540,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
 
         function onViewSelectedAddKeyword(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddKeywordPresenter(obj.detailedEntitySet, obj.app);
+            presenter = symphonyui.ui.presenters.AddKeywordPresenter(obj.detailedEntitySet);
             presenter.goWaitStop();
 
             if ~isempty(presenter.result)
@@ -550,6 +557,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             try
                 obj.detailedEntitySet.removeKeyword(keyword);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
@@ -568,7 +576,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
 
         function onViewSelectedAddNote(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddNotePresenter(obj.detailedEntitySet, obj.app);
+            presenter = symphonyui.ui.presenters.AddNotePresenter(obj.detailedEntitySet);
             presenter.goWaitStop();
 
             if ~isempty(presenter.result)
@@ -585,6 +593,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             try
                 obj.documentationService.sendEntityToWorkspace(entity);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
@@ -607,6 +616,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             try
                 obj.documentationService.deleteEntity(entity);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

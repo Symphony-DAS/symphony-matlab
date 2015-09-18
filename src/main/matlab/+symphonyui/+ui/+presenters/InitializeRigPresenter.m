@@ -1,18 +1,22 @@
 classdef InitializeRigPresenter < symphonyui.ui.Presenter
     
     properties (Access = private)
+        log
+        settings
         configurationService
     end
     
     methods
         
-        function obj = InitializeRigPresenter(configurationService, app, view)
-            if nargin < 3
+        function obj = InitializeRigPresenter(configurationService, view)
+            if nargin < 2
                 view = symphonyui.ui.views.InitializeRigView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
+            obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.settings = symphonyui.ui.settings.InitializeRigSettings();
             obj.configurationService = configurationService;
         end
         
@@ -22,6 +26,7 @@ classdef InitializeRigPresenter < symphonyui.ui.Presenter
         
         function onGoing(obj, ~, ~)
             obj.populateDescriptionList();
+            obj.loadSettings();
         end
         
         function onBind(obj)
@@ -46,12 +51,22 @@ classdef InitializeRigPresenter < symphonyui.ui.Presenter
             
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
-                obj.view.setSelectedDescription(classNames{1});
             else
-                obj.view.setDescriptionList('(None)', '(None)');
+                obj.view.setDescriptionList({'(None)'}, {[]});
             end
             obj.view.enableInitialize(numel(classNames) > 0);
             obj.view.enableSelectDescription(numel(classNames) > 0);
+        end
+        
+        function loadSettings(obj)
+            if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
+                obj.view.setSelectedDescription(obj.settings.selectedDescription);
+            end
+        end
+        
+        function saveSettings(obj)
+            obj.settings.selectedDescription = obj.view.getSelectedDescription();
+            obj.settings.save();
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -70,9 +85,12 @@ classdef InitializeRigPresenter < symphonyui.ui.Presenter
             try
                 obj.configurationService.initializeRig(description);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
+            
+            obj.saveSettings();
             
             obj.result = true;
             obj.close();

@@ -1,18 +1,20 @@
 classdef AddNotePresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
+        log
         entitySet
     end
 
     methods
 
-        function obj = AddNotePresenter(entitySet, app, view)
-            if nargin < 3
+        function obj = AddNotePresenter(entitySet, view)
+            if nargin < 2
                 view = symphonyui.ui.views.AddNoteView();
             end
-            obj = obj@symphonyui.ui.Presenter(app, view);
+            obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
             
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.entitySet = entitySet;
         end
 
@@ -51,6 +53,7 @@ classdef AddNotePresenter < symphonyui.ui.Presenter
             try
                 note = obj.entitySet.addNote(text, time);
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end

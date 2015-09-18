@@ -9,8 +9,6 @@ classdef Presenter < handle
     end
     
     properties (Access = protected)
-        log
-        app
         view
     end
     
@@ -20,11 +18,9 @@ classdef Presenter < handle
     
     methods
         
-        function obj = Presenter(app, view)
+        function obj = Presenter(view)
             obj.result = [];
             obj.isStopped = false;
-            obj.log = log4m.LogManager.getLogger(class(obj));
-            obj.app = app;
             obj.view = view;
             obj.listeners = {};
         end
