@@ -217,7 +217,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 obj.view.setProtocolList({'(None)'}, {[]});
             end
             if obj.acquisitionService.hasSelectedProtocol()
-                obj.view.setSelectedProtocol(obj.acquisition.getSelectedProtocol());
+                obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
             end
             obj.view.enableSelectProtocol(numel(classNames) > 0);
         end

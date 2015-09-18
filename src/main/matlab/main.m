@@ -25,14 +25,15 @@ function main()
     
     presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, moduleService);
     addlistener(presenter, 'ObjectBeingDestroyed', @(h,d)session.close());
-    presenter.go();
+    
+    presenter.openInitializeRig();
     
     protocols = acquisitionService.getAvailableProtocols();
     if numel(protocols) > 0
         presenter.selectProtocol(protocols{1});
     end
     
-    presenter.openInitializeRig();
+    presenter.go();
 end
 
 function addDotNetAssemblies(asms)
