@@ -2,6 +2,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
         log
+        settings
         documentationService
         acquisitionService
         configurationService
@@ -19,6 +20,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj = obj@symphonyui.ui.Presenter(view);
 
             obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.settings = symphonyui.ui.settings.MainSettings();
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
             obj.configurationService = configurationService;
@@ -54,12 +56,18 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.populateProtocolList();
             obj.populateProtocolProperties();
             obj.populateModuleList();
+            try
+                obj.loadSettings();
+            catch x
+                obj.log.debug(x.message, x);
+            end
         end
 
         function onStopping(obj)
             if ~isempty(obj.dataManagerPresenter)
                 obj.closeDataManager();
             end
+            obj.saveSettings();
         end
 
         function onBind(obj)
@@ -106,6 +114,23 @@ classdef MainPresenter < symphonyui.ui.Presenter
     end
 
     methods (Access = private)
+        
+        function loadSettings(obj)
+            if ~isempty(obj.settings.viewPosition)
+                obj.view.position = obj.settings.viewPosition;
+            end
+        end
+        
+        function saveSettings(obj)
+            position = obj.view.position;
+            if ~obj.view.isProtocolPreviewMinimized()
+                delta = obj.view.getProtocolPreviewHeight() - obj.view.getProtocolPreviewMinimumHeight();
+                position(2) = position(2) + delta;
+                position(4) = position(4) - delta;
+            end
+            obj.settings.viewPosition = position;
+            obj.settings.save();
+        end
 
         function onViewSelectedNewFile(obj, ~, ~)
             presenter = symphonyui.ui.presenters.NewFilePresenter(obj.documentationService);

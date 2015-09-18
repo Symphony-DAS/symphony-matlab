@@ -28,7 +28,11 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             obj.populateName();
             obj.populateLocation();
             obj.populateDescriptionList();
-            obj.loadSettings();
+            try
+                obj.loadSettings();
+            catch x
+                obj.log.debug(x.message, x);
+            end
         end
         
         function onGo(obj)
