@@ -8,21 +8,21 @@ classdef AcquisitionService < handle
     
     properties (Access = private)
         session
-        protocolRepository
+        classRepository
     end
     
     methods
         
-        function obj = AcquisitionService(session, protocolRepository)
+        function obj = AcquisitionService(session, classRepository)
             obj.session = session;
-            obj.protocolRepository = protocolRepository;
+            obj.classRepository = classRepository;
             
             addlistener(obj.session, 'rig', 'PostSet', @obj.onSessionSetRig);
             addlistener(obj.session.controller, 'state', 'PostSet', @obj.onControllerSetState);
         end
         
         function cn = getAvailableProtocols(obj)
-            cn = obj.protocolRepository.getAll();
+            cn = obj.classRepository.get('symphonyui.core.Protocol');
         end
         
         function selectProtocol(obj, className)

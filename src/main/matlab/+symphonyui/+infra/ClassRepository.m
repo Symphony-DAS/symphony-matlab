@@ -1,75 +1,91 @@
 classdef ClassRepository < handle
-
+    
     properties (Access = private)
         log
-        subtype
-        searchPaths
-        classes
+        searchPath
+        classMap
     end
-
+    
     methods
         
-        function obj = ClassRepository(subtype, searchPaths)
+        function obj = ClassRepository(path)
             obj.log = log4m.LogManager.getLogger(class(obj));
-            obj.subtype = subtype;
-            obj.setSearchPaths(searchPaths);
+            obj.setSearchPath(path);
+        end
+        
+        function setSearchPath(obj, path)
+            dirs = strsplit(path, ';');
+            for i = 1:numel(dirs)
+                if exist(dirs{i}, 'dir')
+                    addpath(dirs{i});
+                end
+            end
+            obj.searchPath = path;
             obj.loadAll();
         end
         
-        function setSearchPaths(obj, paths)
-            for i = 1:numel(paths)
-                [~, parent] = packageName(paths{i});
-                if exist(parent, 'dir')
-                    addpath(parent);
-                end
+        function cn = get(obj, superclass)
+            if obj.classMap.isKey(superclass)
+                cn = obj.classMap(superclass);
+            else
+                cn = {};
             end
-            obj.searchPaths = paths;
-        end
-
-        function loadAll(obj)
-            loaded = {};
-
-            for i = 1:numel(obj.searchPaths)
-                package = packageName(obj.searchPaths{i});
-                if ~isempty(package)
-                    package = [package '.']; %#ok<AGROW>
-                end
-
-                listing = dir(fullfile(obj.searchPaths{i}, '*.m'));
-                for k = 1:numel(listing)
-                    className = [package listing(k).name(1:end-2)];
-                    try
-                        super = superclasses(className);
-                    catch x
-                        obj.log.debug(x.message, x);
-                        continue;
-                    end
-
-                    if ~any(strcmp(super, obj.subtype))
-                        continue;
-                    end
-
-                    try
-                        m = meta.class.fromName(className);
-                        if ~m.Abstract
-                            loaded{end + 1} = className; %#ok<AGROW>
-                        end
-                    catch x
-                        obj.log.debug(x.message, x);
-                        continue;
-                    end
-                end
-            end
-            
-            obj.classes = loaded;
         end
         
-        function o = getAll(obj)
-            o = obj.classes;
-        end
-
     end
-
+    
+    methods (Access = private)
+        
+        function loadAll(obj)
+            obj.classMap = containers.Map();
+            
+            dirs = strsplit(obj.searchPath, ';');
+            for i = 1:numel(dirs)
+                obj.loadDirectory(dirs{i});
+            end
+        end
+        
+        function loadDirectory(obj, path)
+            package = packageName(path);
+            if ~isempty(package)
+                package = [package '.'];
+            end
+            
+            listing = dir(path);
+            for i = 1:numel(listing)
+                l = listing(i);
+                [~, name, ext] = fileparts(l.name);
+                if strcmpi(ext, '.m') && exist([package name], 'class')
+                    try
+                        obj.loadClass([package name]);
+                    catch x
+                        obj.log.debug(x.message, x);
+                        continue;
+                    end
+                elseif ~isempty(name) && name(1) == '+'
+                    obj.loadDirectory(fullfile(path, l.name));
+                end
+            end
+        end
+        
+        function loadClass(obj, name)
+            m = meta.class.fromName(name);
+            if ~m.Abstract
+                supers = superclasses(name);
+                for i = 1:numel(supers)
+                    s = supers{i};
+                    if obj.classMap.isKey(s)
+                        classes = [obj.classMap(s) name];
+                    else
+                        classes = {name};
+                    end
+                    obj.classMap(s) = classes;
+                end
+            end
+        end
+        
+    end
+    
 end
 
 function [name, parentPath] = packageName(path)

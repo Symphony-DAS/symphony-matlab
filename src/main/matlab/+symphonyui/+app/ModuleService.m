@@ -2,7 +2,7 @@ classdef ModuleService < handle
     
     properties (Access = private)
         session
-        moduleRepository
+        classRepository
         documentationService
         acquisitionService
         configurationService
@@ -10,16 +10,16 @@ classdef ModuleService < handle
     
     methods
         
-        function obj = ModuleService(session, moduleRepository, documentationService, acquisitionService, configurationService)
+        function obj = ModuleService(session, classRepository, documentationService, acquisitionService, configurationService)
             obj.session = session;
-            obj.moduleRepository = moduleRepository;
+            obj.classRepository = classRepository;
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
             obj.configurationService = configurationService;
         end
         
         function cn = getAvailableModules(obj)
-            cn = obj.moduleRepository.getAll();
+            cn = obj.classRepository.get('symphonyui.ui.Module');
         end
         
         function showModule(obj, className)

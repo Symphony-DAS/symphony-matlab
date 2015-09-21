@@ -52,7 +52,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
     methods (Access = private)
 
         function populateName(obj)
-            name = symphonyui.app.Options.getDefault().defaultFileName;
+            name = symphonyui.app.Options.getDefault().fileDefaultName;
             try
                 obj.view.setName(name());
             catch x
@@ -61,7 +61,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
         end
 
         function populateLocation(obj)
-            location = symphonyui.app.Options.getDefault().defaultFileLocation;
+            location = symphonyui.app.Options.getDefault().fileDefaultLocation;
             try
                 obj.view.setLocation(location());
             catch x
@@ -70,7 +70,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
         end
 
         function populateDescriptionList(obj)
-            classNames = obj.documentationService.getAvailableFileDescriptions();
+            classNames = obj.documentationService.getAvailableExperimentDescriptions();
 
             displayNames = cell(1, numel(classNames));
             for i = 1:numel(classNames)

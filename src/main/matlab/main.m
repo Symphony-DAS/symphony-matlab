@@ -7,21 +7,16 @@ function main()
     
     options = symphonyui.app.Options.getDefault();
     
-    Symphony.Core.Logging.ConfigureLogging(options.log4netConfigurationFile(), options.log4netLogDirectory());
+    Symphony.Core.Logging.ConfigureLogging(options.loggingConfigurationFile(), options.loggingLogDirectory());
     
     session = Session();
     persistorFactory = PersistorFactory();
-    fileDescriptionRepository = ClassRepository('symphonyui.core.descriptions.FileDescription', options.fileDescriptionSearchPath());
-    sourceDescriptionRepository = ClassRepository('symphonyui.core.descriptions.SourceDescription', options.sourceDescriptionSearchPath());
-    epochGroupDescriptionRepository = ClassRepository('symphonyui.core.descriptions.EpochGroupDescription', options.epochGroupDescriptionSearchPath());
-    protocolRepository = ClassRepository('symphonyui.core.Protocol', options.protocolSearchPath());
-    rigDescriptionRepository = ClassRepository('symphonyui.core.descriptions.RigDescription', options.rigDescriptionSearchPath());
-    moduleRepository = ClassRepository('symphonyui.ui.Module', options.moduleSearchPath());
+    classRepository = ClassRepository(options.searchPath);
     
-    documentationService = DocumentationService(session, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRepository);
-    acquisitionService = AcquisitionService(session, protocolRepository);
-    configurationService = ConfigurationService(session, rigDescriptionRepository);
-    moduleService = ModuleService(session, moduleRepository, documentationService, acquisitionService, configurationService);
+    documentationService = DocumentationService(session, persistorFactory, classRepository);
+    acquisitionService = AcquisitionService(session, classRepository);
+    configurationService = ConfigurationService(session, classRepository);
+    moduleService = ModuleService(session, classRepository, documentationService, acquisitionService, configurationService);
     
     presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, moduleService);
     addlistener(presenter, 'Stopped', @(h,d)session.close());

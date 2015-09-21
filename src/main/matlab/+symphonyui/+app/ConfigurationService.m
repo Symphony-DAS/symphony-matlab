@@ -6,18 +6,18 @@ classdef ConfigurationService < handle
     
     properties (Access = private)
         session
-        rigDescriptionRepository
+        classRepository
     end
     
     methods
         
-        function obj = ConfigurationService(session, rigDescriptionRepository)
+        function obj = ConfigurationService(session, classRepository)
             obj.session = session;
-            obj.rigDescriptionRepository = rigDescriptionRepository;
+            obj.classRepository = classRepository;
         end
         
         function cn = getAvailableRigDescriptions(obj)
-            cn = obj.rigDescriptionRepository.getAll();
+            cn = obj.classRepository.get('symphonyui.core.descriptions.RigDescription');
         end
         
         function initializeRig(obj, description)

@@ -13,23 +13,19 @@ classdef DocumentationService < handle
     properties (Access = private)
         session
         persistorFactory
-        fileDescriptionRepository
-        sourceDescriptionRepository
-        epochGroupDescriptionRepository
+        classRepository
     end
 
     methods
 
-        function obj = DocumentationService(session, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRespository)
+        function obj = DocumentationService(session, persistorFactory, classRepository)
             obj.session = session;
             obj.persistorFactory = persistorFactory;
-            obj.fileDescriptionRepository = fileDescriptionRepository;
-            obj.sourceDescriptionRepository = sourceDescriptionRepository;
-            obj.epochGroupDescriptionRepository = epochGroupDescriptionRespository;
+            obj.classRepository = classRepository;
         end
 
-        function d = getAvailableFileDescriptions(obj)
-            d = obj.fileDescriptionRepository.getAll();
+        function d = getAvailableExperimentDescriptions(obj)
+            d = obj.classRepository.get('symphonyui.core.descriptions.ExperimentDescription');
         end
         
         function p = getFilePath(obj, name, location)
@@ -40,8 +36,8 @@ classdef DocumentationService < handle
             if obj.hasOpenFile()
                 error('File already open');
             end
-            if ~any(strcmp(description, obj.getAvailableFileDescriptions()))
-                error([description ' is not an available file description']);
+            if ~any(strcmp(description, obj.getAvailableExperimentDescriptions()))
+                error([description ' is not an available experiment description']);
             end
             constructor = str2func(description);
             obj.session.persistor = obj.persistorFactory.new(name, location, constructor());
@@ -71,7 +67,7 @@ classdef DocumentationService < handle
         end
 
         function d = getAvailableSourceDescriptions(obj)
-            d = obj.sourceDescriptionRepository.getAll();
+            d = obj.classRepository.get('symphonyui.core.descriptions.SourceDescription');
         end
 
         function s = addSource(obj, parent, description)
@@ -84,7 +80,7 @@ classdef DocumentationService < handle
         end
 
         function d = getAvailableEpochGroupDescriptions(obj)
-            d = obj.epochGroupDescriptionRepository.getAll();
+            d = obj.classRepository.get('symphonyui.core.descriptions.EpochGroupDescription');
         end
 
         function g = beginEpochGroup(obj, source, description)

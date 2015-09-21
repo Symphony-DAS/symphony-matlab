@@ -37,7 +37,11 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
     methods (Access = private)
 
         function populateDetails(obj)
-
+            options = symphonyui.app.Options.getDefault();
+            obj.view.setFileDefaultName(char(options.fileDefaultName));
+            obj.view.setFileDefaultLocation(char(options.fileDefaultLocation));
+            obj.view.setLoggingConfigurationFile(char(options.loggingConfigurationFile));
+            obj.view.setLoggingLogDirectory(char(options.loggingLogDirectory));
         end
 
         function onViewKeyPress(obj, ~, event)

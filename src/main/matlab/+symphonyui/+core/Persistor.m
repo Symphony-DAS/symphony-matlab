@@ -120,7 +120,7 @@ classdef Persistor < symphonyui.core.CoreObject
     methods (Static)
         
         function p = newPersistor(cobj, description)
-            symphonyui.core.persistent.Experiment.newExperiment(cobj.Experiment, description.experimentDescription);
+            symphonyui.core.persistent.Experiment.newExperiment(cobj.Experiment, description);
             p = symphonyui.core.Persistor(cobj);
         end
         
