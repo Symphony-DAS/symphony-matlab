@@ -7,13 +7,10 @@ classdef Options < symphonyui.infra.Settings
         epochGroupDescriptionSearchPath
         rigDescriptionSearchPath
         moduleSearchPath
-        
         log4netConfigurationFile
         log4netLogDirectory
-        
         defaultFileName
         defaultFileLocation
-        
         keywordList
     end
     

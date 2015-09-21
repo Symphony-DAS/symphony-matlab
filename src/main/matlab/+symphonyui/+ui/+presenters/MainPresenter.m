@@ -27,7 +27,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.moduleService = moduleService;
         end
         
-        function openInitializeRig(obj)
+        function showInitializeRig(obj)
             presenter = symphonyui.ui.presenters.InitializeRigPresenter(obj.configurationService);
             presenter.goWaitStop();
         end
@@ -126,7 +126,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
 
         function onServiceCreatedFile(obj, ~, ~)
             obj.updateStateOfControls();
-            obj.openDataManager();
+            obj.showDataManager();
         end
 
         function onViewSelectedOpenFile(obj, ~, ~)
@@ -149,7 +149,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
 
         function onServiceOpenedFile(obj, ~, ~)
             obj.updateStateOfControls();
-            obj.openDataManager();
+            obj.showDataManager();
         end
 
         function onViewSelectedCloseFile(obj, ~, ~)
@@ -214,7 +214,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.updateStateOfControls();
         end
 
-        function openDataManager(obj)
+        function showDataManager(obj)
             presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService);
             addlistener(presenter, 'Stopped', @(h,d)obj.closeFile());
             presenter.go();
@@ -456,7 +456,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
 
         function onViewSelectedInitializeRig(obj, ~, ~)
-            obj.openInitializeRig();
+            obj.showInitializeRig();
         end
 
         function onServiceInitializedRig(obj, ~, ~)

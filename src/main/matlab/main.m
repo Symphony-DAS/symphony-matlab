@@ -7,16 +7,16 @@ function main()
     
     options = symphonyui.app.Options.getDefault();
     
-    Symphony.Core.Logging.ConfigureLogging(options.log4netConfigurationFile, options.log4netLogDirectory);
+    Symphony.Core.Logging.ConfigureLogging(options.log4netConfigurationFile(), options.log4netLogDirectory());
     
     session = Session();
     persistorFactory = PersistorFactory();
-    fileDescriptionRepository = ClassRepository('symphonyui.core.descriptions.FileDescription', options.fileDescriptionSearchPath);
-    sourceDescriptionRepository = ClassRepository('symphonyui.core.descriptions.SourceDescription', options.sourceDescriptionSearchPath);
-    epochGroupDescriptionRepository = ClassRepository('symphonyui.core.descriptions.EpochGroupDescription', options.epochGroupDescriptionSearchPath);
-    protocolRepository = ClassRepository('symphonyui.core.Protocol', options.protocolSearchPath);
-    rigDescriptionRepository = ClassRepository('symphonyui.core.descriptions.RigDescription', options.rigDescriptionSearchPath);
-    moduleRepository = ClassRepository('symphonyui.ui.Module', options.moduleSearchPath);
+    fileDescriptionRepository = ClassRepository('symphonyui.core.descriptions.FileDescription', options.fileDescriptionSearchPath());
+    sourceDescriptionRepository = ClassRepository('symphonyui.core.descriptions.SourceDescription', options.sourceDescriptionSearchPath());
+    epochGroupDescriptionRepository = ClassRepository('symphonyui.core.descriptions.EpochGroupDescription', options.epochGroupDescriptionSearchPath());
+    protocolRepository = ClassRepository('symphonyui.core.Protocol', options.protocolSearchPath());
+    rigDescriptionRepository = ClassRepository('symphonyui.core.descriptions.RigDescription', options.rigDescriptionSearchPath());
+    moduleRepository = ClassRepository('symphonyui.ui.Module', options.moduleSearchPath());
     
     documentationService = DocumentationService(session, persistorFactory, fileDescriptionRepository, sourceDescriptionRepository, epochGroupDescriptionRepository);
     acquisitionService = AcquisitionService(session, protocolRepository);
@@ -26,7 +26,7 @@ function main()
     presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, moduleService);
     addlistener(presenter, 'Stopped', @(h,d)session.close());
     
-    presenter.openInitializeRig();
+    presenter.showInitializeRig();
     
     protocols = acquisitionService.getAvailableProtocols();
     if numel(protocols) > 0
