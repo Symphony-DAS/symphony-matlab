@@ -11,7 +11,7 @@ classdef NewFileSettings < symphonyui.infra.Settings
         end
         
         function set.selectedDescription(obj, d)
-            validateattributes(d, {'char'}, {'row'});
+            validateattributes(d, {'char'}, {'2d'});
             obj.put('selectedDescription', d);
         end
         

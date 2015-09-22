@@ -1,6 +1,7 @@
 classdef OptionsPresenter < symphonyui.ui.Presenter
 
     properties (Access = private)
+        log
         options
     end
 
@@ -12,7 +13,8 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
             end
             obj = obj@symphonyui.ui.Presenter(view);
             obj.view.setWindowStyle('modal');
-
+            
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.options = options;
         end
 
@@ -21,9 +23,7 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
     methods (Access = protected)
 
         function onGoing(obj)
-            obj.populateFileDetails();
-            obj.populateSearchPathDetails();
-            obj.populateLoggingDetails();
+            obj.populateDetails();
         end
 
         function onBind(obj)
@@ -32,13 +32,20 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
             obj.addListener(v, 'AddSearchPath', @obj.onViewSelectedAddSearchPath);
             obj.addListener(v, 'RemoveSearchPath', @obj.onViewSelectedRemoveSearchPath);
-            obj.addListener(v, 'Apply', @obj.onViewSelectedApply);
+            obj.addListener(v, 'Save', @obj.onViewSelectedSave);
+            obj.addListener(v, 'Default', @obj.onViewSelectedDefault);
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
 
     end
 
     methods (Access = private)
+        
+        function populateDetails(obj)
+            obj.populateFileDetails();
+            obj.populateSearchPathDetails();
+            obj.populateLoggingDetails();
+        end
 
         function populateFileDetails(obj)
             obj.view.setFileDefaultName(char(obj.options.fileDefaultName));
@@ -46,7 +53,11 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
         end
         
         function populateSearchPathDetails(obj)
+            obj.view.clearSearchPaths();
             path = obj.options.searchPath();
+            if isempty(path)
+                return;
+            end
             dirs = strsplit(path, ';');
             for i = numel(dirs)
                 obj.view.addSearchPath(dirs{i});
@@ -61,7 +72,7 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
                 case 'return'
-                    obj.onViewSelectedApply();
+                    obj.onViewSelectedSave();
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
@@ -88,34 +99,63 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
             obj.view.removeSearchPath(index);
         end
 
-        function onViewSelectedApply(obj, ~, ~)
+        function onViewSelectedSave(obj, ~, ~)
             obj.view.update();
             
             function out = parse(in)
                 out = in;
-                if isempty(in)
-                    return;
-                end
-                if in(1) == '@'
-                    try %#ok<TRYNC>
-                        out = str2func(in);
-                    end
+                if ~isempty(in) && in(1) == '@'
+                    out = str2func(in);
                 end
             end
             
-            obj.options.fileDefaultName = parse(obj.view.getFileDefaultName());
-            obj.options.fileDefaultLocation;
-            obj.options.searchPath;
-            obj.options.loggingConfigurationFile;
-            obj.options.loggingLogDirectory;
+            try
+                fileDefaultName = parse(obj.view.getFileDefaultName());
+                fileDefaultLocation = parse(obj.view.getFileDefaultLocation());
+                searchPath = strjoin(obj.view.getSearchPaths(), ';');
+                loggingConfigurationFile = parse(obj.view.getLoggingConfigurationFile());
+                loggingLogDirectory = parse(obj.view.getLoggingLogDirectory());
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+            
+            obj.options.fileDefaultName = fileDefaultName;
+            obj.options.fileDefaultLocation = fileDefaultLocation;
+            obj.options.searchPath = searchPath;
+            obj.options.loggingConfigurationFile = loggingConfigurationFile;
+            obj.options.loggingLogDirectory = loggingLogDirectory;
             
             try
                 obj.options.save();
             catch x
-                
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
             end
             
             obj.stop();
+        end
+        
+        function onViewSelectedDefault(obj, ~, ~)
+            result = obj.view.showMessage( ...
+                'Are you sure you want to reset options to default values?', ...
+                'Reset Options', ...
+                'Cancel', 'Reset');
+            if ~strcmp(result, 'Reset')
+                return;
+            end
+            
+            try
+                obj.options.reset();
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+            
+            obj.populateDetails();
         end
 
         function onViewSelectedCancel(obj, ~, ~)

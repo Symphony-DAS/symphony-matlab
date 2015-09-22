@@ -11,6 +11,11 @@ classdef (Abstract) Settings < handle
             setpref(obj.group, matlab.lang.makeValidName(class(obj)), obj.settingsMap);
         end
         
+        function reset(obj)
+            setpref(obj.group, matlab.lang.makeValidName(class(obj)), containers.Map());
+            obj.settingsMap = containers.Map();
+        end
+        
     end
     
     methods (Access = protected)

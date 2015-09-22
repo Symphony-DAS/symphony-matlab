@@ -15,7 +15,7 @@ classdef Options < symphonyui.infra.Settings
         end
         
         function set.fileDefaultName(obj, n)
-            validateattributes(n, {'char', 'function_handle'}, {'row'});
+            validateattributes(n, {'char', 'function_handle'}, {'2d'});
             obj.put('fileDefaultName', n);
         end
         
@@ -24,12 +24,12 @@ classdef Options < symphonyui.infra.Settings
         end
         
         function set.fileDefaultLocation(obj, n)
-            validateattributes(n, {'char', 'function_handle'}, {'row'});
+            validateattributes(n, {'char', 'function_handle'}, {'2d'});
             obj.put('fileDefaultLocation', n);
         end
         
         function set.searchPath(obj, p)
-            validateattributes(n, {'char', 'function_handle'}, {'row'});
+            validateattributes(p, {'char', 'function_handle'}, {'2d'});
             obj.put('searchPath', p);
         end
         
@@ -42,7 +42,7 @@ classdef Options < symphonyui.infra.Settings
         end
         
         function set.loggingConfigurationFile(obj, f)
-            validateattributes(f, {'char', 'function_handle'}, {'row'});
+            validateattributes(f, {'char', 'function_handle'}, {'2d'});
             obj.put('loggingConfigurationFile', f)
         end
         
@@ -51,7 +51,7 @@ classdef Options < symphonyui.infra.Settings
         end
         
         function set.loggingLogDirectory(obj, f)
-            validateattributes(f, {'char', 'function_handle'}, {'row'});
+            validateattributes(f, {'char', 'function_handle'}, {'2d'});
             obj.put('loggingLogDirectory', f)
         end
         

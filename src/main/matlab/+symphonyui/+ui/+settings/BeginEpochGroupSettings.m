@@ -12,7 +12,7 @@ classdef BeginEpochGroupSettings < symphonyui.infra.Settings
         end
         
         function set.selectedSourceUuid(obj, i)
-            validateattributes(i, {'char'}, {'row'});
+            validateattributes(i, {'char'}, {'2d'});
             obj.put('selectedSourceUuid', i);
         end
         
@@ -21,7 +21,7 @@ classdef BeginEpochGroupSettings < symphonyui.infra.Settings
         end
         
         function set.selectedDescription(obj, d)
-            validateattributes(d, {'char'}, {'row'});
+            validateattributes(d, {'char'}, {'2d'});
             obj.put('selectedDescription', d);
         end
         
