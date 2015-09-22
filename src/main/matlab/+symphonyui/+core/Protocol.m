@@ -10,6 +10,7 @@ classdef Protocol < handle
     
     properties (Access = protected)
         rig
+        persistor
         numEpochsPrepared
         numEpochsCompleted
         figureHandlerManager
@@ -27,6 +28,10 @@ classdef Protocol < handle
         
         function setRig(obj, rig)
             obj.rig = rig;
+        end
+        
+        function setPersistor(obj, persistor)
+            obj.persistor = persistor;
         end
         
         function d = getPropertyDescriptors(obj)

@@ -18,6 +18,7 @@ classdef AcquisitionService < handle
             obj.classRepository = classRepository;
             
             addlistener(obj.session, 'rig', 'PostSet', @obj.onSessionSetRig);
+            addlistener(obj.session, 'persistor', 'PostSet', @obj.onSessionSetPersistor);
             addlistener(obj.session.controller, 'state', 'PostSet', @obj.onControllerSetState);
         end
         
@@ -36,6 +37,7 @@ classdef AcquisitionService < handle
                 constructor = str2func(className);
                 protocol = constructor();
                 protocol.setRig(obj.session.rig);
+                protocol.setPersistor(obj.session.persistor);
                 obj.session.protocol = protocol;
             catch x
                 obj.session.protocol = [];
@@ -103,6 +105,12 @@ classdef AcquisitionService < handle
     methods (Access = private)
         
         function onSessionSetRig(obj, ~, ~)
+            if obj.hasSelectedProtocol()
+                obj.selectProtocol(obj.getSelectedProtocol());
+            end
+        end
+        
+        function onSessionSetPersistor(obj, ~, ~)
             if obj.hasSelectedProtocol()
                 obj.selectProtocol(obj.getSelectedProtocol());
             end
