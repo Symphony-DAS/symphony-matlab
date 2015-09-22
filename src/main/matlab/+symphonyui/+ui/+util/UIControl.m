@@ -7,6 +7,7 @@ classdef UIControl < matlab.mixin.SetGet %#ok<*MCSUP>
         Callback
         Enable
         Value
+        UIContextMenu
     end
     
     properties (Access = protected)
@@ -66,6 +67,14 @@ classdef UIControl < matlab.mixin.SetGet %#ok<*MCSUP>
         
         function setValue(obj, v)
             set(obj.Control, 'Value', v);
+        end
+        
+        function m = get.UIContextMenu(obj)
+            m = get(obj.Control, 'UIContextMenu');
+        end
+        
+        function set.UIContextMenu(obj, m)
+            set(obj.Control, 'UIContextMenu', m);
         end
         
         function uicontrol(obj)

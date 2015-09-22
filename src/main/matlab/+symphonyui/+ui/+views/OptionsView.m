@@ -2,6 +2,8 @@ classdef OptionsView < symphonyui.ui.View
 
     events
         SelectedNode
+        AddSearchPath
+        RemoveSearchPath
         Apply
         Cancel
     end
@@ -10,7 +12,7 @@ classdef OptionsView < symphonyui.ui.View
         masterList
         detailCardPanel
         fileCard
-        pathCard
+        searchPathCard
         loggingCard
         applyButton
         cancelButton
@@ -41,7 +43,7 @@ classdef OptionsView < symphonyui.ui.View
             obj.masterList = uicontrol( ...
                 'Parent', masterLayout, ...
                 'Style', 'list', ...
-                'String', {'File', 'Path', 'Logging'}, ...
+                'String', {'File', 'Search Path', 'Logging'}, ...
                 'Callback', @(h,d)notify(obj, 'SelectedNode'));
             
             detailLayout = uix.VBox( ...
@@ -74,9 +76,22 @@ classdef OptionsView < symphonyui.ui.View
                 'Heights', [25 25]);
             
             % Search path card.
-            pathLayout = uix.VBox( ...
+            searchPathLayout = uix.VBox( ...
                 'Parent', obj.detailCardPanel, ...
                 'Spacing', 7);
+            obj.searchPathCard.list = ListBox( ...
+                'Parent', searchPathLayout, ...
+                'Style', 'list');
+            searchPathMenu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', searchPathMenu, ...
+                'Label', 'Add...', ...
+                'Callback', @(h,d)notify(obj, 'AddSearchPath'));
+            uimenu( ...
+                'Parent', searchPathMenu, ...
+                'Label', 'Remove', ...
+                'Callback', @(h,d)notify(obj, 'RemoveSearchPath'));
+            set(obj.searchPathCard.list, 'UIContextMenu', searchPathMenu);
             
             % Logging card.
             loggingGrid = uix.Grid( ...
@@ -140,16 +155,52 @@ classdef OptionsView < symphonyui.ui.View
             set(obj.detailCardPanel, 'Selection', index);
         end
         
+        function n = getFileDefaultName(obj)
+            n = get(obj.fileCard.defaultNameField, 'String');
+        end
+        
         function setFileDefaultName(obj, n)
             set(obj.fileCard.defaultNameField, 'String', n);
+        end
+        
+        function n = getFileDefaultLocation(obj)
+            n = get(obj.fileCard.defaultLocationField, 'String');
         end
         
         function setFileDefaultLocation(obj, l)
             set(obj.fileCard.defaultLocationField, 'String', l);
         end
         
+        function i = getSelectedSearchPath(obj)
+            i = get(obj.searchPathCard.list, 'Value');
+        end
+        
+        function p = getSearchPaths(obj)
+            p = get(obj.searchPathCard.list, 'String');
+        end
+        
+        function addSearchPath(obj, path)
+            s = get(obj.searchPathCard.list, 'String');
+            s = [s; {path}];
+            set(obj.searchPathCard.list, 'String', s);
+        end
+        
+        function removeSearchPath(obj, index)
+            s = get(obj.searchPathCard.list, 'String');
+            s(index) = [];
+            set(obj.searchPathCard.list, 'String', s);
+        end
+        
+        function f = getLoggingConfigurationFile(obj)
+            f = get(obj.loggingCard.configurationFileField, 'String');
+        end
+        
         function setLoggingConfigurationFile(obj, f)
             set(obj.loggingCard.configurationFileField, 'String', f);
+        end
+        
+        function d = getLoggingLogDirectory(obj)
+            d = get(obj.loggingCard.logDirectoryField, 'String');
         end
         
         function setLoggingLogDirectory(obj, d)

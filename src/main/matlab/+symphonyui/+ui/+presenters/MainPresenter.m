@@ -468,8 +468,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             presenter.goWaitStop();
         end
 
-        function onViewSelectedConfigureOptions(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.OptionsPresenter(obj.configurationService);
+        function onViewSelectedConfigureOptions(obj, ~, ~) %#ok<INUSD>
+            presenter = symphonyui.ui.presenters.OptionsPresenter(symphonyui.app.Options.getDefault());
             presenter.goWaitStop();
         end
 
