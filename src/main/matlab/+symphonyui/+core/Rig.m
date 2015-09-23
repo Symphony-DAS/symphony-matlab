@@ -58,6 +58,24 @@ classdef Rig < handle
             end
         end
         
+        function d = getOutputDevices(obj)
+            d = {};
+            for i = 1:numel(obj.devices)
+                if ~isempty(obj.devices{i}.outputStreams)
+                    d{end + 1} = obj.devices{i}; %#ok<AGROW>
+                end
+            end
+        end
+        
+        function d = getInputDevices(obj)
+            d = {};
+            for i = 1:numel(obj.devices)
+                if ~isempty(obj.devices{i}.inputStreams)
+                    d{end + 1} = obj.devices{i}; %#ok<AGROW>
+                end
+            end
+        end
+        
     end
     
 end

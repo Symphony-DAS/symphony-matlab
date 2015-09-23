@@ -41,22 +41,22 @@ classdef ConfigurationService < handle
         end
         
         function d = getDevice(obj, name)
-            if ~obj.session.hasRig()
-                d = [];
-                return;
-            end
             d = obj.session.getRig().getDevice(name);
         end
         
         function d = getDevices(obj, name)
-            if ~obj.session.hasRig()
-                d = {};
-                return;
-            end
             if nargin < 2
                 name = '.';
             end
             d = obj.session.getRig().getDevices(name);
+        end
+        
+        function d = getOutputDevices(obj)
+            d = obj.session.getRig().getOutputDevices();
+        end
+        
+        function d = getInputDevices(obj)
+            d = obj.session.getRig().getInputDevices();
         end
         
     end

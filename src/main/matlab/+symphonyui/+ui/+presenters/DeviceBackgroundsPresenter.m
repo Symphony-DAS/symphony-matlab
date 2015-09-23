@@ -38,7 +38,7 @@ classdef DeviceBackgroundsPresenter < symphonyui.ui.Presenter
     methods (Access = private)
 
         function populateDeviceBackgrounds(obj)
-            devices = obj.configurationService.getDevices();
+            devices = obj.configurationService.getOutputDevices();
 
             try
                 fields = uiextras.jide.PropertyGridField.empty(0, max(numel(devices), 1));
