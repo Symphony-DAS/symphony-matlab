@@ -64,6 +64,7 @@ classdef Persistor < symphonyui.core.CoreObject
             try
                 g = symphonyui.core.persistent.EpochGroup.newEpochGroup(cgrp, description);
             catch x
+                obj.endEpochGroup();
                 obj.tryCore(@()obj.cobj.Delete(cgrp));
                 rethrow(x);
             end
