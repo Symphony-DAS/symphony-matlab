@@ -183,7 +183,7 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
                 if isempty(field)
                     continue;
                 end
-                field.Initialize(data);
+                field.Update(data);
             end
 
             self.Model.refresh();

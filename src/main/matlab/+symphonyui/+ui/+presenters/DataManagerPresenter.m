@@ -481,10 +481,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             disp(obj.view.getSelectedPropertiesPreset());
         end
 
-        function populatePropertiesWithEntitySet(obj, entitySet, update)
-            if nargin < 3
-                update = false;
-            end
+        function populatePropertiesWithEntitySet(obj, entitySet)
             try
                 fields = symphonyui.ui.util.desc2field(entitySet.getPropertyDescriptors());
             catch x
@@ -492,12 +489,25 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
-            if update
-                obj.view.updateProperties(fields);
+            obj.view.setProperties(fields);
+            
+            if entitySet.size == 1
+                obj.view.setPropertiesEditorStyle('normal');
             else
-                obj.view.setProperties(fields);
+                obj.view.setPropertiesEditorStyle('readonly');
             end
-
+        end
+        
+        function updatePropertiesWithEntitySet(obj, entitySet)
+            try
+                fields = symphonyui.ui.util.desc2field(entitySet.getPropertyDescriptors());
+            catch x
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
+            obj.view.updateProperties(fields);
+            
             if entitySet.size == 1
                 obj.view.setPropertiesEditorStyle('normal');
             else
@@ -514,7 +524,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
                 return;
             end
 
-            obj.populatePropertiesWithEntitySet(obj.detailedEntitySet, true);
+            obj.updatePropertiesWithEntitySet(obj.detailedEntitySet);
         end
 
         function onViewSelectedAddProperty(obj, ~, ~)

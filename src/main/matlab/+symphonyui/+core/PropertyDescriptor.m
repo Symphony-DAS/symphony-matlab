@@ -38,6 +38,9 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
         end
         
         function set.value(obj, v)
+            if isempty(v) && ~ischar(v)
+                v = [];
+            end
             obj.field.Value = v;
         end
         

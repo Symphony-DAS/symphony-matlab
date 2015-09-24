@@ -38,6 +38,29 @@ classdef JidePropertyGridField < handle
         % May register editor contexts with the global CellEditorManager.
             validateattributes(self, {'uiextras.jide.JidePropertyGridField'}, {'scalar'});
 
+            self.SetData(data);
+
+            for k = 1 : numel(data.Children)
+                self.Children(k) = uiextras.jide.JidePropertyGridField(data.Children(k));
+                self.Control.addChild(self.Children(k).Control);
+            end
+        end
+        
+        function Update(self, data)
+        % Updates a JIDE property based on a property grid field.
+        % May register editor contexts with the global CellEditorManager.
+            validateattributes(self, {'uiextras.jide.JidePropertyGridField'}, {'scalar'});
+
+            self.SetData(data);
+            
+            for k = 1 : numel(data.Children)
+                self.Children(k).Update(data.Children(k));
+            end
+        end
+        
+        function SetData(self, data)
+            validateattributes(self, {'uiextras.jide.JidePropertyGridField'}, {'scalar'});
+
             self.PropertyData = data;
             field = self.Control;
             field.setName(data.Name);  % JIDE automatically uses a hierarchical naming scheme
@@ -93,11 +116,6 @@ classdef JidePropertyGridField < handle
                     error('PropertyGrid:ArgumentTypeMismatch', 'Data shape %s is not supported.', data.Type.Shape);
             end
             self.Value = data.Value;
-
-            for k = 1 : numel(data.Children)
-                self.Children(k) = uiextras.jide.JidePropertyGridField(data.Children(k));
-                self.Control.addChild(self.Children(k).Control);
-            end
         end
 
         function delete(self)

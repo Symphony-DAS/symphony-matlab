@@ -34,6 +34,9 @@ classdef Entity < symphonyui.core.CoreObject
             if isobject(value)
                 error('Object property values are not supported');
             end
+            if isempty(value) && ~ischar(value)
+                value = NET.createArray('System.Double', 0);
+            end
             obj.tryCore(@()obj.cobj.AddProperty(key, value));
         end
         
