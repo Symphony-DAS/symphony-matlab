@@ -7,6 +7,5 @@ function package(skipTests)
         test();
     end
     root = fileparts(mfilename('fullpath'));
-    matlab.apputil.package(fullfile(root, 'symphony.prj'));
+    matlab.apputil.package(fullfile(root, 'Symphony.prj'));
 end
-
