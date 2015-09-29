@@ -1,7 +1,7 @@
 classdef Pulse < symphonyui.core.Protocol
     
     properties
-        amp                             % Output amplifier
+        amp = 'Amp1'                    % Output amplifier
         preTime = 50                    % Pulse leading duration (ms)
         stimTime = 500                  % Pulse duration (ms)
         tailTime = 50                   % Pulse trailing duration (ms)
@@ -11,24 +11,10 @@ classdef Pulse < symphonyui.core.Protocol
     end
     
     properties (Hidden)
-        ampType % = symphonyui.core.PropertyType('char', 'row', {'Amp1', 'Amp2'});
+        ampType = symphonyui.core.PropertyType('char', 'row', {'Amp1', 'Amp2'});
     end
     
     methods
-        
-        function onSetRig(obj)
-            amps = cellfun(@(a)a.name, obj.rig.getDevices('Amp'), 'UniformOutput', false);
-            obj.amp = amps{1};
-            obj.ampType = symphonyui.core.PropertyType('char', 'row', amps);
-        end
-        
-        function d = getPropertyDescriptor(obj, name)
-            d = getPropertyDescriptor@symphonyui.core.Protocol(obj, name);
-            switch name
-                case 'amp'
-                    d.description = [d.description ' ' obj.amp];
-            end
-        end
         
         function p = getPreview(obj, panel)
             p = symphonyui.builtin.previews.StimuliPreview(panel, @()createPreviewStimuli(obj));
