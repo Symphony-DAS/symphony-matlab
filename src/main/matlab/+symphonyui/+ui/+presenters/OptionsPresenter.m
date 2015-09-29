@@ -59,7 +59,7 @@ classdef OptionsPresenter < symphonyui.ui.Presenter
                 return;
             end
             dirs = strsplit(path, ';');
-            for i = numel(dirs)
+            for i = 1:numel(dirs)
                 obj.view.addSearchPath(dirs{i});
             end
         end
