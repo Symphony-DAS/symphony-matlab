@@ -128,6 +128,25 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
             end
         end
         
+        function obj = fromProperty(handle, property)
+            mpo = findprop(handle, property);
+            
+            comment = uiextras.jide.helptext([class(handle) '.' mpo.Name]);
+            if ~isempty(comment)
+                comment{1} = strtrim(regexprep(comment{1}, ['^' mpo.Name ' -'], ''));
+            end
+            comment = strjoin(comment, '\n');
+
+            obj = symphonyui.core.PropertyDescriptor(mpo.Name, handle.(mpo.Name), ...
+                'description', comment, ...
+                'readOnly', mpo.Constant || ~strcmp(mpo.SetAccess, 'public') || mpo.Dependent && isempty(mpo.SetMethod));
+            
+            mto = findprop(handle, [property 'Type']);
+            if ~isempty(mto) && mto.Hidden && isa(handle.(mto.Name), 'symphonyui.core.PropertyType')
+                obj.type = handle.(mto.Name);
+            end
+        end
+        
     end
     
 end

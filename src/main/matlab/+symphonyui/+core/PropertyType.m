@@ -59,6 +59,11 @@ classdef PropertyType < matlab.mixin.SetGet %#ok<*MCSUP>
             end
         end
         
+        function t = autoDiscover(value)
+            pt = uiextras.jide.PropertyType.AutoDiscover(value);
+            t = symphonyui.core.PropertyType(pt.PrimitiveType, pt.Shape, pt.Domain);
+        end
+        
     end
     
 end

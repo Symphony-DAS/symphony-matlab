@@ -28,14 +28,32 @@ classdef Protocol < handle
         
         function setRig(obj, rig)
             obj.rig = rig;
+            obj.onSetRig();
+        end
+        
+        function onSetRig(obj) %#ok<MANU>
+            
         end
         
         function setPersistor(obj, persistor)
             obj.persistor = persistor;
+            obj.onSetPersistor();
+        end
+        
+        function onSetPersistor(obj) %#ok<MANU>
+            
         end
         
         function d = getPropertyDescriptors(obj)
-            d = symphonyui.core.util.introspect(obj);
+            names = properties(obj);
+            d = symphonyui.core.PropertyDescriptor.empty(0, numel(names));
+            for i = 1:numel(names)
+                d(i) = obj.getPropertyDescriptor(names{i});
+            end
+        end
+        
+        function d = getPropertyDescriptor(obj, name)
+            d = symphonyui.core.PropertyDescriptor.fromProperty(obj, name);
         end
         
         function p = getPreview(obj, panel) %#ok<INUSD>
