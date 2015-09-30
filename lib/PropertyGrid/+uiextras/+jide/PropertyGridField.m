@@ -26,6 +26,8 @@ classdef PropertyGridField < hgsetget
         Dependent = false;
         % Whether the property is hidden.
         Hidden = false;
+        % Whether the property is preferred.
+        Preferred = false;
         % Direct descendants of this property.
         Children = uiextras.jide.PropertyGridField.empty(1,0);
     end
@@ -92,6 +94,16 @@ classdef PropertyGridField < hgsetget
         function self = set.ReadOnly(self, readonly)
             validateattributes(readonly, {'logical'}, {'scalar'});
             self.ReadOnly = readonly;
+        end
+        
+        function self = set.Hidden(self, hidden)
+            validateattributes(hidden, {'logical'}, {'scalar'});
+            self.Hidden = hidden;
+        end
+        
+        function self = set.Preferred(self, preferred)
+            validateattributes(preferred, {'logical'}, {'scalar'});
+            self.Preferred = preferred;
         end
 
         function tf = HasCategory(selfarray)

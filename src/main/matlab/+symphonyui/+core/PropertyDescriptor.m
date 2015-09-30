@@ -9,6 +9,7 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
         description
         readOnly
         hidden
+        preferred
     end
     
     properties (Access = private, Transient)
@@ -94,6 +95,14 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
             obj.field.Hidden = tf;
         end
         
+        function tf = get.preferred(obj)
+            tf = obj.field.Preferred;
+        end
+        
+        function set.preferred(obj, tf)
+            obj.field.Preferred = tf;
+        end
+        
         function p = findByName(array, name)
             p = [];
             for i = 1:numel(array)
@@ -124,7 +133,8 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
                     'displayName', s.displayName, ...
                     'description', s.description, ...
                     'readOnly', s.readOnly, ...
-                    'hidden', s.hidden);
+                    'hidden', s.hidden, ...
+                    'preferred', s.preferred);
             end
         end
         

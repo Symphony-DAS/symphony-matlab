@@ -69,6 +69,7 @@ classdef JidePropertyGridField < handle
             field.setDescription(data.Description);
             field.setEditable(~data.ReadOnly);
             field.setHidden(data.Hidden); % Added by Mark Cafaro
+            field.setPreferred(data.Preferred); % Added by Mark Cafaro
             switch data.Type.Shape
                 case 'scalar'
                     switch data.Type.PrimitiveType
