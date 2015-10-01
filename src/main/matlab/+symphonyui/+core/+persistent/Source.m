@@ -60,8 +60,11 @@ classdef Source < symphonyui.core.persistent.Entity
     
     methods (Static)
         
-        function s = newSource(cobj, description)
-            symphonyui.core.persistent.Entity.newEntity(cobj, description);
+        function s = newSource(cobj, description, propertyMap)
+            if nargin < 3
+                propertyMap = containers.Map();
+            end
+            symphonyui.core.persistent.Entity.newEntity(cobj, description, propertyMap);
             s = symphonyui.core.persistent.Source(cobj);
         end
         

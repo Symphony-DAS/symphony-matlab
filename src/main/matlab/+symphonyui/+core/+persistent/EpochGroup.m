@@ -60,8 +60,11 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
     
     methods (Static)
         
-        function e = newEpochGroup(cobj, description)
-            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, description);
+        function e = newEpochGroup(cobj, description, propertyMap)
+            if nargin < 3
+                propertyMap = containers.Map();
+            end
+            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, description, propertyMap);
             e = symphonyui.core.persistent.EpochGroup(cobj);
         end
         

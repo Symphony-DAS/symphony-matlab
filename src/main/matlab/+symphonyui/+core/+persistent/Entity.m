@@ -11,7 +11,7 @@ classdef Entity < symphonyui.core.CoreObject
         staticPropertyDescriptors
     end
     
-    properties (Constant, Access = private)
+    properties (Constant)
         DESCRIPTION_TYPE_KEY = 'descriptionType'
         STATIC_PROPERTY_DESCRIPTORS_NAME = 'descriptors'
     end
@@ -138,7 +138,7 @@ classdef Entity < symphonyui.core.CoreObject
     
     methods (Static)
         
-        function e = newEntity(cobj, description)
+        function e = newEntity(cobj, description, propertyMap)
             e = symphonyui.core.persistent.Entity(cobj);
             
             descriptors = description.propertyDescriptors;
@@ -149,6 +149,11 @@ classdef Entity < symphonyui.core.CoreObject
                 e.addProperty(desc.name, desc.value);
             end
             e.addProperty(e.DESCRIPTION_TYPE_KEY, class(description));
+            
+            keys = propertyMap.keys;
+            for i = 1:numel(keys)
+                e.addProperty(keys{i}, propertyMap(keys{i}));
+            end
         end
         
     end

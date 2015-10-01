@@ -120,6 +120,9 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
                         return;
                     end
                     delete(path);
+                    if exist(path, 'file')
+                        error(['Unable to delete ''' path '''']);
+                    end
                 end
                 obj.documentationService.newFile(name, location, description);
             catch x
