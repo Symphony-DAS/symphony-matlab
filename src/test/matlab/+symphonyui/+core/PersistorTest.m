@@ -132,6 +132,7 @@ classdef PersistorTest < symphonyui.TestBase
             obj.verifyEmpty(exp.sources);
             obj.verifyEmpty(exp.allSources);
             obj.verifyEmpty(exp.epochGroups);
+            obj.verifyEmpty(exp.allEpochGroups);
             
             dev1 = obj.persistor.addDevice('dev1', 'man1');
             dev2 = obj.persistor.addDevice('dev2', 'man2');
@@ -148,8 +149,10 @@ classdef PersistorTest < symphonyui.TestBase
             grp1 = obj.persistor.beginEpochGroup(src1, 'grp1');
             obj.persistor.endEpochGroup();
             grp2 = obj.persistor.beginEpochGroup(src2, 'grp2');
+            grp3 = obj.persistor.beginEpochGroup(src2, 'grp3');
             
             obj.verifyCellsAreEquivalent(exp.epochGroups, {grp1, grp2});
+            obj.verifyCellsAreEquivalent(exp.allEpochGroups, {grp1, grp2, grp3});
         end
         
         function testEpochGroup(obj)
@@ -169,11 +172,15 @@ classdef PersistorTest < symphonyui.TestBase
             grp1 = obj.persistor.beginEpochGroup(src, 'grp1');
             obj.persistor.endEpochGroup();
             grp2 = obj.persistor.beginEpochGroup(src, 'grp2');
+            grp3 = obj.persistor.beginEpochGroup(src, 'grp3');
+            obj.persistor.endEpochGroup();
             obj.persistor.endEpochGroup();
             
             obj.verifyEqual(grp1.parent, grp);
             obj.verifyEqual(grp2.parent, grp);
+            obj.verifyEqual(grp3.parent, grp2);
             obj.verifyCellsAreEquivalent(grp.epochGroups, {grp1, grp2});
+            obj.verifyCellsAreEquivalent(grp.allEpochGroups, {grp1, grp2, grp3});
             
             blk1 = obj.persistor.beginEpochBlock('blk1', obj.TEST_PARAMETERS, obj.TEST_START_TIME);
             obj.persistor.endEpochBlock(obj.TEST_END_TIME);

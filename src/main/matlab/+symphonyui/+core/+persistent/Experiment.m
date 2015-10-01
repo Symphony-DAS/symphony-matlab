@@ -9,6 +9,7 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         sources
         allSources
         epochGroups
+        allEpochGroups
     end
 
     methods
@@ -39,6 +40,10 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
 
         function g = get.epochGroups(obj)
             g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.EpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
+        end
+        
+        function g = get.allEpochGroups(obj)
+            g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.AllEpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
         end
 
     end
