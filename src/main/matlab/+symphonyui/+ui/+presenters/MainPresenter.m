@@ -26,23 +26,19 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.configurationService = configurationService;
             obj.moduleService = moduleService;
         end
-        
+
         function showInitializeRig(obj)
             presenter = symphonyui.ui.presenters.InitializeRigPresenter(obj.configurationService);
             presenter.goWaitStop();
         end
-        
+
         function selectProtocol(obj, className)
             try
                 obj.acquisitionService.selectProtocol(className);
             catch x
-                obj.updateStateOfControls();
-                obj.populateProtocolProperties();
-                if ~obj.view.isProtocolPreviewMinimized()
-                    obj.populateProtocolPreview();
-                end
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
+                obj.acquisitionService.selectProtocol([]);
                 return;
             end
         end
@@ -109,7 +105,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             a = obj.acquisitionService;
             obj.addListener(a, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             obj.addListener(a, 'SetProtocolProperty', @obj.onServiceSetProtocolProperty);
-            obj.addListener(a, 'ChangedState', @obj.onServiceChangedState);
+            obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
 
             c = obj.configurationService;
             obj.addListener(c, 'InitializedRig', @obj.onServiceInitializedRig);
@@ -132,7 +128,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onViewSelectedOpenFile(obj, ~, ~)
             obj.openFile();
         end
-        
+
         function openFile(obj)
             path = obj.view.showGetFile('File Location');
             if isempty(path)
@@ -155,7 +151,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onViewSelectedCloseFile(obj, ~, ~)
             obj.closeFile();
         end
-        
+
         function closeFile(obj)
             if ~obj.documentationService.hasOpenFile()
                 return;
@@ -235,14 +231,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
             
-            if numel(classNames) > 0
-                obj.view.setProtocolList(displayNames, classNames);
-            else
-                obj.view.setProtocolList({'(None)'}, {[]});
-            end
-            if obj.acquisitionService.hasSelectedProtocol()
-                obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
-            end
+            obj.view.setProtocolList([{'(None)'}, displayNames], [{[]}, classNames]);
+            obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
             obj.view.enableSelectProtocol(numel(classNames) > 0);
         end
 
@@ -260,10 +250,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
 
         function populateProtocolProperties(obj)
-            if ~obj.acquisitionService.hasSelectedProtocol()
-                obj.view.setProtocolProperties(uiextras.jide.PropertyGridField.empty(0, 1));
-                return;
-            end
             try
                 fields = symphonyui.ui.util.desc2field(obj.acquisitionService.getProtocolPropertyDescriptors());
             catch x
@@ -275,10 +261,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
 
         function updateProtocolProperties(obj)
-            if ~obj.acquisitionService.hasSelectedProtocol()
-                obj.view.updateProtocolProperties(uiextras.jide.PropertyGridField.empty(0, 1));
-                return;
-            end
             try
                 fields = symphonyui.ui.util.desc2field(obj.acquisitionService.getProtocolPropertyDescriptors());
             catch x
@@ -309,11 +291,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
 
         function populateProtocolPreview(obj)
-            if ~obj.acquisitionService.hasSelectedProtocol()
-                obj.view.clearProtocolPreviewPanel();
-                obj.protocolPreview = [];
-                return;
-            end
             obj.view.clearProtocolPreviewPanel();
             panel = obj.view.getProtocolPreviewPanel();
             try
@@ -395,10 +372,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             end
         end
 
-        function onServiceChangedState(obj, ~, ~)
+        function onServiceChangedControllerState(obj, ~, ~)
             obj.updateStateOfControls();
 
-            state = obj.acquisitionService.getState();
+            state = obj.acquisitionService.getControllerState();
             if state == symphonyui.core.ControllerState.STOPPED && ~isempty(obj.dataManagerPresenter)
                 obj.dataManagerPresenter.updateCurrentEpochGroupBlocks();
             end
@@ -411,11 +388,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
             hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             hasAvailableProtocol = ~isempty(obj.acquisitionService.getAvailableProtocols());
-            hasRig = obj.configurationService.hasRig();
-            state = obj.acquisitionService.getState();
-            isStopping = state == ControllerState.STOPPING;
-            isStopped = state == ControllerState.STOPPED;
-            [isValid, validationMessage] = obj.acquisitionService.validate();
+            controllerState = obj.acquisitionService.getControllerState();
+            isStopping = controllerState == ControllerState.STOPPING;
+            isStopped = controllerState == ControllerState.STOPPED;
+            [isValid, validationMessage] = obj.acquisitionService.isValid();
 
             enableNewFile = ~hasOpenFile && isStopped;
             enableOpenFile = enableNewFile;
@@ -429,14 +405,14 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableRecord = enableViewOnly && hasEpochGroup;
             enableStop = ~isStopping && ~isStopped;
             enableInitializeRig = isStopped;
-            enableConfigureDeviceBackgrounds = isStopped && hasRig;
+            enableConfigureDeviceBackgrounds = isStopped;
 
             if ~isValid
                 status = validationMessage;
             elseif isStopped
                 status = '';
             else
-                status = char(state);
+                status = char(controllerState);
             end
 
             obj.view.enableNewFile(enableNewFile);
@@ -512,13 +488,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 sprintf('%s', symphonyui.app.App.copyright)};
             obj.view.showMessage(message, 'About Symphony');
         end
-        
+
         function loadSettings(obj)
             if ~isempty(obj.settings.viewPosition)
                 obj.view.position = obj.settings.viewPosition;
             end
         end
-        
+
         function saveSettings(obj)
             position = obj.view.position;
             if ~obj.view.isProtocolPreviewMinimized()

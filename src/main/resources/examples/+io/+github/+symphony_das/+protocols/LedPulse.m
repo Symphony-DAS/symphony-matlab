@@ -1,23 +1,51 @@
 classdef LedPulse < symphonyui.core.Protocol
     
     properties
-        led = 'Green LED'               % Output LED
+        led                             % Output LED
         preTime = 10                    % Pulse leading duration (ms)
         stimTime = 100                  % Pulse duration (ms)
         tailTime = 400                  % Pulse trailing duration (ms)
         lightAmplitude = 1              % Pulse amplitude (V)
         lightMean = 0
-        amp = 'Amp1'                    % Input amplifier
+        amp                             % Input amplifier
         numberOfAverages = uint16(5)    % Number of epochs
         interpulseInterval = 0          % Duration between pulses (s)
     end
     
     properties (Hidden)
-        ledType = symphonyui.core.PropertyType('char', 'row', {'Green LED', 'Blue LED'});
-        ampType = symphonyui.core.PropertyType('char', 'row', {'Amp1', 'Amp2'});
+        ledType
+        ampType
     end
     
     methods
+        
+        function onSetRig(obj)
+            leds = cellfun(@(d)d.name, obj.rig.getDevices('LED'), 'UniformOutput', false);
+            if isempty(leds)
+                obj.led = [];
+                obj.ledType = symphonyui.core.PropertyType('denserealdouble', 'empty');
+            else
+                obj.led = leds{1};
+                obj.ledType = symphonyui.core.PropertyType('char', 'row', leds);
+            end
+            
+            amps = cellfun(@(d)d.name, obj.rig.getDevices('Amp'), 'UniformOutput', false);
+            if isempty(amps)
+                obj.amp = [];
+                obj.ampType = symphonyui.core.PropertyType('denserealdouble', 'empty');
+            else
+                obj.amp = amps{1};
+                obj.ampType = symphonyui.core.PropertyType('char', 'row', amps);
+            end
+        end
+        
+        function [tf, msg] = isValid(obj)
+            tf = numel(obj.rig.getDevices('LED')) > 0 && numel(obj.rig.getDevices('Amp')) > 0;
+            msg = [];
+            if ~tf
+                msg = 'No LED or Amp device';
+            end
+        end
         
         function p = getPreview(obj, panel)
             p = symphonyui.builtin.previews.StimuliPreview(panel, @()createPreviewStimuli(obj));

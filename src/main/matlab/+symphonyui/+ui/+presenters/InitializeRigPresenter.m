@@ -80,6 +80,7 @@ classdef InitializeRigPresenter < symphonyui.ui.Presenter
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
+                obj.configurationService.initializeRig([]);
                 return;
             end
 

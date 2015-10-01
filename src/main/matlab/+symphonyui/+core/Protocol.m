@@ -23,7 +23,7 @@ classdef Protocol < handle
         end
         
         function delete(obj)
-            obj.figureHandlerManager.closeFigures();
+            obj.closeFigures();
         end
         
         function setRig(obj, rig)
@@ -87,6 +87,10 @@ classdef Protocol < handle
         function completeRun(obj)
             disp(['Num epochs prepared: ' num2str(obj.numEpochsPrepared)]);
             disp(['Num epochs completed: ' num2str(obj.numEpochsCompleted)]);
+        end
+        
+        function closeFigures(obj)
+            obj.figureHandlerManager.closeFigures();
         end
 
         function [tf, msg] = isValid(obj) %#ok<MANU>

@@ -15,6 +15,14 @@ classdef DaqController < symphonyui.core.CoreObject
             obj@symphonyui.core.CoreObject(cobj);
         end
         
+        function delete(obj)
+            obj.close();
+        end
+        
+        function close(obj)
+            
+        end
+        
         function s = getStream(obj, name)
             cstr = obj.tryCoreWithReturn(@()obj.cobj.GetStream(name));
             if isempty(cstr)

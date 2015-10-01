@@ -7,18 +7,35 @@ classdef Rig < handle
     properties (SetAccess = private)
         daqController
         devices
+        isClosed
     end
     
     methods
         
         function obj = Rig(description)
+            obj.sampleRate = description.sampleRate;
             obj.daqController = description.daqController;
             obj.devices = description.devices;
-            obj.sampleRate = description.sampleRate;
+            obj.isClosed = false;
             
             for i = 1:numel(obj.devices)
                 obj.devices{i}.cobj.Clock = obj.daqController.cobj.Clock;
             end
+        end
+        
+        function delete(obj)
+            obj.close();
+        end
+        
+        function close(obj)
+            if obj.isClosed
+                return;
+            end
+            obj.daqController.close();
+            for i = 1:numel(obj.devices)
+                obj.devices{i}.close();
+            end
+            obj.isClosed = true;
         end
         
         function set.sampleRate(obj, r)

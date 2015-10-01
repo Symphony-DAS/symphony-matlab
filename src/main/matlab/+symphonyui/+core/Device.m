@@ -19,6 +19,14 @@ classdef Device < symphonyui.core.CoreObject
             obj@symphonyui.core.CoreObject(cobj);
         end
         
+        function delete(obj)
+            obj.close();
+        end
+        
+        function close(obj)
+            
+        end
+        
         function n = get.name(obj)
             n = char(obj.cobj.Name);
         end
