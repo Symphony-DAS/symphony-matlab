@@ -13,38 +13,20 @@ classdef LedPulse < symphonyui.core.Protocol
     end
     
     properties (Hidden)
-        ledType
-        ampType
+        ledSet
+        ampSet
     end
     
     methods
         
         function onSetRig(obj)
-            leds = cellfun(@(d)d.name, obj.rig.getDevices('LED'), 'UniformOutput', false);
-            if isempty(leds)
-                obj.led = [];
-                obj.ledType = symphonyui.core.PropertyType('denserealdouble', 'empty');
-            else
-                obj.led = leds{1};
-                obj.ledType = symphonyui.core.PropertyType('char', 'row', leds);
-            end
+            leds = symphonyui.core.StringSet(obj.rig.getDeviceNames('LEDz'));
+            obj.led = leds.firstOrEmpty();
+            obj.ledSet = leds;
             
-            amps = cellfun(@(d)d.name, obj.rig.getDevices('Amp'), 'UniformOutput', false);
-            if isempty(amps)
-                obj.amp = [];
-                obj.ampType = symphonyui.core.PropertyType('denserealdouble', 'empty');
-            else
-                obj.amp = amps{1};
-                obj.ampType = symphonyui.core.PropertyType('char', 'row', amps);
-            end
-        end
-        
-        function [tf, msg] = isValid(obj)
-            tf = numel(obj.rig.getDevices('LED')) > 0 && numel(obj.rig.getDevices('Amp')) > 0;
-            msg = [];
-            if ~tf
-                msg = 'No LED or Amp device';
-            end
+            amps = symphonyui.core.StringSet(obj.rig.getDeviceNames('Amp'));
+            obj.amp = amps.firstOrEmpty();
+            obj.ampSet = amps;
         end
         
         function p = getPreview(obj, panel)

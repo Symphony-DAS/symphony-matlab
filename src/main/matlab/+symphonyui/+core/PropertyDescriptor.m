@@ -155,6 +155,11 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
             if ~isempty(mto) && mto.Hidden && isa(handle.(mto.Name), 'symphonyui.core.PropertyType')
                 obj.type = handle.(mto.Name);
             end
+            
+            mso = findprop(handle, [property 'Set']);
+            if ~isempty(mso) && mso.Hidden && isa(handle.(mso.Name), 'symphonyui.core.StringSet')
+                obj.type = handle.(mso.Name).type;
+            end
         end
         
     end

@@ -63,16 +63,20 @@ classdef Rig < handle
             error(['A device named ''' name ''' does not exist']);
         end
         
-        function d = getDevices(obj, name)
+        function d = getDevices(obj, expression)
             if nargin < 2
-                name = '.';
+                expression = '.';
             end
             d = {};
             for i = 1:numel(obj.devices)
-                if regexpi(obj.devices{i}.name, name, 'once')
+                if regexpi(obj.devices{i}.name, expression, 'once')
                     d{end + 1} = obj.devices{i}; %#ok<AGROW>
                 end
             end
+        end
+        
+        function n = getDeviceNames(obj, expression)
+            n = cellfun(@(d)d.name, obj.getDevices(expression), 'UniformOutput', false);
         end
         
         function d = getOutputDevices(obj)
