@@ -85,8 +85,7 @@ classdef Protocol < handle
         end
         
         function completeRun(obj)
-            disp(['Num epochs prepared: ' num2str(obj.numEpochsPrepared)]);
-            disp(['Num epochs completed: ' num2str(obj.numEpochsCompleted)]);
+            
         end
         
         function closeFigures(obj)

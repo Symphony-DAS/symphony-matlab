@@ -1,7 +1,7 @@
 classdef PulseFamily < symphonyui.core.Protocol
     
     properties
-        amp = 'Amp1'                    % Output amplifier
+        amp                             % Output amplifier
         preTime = 50                    % Pulse leading duration (ms)
         stimTime = 500                  % Pulse duration (ms)
         tailTime = 50                   % Pulse trailing duration (ms)
@@ -13,10 +13,16 @@ classdef PulseFamily < symphonyui.core.Protocol
     end
     
     properties (Hidden)
-        ampType = symphonyui.core.PropertyType('char', 'row', {'Amp1', 'Amp2'});
+        ampSet
     end
     
     methods
+        
+        function onSetRig(obj)
+            amps = symphonyui.core.StringSet(obj.rig.getDeviceNames('Amp'));
+            obj.amp = amps.firstOrEmpty();
+            obj.ampSet = amps;
+        end
         
         function p = getPreview(obj, panel)
             p = symphonyui.builtin.previews.StimuliPreview(panel, @()createPreviewStimuli(obj));

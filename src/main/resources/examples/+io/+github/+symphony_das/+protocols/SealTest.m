@@ -1,7 +1,7 @@
 classdef SealTest < symphonyui.core.Protocol
     
     properties
-        amp = 'Amp1'                    % Output amplifier
+        amp                             % Output amplifier
         preTime = 15                    % Pulse leading duration (ms)
         stimTime = 30                   % Pulse duration (ms)
         tailTime = 15                   % Pulse trailing duration (ms)
@@ -9,11 +9,16 @@ classdef SealTest < symphonyui.core.Protocol
     end
     
     properties (Hidden)
-        ampType = symphonyui.core.PropertyType('char', 'row', {'Amp1', 'Amp2'});
-        modeType = symphonyui.core.PropertyType('char', 'row', {'Seal', 'Leak'})
+        ampSet
     end
     
     methods
+        
+        function onSetRig(obj)
+            amps = symphonyui.core.StringSet(obj.rig.getDeviceNames('Amp'));
+            obj.amp = amps.firstOrEmpty();
+            obj.ampSet = amps;
+        end
         
         function p = getPreview(obj, panel)
             p = symphonyui.builtin.previews.StimuliPreview(panel, @()createPreviewStimuli(obj));
