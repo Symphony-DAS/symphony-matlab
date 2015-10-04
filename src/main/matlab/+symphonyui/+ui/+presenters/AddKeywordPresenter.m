@@ -41,12 +41,12 @@ classdef AddKeywordPresenter < symphonyui.ui.Presenter
     methods (Access = private)
 
         function populateTextCompletionList(obj)
-            list = symphonyui.app.Options.getDefault().keywordList;
-            try
-                obj.view.setTextCompletionList(list());
-            catch x
-                obj.log.debug(['Unable to populate text completion list: ' x.message], x);
-            end
+%             list = symphonyui.app.Options.getDefault().keywordList;
+%             try
+%                 obj.view.setTextCompletionList(list());
+%             catch x
+%                 obj.log.debug(['Unable to populate text completion list: ' x.message], x);
+%             end
         end
 
         function onViewKeyPress(obj, ~, event)
