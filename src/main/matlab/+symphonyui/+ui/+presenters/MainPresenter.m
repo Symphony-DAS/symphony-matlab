@@ -85,7 +85,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'ViewOnly', @obj.onViewSelectedViewOnly);
             obj.addListener(v, 'Record', @obj.onViewSelectedRecord);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
-            obj.addListener(v, 'Resume', @obj.onViewSelectedResume);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
             obj.addListener(v, 'ConfigureDeviceBackgrounds', @obj.onViewSelectedConfigureDeviceBackgrounds);
@@ -427,8 +426,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableProtocolProperties = isStopped;
             enableViewOnly = isValid && isStopped;
             enableRecord = enableViewOnly && hasEpochGroup;
-            enablePauseResume = ~isPausing && ~isStopping && ~isStopped;
-            togglePauseToResume = isPaused;
+            enablePause = ~isPausing && ~isPaused && ~isStopping && ~isStopped;
             enableStop = ~isStopping && ~isStopped;
             enableInitializeRig = isStopped;
             enableConfigureDeviceBackgrounds = isStopped;
@@ -451,8 +449,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableProtocolProperties(enableProtocolProperties);
             obj.view.enableViewOnly(enableViewOnly);
             obj.view.enableRecord(enableRecord);
-            obj.view.enablePauseResume(enablePauseResume);
-            obj.view.togglePauseToResume(togglePauseToResume);
+            obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
             obj.view.enableInitializeRig(enableInitializeRig);
             obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);

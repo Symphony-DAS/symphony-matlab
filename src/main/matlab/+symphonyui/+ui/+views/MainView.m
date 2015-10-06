@@ -14,7 +14,6 @@ classdef MainView < symphonyui.ui.View
         ViewOnly
         Record
         Pause
-        Resume
         Stop
         InitializeRig
         ConfigureDeviceBackgrounds
@@ -39,7 +38,7 @@ classdef MainView < symphonyui.ui.View
         protocolPreviewPanel
         viewOnlyButton
         recordButton
-        pauseResumeButton
+        pauseButton
         stopButton
     end
 
@@ -97,7 +96,7 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'Record', ...
                 'Accelerator', 'R', ...
                 'Callback', @(h,d)notify(obj, 'Record'));
-            obj.acquireMenu.pauseResume = uimenu(obj.acquireMenu.root, ...
+            obj.acquireMenu.pause = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Pause', ...
                 'Callback', @(h,d)notify(obj, 'Pause'));
             obj.acquireMenu.stop = uimenu(obj.acquireMenu.root, ...
@@ -213,7 +212,7 @@ classdef MainView < symphonyui.ui.View
                 'String', ['<html><img src="' path2Url(App.getResource('icons/record_big.png')) '"/></html>'], ...
                 'TooltipString', 'Record', ...
                 'Callback', @(h,d)notify(obj, 'Record'));
-            obj.pauseResumeButton = uicontrol( ...
+            obj.pauseButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
                 'String', ['<html><img src="' path2Url(App.getResource('icons/pause_big.png')) '"/></html>'], ...
@@ -356,31 +355,10 @@ classdef MainView < symphonyui.ui.View
             set(obj.recordButton, 'Enable', enable);
         end
         
-        function enablePauseResume(obj, tf)
+        function enablePause(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
-            set(obj.acquireMenu.pauseResume, 'Enable', enable);
-            set(obj.pauseResumeButton, 'Enable', enable);
-        end
-        
-        function togglePauseToResume(obj, tf)
-            path2Url = @(path)strrep(['file:/' path '/'],'\','/');
-            
-            if tf
-                string = ['<html><img src="' path2Url(symphonyui.app.App.getResource('icons/resume_big.png')) '"/></html>'];
-                label = 'Resume';
-                callback = @(h,d)notify(obj, 'Resume');
-            else
-                string = ['<html><img src="' path2Url(symphonyui.app.App.getResource('icons/pause_big.png')) '"/></html>'];
-                label = 'Pause';
-                callback = @(h,d)notify(obj, 'Pause');
-            end
-            set(obj.acquireMenu.pauseResume, ...
-                'Label', label, ...
-                'Callback', callback);
-            set(obj.pauseResumeButton, ...
-                'String', string, ...
-                'TooltipString', label, ...
-                'Callback', callback);
+            set(obj.acquireMenu.pause, 'Enable', enable);
+            set(obj.pauseButton, 'Enable', enable);
         end
 
         function enableStop(obj, tf)
