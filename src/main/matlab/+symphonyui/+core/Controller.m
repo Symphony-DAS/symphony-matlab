@@ -4,10 +4,14 @@ classdef Controller < symphonyui.core.CoreObject
         state
     end
     
+    properties (SetAccess = private)
+        currentProtocol
+        currentPersistor
+    end
+    
     properties (Access = private)
         devices
         epochQueueDuration
-        currentProtocol
     end
     
     properties (Constant, Access = private)
@@ -17,6 +21,8 @@ classdef Controller < symphonyui.core.CoreObject
     methods
         
         function obj = Controller()
+            import symphonyui.core.util.NetListener;
+            
             cobj = Symphony.Core.Controller();
             obj@symphonyui.core.CoreObject(cobj);
             
@@ -42,57 +48,38 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function runProtocol(obj, protocol, persistor)
-            import symphonyui.core.util.NetListener;
-            
-            obj.currentProtocol = protocol;
-            
-            listeners = NetListener.empty(0, 3);
-            
-            listeners(end + 1) = NetListener(obj.cobj, 'Started', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onStarted(obj,h,d));
-            function onStarted(obj, ~, ~)
-                if ~obj.currentProtocol.continueRun()
-                    obj.requestStop();
-                end
+            if obj.state == symphonyui.core.ControllerState.PAUSED
+                error('Controller is paused');
             end
             
-            listeners(end + 1) = NetListener(obj.cobj, 'RequestedStop', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onRequestedStop(obj,h,d));
-            function onRequestedStop(obj, ~, ~)
-                obj.state = symphonyui.core.ControllerState.STOPPING;
-            end
-                        
-            listeners(end + 1) = NetListener(obj.cobj, 'CompletedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onCompletedEpoch(obj,h,d));
-            function onCompletedEpoch(obj, ~, event)
-                epoch = symphonyui.core.Epoch(event.Epoch);
-                obj.currentProtocol.completeEpoch(epoch);
-                if ~obj.currentProtocol.continueRun()
-                    obj.requestStop();
-                end
+            onRunEnded = onCleanup(@()obj.endRun());
+            obj.beginRun(protocol, persistor);
+            
+            obj.run();
+        end
+        
+        function resume(obj)            
+            if obj.state ~= symphonyui.core.ControllerState.PAUSED
+                error('Controller not paused');
             end
             
-            listeners(end + 1) = NetListener(obj.cobj, 'DiscardedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onDiscardedEpoch(obj,h,d));
-            function onDiscardedEpoch(obj, ~, ~)
-                obj.requestStop();
-            end
+            onRunEnded = onCleanup(@()obj.endRun());
             
-            if isempty(persistor)
-                obj.state = symphonyui.core.ControllerState.VIEWING;
-            else
-                obj.state = symphonyui.core.ControllerState.RECORDING;
-            end
-            
-            try
-                obj.process(persistor)
-            catch x
-                delete(listeners);
-                obj.state = symphonyui.core.ControllerState.STOPPED;
-                rethrow(x);
-            end
-            
-            delete(listeners);
-            obj.state = symphonyui.core.ControllerState.STOPPED;
+            obj.run();
+        end
+        
+        function requestPause(obj)
+            obj.state = symphonyui.core.ControllerState.PAUSING;
+            obj.tryCore(@()obj.cobj.RequestPause());
         end
                 
         function requestStop(obj)
+            if obj.state == symphonyui.core.ControllerState.PAUSED
+                obj.state = symphonyui.core.ControllerState.STOPPED;
+                obj.endRun();
+                return;
+            end
+            obj.state = symphonyui.core.ControllerState.STOPPING;
             obj.tryCore(@()obj.cobj.RequestStop());
         end
         
@@ -111,6 +98,45 @@ classdef Controller < symphonyui.core.CoreObject
         
     end
     
+    methods (Access = protected)
+        
+        function beginRun(obj, protocol, persistor)
+            obj.currentProtocol = protocol;
+            obj.currentPersistor = persistor;
+            
+            obj.clearEpochQueue();
+            
+            protocol.prepareRun();
+            
+            if ~isempty(persistor)
+                parameters = containers.Map();
+                p = properties(protocol);
+                for i = 1:numel(p)
+                    parameters(p{i}) = protocol.(p{i});
+                end
+                persistor.beginEpochBlock(class(protocol), parameters);
+            end
+        end
+        
+        function endRun(obj)
+            if obj.state == symphonyui.core.ControllerState.PAUSED
+                return;
+            end
+            
+            protocol = obj.currentProtocol;
+            persistor = obj.currentPersistor;
+            obj.currentProtocol = [];
+            obj.currentPersistor = [];
+            
+            if ~isempty(persistor) && ~isempty(persistor.currentEpochBlock)
+                persistor.endEpochBlock();
+            end
+            
+            protocol.completeRun();
+        end
+    
+    end
+    
     methods (Access = private)
         
         function addDevice(obj, device)
@@ -121,29 +147,52 @@ classdef Controller < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.RemoveAllDevices());
         end
         
-        function process(obj, persistor) 
-            obj.clearEpochQueue();
+        function run(obj)
+            import symphonyui.core.util.NetListener;
+            import symphonyui.core.ControllerState;
             
-            obj.currentProtocol.prepareRun();
-            
-            obj.preload();
-            
-            if ~isempty(persistor)
-                parameters = containers.Map();
-                meta = metaclass(obj.currentProtocol);
-                for i = 1:numel(meta.Properties)
-                    mpo = meta.Properties{i};
-                    if mpo.Abstract || mpo.Hidden || ~strcmp(mpo.GetAccess, 'public');
-                        continue;
-                    end
-                    parameters(mpo.Name) = obj.currentProtocol.(mpo.Name);
+            listeners = NetListener.empty(0, 1);
+
+            listeners(end + 1) = NetListener(obj.cobj, 'CompletedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onCompletedEpoch(obj,h,d));
+            function onCompletedEpoch(obj, ~, event)
+                epoch = symphonyui.core.Epoch(event.Epoch);
+                obj.currentProtocol.completeEpoch(epoch);
+                if ~obj.currentProtocol.continueRun()
+                    obj.requestStop();
                 end
-                
-                persistor.beginEpochBlock(class(obj.currentProtocol), parameters);
-                endBlock = onCleanup(@()persistor.endEpochBlock());
+            end
+
+            listeners(end + 1) = NetListener(obj.cobj, 'DiscardedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onDiscardedEpoch(obj,h,d));
+            function onDiscardedEpoch(obj, ~, ~)
+                obj.requestStop();
             end
             
-            task = obj.startAsync(persistor);
+            if isempty(obj.currentPersistor)
+                obj.state = ControllerState.VIEWING;
+            else
+                obj.state = ControllerState.RECORDING;
+            end
+            
+            try
+                obj.process();
+            catch x
+                delete(listeners);
+                obj.state = ControllerState.STOPPED;
+                rethrow(x);
+            end
+            
+            delete(listeners);
+            if obj.state == ControllerState.PAUSING
+                obj.state = ControllerState.PAUSED;
+            else
+                obj.state = ControllerState.STOPPED;
+            end
+        end
+        
+        function process(obj)            
+            obj.preload();
+            
+            task = obj.startAsync(obj.currentPersistor);
                         
             try
                 obj.processLoop();
@@ -164,8 +213,6 @@ classdef Controller < symphonyui.core.CoreObject
             if task.IsFaulted
                 error(symphonyui.core.util.netReport(task.Exception.Flatten()));
             end
-            
-            obj.currentProtocol.completeRun();
         end
         
         function preload(obj)
@@ -226,6 +273,6 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
     end
-    
+        
 end
 

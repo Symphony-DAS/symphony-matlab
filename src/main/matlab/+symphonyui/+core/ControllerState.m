@@ -3,6 +3,8 @@ classdef ControllerState
     enumeration
         STOPPED
         STOPPING
+        PAUSED
+        PAUSING
         VIEWING
         RECORDING
     end
@@ -17,6 +19,10 @@ classdef ControllerState
                     c = 'Stopped';
                 case ControllerState.STOPPING
                     c = 'Stopping...';
+                case ControllerState.PAUSED
+                    c = 'Paused';
+                case ControllerState.PAUSING
+                    c = 'Pausing...';
                 case ControllerState.VIEWING
                     c = 'Viewing...';
                 case ControllerState.RECORDING

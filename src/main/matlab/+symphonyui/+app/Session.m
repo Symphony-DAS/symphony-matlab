@@ -28,6 +28,7 @@ classdef Session < handle
         end
         
         function close(obj)
+            obj.rig.close();
             if obj.hasPersistor()
                 obj.persistor.close();
             end

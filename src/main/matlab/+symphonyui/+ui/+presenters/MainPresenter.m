@@ -84,6 +84,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'MinimizeProtocolPreview', @obj.onViewSelectedMinimizeProtocolPreview);
             obj.addListener(v, 'ViewOnly', @obj.onViewSelectedViewOnly);
             obj.addListener(v, 'Record', @obj.onViewSelectedRecord);
+            obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
+            obj.addListener(v, 'Resume', @obj.onViewSelectedResume);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
             obj.addListener(v, 'ConfigureDeviceBackgrounds', @obj.onViewSelectedConfigureDeviceBackgrounds);
@@ -361,6 +363,26 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 return;
             end
         end
+        
+        function onViewSelectedPause(obj, ~, ~)
+            try
+                obj.acquisitionService.pause();
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+        end
+        
+        function onViewSelectedResume(obj, ~, ~)
+            try
+                obj.acquisitionService.resume();
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+        end
 
         function onViewSelectedStop(obj, ~, ~)
             try
@@ -389,6 +411,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             hasAvailableProtocol = ~isempty(obj.acquisitionService.getAvailableProtocols());
             controllerState = obj.acquisitionService.getControllerState();
+            isPausing = controllerState == ControllerState.PAUSING;
+            isPaused = controllerState == ControllerState.PAUSED;
             isStopping = controllerState == ControllerState.STOPPING;
             isStopped = controllerState == ControllerState.STOPPED;
             [isValid, validationMessage] = obj.acquisitionService.isValid();
@@ -396,13 +420,15 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableNewFile = ~hasOpenFile && isStopped;
             enableOpenFile = enableNewFile;
             enableCloseFile = hasOpenFile && isStopped;
-            enableAddSource = hasOpenFile;
-            enableBeginEpochGroup = hasSource;
-            enableEndEpochGroup = hasEpochGroup;
-            enableSelectProtocol = isStopped && hasAvailableProtocol;
+            enableAddSource = hasOpenFile && isStopped;
+            enableBeginEpochGroup = hasSource && isStopped;
+            enableEndEpochGroup = hasEpochGroup && isStopped;
+            enableSelectProtocol = hasAvailableProtocol && isStopped;
             enableProtocolProperties = isStopped;
-            enableViewOnly = isStopped && isValid;
+            enableViewOnly = isValid && isStopped;
             enableRecord = enableViewOnly && hasEpochGroup;
+            enablePauseResume = ~isPausing && ~isStopping && ~isStopped;
+            togglePauseToResume = isPaused;
             enableStop = ~isStopping && ~isStopped;
             enableInitializeRig = isStopped;
             enableConfigureDeviceBackgrounds = isStopped;
@@ -425,6 +451,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             obj.view.enableProtocolProperties(enableProtocolProperties);
             obj.view.enableViewOnly(enableViewOnly);
             obj.view.enableRecord(enableRecord);
+            obj.view.enablePauseResume(enablePauseResume);
+            obj.view.togglePauseToResume(togglePauseToResume);
             obj.view.enableStop(enableStop);
             obj.view.enableInitializeRig(enableInitializeRig);
             obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);
