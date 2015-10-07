@@ -4,14 +4,15 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         log
         settings
         documentationService
+        acquisitionService
         uuidToNode
         detailedEntitySet
     end
 
     methods
 
-        function obj = DataManagerPresenter(documentationService, view)
-            if nargin < 2
+        function obj = DataManagerPresenter(documentationService, acquisitionService, view)
+            if nargin < 3
                 view = symphonyui.ui.views.DataManagerView();
             end
             obj = obj@symphonyui.ui.Presenter(view);
@@ -19,22 +20,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.DataManagerSettings();
             obj.documentationService = documentationService;
+            obj.acquisitionService = acquisitionService;
             obj.detailedEntitySet = symphonyui.core.collections.EntitySet();
             obj.uuidToNode = containers.Map();
-        end
-        
-        function updateCurrentEpochGroupBlocks(obj)
-            group = obj.documentationService.getCurrentEpochGroup();
-            if isempty(group)
-                return;
-            end
-            blocks = group.epochBlocks;
-            for i = 1:numel(blocks)
-                b = blocks{i};
-                if ~obj.uuidToNode.isKey(b.uuid)
-                    obj.addEpochBlockNode(b);
-                end
-            end
         end
 
     end
@@ -86,6 +74,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
             obj.addListener(d, 'DeletedEntity', @obj.onServiceDeletedEntity);
+            
+            a = obj.acquisitionService;
+            obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
         end
 
     end
@@ -660,14 +651,40 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         function onViewSelectedOpenAxesInNewWindow(obj, ~, ~)
             obj.view.openEpochDataAxesInNewWindow();
         end
+        
+        function onServiceChangedControllerState(obj, ~, ~)
+            obj.updateStateOfControls();
+            
+            state = obj.acquisitionService.getControllerState();
+            if state == symphonyui.core.ControllerState.STOPPED
+                obj.updateCurrentEpochGroupBlocks();
+            end
+        end
 
         function updateStateOfControls(obj)
             hasOpenFile = obj.documentationService.hasOpenFile();
             hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
-
-            obj.view.enableBeginEpochGroup(hasSource);
-            obj.view.enableEndEpochGroup(hasEpochGroup);
+            controllerState = obj.acquisitionService.getControllerState();
+            isStopped = controllerState == symphonyui.core.ControllerState.STOPPED;
+            
+            obj.view.enableAddSource(isStopped);
+            obj.view.enableBeginEpochGroup(hasSource && isStopped);
+            obj.view.enableEndEpochGroup(hasEpochGroup && isStopped);
+        end
+        
+        function updateCurrentEpochGroupBlocks(obj)
+            group = obj.documentationService.getCurrentEpochGroup();
+            if isempty(group)
+                return;
+            end
+            blocks = group.epochBlocks;
+            for i = 1:numel(blocks)
+                b = blocks{i};
+                if ~obj.uuidToNode.isKey(b.uuid)
+                    obj.addEpochBlockNode(b);
+                end
+            end
         end
         
         function loadSettings(obj)

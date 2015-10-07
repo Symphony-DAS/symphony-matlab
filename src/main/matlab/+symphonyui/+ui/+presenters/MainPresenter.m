@@ -212,7 +212,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
 
         function showDataManager(obj)
-            presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService);
+            presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.acquisitionService);
             addlistener(presenter, 'Stopped', @(h,d)obj.closeFile());
             presenter.go();
             obj.dataManagerPresenter = presenter;
@@ -395,11 +395,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
 
         function onServiceChangedControllerState(obj, ~, ~)
             obj.updateStateOfControls();
-
-            state = obj.acquisitionService.getControllerState();
-            if state == symphonyui.core.ControllerState.STOPPED && ~isempty(obj.dataManagerPresenter)
-                obj.dataManagerPresenter.updateCurrentEpochGroupBlocks();
-            end
         end
 
         function updateStateOfControls(obj)

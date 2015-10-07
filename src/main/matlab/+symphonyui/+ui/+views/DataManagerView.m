@@ -494,6 +494,12 @@ classdef DataManagerView < symphonyui.ui.View
             obj.propertiesTab.grid.Close();
             obj.parametersTab.grid.Close();
         end
+        
+        function enableAddSource(obj, tf)
+            enable = symphonyui.ui.util.onOff(tf);
+            set(obj.addSourceButtons.tool, 'Enable', enable);
+            set(obj.addSourceButtons.menu, 'Enable', enable);
+        end
 
         function enableBeginEpochGroup(obj, tf)
             enable = symphonyui.ui.util.onOff(tf);
