@@ -9,7 +9,6 @@ classdef DataManagerView < symphonyui.ui.View
         SetExperimentPurpose
         SetEpochGroupLabel
         SelectedEpochSignal
-        SelectedPropertiesPreset
         SetProperty
         AddProperty
         RemoveProperty
@@ -18,7 +17,6 @@ classdef DataManagerView < symphonyui.ui.View
         AddNote
         SendEntityToWorkspace
         DeleteEntity
-        Refresh
         OpenAxesInNewWindow
     end
 
@@ -26,7 +24,6 @@ classdef DataManagerView < symphonyui.ui.View
         addSourceButtons
         beginEpochGroupButtons
         endEpochGroupButtons
-        refreshButtons
         entityTree
         sourcesFolderNode
         epochGroupsFolderNode
@@ -113,11 +110,6 @@ classdef DataManagerView < symphonyui.ui.View
                 'Parent', treeMenu, ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
-            obj.refreshButtons.menu = uimenu( ...
-                'Parent', treeMenu, ...
-                'Label', 'Refresh', ...
-                'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'Refresh'));
             set(obj.entityTree, 'UIContextMenu', treeMenu);
 
             root = obj.entityTree.Root;
@@ -368,15 +360,7 @@ classdef DataManagerView < symphonyui.ui.View
             propertiesToolbarLayout = uix.HBox( ...
                 'Parent', propertiesLayout, ...
                 'Spacing', 2);
-            v = uix.VBox( ...
-                'Parent', propertiesToolbarLayout);
-            uix.Empty('Parent', v);
-            obj.propertiesTab.presetPopupMenu = MappedPopupMenu( ...
-                'Parent', v, ...
-                'String', {' '}, ...
-                'HorizontalAlignment', 'left', ...
-                'Callback', @(h,d)notify(obj, 'SelectedPropertiesPreset'));
-            set(v, 'Heights', [1 -1]);
+            uix.Empty('Parent', propertiesToolbarLayout);
             propertiesButtonLayout = uix.HBox( ...
                 'Parent', propertiesToolbarLayout);
             obj.propertiesTab.addButton = uicontrol( ...
@@ -392,7 +376,7 @@ classdef DataManagerView < symphonyui.ui.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
                 'Callback', @(h,d)notify(obj, 'RemoveProperty'));
             set(propertiesToolbarLayout, 'Widths', [-1 50]);
-
+            
             set(propertiesLayout, 'Heights', [-1 25]);
 
             % Keywords tab.
@@ -801,19 +785,6 @@ classdef DataManagerView < symphonyui.ui.View
         
         function stopEditingProperties(obj)
             obj.propertiesTab.grid.StopEditing();
-        end
-
-        function t = getSelectedPropertiesPreset(obj)
-            t = get(obj.propertiesTab.presetPopupMenu, 'Value');
-        end
-
-        function setSelectedPropertiesPreset(obj, t)
-            set(obj.propertiesTab.presetPopupMenu, 'Value', t);
-        end
-
-        function setPropertiesPresetList(obj, names, values)
-            set(obj.propertiesTab.presetPopupMenu, 'String', names);
-            set(obj.propertiesTab.presetPopupMenu, 'Values', values);
         end
 
         function setKeywords(obj, data)

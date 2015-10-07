@@ -57,7 +57,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'SetExperimentPurpose', @obj.onViewSetExperimentPurpose);
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
             obj.addListener(v, 'SelectedEpochSignal', @obj.onViewSelectedEpochSignal);
-            obj.addListener(v, 'SelectedPropertiesPreset', @obj.onViewSelectedPropertiesPreset);
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
@@ -66,7 +65,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
             obj.addListener(v, 'SendEntityToWorkspace', @obj.onViewSelectedSendEntityToWorkspace);
             obj.addListener(v, 'DeleteEntity', @obj.onViewSelectedDeleteEntity);
-            obj.addListener(v, 'Refresh', @obj.onViewSelectedRefresh);
             obj.addListener(v, 'OpenAxesInNewWindow', @obj.onViewSelectedOpenAxesInNewWindow);
 
             d = obj.documentationService;
@@ -458,18 +456,9 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
         end
 
         function populateAnnotationsWithEntitySet(obj, entitySet)
-            obj.populatePropertiesPresetList();
             obj.populatePropertiesWithEntitySet(entitySet);
             obj.populateKeywordsWithEntitySet(entitySet);
             obj.populateNotesWithEntitySet(entitySet);
-        end
-
-        function populatePropertiesPresetList(obj)
-            obj.view.setPropertiesPresetList({'Select properties preset...'}, {'Select properties preset...'});
-        end
-
-        function onViewSelectedPropertiesPreset(obj, ~, ~)
-            disp(obj.view.getSelectedPropertiesPreset());
         end
 
         function populatePropertiesWithEntitySet(obj, entitySet)
@@ -641,11 +630,6 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
 
             obj.populateDetailsWithNodes(obj.view.getSelectedNodes());
             obj.updateStateOfControls();
-        end
-
-        function onViewSelectedRefresh(obj, ~, ~)
-            % TODO: Implement
-            obj.view.showError('Not implemented yet');
         end
 
         function onViewSelectedOpenAxesInNewWindow(obj, ~, ~)
