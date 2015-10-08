@@ -19,17 +19,15 @@ classdef MessageBoxView < symphonyui.ui.View
             import symphonyui.ui.util.*;
             
             set(obj.figureHandle, ...
-                'Position', screenCenter(270, 120));
+                'Position', screenCenter(350, 54));
             
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
             
-            obj.text = uicontrol( ...
-                'Parent', mainLayout, ...
-                'Style', 'text', ...
-                'HorizontalAlignment', 'center');
+            obj.text = TextArea( ...
+                'Parent', mainLayout);
             
             % Controls.
             controlsLayout = uix.HBox( ...
@@ -62,6 +60,14 @@ classdef MessageBoxView < symphonyui.ui.View
         
         function setText(obj, t)
             set(obj.text, 'String', t);
+        end
+        
+        function s = getTextSize(obj)
+            s = get(obj.text, 'Size');
+        end
+        
+        function s = getTextPreferredSize(obj)
+            s = get(obj.text, 'PreferredSize');
         end
         
         function setButton1(obj, s)

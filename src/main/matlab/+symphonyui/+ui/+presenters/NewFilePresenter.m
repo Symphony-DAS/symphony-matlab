@@ -113,7 +113,9 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             try
                 path = obj.documentationService.getFilePath(name, location);
                 if exist(path, 'file')
-                    result = obj.view.showMessage(['''' path ''' already exists. Overwrite?'], ...
+                    [~, n, e] = fileparts(path);
+                    filename = [n e];
+                    result = obj.view.showMessage(['''' filename ''' already exists. Overwrite?'], ...
                         'Overwrite File', ...
                         'Cancel', 'Overwrite');
                     if ~strcmp(result, 'Overwrite')
@@ -121,7 +123,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
                     end
                     delete(path);
                     if exist(path, 'file')
-                        error(['Unable to delete ''' path '''']);
+                        error(['Unable to delete ''' filename '''']);
                     end
                 end
                 obj.documentationService.newFile(name, location, description);

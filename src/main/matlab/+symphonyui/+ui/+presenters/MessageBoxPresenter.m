@@ -47,6 +47,15 @@ classdef MessageBoxPresenter < symphonyui.ui.Presenter
                 obj.view.setButton3Default();
             end
         end
+        
+        function onGo(obj)
+            obj.view.update();
+            size = obj.view.getTextSize();
+            preferred = obj.view.getTextPreferredSize();
+            position = obj.view.position;
+            position(3:4) = position(3:4) + (preferred - size);
+            obj.view.position = position;
+        end
 
         function onBind(obj)
             v = obj.view;
