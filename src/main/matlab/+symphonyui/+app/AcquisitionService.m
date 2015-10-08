@@ -65,19 +65,23 @@ classdef AcquisitionService < handle
         end
 
         function viewOnly(obj)
-            obj.session.controller.runProtocol(obj.session.protocol, []);
+            if obj.session.controller.state.isViewingPaused()
+                obj.session.controller.resume();
+            else
+                obj.session.controller.runProtocol(obj.session.protocol, []);
+            end
         end
 
         function record(obj)
-            obj.session.controller.runProtocol(obj.session.protocol, obj.session.getPersistor());
+            if obj.session.controller.state.isRecordingPaused()
+                obj.session.controller.resume();
+            else
+                obj.session.controller.runProtocol(obj.session.protocol, obj.session.getPersistor());
+            end
         end
         
         function pause(obj)
             obj.session.controller.requestPause();
-        end
-        
-        function resume(obj)
-            obj.session.controller.resume();
         end
 
         function stop(obj)

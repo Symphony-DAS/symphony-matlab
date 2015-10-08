@@ -406,7 +406,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
             hasAvailableProtocol = ~isempty(obj.acquisitionService.getAvailableProtocols());
             controllerState = obj.acquisitionService.getControllerState();
             isPausing = controllerState == ControllerState.PAUSING;
-            isPaused = controllerState == ControllerState.PAUSED;
+            isViewingPaused = controllerState == ControllerState.VIEWING_PAUSED;
+            isRecordingPaused = controllerState == ControllerState.RECORDING_PAUSED;
             isStopping = controllerState == ControllerState.STOPPING;
             isStopped = controllerState == ControllerState.STOPPED;
             [isValid, validationMessage] = obj.acquisitionService.isValid();
@@ -419,9 +420,9 @@ classdef MainPresenter < symphonyui.ui.Presenter
             enableEndEpochGroup = hasEpochGroup && isStopped;
             enableSelectProtocol = hasAvailableProtocol && isStopped;
             enableProtocolProperties = isStopped;
-            enableViewOnly = isValid && isStopped;
-            enableRecord = enableViewOnly && hasEpochGroup;
-            enablePause = ~isPausing && ~isPaused && ~isStopping && ~isStopped;
+            enableViewOnly = isValid && (isViewingPaused || isStopped);
+            enableRecord = isValid && hasEpochGroup && (isRecordingPaused || isStopped);
+            enablePause = ~isPausing && ~isViewingPaused && ~isRecordingPaused && ~isStopping && ~isStopped;
             enableStop = ~isStopping && ~isStopped;
             enableInitializeRig = isStopped;
             enableConfigureDeviceBackgrounds = isStopped;

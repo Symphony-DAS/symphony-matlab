@@ -48,7 +48,7 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function runProtocol(obj, protocol, persistor)
-            if obj.state == symphonyui.core.ControllerState.PAUSED
+            if obj.state.isPaused()
                 error('Controller is paused');
             end
             
@@ -59,7 +59,7 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function resume(obj)            
-            if obj.state ~= symphonyui.core.ControllerState.PAUSED
+            if ~obj.state.isPaused()
                 error('Controller not paused');
             end
             
@@ -69,12 +69,15 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function requestPause(obj)
+            if ~obj.state.isRunning()
+                return;
+            end
             obj.state = symphonyui.core.ControllerState.PAUSING;
             obj.tryCore(@()obj.cobj.RequestPause());
         end
                 
         function requestStop(obj)
-            if obj.state == symphonyui.core.ControllerState.PAUSED
+            if obj.state.isPaused()
                 obj.state = symphonyui.core.ControllerState.STOPPED;
                 obj.endRun();
                 return;
@@ -119,7 +122,7 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function endRun(obj)
-            if obj.state == symphonyui.core.ControllerState.PAUSED
+            if obj.state.isPaused()
                 return;
             end
             
@@ -152,6 +155,15 @@ classdef Controller < symphonyui.core.CoreObject
             import symphonyui.core.ControllerState;
             
             listeners = NetListener.empty(0, 1);
+            
+            listeners(end + 1) = NetListener(obj.cobj, 'Started', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onStarted(obj,h,d));
+            function onStarted(obj, ~, ~)
+                if obj.state.isPausing()
+                    obj.tryCore(@()obj.cobj.RequestPause());
+                elseif obj.state.isStopping()
+                    obj.tryCore(@()obj.cobj.RequestStop());
+                end
+            end
 
             listeners(end + 1) = NetListener(obj.cobj, 'CompletedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onCompletedEpoch(obj,h,d));
             function onCompletedEpoch(obj, ~, event)
@@ -182,8 +194,12 @@ classdef Controller < symphonyui.core.CoreObject
             end
             
             delete(listeners);
-            if obj.state == ControllerState.PAUSING
-                obj.state = ControllerState.PAUSED;
+            if obj.state.isPausing()
+                if isempty(obj.currentPersistor)
+                    obj.state = ControllerState.VIEWING_PAUSED;
+                else
+                    obj.state = ControllerState.RECORDING_PAUSED;
+                end
             else
                 obj.state = ControllerState.STOPPED;
             end
@@ -217,7 +233,7 @@ classdef Controller < symphonyui.core.CoreObject
         
         function preload(obj)
             while obj.epochQueueDuration < obj.PRELOAD_DURATION
-                if ~obj.state.isViewingOrRecording() || ~obj.currentProtocol.continuePreparingEpochs()
+                if ~obj.currentProtocol.continuePreparingEpochs() || ~obj.state.isRunning()
                     break;
                 end
                 epoch = obj.nextEpoch();
@@ -228,13 +244,13 @@ classdef Controller < symphonyui.core.CoreObject
         
         function processLoop(obj)
             while obj.currentProtocol.continuePreparingEpochs()
-                if ~obj.state.isViewingOrRecording();
+                if ~obj.state.isRunning()
                     break;
                 end
                 epoch = obj.nextEpoch();
                 obj.enqueueEpoch(epoch);
                 while obj.epochQueueDuration > obj.PRELOAD_DURATION
-                    if ~obj.state.isViewingOrRecording();
+                    if ~obj.state.isRunning();
                         break;
                     end
                     pause(0.01);
