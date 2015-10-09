@@ -9,15 +9,15 @@ classdef SealTest < symphonyui.core.Protocol
     end
     
     properties (Hidden)
-        ampSet
+        ampType
     end
     
     methods
         
         function onSetRig(obj)
-            amps = symphonyui.core.StringSet(obj.rig.getDeviceNames('Amp'));
-            obj.amp = amps.firstOrEmpty();
-            obj.ampSet = amps;
+            amps = symphonyui.core.util.firstNonEmpty(obj.rig.getDeviceNames('Amp'), {'(None)'});
+            obj.amp = amps{1};
+            obj.ampType = symphonyui.core.PropertyType('char', 'row', amps);
         end
         
         function p = getPreview(obj, panel)
