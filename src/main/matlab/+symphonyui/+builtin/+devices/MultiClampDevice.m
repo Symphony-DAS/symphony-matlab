@@ -24,7 +24,7 @@ classdef MultiClampDevice < symphonyui.core.Device
             obj@symphonyui.core.Device(cobj);
         end
         
-        function delete(obj)
+        function close(obj)
             obj.tryCore(@()obj.cobj.Dispose());
         end
         
