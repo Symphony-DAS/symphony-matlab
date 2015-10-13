@@ -13,6 +13,8 @@ classdef Protocol < handle
         persistor
         numEpochsPrepared
         numEpochsCompleted
+        numIntervalsPrepared
+        numIntervalsCompleted
         figureHandlerManager
     end
     
@@ -74,6 +76,14 @@ classdef Protocol < handle
         function completeEpoch(obj, epoch)
             obj.numEpochsCompleted = obj.numEpochsCompleted + 1;
             obj.figureHandlerManager.updateFigures(epoch);
+        end
+        
+        function prepareInterval(obj, interval) %#ok<INUSD>
+            obj.numIntervalsPrepared = obj.numIntervalsPrepared + 1;
+        end
+        
+        function completeInterval(obj, interval) %#ok<INUSD>
+            obj.numIntervalsCompleted = obj.numIntervalsCompleted + 1;
         end
         
         function tf = continuePreparingEpochs(obj) %#ok<MANU>

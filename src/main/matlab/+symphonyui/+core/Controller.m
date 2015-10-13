@@ -16,6 +16,7 @@ classdef Controller < symphonyui.core.CoreObject
     
     properties (Constant, Access = private)
         PRELOAD_DURATION = seconds(3)
+        INTERVAL_KEYWORD = '_INTERVAL_';
     end
     
     methods
@@ -167,6 +168,9 @@ classdef Controller < symphonyui.core.CoreObject
 
             listeners(end + 1) = NetListener(obj.cobj, 'CompletedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onCompletedEpoch(obj,h,d));
             function onCompletedEpoch(obj, ~, event)
+                if (event.Epoch.Keywords.Contains(obj.INTERVAL_KEYWORD))
+                    return;
+                end
                 epoch = symphonyui.core.Epoch(event.Epoch);
                 obj.currentProtocol.completeEpoch(epoch);
                 if ~obj.currentProtocol.continueRun()
@@ -205,7 +209,11 @@ classdef Controller < symphonyui.core.CoreObject
             end
         end
         
-        function process(obj)            
+        function process(obj)
+            if ~obj.currentProtocol.continueRun()
+                return;
+            end
+            
             obj.preload();
             
             task = obj.startAsync(obj.currentPersistor);
@@ -236,8 +244,8 @@ classdef Controller < symphonyui.core.CoreObject
                 if ~obj.currentProtocol.continuePreparingEpochs() || ~obj.state.isRunning()
                     break;
                 end
-                epoch = obj.nextEpoch();
-                obj.enqueueEpoch(epoch);
+                obj.enqueueEpoch(obj.nextEpoch());
+                obj.enqueueEpoch(obj.nextInterval());
                 drawnow();
             end
         end
@@ -247,8 +255,8 @@ classdef Controller < symphonyui.core.CoreObject
                 if ~obj.state.isRunning()
                     break;
                 end
-                epoch = obj.nextEpoch();
-                obj.enqueueEpoch(epoch);
+                obj.enqueueEpoch(obj.nextEpoch());
+                obj.enqueueEpoch(obj.nextInterval());
                 while obj.epochQueueDuration > obj.PRELOAD_DURATION
                     if ~obj.state.isRunning();
                         break;
@@ -269,6 +277,21 @@ classdef Controller < symphonyui.core.CoreObject
             end
             
             obj.currentProtocol.prepareEpoch(e);
+        end
+        
+        function i = nextInterval(obj)
+            i = symphonyui.core.Epoch(class(obj.currentProtocol));
+            i.shouldBePersisted = false;
+            i.addKeyword(obj.INTERVAL_KEYWORD);
+            
+            for k = 1:numel(obj.devices)
+                d = obj.devices{k};
+                if ~isempty(d.outputStreams)
+                    i.setBackground(d, d.background);
+                end
+            end
+            
+            obj.currentProtocol.prepareInterval(i);
         end
         
         function enqueueEpoch(obj, epoch)

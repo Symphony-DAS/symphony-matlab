@@ -343,6 +343,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
 
         function onViewSelectedViewOnly(obj, ~, ~)
             obj.view.stopEditingProtocolProperties();
+            obj.view.update();
             try
                 obj.acquisitionService.viewOnly();
             catch x
@@ -354,6 +355,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
 
         function onViewSelectedRecord(obj, ~, ~)
             obj.view.stopEditingProtocolProperties();
+            obj.view.update();
             try
                 obj.acquisitionService.record();
             catch x

@@ -117,6 +117,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             node = obj.addSourceNode(source);
             
             obj.view.stopEditingProperties();
+            obj.view.update();
             obj.view.setSelectedNodes(node);
 
             obj.populateDetailsWithSources(source);
@@ -224,6 +225,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             node = obj.addEpochGroupNode(group);
 
             obj.view.stopEditingProperties();
+            obj.view.update();
             obj.view.setSelectedNodes(node);
             obj.view.setEpochGroupNodeCurrent(node);
 
@@ -246,6 +248,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             node = obj.uuidToNode(group.uuid);
             
             obj.view.stopEditingProperties();
+            obj.view.update();
             obj.view.setSelectedNodes(node);
             obj.view.collapseNode(node);
             obj.view.setEpochGroupNodeNormal(node);

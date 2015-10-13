@@ -67,6 +67,15 @@ classdef PulseFamily < symphonyui.core.Protocol
             epoch.addResponse(obj.rig.getDevice(obj.amp));
         end
         
+        function prepareInterval(obj, interval)
+            prepareInterval@symphonyui.core.Protocol(obj, interval);
+            
+            if obj.interpulseInterval > 0
+                device = obj.rig.getDevice(obj.amp);
+                interval.addDirectCurrentStimulus(device, device.background, obj.interpulseInterval, obj.sampleRate);
+            end
+        end
+        
         function tf = continuePreparingEpochs(obj)
             tf = obj.numEpochsPrepared < obj.numberOfAverages * obj.pulsesInFamily;
         end
