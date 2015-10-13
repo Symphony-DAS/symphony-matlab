@@ -232,6 +232,16 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
             
+            for i = 1:numel(displayNames)
+                name = displayNames{i};
+                repeats = find(strcmp(name, displayNames));
+                if numel(repeats) > 1
+                    for j = 1:numel(repeats)
+                        displayNames{repeats(j)} = [name ' (' classNames{repeats(j)} ')'];
+                    end
+                end
+            end
+            
             obj.view.setProtocolList([{'(None)'}, displayNames], [{[]}, classNames]);
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
             obj.view.enableSelectProtocol(numel(classNames) > 0);
