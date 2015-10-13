@@ -299,6 +299,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             catch x
                 obj.protocolPreview = [];
                 obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
                 return;
             end
         end
@@ -412,7 +413,14 @@ classdef MainPresenter < symphonyui.ui.Presenter
             isRecordingPaused = controllerState == ControllerState.RECORDING_PAUSED;
             isStopping = controllerState == ControllerState.STOPPING;
             isStopped = controllerState == ControllerState.STOPPED;
-            [isValid, validationMessage] = obj.acquisitionService.isValid();
+            try
+                [isValid, validationMessage] = obj.acquisitionService.isValid();
+            catch x
+                isValid = false;
+                validationMessage = 'Failed validation';
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
 
             enableNewFile = ~hasOpenFile && isStopped;
             enableOpenFile = enableNewFile;
