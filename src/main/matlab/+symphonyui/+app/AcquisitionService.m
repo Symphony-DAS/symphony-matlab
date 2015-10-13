@@ -68,6 +68,7 @@ classdef AcquisitionService < handle
             if obj.session.controller.state.isViewingPaused()
                 obj.session.controller.resume();
             else
+                obj.session.protocol.closeFigures();
                 obj.session.controller.runProtocol(obj.session.protocol, []);
             end
         end
@@ -76,6 +77,7 @@ classdef AcquisitionService < handle
             if obj.session.controller.state.isRecordingPaused()
                 obj.session.controller.resume();
             else
+                obj.session.protocol.closeFigures();
                 obj.session.controller.runProtocol(obj.session.protocol, obj.session.getPersistor());
             end
         end
