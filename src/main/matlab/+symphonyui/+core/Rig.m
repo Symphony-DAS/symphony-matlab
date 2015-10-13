@@ -5,6 +5,7 @@ classdef Rig < handle
     end
     
     properties (SetAccess = private)
+        sampleRateType
         daqController
         devices
         isClosed
@@ -13,7 +14,6 @@ classdef Rig < handle
     methods
         
         function obj = Rig(description)
-            obj.sampleRate = description.sampleRate;
             obj.daqController = description.daqController;
             obj.devices = description.devices;
             obj.isClosed = false;
@@ -21,6 +21,8 @@ classdef Rig < handle
             for i = 1:numel(obj.devices)
                 obj.devices{i}.cobj.Clock = obj.daqController.cobj.Clock;
             end
+            
+            obj.sampleRate = obj.daqController.sampleRate;
         end
         
         function delete(obj)
@@ -38,19 +40,29 @@ classdef Rig < handle
             obj.isClosed = true;
         end
         
+        function r = get.sampleRate(obj)
+            r = obj.daqController.sampleRate;
+            devs = obj.devices;
+            for i = 1:numel(devs)
+                if r ~= devs{i}.sampleRate
+                    error('Non-homogenous sample rate');
+                end
+            end
+        end
+        
         function set.sampleRate(obj, r)
-            if isnumeric(r)
+            if isnumeric(r) && ~isempty(r)
                 r = symphonyui.core.Measurement(r, 'Hz');
             end
-            daq = obj.daqController; %#ok<MCSUP>
-            if isprop(daq, 'sampleRate')
-                daq.sampleRate = r;
-            end
+            obj.daqController.sampleRate = r; %#ok<MCSUP>
             devs = obj.devices; %#ok<MCSUP>
             for i = 1:numel(devs)
                 devs{i}.sampleRate = r;
             end
-            obj.sampleRate = r;
+        end
+        
+        function t = get.sampleRateType(obj)
+            t = obj.daqController.sampleRateType;
         end
         
         function d = getDevice(obj, name)

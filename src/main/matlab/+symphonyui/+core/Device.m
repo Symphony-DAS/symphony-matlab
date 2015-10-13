@@ -63,7 +63,7 @@ classdef Device < symphonyui.core.CoreObject
         function r = get.sampleRate(obj)
             cir = obj.cobj.InputSampleRate;
             cor = obj.cobj.OutputSampleRate;
-            if (cir ~= cor)
+            if (~cir.Equals(cor))
                 error('Mismatched input and output sample rate');
             end
             if isempty(cir)

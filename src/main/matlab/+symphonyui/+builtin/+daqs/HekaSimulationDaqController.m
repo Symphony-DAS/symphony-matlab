@@ -40,6 +40,9 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
             Symphony.Core.Converters.Register(Symphony.Core.Measurement.NORMALIZED, 'V', Symphony.Core.ConvertProcs.Scale(10.24, 'V'));
             Symphony.Core.Converters.Register('V', Symphony.Core.Measurement.NORMALIZED, Symphony.Core.ConvertProcs.Scale(1/10.24, Symphony.Core.Measurement.NORMALIZED));
             
+            obj.sampleRate = symphonyui.core.Measurement(10000, 'Hz');
+            obj.sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {10000, 20000, 50000});
+            
             obj.simulationRunner = @(output, timeStep)obj.loopbackRunner(output, timeStep);
         end
         

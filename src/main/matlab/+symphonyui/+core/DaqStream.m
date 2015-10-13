@@ -28,7 +28,12 @@ classdef DaqStream < symphonyui.core.CoreObject
         end
         
         function set.sampleRate(obj, measurement)
-            obj.cobj.SampleRate = measurement.cobj;
+            if isempty(measurement)
+                cm = [];
+            else
+                cm = measurement.cobj;
+            end
+            obj.cobj.SampleRate = cm;
         end
         
     end

@@ -12,6 +12,9 @@ classdef HekaDaqController < symphonyui.core.DaqController
             Heka.HekaDAQInputStream.RegisterConverters();
             Heka.HekaDAQOutputStream.RegisterConverters();
             
+            obj.sampleRate = symphonyui.core.Measurement(10000, 'Hz');
+            obj.sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {10000, 20000, 50000});
+            
             obj.tryCore(@()obj.cobj.InitHardware());
         end
         

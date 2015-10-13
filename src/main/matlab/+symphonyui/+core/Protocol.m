@@ -1,11 +1,11 @@
 classdef Protocol < handle
     
     properties
-        sampleRate = 10000;     % Acquisition sample rate (Hz)
+        sampleRate  % Acquisition sample rate (Hz)
     end
     
     properties (Hidden)
-        sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {10000, 20000, 50000});
+        sampleRateType
     end
     
     properties (Access = protected)
@@ -33,8 +33,14 @@ classdef Protocol < handle
             obj.onSetRig();
         end
         
-        function onSetRig(obj) %#ok<MANU>
-            
+        function onSetRig(obj)
+            rate = obj.rig.sampleRate;
+            if isempty(rate)
+                obj.sampleRate = [];
+            else
+                obj.sampleRate = rate.quantityInBaseUnits;
+            end
+            obj.sampleRateType = obj.rig.sampleRateType;
         end
         
         function setPersistor(obj, persistor)

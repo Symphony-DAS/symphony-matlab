@@ -19,6 +19,8 @@ classdef PulseFamily < symphonyui.core.Protocol
     methods
         
         function onSetRig(obj)
+            onSetRig@symphonyui.core.Protocol(obj);
+            
             amps = symphonyui.core.util.firstNonEmpty(obj.rig.getDeviceNames('Amp'), {'(None)'});
             obj.amp = amps{1};
             obj.ampType = symphonyui.core.PropertyType('char', 'row', amps);

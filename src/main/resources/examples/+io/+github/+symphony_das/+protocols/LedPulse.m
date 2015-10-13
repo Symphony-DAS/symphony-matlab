@@ -20,6 +20,8 @@ classdef LedPulse < symphonyui.core.Protocol
     methods
         
         function onSetRig(obj)
+            onSetRig@symphonyui.core.Protocol(obj);
+            
             leds = symphonyui.core.util.firstNonEmpty(obj.rig.getDeviceNames('LED'), {'(None)'});
             obj.led = leds{1};
             obj.ledType = symphonyui.core.PropertyType('char', 'row', leds);
