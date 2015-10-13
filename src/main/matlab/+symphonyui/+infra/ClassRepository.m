@@ -17,7 +17,8 @@ classdef ClassRepository < handle
             dirs = strsplit(path, ';');
             for i = 1:numel(dirs)
                 if exist(dirs{i}, 'dir')
-                    addpath(dirs{i});
+                    [~, p] = packageName(dirs{i});
+                    addpath(p);
                 end
             end
             obj.searchPath = path;
@@ -75,7 +76,10 @@ classdef ClassRepository < handle
                 for i = 1:numel(supers)
                     s = supers{i};
                     if obj.classMap.isKey(s)
-                        classes = [obj.classMap(s) name];
+                        classes = obj.classMap(s);
+                        if ~any(strcmp(name, classes))
+                            classes = [classes name]; %#ok<AGROW>
+                        end
                     else
                         classes = {name};
                     end
