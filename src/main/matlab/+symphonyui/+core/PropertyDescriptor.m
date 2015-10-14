@@ -113,6 +113,13 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
             end
         end
         
+        function m = toMap(array)
+            m = containers.Map();
+            for i = 1:numel(array)
+                m(array(i).name) = array(i).value;
+            end
+        end
+        
         function s = saveobj(obj)
             s = struct();
             p = properties(obj);

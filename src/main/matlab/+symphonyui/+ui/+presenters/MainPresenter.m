@@ -33,6 +33,8 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
 
         function selectProtocol(obj, className)
+            obj.view.stopEditingProtocolProperties();
+            obj.view.update();
             try
                 obj.acquisitionService.selectProtocol(className);
             catch x

@@ -9,6 +9,7 @@ classdef AcquisitionService < handle
     properties (Access = private)
         session
         classRepository
+        presetMap
     end
 
     methods
@@ -16,6 +17,7 @@ classdef AcquisitionService < handle
         function obj = AcquisitionService(session, classRepository)
             obj.session = session;
             obj.classRepository = classRepository;
+            obj.presetMap = containers.Map();
 
             addlistener(obj.session, 'rig', 'PostSet', @(h,d)obj.selectProtocol(obj.getSelectedProtocol()));
             addlistener(obj.session, 'persistor', 'PostSet', @(h,d)obj.selectProtocol(obj.getSelectedProtocol()));
@@ -30,15 +32,19 @@ classdef AcquisitionService < handle
             if ~isempty(className) && ~any(strcmp(className, obj.getAvailableProtocols()))
                 error([className ' is not an available protocol']);
             end
-            obj.session.protocol.closeFigures();
             if isempty(className)
                 protocol = symphonyui.app.Session.NULL_PROTOCOL;
             else
                 constructor = str2func(className);
                 protocol = constructor();
             end
+            obj.presetMap(class(obj.session.protocol)) = symphonyui.core.ProtocolPreset([], obj.session.protocol.getPropertyDescriptors().toMap());
             protocol.setRig(obj.session.rig);
             protocol.setPersistor(obj.session.persistor);
+            if obj.presetMap.isKey(className)
+                protocol.applyPreset(obj.presetMap(className));
+            end            
+            obj.session.protocol.closeFigures();
             obj.session.protocol = protocol;
             notify(obj, 'SelectedProtocol');
         end

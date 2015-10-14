@@ -52,6 +52,18 @@ classdef Protocol < handle
             
         end
         
+        function applyPreset(obj, preset)
+            descriptors = obj.getPropertyDescriptors();
+            names = preset.propertyMap.keys;
+            for i = 1:numel(names)
+                d = descriptors.findByName(names{i});
+                v = preset.propertyMap(names{i});
+                if ~isempty(d) && d.type.canAccept(v)
+                    obj.(names{i}) = v;
+                end
+            end
+        end
+        
         function d = getPropertyDescriptors(obj)
             names = properties(obj);
             d = symphonyui.core.PropertyDescriptor.empty(0, numel(names));

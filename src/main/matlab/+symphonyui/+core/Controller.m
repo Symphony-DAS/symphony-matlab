@@ -113,12 +113,8 @@ classdef Controller < symphonyui.core.CoreObject
             protocol.prepareRun();
             
             if ~isempty(persistor)
-                parameters = containers.Map();
-                p = properties(protocol);
-                for i = 1:numel(p)
-                    parameters(p{i}) = protocol.(p{i});
-                end
-                persistor.beginEpochBlock(class(protocol), parameters);
+                d = protocol.getPropertyDescriptors();
+                persistor.beginEpochBlock(class(protocol), d.toMap());
             end
         end
         

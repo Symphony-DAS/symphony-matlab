@@ -43,6 +43,10 @@ classdef PropertyType < matlab.mixin.SetGet %#ok<*MCSUP>
             d = obj.type.Domain;
         end
         
+        function tf = canAccept(obj, value)
+            tf = obj.type.CanAccept(value);
+        end
+        
         function s = saveobj(obj)
             s.primitiveType = obj.primitiveType;
             s.shape = obj.shape;
