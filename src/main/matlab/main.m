@@ -47,7 +47,7 @@ function addJavaJars(jars)
         if isempty(path)
             error(['Cannot find ' jars{i} ' on the matlab path']);
         end
-        if ~ismember(javaclasspath, path)
+        if ~any(strcmpi(javaclasspath, path))
             javaaddpath(path);
         end
     end
