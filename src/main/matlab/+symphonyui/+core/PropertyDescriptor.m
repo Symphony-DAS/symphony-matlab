@@ -116,7 +116,9 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
         function m = toMap(array)
             m = containers.Map();
             for i = 1:numel(array)
-                m(array(i).name) = array(i).value;
+                if ~array(i).hidden
+                    m(array(i).name) = array(i).value;
+                end
             end
         end
         

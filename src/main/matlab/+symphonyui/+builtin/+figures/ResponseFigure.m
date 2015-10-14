@@ -9,6 +9,7 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
     methods
         
         function obj = ResponseFigure(device)
+            obj@symphonyui.core.FigureHandler(device.name);
             obj.device = device;
             obj.createUi();
         end
@@ -50,6 +51,6 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
         end
         
     end
-    
+        
 end
 
