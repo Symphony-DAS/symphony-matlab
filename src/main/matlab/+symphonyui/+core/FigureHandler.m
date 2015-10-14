@@ -18,7 +18,7 @@ classdef FigureHandler < handle
                 'HandleVisibility', 'off', ...
                 'Visible', 'off', ...
                 'DockControls', 'off', ...
-                'CloseRequestFcn', @obj.onClose);
+                'CloseRequestFcn', @obj.onFigureSelectedClose);
 
             if ispc
                 set(obj.figureHandle, 'DefaultUicontrolFontName', 'Segoe UI');
@@ -52,7 +52,7 @@ classdef FigureHandler < handle
     
     methods (Access = protected)
         
-        function onClose(obj, ~, ~)
+        function onFigureSelectedClose(obj, ~, ~)
             obj.close();
         end
         
