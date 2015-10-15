@@ -47,7 +47,8 @@ numSeparator = length(findobj(tlbChildren(index:end),'Separator','on'));
 drawnow;
 jUitoolbar = get(hUitoolbar,'JavaContainer');
 jUipushtools = jUitoolbar.getComponentPeer.getComponents;
+numJtools = numel(jUipushtools) - numChild - numSeparator;
 ico = javax.swing.ImageIcon(imageFileName);
-jUipushtools(numChild-index+numSeparator+2).setIcon(ico);
+jUipushtools(numJtools+numChild-index+numSeparator+1).setIcon(ico);
 
 

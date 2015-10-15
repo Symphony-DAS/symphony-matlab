@@ -38,6 +38,12 @@ classdef FigureHandlerManager < handle
             end
         end
         
+        function clearFigures(obj)
+            for i = 1:numel(obj.figureHandlers)
+                obj.figureHandlers{i}.clear();
+            end
+        end
+        
         function closeFigures(obj)
             while ~isempty(obj.figureHandlers)
                 obj.figureHandlers{1}.close();

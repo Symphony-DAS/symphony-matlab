@@ -3,7 +3,8 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
     properties (Access = private)
         device
         axes
-        line
+        sweep
+        storedSweep
     end
     
     methods
@@ -15,8 +16,18 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
         end
         
         function createUi(obj)
+            import symphonyui.ui.util.*;
+            
             set(obj.figureHandle, ...
                 'Name', [obj.device.name ' Response']);
+            
+            toolbar = findall(obj.figureHandle, 'Type', 'uitoolbar');
+            storeSweepButton = uipushtool( ...
+                'Parent', toolbar, ...
+                'TooltipString', 'Store Sweep', ...
+                'Separator', 'on', ...
+                'ClickedCallback', @obj.onSelectedStoreSweep);
+            setIconImage(storeSweepButton, symphonyui.app.App.getResource('icons/sweep_store.png'));
             
             obj.axes = axes( ...
                 'Parent', obj.figureHandle, ...
@@ -24,8 +35,13 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'XTickMode', 'auto'); %#ok<CPROP>
             title(obj.axes, [obj.device.name, ' Response']);
-            obj.line = line(0, 0, 'Parent', obj.axes); %#ok<CPROP>
             xlabel(obj.axes, 'sec');
+            obj.sweep = line(0, 0, 'Parent', obj.axes);
+        end
+        
+        function clear(obj)
+            cla(obj.axes);
+            obj.sweep = line(0, 0, 'Parent', obj.axes);
         end
         
         function handleEpoch(obj, epoch)
@@ -42,12 +58,26 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
                 x = [];
                 y = [];
             end
-            set(obj.line, 'XData', x, 'YData', y);
+            set(obj.sweep, 'XData', x, 'YData', y);
             ylabel(obj.axes, units, 'Interpreter', 'none');
         end
         
         function tf = isequal(obj, other)
             tf = obj.device == other.device;
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function onSelectedStoreSweep(obj, ~, ~)
+            if ~isempty(obj.storedSweep)
+                delete(obj.storedSweep);
+            end
+            obj.storedSweep = copyobj(obj.sweep, obj.axes);
+            set(obj.storedSweep, ...
+                'Color', 'r', ...
+                'HandleVisibility', 'off');
         end
         
     end

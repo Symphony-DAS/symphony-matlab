@@ -23,7 +23,7 @@ classdef FigureHandler < handle
                 'HandleVisibility', 'off', ...
                 'Visible', 'off', ...
                 'DockControls', 'off', ...
-                'CloseRequestFcn', @obj.onFigureSelectedClose);
+                'CloseRequestFcn', @obj.onSelectedClose);
             if ispc
                 set(obj.figureHandle, 'DefaultUicontrolFontName', 'Segoe UI');
                 set(obj.figureHandle, 'DefaultUicontrolFontSize', 9);
@@ -33,6 +33,11 @@ classdef FigureHandler < handle
             end
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.core.FigureHandlerSettings([matlab.lang.makeValidName(class(obj)) '_' settingsKey]);
+            try
+                obj.loadSettings();
+            catch x
+                obj.log.debug(['Failed to load figure handler settings: ' x.message], x);
+            end
         end
         
         function delete(obj)
@@ -42,12 +47,11 @@ classdef FigureHandler < handle
         end
         
         function show(obj)
-            try
-                obj.loadSettings();
-            catch x
-                obj.log.debug(['Failed to load figure handler settings: ' x.message], x);
-            end
             figure(obj.figureHandle);
+        end
+        
+        function clear(obj)
+            
         end
         
         function hide(obj)
@@ -79,7 +83,7 @@ classdef FigureHandler < handle
     
     methods (Access = protected)
         
-        function onFigureSelectedClose(obj, ~, ~)
+        function onSelectedClose(obj, ~, ~)
             obj.close();
         end
         

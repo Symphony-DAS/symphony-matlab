@@ -63,6 +63,7 @@ classdef AcquisitionService < handle
 
         function setProtocolProperty(obj, name, value)
             obj.session.protocol.(name) = value;
+            obj.session.protocol.closeFigures();
             notify(obj, 'SetProtocolProperty');
         end
 
@@ -73,19 +74,17 @@ classdef AcquisitionService < handle
         function viewOnly(obj)
             if obj.session.controller.state.isViewingPaused()
                 obj.session.controller.resume();
-            else
-                obj.session.protocol.closeFigures();
-                obj.session.controller.runProtocol(obj.session.protocol, []);
+                return;
             end
+            obj.session.controller.runProtocol(obj.session.protocol, []);
         end
 
         function record(obj)
             if obj.session.controller.state.isRecordingPaused()
                 obj.session.controller.resume();
-            else
-                obj.session.protocol.closeFigures();
-                obj.session.controller.runProtocol(obj.session.protocol, obj.session.getPersistor());
+                return;
             end
+            obj.session.controller.runProtocol(obj.session.protocol, obj.session.getPersistor());
         end
         
         function pause(obj)

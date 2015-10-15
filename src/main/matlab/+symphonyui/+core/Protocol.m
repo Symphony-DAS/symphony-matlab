@@ -81,6 +81,8 @@ classdef Protocol < handle
         end
         
         function prepareRun(obj)
+            obj.clearFigures();
+            
             obj.numEpochsPrepared = 0;
             obj.numEpochsCompleted = 0;
             
@@ -114,6 +116,10 @@ classdef Protocol < handle
         
         function completeRun(obj) %#ok<MANU>
             
+        end
+        
+        function clearFigures(obj)
+            obj.figureHandlerManager.clearFigures();
         end
         
         function closeFigures(obj)
