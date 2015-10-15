@@ -209,10 +209,6 @@ classdef PersistorTest < symphonyui.TestBase
             obj.verifyDatetimesEqual(blk.endTime, obj.TEST_END_TIME);
         end
         
-        function testEpoch(obj)
-            error('Need epoch tests');
-        end
-        
     end
     
 end

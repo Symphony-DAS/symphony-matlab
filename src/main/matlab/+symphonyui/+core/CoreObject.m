@@ -73,6 +73,18 @@ classdef (Abstract) CoreObject < handle
             end
         end
         
+        function c = firstFromEnumerable(obj, enum, wrap) %#ok<INUSL>
+            if nargin < 3 || isempty(wrap)
+                wrap = @(e)e;
+            end
+            
+            c = [];
+            enum = Symphony.Core.EnumerableExtensions.Wrap(enum);
+            e = enum.GetEnumerator();
+            e.MoveNext();
+            c = wrap(e.Current());
+        end
+        
         function c = cellArrayFromEnumerableOrderedBy(obj, enum, prop, wrap)
             if nargin < 4
                 wrap = [];
@@ -135,6 +147,10 @@ classdef (Abstract) CoreObject < handle
         
         function d = durationFromTimeSpan(obj, t) %#ok<INUSL>
             d = seconds(t.TotalSeconds);
+        end
+        
+        function t = timeSpanFromDuration(obj, d) %#ok<INUSL>
+            t = System.TimeSpan.FromSeconds(seconds(d));
         end
         
     end
