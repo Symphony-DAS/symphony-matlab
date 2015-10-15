@@ -12,7 +12,7 @@ classdef SimMultiClamp < symphonyui.core.descriptions.RigDescription
             amp2 = MultiClampDevice('Amp2', 2).bindStream(daq.getStream('ANALOG_OUT.1')).bindStream(daq.getStream('ANALOG_IN.1'));
             
             green = UnitConvertingDevice('Green LED', 'V').bindStream(daq.getStream('ANALOG_OUT.2'));
-            blue = CalibratedDevice('Blue LED', symphonyui.core.Measurement.NORMALIZED, linspace(-1, 1), linspace(-1, 1)).bindStream(daq.getStream('ANALOG_OUT.3'));
+            blue = UnitConvertingDevice('Blue LED', 'V').bindStream(daq.getStream('ANALOG_OUT.3'));
             
             trigger1 = UnitConvertingDevice('Trigger1', symphonyui.core.Measurement.UNITLESS).bindStream(daq.getStream('DIGITAL_OUT.1'));
             daq.getStream('DIGITAL_OUT.1').setBitPosition(trigger1, 0);
