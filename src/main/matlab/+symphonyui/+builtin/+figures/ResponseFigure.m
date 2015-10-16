@@ -2,7 +2,7 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
     
     properties (Access = private)
         device
-        axes
+        axesHandle
         sweep
         storedSweep
     end
@@ -18,9 +18,6 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
         function createUi(obj)
             import symphonyui.ui.util.*;
             
-            set(obj.figureHandle, ...
-                'Name', [obj.device.name ' Response']);
-            
             toolbar = findall(obj.figureHandle, 'Type', 'uitoolbar');
             storeSweepButton = uipushtool( ...
                 'Parent', toolbar, ...
@@ -29,23 +26,30 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
                 'ClickedCallback', @obj.onSelectedStoreSweep);
             setIconImage(storeSweepButton, symphonyui.app.App.getResource('icons/sweep_store.png'));
             
-            obj.axes = axes( ...
+            obj.axesHandle = axes( ...
                 'Parent', obj.figureHandle, ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
-                'XTickMode', 'auto'); %#ok<CPROP>
-            title(obj.axes, [obj.device.name, ' Response']);
-            xlabel(obj.axes, 'sec');
-            obj.sweep = line(0, 0, 'Parent', obj.axes);
+                'XTickMode', 'auto');
+            xlabel(obj.axesHandle, 'sec');
+            obj.sweep = line(0, 0, 'Parent', obj.axesHandle);
+            
+            obj.setTitle([obj.device.name ' Response']);
+        end
+        
+        function setTitle(obj, t)
+            set(obj.figureHandle, 'Name', t);
+            title(obj.axesHandle, t);
         end
         
         function clear(obj)
-            cla(obj.axes);
-            obj.sweep = line(0, 0, 'Parent', obj.axes);
+            cla(obj.axesHandle);
+            obj.sweep = line(0, 0, 'Parent', obj.axesHandle);
         end
         
         function handleEpoch(obj, epoch)
             if ~epoch.hasResponse(obj.device)
+                obj.clear();
                 return;
             end
             
@@ -59,10 +63,14 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
                 y = [];
             end
             set(obj.sweep, 'XData', x, 'YData', y);
-            ylabel(obj.axes, units, 'Interpreter', 'none');
+            ylabel(obj.axesHandle, units, 'Interpreter', 'none');
         end
         
         function tf = isequal(obj, other)
+            if isempty(obj) || isempty(other) || ~isa(other, class(obj))
+                tf = false;
+                return;
+            end
             tf = obj.device == other.device;
         end
         
@@ -74,7 +82,7 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
             if ~isempty(obj.storedSweep)
                 delete(obj.storedSweep);
             end
-            obj.storedSweep = copyobj(obj.sweep, obj.axes);
+            obj.storedSweep = copyobj(obj.sweep, obj.axesHandle);
             set(obj.storedSweep, ...
                 'Color', 'r', ...
                 'HandleVisibility', 'off');

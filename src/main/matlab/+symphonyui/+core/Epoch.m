@@ -1,6 +1,7 @@
 classdef Epoch < symphonyui.core.CoreObject
     
     properties
+        parameters
         waitForTrigger
         shouldBePersisted
     end
@@ -45,6 +46,10 @@ classdef Epoch < symphonyui.core.CoreObject
         
         function tf = hasResponse(obj, device)
             tf = obj.tryCoreWithReturn(@()obj.cobj.Responses.ContainsKey(device.cobj));
+        end
+        
+        function m = get.parameters(obj)
+            m = obj.mapFromKeyValueEnumerable(obj.cobj.ProtocolParameters);
         end
         
         function addParameter(obj, name, value)

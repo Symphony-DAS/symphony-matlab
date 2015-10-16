@@ -35,6 +35,7 @@ classdef Pulse < symphonyui.core.Protocol
             prepareRun@symphonyui.core.Protocol(obj);
             
             obj.openFigure(symphonyui.builtin.figures.ResponseFigure(obj.rig.getDevice(obj.amp)));
+            obj.openFigure(symphonyui.builtin.figures.MeanResponseFigure(obj.rig.getDevice(obj.amp)));
         end
         
         function stim = ampStimulus(obj)
