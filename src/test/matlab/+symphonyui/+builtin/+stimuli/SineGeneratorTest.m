@@ -1,4 +1,4 @@
-classdef RampGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBase
+classdef SineGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBase
     
     properties
         generator
@@ -7,13 +7,15 @@ classdef RampGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBase
     methods (TestMethodSetup)
         
         function methodSetup(obj)
-            gen = symphonyui.builtin.stimuli.RampGenerator();
-            gen.preTime = 50;
-            gen.stimTime = 430.2;
-            gen.tailTime = 70;
-            gen.amplitude = 100;
-            gen.mean = -60;
-            gen.sampleRate = 100;
+            gen = symphonyui.builtin.stimuli.SineGenerator();
+            gen.preTime = 51.2;
+            gen.stimTime = 300;
+            gen.tailTime = 25;
+            gen.amplitude = 140;
+            gen.mean = -30;
+            gen.period = 100;
+            gen.phase = pi/2;
+            gen.sampleRate = 200;
             gen.units = 'units';
             obj.generator = gen;
         end
@@ -38,10 +40,12 @@ classdef RampGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBase
             stimPts = timeToPts(gen.stimTime);
             tailPts = timeToPts(gen.tailTime);
             
+            freq = 2 * pi / (gen.period * 1e-3);
+            time = (0:stimPts-1) / gen.sampleRate;
             [q, u] = stim.getData();
             obj.verifyEqual(length(q), prePts + stimPts + tailPts);
             obj.verifyEveryDoubleElementEqualTo(q(1:prePts), gen.mean);
-            obj.verifyEqual(q(prePts+1:prePts+stimPts), linspace(0, gen.amplitude, stimPts) + gen.mean, 'AbsTol', 1e-12);
+            obj.verifyEqual(q(prePts+1:prePts+stimPts), gen.mean + gen.amplitude * sin(freq * time + gen.phase), 'AbsTol', 1e-12);
             obj.verifyEveryDoubleElementEqualTo(q(prePts+stimPts+1:end), gen.mean);
             obj.verifyEqual(u, gen.units);
         end

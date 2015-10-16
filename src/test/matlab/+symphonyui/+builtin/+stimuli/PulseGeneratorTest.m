@@ -7,15 +7,15 @@ classdef PulseGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBase
     methods (TestMethodSetup)
         
         function methodSetup(obj)
-            p = symphonyui.builtin.stimuli.PulseGenerator();
-            p.preTime = 50;
-            p.stimTime = 430.2;
-            p.tailTime = 70;
-            p.amplitude = 100;
-            p.mean = -60;
-            p.sampleRate = 100;
-            p.units = 'units';
-            obj.generator = p;
+            gen = symphonyui.builtin.stimuli.PulseGenerator();
+            gen.preTime = 50;
+            gen.stimTime = 430.2;
+            gen.tailTime = 70;
+            gen.amplitude = 100;
+            gen.mean = -60;
+            gen.sampleRate = 100;
+            gen.units = 'units';
+            obj.generator = gen;
         end
         
     end

@@ -1,4 +1,4 @@
-classdef DirectCurrentGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBase
+classdef WaveformGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBase
     
     properties
         generator
@@ -7,10 +7,9 @@ classdef DirectCurrentGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBa
     methods (TestMethodSetup)
         
         function methodSetup(obj)
-            gen = symphonyui.builtin.stimuli.DirectCurrentGenerator();
-            gen.time = 3.1;
-            gen.offset = -60;
-            gen.sampleRate = 100;
+            gen = symphonyui.builtin.stimuli.WaveformGenerator();
+            gen.waveshape = 0:0.2:100;
+            gen.sampleRate = 200;
             gen.units = 'units';
             obj.generator = gen;
         end
@@ -29,19 +28,9 @@ classdef DirectCurrentGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBa
             obj.verifyEqual(stim.sampleRate.baseUnits, 'Hz');
             obj.verifyEqual(stim.units, gen.units);
             
-            timeToPts = @(t)(round(t * gen.sampleRate));
-            
-            pts = timeToPts(gen.time);
-            
             [q, u] = stim.getData();
-            obj.verifyEqual(length(q), pts);
-            obj.verifyEveryDoubleElementEqualTo(q, gen.offset);
+            obj.verifyEqual(q, gen.waveshape, 'AbsTol', 1e-12);
             obj.verifyEqual(u, gen.units);
-        end
-        
-        function testRegenerate(obj)
-            stim = obj.generator.generate();
-            obj.verifyStimulusRegenerates(stim);
         end
         
     end
