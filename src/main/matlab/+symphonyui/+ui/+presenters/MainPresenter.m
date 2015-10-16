@@ -387,16 +387,6 @@ classdef MainPresenter < symphonyui.ui.Presenter
                 return;
             end
         end
-        
-        function onViewSelectedResume(obj, ~, ~)
-            try
-                obj.acquisitionService.resume();
-            catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-                return;
-            end
-        end
 
         function onViewSelectedStop(obj, ~, ~)
             try

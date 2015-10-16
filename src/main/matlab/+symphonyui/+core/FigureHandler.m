@@ -50,7 +50,7 @@ classdef FigureHandler < handle
             figure(obj.figureHandle);
         end
         
-        function clear(obj)
+        function clear(obj) %#ok<MANU>
             
         end
         

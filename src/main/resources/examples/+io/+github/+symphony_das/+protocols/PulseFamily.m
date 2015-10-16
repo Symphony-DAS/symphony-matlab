@@ -36,11 +36,12 @@ classdef PulseFamily < symphonyui.core.Protocol
             end
         end
         
-        function prepareRun(obj)
+        function prepareRun(obj)           
             prepareRun@symphonyui.core.Protocol(obj);
             
-            obj.openFigure(symphonyui.builtin.figures.ResponseFigure(obj.rig.getDevice(obj.amp)));
-            obj.openFigure(symphonyui.builtin.figures.MeanResponseFigure(obj.rig.getDevice(obj.amp)));
+            import symphonyui.builtin.figures.*;
+            obj.openFigure(ResponseFigure(obj.rig.getDevice(obj.amp)));
+            obj.openFigure(MeanResponseFigure(obj.rig.getDevice(obj.amp)));
         end
         
         function [stim, pulseSignal] = ampStimulus(obj, pulseNum)

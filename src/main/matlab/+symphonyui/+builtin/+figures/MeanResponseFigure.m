@@ -1,5 +1,10 @@
 classdef MeanResponseFigure < symphonyui.core.FigureHandler
     
+    properties (SetAccess = private)
+        sweepColor
+        groupBy
+    end
+    
     properties (Access = private)
         device
         axesHandle
@@ -8,10 +13,26 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
     
     methods
         
-        function obj = MeanResponseFigure(device)
+        function obj = MeanResponseFigure(device, varargin)
             obj@symphonyui.core.FigureHandler(device.name);
-            obj.device = device;
-            obj.createUi();
+            try
+                obj.device = device;
+                obj.parseVargin(varargin{:});
+                obj.createUi();
+            catch x
+                delete(obj.figureHandle);
+                rethrow(x);
+            end
+        end
+        
+        function parseVargin(obj, varargin)
+            ip = inputParser();
+            ip.addParameter('sweepColor', 'b', @(x)ischar(x) || isvector(x));
+            ip.addParameter('groupBy', [], @(x)iscellstr(x));
+            ip.parse(varargin{:});
+
+            obj.sweepColor = ip.Results.sweepColor;
+            obj.groupBy = ip.Results.groupBy;
         end
         
         function createUi(obj)
@@ -52,7 +73,17 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
                 y = [];
             end
             
-            parameters = epoch.parameters;
+            p = epoch.parameters;
+            if isempty(obj.groupBy) && isnumeric(obj.groupBy)
+                parameters = p;
+            else
+                parameters = containers.Map();
+                for i = 1:length(obj.groupBy)
+                    key = obj.groupBy{i};
+                    parameters(key) = p(key);
+                end
+            end
+            
             if isempty(parameters)
                 t = 'All epochs grouped together';
             else

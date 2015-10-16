@@ -1,5 +1,10 @@
 classdef ResponseFigure < symphonyui.core.FigureHandler
     
+    properties (SetAccess = private)
+        sweepColor
+        storedSweepColor
+    end
+    
     properties (Access = private)
         device
         axesHandle
@@ -9,10 +14,26 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
     
     methods
         
-        function obj = ResponseFigure(device)
+        function obj = ResponseFigure(device, varargin)
             obj@symphonyui.core.FigureHandler(device.name);
-            obj.device = device;
-            obj.createUi();
+            try
+                obj.device = device;
+                obj.parseVargin(varargin{:});
+                obj.createUi();
+            catch x
+                delete(obj.figureHandle);
+                rethrow(x);
+            end
+        end
+        
+        function parseVargin(obj, varargin)
+            ip = inputParser();
+            ip.addParameter('sweepColor', 'b', @(x)ischar(x) || isvector(x));
+            ip.addParameter('storedSweepColor', 'r', @(x)ischar(x) || isvector(x));
+            ip.parse(varargin{:});
+
+            obj.sweepColor = ip.Results.sweepColor;
+            obj.storedSweepColor = ip.Results.storedSweepColor;
         end
         
         function createUi(obj)
