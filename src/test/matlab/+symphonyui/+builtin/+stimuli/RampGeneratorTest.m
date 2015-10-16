@@ -46,11 +46,6 @@ classdef RampGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBase
             obj.verifyEqual(u, gen.units);
         end
         
-        function testRegenerate(obj)
-            stim = obj.generator.generate();
-            obj.verifyStimulusRegenerates(stim);
-        end
-        
     end
     
 end

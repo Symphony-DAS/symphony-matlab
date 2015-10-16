@@ -39,8 +39,8 @@ classdef Stimulus < symphonyui.core.persistent.IoBase
             import Symphony.Core.*;
             d = obj.cobj.Data;
             if d.IsSome
-                q = double(Measurement.ToQuantityArray(d));
-                u = char(Measurement.HomogenousDisplayUnits(d));
+                q = double(Measurement.ToQuantityArray(d.Item2));
+                u = char(Measurement.HomogenousDisplayUnits(d.Item2));
             else
                 s = obj.regenerate();
                 [q, u] = s.getData();

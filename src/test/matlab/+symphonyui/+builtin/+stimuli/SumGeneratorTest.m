@@ -52,11 +52,6 @@ classdef SumGeneratorTest < symphonyui.builtin.StimulusGeneratorTestBase
             obj.verifyEqual(sumData, stim1Data + stim2Data + stim3Data, 'AbsTol', 1e-12);
         end
         
-        function testRegenerate(obj)
-            stim = obj.generator.generate();
-            obj.verifyStimulusRegenerates(stim);
-        end
-        
     end
     
 end

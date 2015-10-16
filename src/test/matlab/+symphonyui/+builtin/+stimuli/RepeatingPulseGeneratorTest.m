@@ -46,12 +46,6 @@ classdef RepeatingPulseGeneratorTest < symphonyui.builtin.StimulusGeneratorTestB
             obj.verifyEqual(u, gen.units);
         end
         
-        function testRegenerate(obj)
-            gen = obj.generator;
-            stim = gen.generate();
-            obj.verifyStimulusRegenerates(stim, seconds((gen.preTime + gen.stimTime + gen.tailTime) / 1000));
-        end
-        
     end
     
 end

@@ -45,17 +45,17 @@ classdef PulseFamily < symphonyui.core.Protocol
         function [stim, pulseSignal] = ampStimulus(obj, pulseNum)
             pulseSignal = obj.incrementPerPulse * (double(pulseNum) - 1) + obj.firstPulseSignal;
             
-            p = symphonyui.builtin.stimuli.PulseGenerator();
+            gen = symphonyui.builtin.stimuli.PulseGenerator();
             
-            p.preTime = obj.preTime;
-            p.stimTime = obj.stimTime;
-            p.tailTime = obj.tailTime;
-            p.mean = obj.rig.getDevice(obj.amp).background.quantity;
-            p.amplitude = pulseSignal - p.mean;
-            p.sampleRate = obj.sampleRate;
-            p.units = obj.rig.getDevice(obj.amp).background.displayUnits;
+            gen.preTime = obj.preTime;
+            gen.stimTime = obj.stimTime;
+            gen.tailTime = obj.tailTime;
+            gen.mean = obj.rig.getDevice(obj.amp).background.quantity;
+            gen.amplitude = pulseSignal - gen.mean;
+            gen.sampleRate = obj.sampleRate;
+            gen.units = obj.rig.getDevice(obj.amp).background.displayUnits;
             
-            stim = p.generate();
+            stim = gen.generate();
         end
         
         function prepareEpoch(obj, epoch)

@@ -38,17 +38,17 @@ classdef Ramp < symphonyui.core.Protocol
         end
         
         function stim = ampStimulus(obj)
-            r = symphonyui.builtin.stimuli.RampGenerator();
+            gen = symphonyui.builtin.stimuli.RampGenerator();
             
-            r.preTime = obj.preTime;
-            r.stimTime = obj.stimTime;
-            r.tailTime = obj.tailTime;
-            r.amplitude = obj.rampAmplitude;
-            r.mean = obj.rig.getDevice(obj.amp).background.quantity;
-            r.sampleRate = obj.sampleRate;
-            r.units = obj.rig.getDevice(obj.amp).background.displayUnits;
+            gen.preTime = obj.preTime;
+            gen.stimTime = obj.stimTime;
+            gen.tailTime = obj.tailTime;
+            gen.amplitude = obj.rampAmplitude;
+            gen.mean = obj.rig.getDevice(obj.amp).background.quantity;
+            gen.sampleRate = obj.sampleRate;
+            gen.units = obj.rig.getDevice(obj.amp).background.displayUnits;
             
-            stim = r.generate();
+            stim = gen.generate();
         end
         
         function prepareEpoch(obj, epoch)
