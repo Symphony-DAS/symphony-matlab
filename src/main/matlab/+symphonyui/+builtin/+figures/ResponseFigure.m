@@ -21,14 +21,15 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
                 obj.parseVargin(varargin{:});
                 obj.createUi();
             catch x
-                delete(obj.figureHandle);
+                obj.close();
                 rethrow(x);
             end
         end
         
         function parseVargin(obj, varargin)
             ip = inputParser();
-            ip.addParameter('sweepColor', 'b', @(x)ischar(x) || isvector(x));
+            co = get(groot, 'defaultAxesColorOrder');
+            ip.addParameter('sweepColor', co(1,:), @(x)ischar(x) || isvector(x));
             ip.addParameter('storedSweepColor', 'r', @(x)ischar(x) || isvector(x));
             ip.parse(varargin{:});
 
@@ -53,7 +54,6 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'XTickMode', 'auto');
             xlabel(obj.axesHandle, 'sec');
-            obj.sweep = line(0, 0, 'Parent', obj.axesHandle);
             
             obj.setTitle([obj.device.name ' Response']);
         end
@@ -65,7 +65,7 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
         
         function clear(obj)
             cla(obj.axesHandle);
-            obj.sweep = line(0, 0, 'Parent', obj.axesHandle);
+            obj.sweep = [];
         end
         
         function handleEpoch(obj, epoch)
@@ -83,7 +83,11 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
                 x = [];
                 y = [];
             end
-            set(obj.sweep, 'XData', x, 'YData', y);
+            if isempty(obj.sweep)
+                obj.sweep = line(x, y, 'Parent', obj.axesHandle, 'Color', obj.sweepColor);
+            else
+                set(obj.sweep, 'XData', x, 'YData', y);
+            end
             ylabel(obj.axesHandle, units, 'Interpreter', 'none');
         end
         
@@ -105,7 +109,7 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
             end
             obj.storedSweep = copyobj(obj.sweep, obj.axesHandle);
             set(obj.storedSweep, ...
-                'Color', 'r', ...
+                'Color', obj.storedSweepColor, ...
                 'HandleVisibility', 'off');
         end
         

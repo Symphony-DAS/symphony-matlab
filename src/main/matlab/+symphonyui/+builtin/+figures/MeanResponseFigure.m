@@ -27,7 +27,8 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
         
         function parseVargin(obj, varargin)
             ip = inputParser();
-            ip.addParameter('sweepColor', 'b', @(x)ischar(x) || isvector(x));
+            co = get(groot, 'defaultAxesColorOrder');
+            ip.addParameter('sweepColor', co(1,:), @(x)ischar(x) || isvector(x));
             ip.addParameter('groupBy', [], @(x)iscellstr(x));
             ip.parse(varargin{:});
 
@@ -100,7 +101,7 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
             end
             
             if isempty(sweepIndex)
-                sweep.line = line(x, y, 'Parent', obj.axesHandle);
+                sweep.line = line(x, y, 'Parent', obj.axesHandle, 'Color', obj.sweepColor);
                 sweep.parameters = parameters;
                 sweep.count = 1;
                 obj.sweeps{end + 1} = sweep;

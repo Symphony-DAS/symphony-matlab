@@ -16,16 +16,19 @@ classdef FigureHandlerManager < handle
             obj.closeFigures();
         end
         
-        function openFigure(obj, handler)
+        function h = openFigure(obj, handler)
             index = cellfun(@(h)isequal(h, handler), obj.figureHandlers);
             if any(index)
+                delete(handler);
                 handler = obj.figureHandlers{index};
                 handler.show();
+                h = handler;
                 return;
             end
             handler.show();
             addlistener(handler, 'Closed', @obj.onFigureHandlerClosed);
             obj.figureHandlers{end + 1} = handler;
+            h = handler;
         end
         
         function updateFigures(obj, epoch)
