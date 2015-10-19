@@ -1,12 +1,12 @@
 classdef ResponseFigure < symphonyui.core.FigureHandler
     
     properties (SetAccess = private)
+        device
         sweepColor
         storedSweepColor
     end
     
     properties (Access = private)
-        device
         axesHandle
         sweep
         storedSweep
@@ -16,25 +16,18 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
         
         function obj = ResponseFigure(device, varargin)
             obj@symphonyui.core.FigureHandler(device.name);
-            try
-                obj.device = device;
-                obj.parseVargin(varargin{:});
-                obj.createUi();
-            catch x
-                obj.close();
-                rethrow(x);
-            end
-        end
-        
-        function parseVargin(obj, varargin)
+            
             ip = inputParser();
             co = get(groot, 'defaultAxesColorOrder');
             ip.addParameter('sweepColor', co(1,:), @(x)ischar(x) || isvector(x));
             ip.addParameter('storedSweepColor', 'r', @(x)ischar(x) || isvector(x));
             ip.parse(varargin{:});
-
+            
+            obj.device = device;
             obj.sweepColor = ip.Results.sweepColor;
             obj.storedSweepColor = ip.Results.storedSweepColor;
+            
+            obj.createUi();
         end
         
         function createUi(obj)
@@ -70,8 +63,7 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
         
         function handleEpoch(obj, epoch)
             if ~epoch.hasResponse(obj.device)
-                obj.clear();
-                return;
+                error(['Epoch does not contain a response for ' obj.device.name]);
             end
             
             response = epoch.getResponse(obj.device);
@@ -89,14 +81,6 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
                 set(obj.sweep, 'XData', x, 'YData', y);
             end
             ylabel(obj.axesHandle, units, 'Interpreter', 'none');
-        end
-        
-        function tf = isequal(obj, other)
-            if isempty(obj) || isempty(other) || ~isa(other, class(obj))
-                tf = false;
-                return;
-            end
-            tf = obj.device == other.device;
         end
         
     end

@@ -1,12 +1,12 @@
 classdef MeanResponseFigure < symphonyui.core.FigureHandler
     
     properties (SetAccess = private)
+        device
         sweepColor
         groupBy
     end
     
     properties (Access = private)
-        device
         axesHandle
         sweeps
     end
@@ -15,25 +15,18 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
         
         function obj = MeanResponseFigure(device, varargin)
             obj@symphonyui.core.FigureHandler(device.name);
-            try
-                obj.device = device;
-                obj.parseVargin(varargin{:});
-                obj.createUi();
-            catch x
-                delete(obj.figureHandle);
-                rethrow(x);
-            end
-        end
-        
-        function parseVargin(obj, varargin)
+            
             ip = inputParser();
             co = get(groot, 'defaultAxesColorOrder');
             ip.addParameter('sweepColor', co(1,:), @(x)ischar(x) || isvector(x));
             ip.addParameter('groupBy', [], @(x)iscellstr(x));
             ip.parse(varargin{:});
-
+            
+            obj.device = device;
             obj.sweepColor = ip.Results.sweepColor;
             obj.groupBy = ip.Results.groupBy;
+            
+            obj.createUi();
         end
         
         function createUi(obj)
@@ -60,8 +53,7 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
         
         function handleEpoch(obj, epoch)
             if ~epoch.hasResponse(obj.device)
-                obj.clear();
-                return;
+                error(['Epoch does not contain a response for ' obj.device.name]);
             end
             
             response = epoch.getResponse(obj.device);
@@ -114,14 +106,6 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
             end
             
             ylabel(obj.axesHandle, units, 'Interpreter', 'none');
-        end
-        
-        function tf = isequal(obj, other)
-            if isempty(obj) || isempty(other) || ~isa(other, class(obj))
-                tf = false;
-                return;
-            end
-            tf = obj.device == other.device;
         end
         
     end

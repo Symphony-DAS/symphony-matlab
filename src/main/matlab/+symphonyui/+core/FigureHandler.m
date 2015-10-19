@@ -22,8 +22,7 @@ classdef FigureHandler < handle
                 'Toolbar', 'figure', ...
                 'HandleVisibility', 'off', ...
                 'Visible', 'off', ...
-                'DockControls', 'off', ...
-                'CloseRequestFcn', @obj.onSelectedClose);
+                'DockControls', 'off');
             if ispc
                 set(obj.figureHandle, 'DefaultUicontrolFontName', 'Segoe UI');
                 set(obj.figureHandle, 'DefaultUicontrolFontSize', 9);
@@ -41,13 +40,12 @@ classdef FigureHandler < handle
         end
         
         function delete(obj)
-            if isvalid(obj.figureHandle)
-                obj.close();
-            end
+            obj.close();
         end
         
         function show(obj)
             figure(obj.figureHandle);
+            set(obj.figureHandle, 'CloseRequestFcn', @obj.onSelectedClose);
         end
         
         function clear(obj) %#ok<MANU>
@@ -59,6 +57,9 @@ classdef FigureHandler < handle
         end
         
         function close(obj)
+            if ~isvalid(obj.figureHandle)
+                return;
+            end
             try
                 obj.saveSettings();
             catch x
