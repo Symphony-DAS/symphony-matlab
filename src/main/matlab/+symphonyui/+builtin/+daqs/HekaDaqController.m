@@ -2,11 +2,37 @@ classdef HekaDaqController < symphonyui.core.DaqController
     
     methods
         
-        function obj = HekaDaqController()
+        function obj = HekaDaqController(deviceType, deviceNumber)
+            import symphonyui.builtin.daqs.HekaDeviceType;
+
+            if nargin < 1
+                deviceType = HekaDeviceType.USB18;
+            end
+            if nargin < 2
+                deviceNumber = 0;
+            end
+
             NET.addAssembly(which('HekaDAQInterface.dll'));
             NET.addAssembly(which('HekaNativeInterop.dll'));
-            
-            cobj = Heka.HekaDAQController(double(Heka.NativeInterop.ITCMM.USB18_ID), 0);
+
+            switch deviceType
+                case HekaDeviceType.ITC16
+                    ctype = Heka.NativeInterop.ITCMM.ITC16_ID;
+                case HekaDeviceType.ITC18
+                    ctype = Heka.NativeInterop.ITCMM.ITC18_ID;
+                case HekaDeviceType.ITC1600
+                    ctype = Heka.NativeInterop.ITCMM.ITC1600_ID;
+                case HekaDeviceType.ITC00
+                    ctype = Heka.NativeInterop.ITCMM.ITC00_ID;
+                case HekaDeviceType.USB16
+                    ctype = Heka.NativeInterop.ITCMM.USB16_ID;
+                case HekaDeviceType.USB18
+                    ctype = Heka.NativeInterop.ITCMM.USB18_ID;
+                otherwise
+                    error('Unknown device type');
+            end
+
+            cobj = Heka.HekaDAQController(double(ctype), deviceNumber);
             obj@symphonyui.core.DaqController(cobj);
             
             Heka.HekaDAQInputStream.RegisterConverters();
