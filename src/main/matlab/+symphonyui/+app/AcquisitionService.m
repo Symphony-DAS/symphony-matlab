@@ -87,11 +87,11 @@ classdef AcquisitionService < handle
             obj.session.controller.runProtocol(obj.session.protocol, obj.session.getPersistor());
         end
         
-        function pause(obj)
+        function requestPause(obj)
             obj.session.controller.requestPause();
         end
 
-        function stop(obj)
+        function requestStop(obj)
             obj.session.controller.requestStop();
         end
 

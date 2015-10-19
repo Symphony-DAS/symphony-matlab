@@ -16,7 +16,7 @@ classdef Controller < symphonyui.core.CoreObject
     
     properties (Constant, Access = private)
         PRELOAD_DURATION = seconds(3)
-        INTERVAL_KEYWORD = '_INTERVAL_';
+        INTERVAL_KEYWORD = '_INTERVAL_'
     end
     
     methods
@@ -81,6 +81,9 @@ classdef Controller < symphonyui.core.CoreObject
             if obj.state.isPaused()
                 obj.state = symphonyui.core.ControllerState.STOPPED;
                 obj.endRun();
+                return;
+            end
+            if ~obj.state.isRunning()
                 return;
             end
             obj.state = symphonyui.core.ControllerState.STOPPING;

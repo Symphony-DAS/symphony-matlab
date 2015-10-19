@@ -62,6 +62,10 @@ classdef MainPresenter < symphonyui.ui.Presenter
         end
 
         function onStopping(obj)
+            controllerState = obj.acquisitionService.getControllerState();
+            if ~controllerState.isStopped()
+                obj.acquisitionService.requestStop();
+            end
             if ~isempty(obj.dataManagerPresenter)
                 obj.closeDataManager();
             end
@@ -380,7 +384,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
         
         function onViewSelectedPause(obj, ~, ~)
             try
-                obj.acquisitionService.pause();
+                obj.acquisitionService.requestPause();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -390,7 +394,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
 
         function onViewSelectedStop(obj, ~, ~)
             try
-                obj.acquisitionService.stop();
+                obj.acquisitionService.requestStop();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -410,11 +414,11 @@ classdef MainPresenter < symphonyui.ui.Presenter
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             hasAvailableProtocol = ~isempty(obj.acquisitionService.getAvailableProtocols());
             controllerState = obj.acquisitionService.getControllerState();
-            isPausing = controllerState == ControllerState.PAUSING;
-            isViewingPaused = controllerState == ControllerState.VIEWING_PAUSED;
-            isRecordingPaused = controllerState == ControllerState.RECORDING_PAUSED;
-            isStopping = controllerState == ControllerState.STOPPING;
-            isStopped = controllerState == ControllerState.STOPPED;
+            isPausing = controllerState.isPausing();
+            isViewingPaused = controllerState.isViewingPaused();
+            isRecordingPaused = controllerState.isRecordingPaused();
+            isStopping = controllerState.isStopping();
+            isStopped = controllerState.isStopped();
             try
                 [isValid, validationMessage] = obj.acquisitionService.isValid();
             catch x

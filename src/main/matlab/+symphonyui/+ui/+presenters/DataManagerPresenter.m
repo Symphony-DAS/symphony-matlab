@@ -653,7 +653,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             controllerState = obj.acquisitionService.getControllerState();
-            isStopped = controllerState == symphonyui.core.ControllerState.STOPPED;
+            isStopped = controllerState.isStopped();
             
             obj.view.enableAddSource(isStopped);
             obj.view.enableBeginEpochGroup(hasSource && isStopped);
