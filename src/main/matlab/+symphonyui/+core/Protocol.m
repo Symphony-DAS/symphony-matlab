@@ -135,8 +135,8 @@ classdef Protocol < handle
     
     methods (Access = protected)
         
-        function showFigure(obj, className, varargin)
-            obj.figureHandlerManager.showFigure(className, varargin{:});
+        function h = showFigure(obj, className, varargin)
+            h = obj.figureHandlerManager.showFigure(className, varargin{:});
         end
         
     end

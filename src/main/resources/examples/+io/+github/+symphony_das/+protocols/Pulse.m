@@ -38,6 +38,12 @@ classdef Pulse < symphonyui.core.Protocol
             obj.showFigure('symphonyui.builtin.figures.ResponseStatisticsFigure', obj.rig.getDevice(obj.amp), {@mean, @var}, ...
                 'baselineRegion', [0 obj.preTime], ...
                 'measurementRegion', [obj.preTime obj.preTime+obj.stimTime]);
+            h = obj.showFigure('symphonyui.builtin.figures.CustomFigure', @obj.handleEpoch);
+            axes('Parent', h.getFigureHandle());
+        end
+        
+        function handleEpoch(obj, handler, epoch)
+            disp(handler);
         end
         
         function stim = ampStimulus(obj)

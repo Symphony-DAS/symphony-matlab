@@ -2,7 +2,7 @@ classdef ResponseStatisticsFigure < symphonyui.core.FigureHandler
     
     properties (SetAccess = private)
         device
-        measurementFcns
+        measurementCallbacks
         measurementRegion
         baselineRegion
     end
@@ -14,9 +14,9 @@ classdef ResponseStatisticsFigure < symphonyui.core.FigureHandler
     
     methods
         
-        function obj = ResponseStatisticsFigure(device, measurementFcns, varargin)
-            if ~iscell(measurementFcns)
-                measurementFcns = {measurementFcns};
+        function obj = ResponseStatisticsFigure(device, measurementCallbacks, varargin)
+            if ~iscell(measurementCallbacks)
+                measurementCallbacks = {measurementCallbacks};
             end
             
             obj@symphonyui.core.FigureHandler(device.name);
@@ -27,7 +27,7 @@ classdef ResponseStatisticsFigure < symphonyui.core.FigureHandler
             ip.parse(varargin{:});
             
             obj.device = device;
-            obj.measurementFcns = measurementFcns;
+            obj.measurementCallbacks = measurementCallbacks;
             obj.measurementRegion = ip.Results.measurementRegion;
             obj.baselineRegion = ip.Results.baselineRegion;
             
@@ -37,14 +37,14 @@ classdef ResponseStatisticsFigure < symphonyui.core.FigureHandler
         function createUi(obj)
             import symphonyui.ui.util.*;
             
-            for i = 1:numel(obj.measurementFcns)
-                obj.axesHandles(i) = subplot(numel(obj.measurementFcns), 1, i, ...
+            for i = 1:numel(obj.measurementCallbacks)
+                obj.axesHandles(i) = subplot(numel(obj.measurementCallbacks), 1, i, ...
                     'Parent', obj.figureHandle, ...
                     'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                     'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                     'XTickMode', 'auto', ...
                     'XColor', 'none');
-                ylabel(obj.axesHandles(i), func2str(obj.measurementFcns{i}));
+                ylabel(obj.axesHandles(i), func2str(obj.measurementCallbacks{i}));
             end
             set(obj.axesHandles(end), 'XColor', get(groot, 'defaultAxesXColor'));
             xlabel(obj.axesHandles(end), 'epoch');
@@ -81,8 +81,8 @@ classdef ResponseStatisticsFigure < symphonyui.core.FigureHandler
                 quantities = quantities(x1:x2);
             end           
             
-            for i = 1:numel(obj.measurementFcns)
-                fcn = obj.measurementFcns{i};
+            for i = 1:numel(obj.measurementCallbacks)
+                fcn = obj.measurementCallbacks{i};
                 result = fcn(quantities);
                 if numel(obj.markers) < i
                     colorOrder = get(groot, 'defaultAxesColorOrder');
