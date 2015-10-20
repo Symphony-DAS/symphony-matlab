@@ -49,7 +49,7 @@ classdef ResponseStatisticFigure < symphonyui.core.FigureHandler
             xlabel(obj.axesHandle, 'epoch');
             ylabel(obj.axesHandle, obj.measurementUnits, 'Interpreter', 'none');
             
-            obj.setTitle([obj.device.name ' Statistics (' func2str(obj.measurementFcn) ')']);
+            obj.setTitle([obj.device.name ' Statistic (' func2str(obj.measurementFcn) ')']);
         end
         
         function setTitle(obj, t)
