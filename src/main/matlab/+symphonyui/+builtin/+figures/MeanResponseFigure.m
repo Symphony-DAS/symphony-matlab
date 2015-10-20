@@ -2,8 +2,8 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
     
     properties (SetAccess = private)
         device
-        sweepColor
         groupBy
+        sweepColor
     end
     
     properties (Access = private)
@@ -16,15 +16,16 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
         function obj = MeanResponseFigure(device, varargin)
             obj@symphonyui.core.FigureHandler(device.name);
             
-            ip = inputParser();
             co = get(groot, 'defaultAxesColorOrder');
-            ip.addParameter('sweepColor', co(1,:), @(x)ischar(x) || isvector(x));
+            
+            ip = inputParser();
             ip.addParameter('groupBy', [], @(x)iscellstr(x));
+            ip.addParameter('sweepColor', co(1,:), @(x)ischar(x) || isvector(x));
             ip.parse(varargin{:});
             
             obj.device = device;
-            obj.sweepColor = ip.Results.sweepColor;
             obj.groupBy = ip.Results.groupBy;
+            obj.sweepColor = ip.Results.sweepColor;
             
             obj.createUi();
         end
