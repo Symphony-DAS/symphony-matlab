@@ -479,6 +479,13 @@ classdef MainPresenter < symphonyui.ui.Presenter
         function onViewSelectedConfigureDeviceBackgrounds(obj, ~, ~)
             presenter = symphonyui.ui.presenters.DeviceBackgroundsPresenter(obj.configurationService);
             presenter.goWaitStop();
+            if presenter.result
+                obj.updateStateOfControls();
+                obj.populateProtocolProperties();
+                if ~obj.view.isProtocolPreviewMinimized()
+                    obj.populateProtocolPreview();
+                end
+            end
         end
 
         function onViewSelectedConfigureOptions(obj, ~, ~) %#ok<INUSD>
