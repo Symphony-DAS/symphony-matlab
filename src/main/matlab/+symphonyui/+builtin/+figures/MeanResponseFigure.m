@@ -14,8 +14,6 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
     methods
         
         function obj = MeanResponseFigure(device, varargin)
-            obj@symphonyui.core.FigureHandler(device.name);
-            
             co = get(groot, 'defaultAxesColorOrder');
             
             ip = inputParser();

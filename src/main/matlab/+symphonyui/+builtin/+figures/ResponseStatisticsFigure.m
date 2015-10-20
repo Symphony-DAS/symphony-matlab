@@ -19,8 +19,6 @@ classdef ResponseStatisticsFigure < symphonyui.core.FigureHandler
                 measurementCallbacks = {measurementCallbacks};
             end
             
-            obj@symphonyui.core.FigureHandler(device.name);
-            
             ip = inputParser();
             ip.addParameter('measurementRegion', [], @(x)isnumeric(x) || isvector(x));
             ip.addParameter('baselineRegion', [], @(x)isnumeric(x) || isvector(x));

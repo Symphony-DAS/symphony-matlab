@@ -8,8 +8,6 @@ classdef CustomFigure < symphonyui.core.FigureHandler
     methods
         
         function obj = CustomFigure(handleEpochCallback, varargin)
-            obj@symphonyui.core.FigureHandler();
-            
             ip = inputParser();
             ip.addParameter('clearCallback', @(h)[], @(x)isa(x, 'function_handle'));
             ip.parse(varargin{:});
