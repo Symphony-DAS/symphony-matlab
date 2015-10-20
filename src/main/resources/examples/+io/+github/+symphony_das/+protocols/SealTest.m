@@ -5,7 +5,7 @@ classdef SealTest < symphonyui.core.Protocol
         preTime = 15                    % Pulse leading duration (ms)
         stimTime = 30                   % Pulse duration (ms)
         tailTime = 15                   % Pulse trailing duration (ms)
-        pulseAmplitude = 5              % Pulse amplitude (mV)
+        pulseAmplitude = 5              % Pulse amplitude (mV or pA)
     end
     
     properties (Hidden)

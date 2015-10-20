@@ -5,7 +5,7 @@ classdef Pulse < symphonyui.core.Protocol
         preTime = 50                    % Pulse leading duration (ms)
         stimTime = 500                  % Pulse duration (ms)
         tailTime = 50                   % Pulse trailing duration (ms)
-        pulseAmplitude = 100            % Pulse amplitude (mV)
+        pulseAmplitude = 100            % Pulse amplitude (mV or pA)
         numberOfAverages = uint16(5)    % Number of epochs
         interpulseInterval = 0          % Duration between pulses (s)
     end

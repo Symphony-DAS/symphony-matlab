@@ -5,9 +5,9 @@ classdef PulseFamily < symphonyui.core.Protocol
         preTime = 50                    % Pulse leading duration (ms)
         stimTime = 500                  % Pulse duration (ms)
         tailTime = 50                   % Pulse trailing duration (ms)
-        firstPulseSignal = 100
-        incrementPerPulse = 10
-        pulsesInFamily = uint16(11)
+        firstPulseSignal = 100          % First pulse signal value (mV or pA)
+        incrementPerPulse = 10          % Increment value per each pulse (mV or pA)
+        pulsesInFamily = uint16(11)     % Number of pulses in family
         numberOfAverages = uint16(5)    % Number of families
         interpulseInterval = 0          % Duration between pulses (s)
     end

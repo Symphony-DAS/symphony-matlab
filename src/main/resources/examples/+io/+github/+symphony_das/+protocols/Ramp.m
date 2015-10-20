@@ -5,7 +5,7 @@ classdef Ramp < symphonyui.core.Protocol
         preTime = 50                    % Ramp leading duration (ms)
         stimTime = 500                  % Ramp duration (ms)
         tailTime = 50                   % Ramp trailing duration (ms)
-        rampAmplitude = 100             % Ramp amplitude (mV)
+        rampAmplitude = 100             % Ramp amplitude (mV or pA)
         numberOfAverages = uint16(5)    % Number of epochs
         interpulseInterval = 0          % Duration between ramps (s)
     end
