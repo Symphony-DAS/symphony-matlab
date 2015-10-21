@@ -85,6 +85,8 @@ classdef Protocol < handle
             
             obj.numEpochsPrepared = 0;
             obj.numEpochsCompleted = 0;
+            obj.numIntervalsPrepared = 0;
+            obj.numIntervalsCompleted = 0;
             
             obj.rig.sampleRate = obj.sampleRate;
         end

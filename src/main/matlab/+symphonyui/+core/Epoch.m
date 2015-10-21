@@ -2,6 +2,7 @@ classdef Epoch < symphonyui.core.CoreObject
     
     properties
         parameters
+        keywords
         waitForTrigger
         shouldBePersisted
     end
@@ -54,6 +55,10 @@ classdef Epoch < symphonyui.core.CoreObject
         
         function addParameter(obj, name, value)
             obj.tryCore(@()obj.cobj.ProtocolParameters.Add(name, value));
+        end
+        
+        function k = get.keywords(obj)
+            k = obj.cellArrayFromEnumerable(obj.cobj.Keywords, @char);
         end
         
         function addKeyword(obj, keyword)

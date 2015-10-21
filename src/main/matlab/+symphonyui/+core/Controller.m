@@ -167,11 +167,12 @@ classdef Controller < symphonyui.core.CoreObject
 
             listeners(end + 1) = NetListener(obj.cobj, 'CompletedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onCompletedEpoch(obj,h,d));
             function onCompletedEpoch(obj, ~, event)
-                if (event.Epoch.Keywords.Contains(obj.INTERVAL_KEYWORD))
-                    return;
-                end
                 epoch = symphonyui.core.Epoch(event.Epoch);
-                obj.currentProtocol.completeEpoch(epoch);
+                if any(strcmp(epoch.keywords, obj.INTERVAL_KEYWORD))
+                    obj.currentProtocol.completeInterval(epoch);
+                else
+                    obj.currentProtocol.completeEpoch(epoch);
+                end
                 if ~obj.currentProtocol.continueRun()
                     obj.requestStop();
                 end
