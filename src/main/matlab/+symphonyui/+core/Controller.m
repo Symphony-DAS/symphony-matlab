@@ -15,7 +15,7 @@ classdef Controller < symphonyui.core.CoreObject
     end
     
     properties (Constant, Access = private)
-        PRELOAD_DURATION = seconds(3)
+        MAX_EPOCH_QUEUE_DURATION = seconds(3)
         INTERVAL_KEYWORD = '_INTERVAL_'
     end
     
@@ -240,13 +240,16 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function preload(obj)
-            while obj.epochQueueDuration < obj.PRELOAD_DURATION
-                if ~obj.currentProtocol.continuePreparingEpochs() || ~obj.state.isRunning()
+            while obj.currentProtocol.continuePreloadingEpochs()
+                if ~obj.state.isRunning()
                     break;
                 end
                 obj.enqueueEpoch(obj.nextEpoch());
                 obj.enqueueEpoch(obj.nextInterval());
                 drawnow();
+                if obj.epochQueueDuration >= obj.MAX_EPOCH_QUEUE_DURATION
+                    break;
+                end
             end
         end
         
@@ -257,7 +260,8 @@ classdef Controller < symphonyui.core.CoreObject
                 end
                 obj.enqueueEpoch(obj.nextEpoch());
                 obj.enqueueEpoch(obj.nextInterval());
-                while obj.epochQueueDuration > obj.PRELOAD_DURATION
+                drawnow();
+                while obj.epochQueueDuration >= obj.MAX_EPOCH_QUEUE_DURATION
                     if ~obj.state.isRunning();
                         break;
                     end
