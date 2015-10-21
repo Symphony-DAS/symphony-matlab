@@ -1,5 +1,5 @@
 classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
-    
+
     properties
         name
         value
@@ -7,17 +7,17 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
         category
         displayName
         description
-        readOnly
-        hidden
-        preferred
+        isReadOnly
+        isHidden
+        isPreferred
     end
-    
+
     properties (Access = private, Transient)
         field
     end
-    
+
     methods
-        
+
         function obj = PropertyDescriptor(name, value, varargin)
             obj.field = uiextras.jide.PropertyGridField(name, value, ...
                 'DisplayName', symphonyui.core.util.humanize(name));
@@ -25,84 +25,84 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
                 obj.set(varargin{:});
             end
         end
-        
+
         function n = get.name(obj)
             n = obj.field.Name;
         end
-        
+
         function set.name(obj, n)
             obj.field.Name = n;
         end
-        
+
         function v = get.value(obj)
             v = obj.field.Value;
         end
-        
+
         function set.value(obj, v)
             if isempty(v) && ~ischar(v)
                 v = [];
             end
             obj.field.Value = v;
         end
-        
+
         function t = get.type(obj)
             ft = obj.field.Type;
             t = symphonyui.core.PropertyType(ft.PrimitiveType, ft.Shape, ft.Domain);
         end
-        
+
         function set.type(obj, t)
             ft = uiextras.jide.PropertyType(t.primitiveType, t.shape, t.domain);
             obj.field.Type = ft;
         end
-        
+
         function c = get.category(obj)
             c = obj.field.Category;
         end
-        
+
         function set.category(obj, c)
             obj.field.Category = c;
         end
-        
+
         function n = get.displayName(obj)
             n = obj.field.DisplayName;
         end
-        
+
         function set.displayName(obj, n)
             obj.field.DisplayName = n;
         end
-        
+
         function d = get.description(obj)
             d = obj.field.Description;
         end
-        
+
         function set.description(obj, d)
             obj.field.Description = d;
         end
-        
-        function tf = get.readOnly(obj)
+
+        function tf = get.isReadOnly(obj)
             tf = obj.field.ReadOnly;
         end
-        
-        function set.readOnly(obj, tf)
+
+        function set.isReadOnly(obj, tf)
             obj.field.ReadOnly = tf;
         end
-        
-        function tf = get.hidden(obj)
+
+        function tf = get.isHidden(obj)
             tf = obj.field.Hidden;
         end
-        
-        function set.hidden(obj, tf)
+
+        function set.isHidden(obj, tf)
             obj.field.Hidden = tf;
         end
-        
-        function tf = get.preferred(obj)
+
+        function tf = get.isPreferred(obj)
             tf = obj.field.Preferred;
         end
-        
-        function set.preferred(obj, tf)
+
+        function set.isPreferred(obj, tf)
             obj.field.Preferred = tf;
         end
-        
+
         function p = findByName(array, name)
             p = [];
             for i = 1:numel(array)
@@ -112,16 +112,16 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
                 end
             end
         end
-        
+
         function m = toMap(array)
             m = containers.Map();
             for i = 1:numel(array)
-                if ~array(i).hidden
+                if ~array(i).isHidden
                     m(array(i).name) = array(i).value;
                 end
             end
         end
-        
+
         function s = saveobj(obj)
             s = struct();
             p = properties(obj);
@@ -129,11 +129,11 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
                 s.(p{i}) = obj.(p{i});
             end
         end
-        
+
     end
-    
+
     methods (Static)
-        
+
         function obj = loadobj(s)
             if isstruct(s)
                 obj = symphonyui.core.PropertyDescriptor(s.name, s.value, ...
@@ -141,15 +141,15 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
                     'category', s.category, ...
                     'displayName', s.displayName, ...
                     'description', s.description, ...
-                    'readOnly', s.readOnly, ...
-                    'hidden', s.hidden, ...
-                    'preferred', s.preferred);
+                    'isReadOnly', s.isReadOnly, ...
+                    'isHidden', s.isHidden, ...
+                    'isPreferred', s.isPreferred);
             end
         end
-        
+
         function obj = fromProperty(handle, property)
             mpo = findprop(handle, property);
-            
+
             comment = uiextras.jide.helptext([class(handle) '.' mpo.Name]);
             if ~isempty(comment)
                 comment{1} = strtrim(regexprep(comment{1}, ['^' mpo.Name ' -'], ''));
@@ -158,15 +158,14 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
 
             obj = symphonyui.core.PropertyDescriptor(mpo.Name, handle.(mpo.Name), ...
                 'description', comment, ...
-                'readOnly', mpo.Constant || ~strcmp(mpo.SetAccess, 'public') || mpo.Dependent && isempty(mpo.SetMethod));
-            
+                'isReadOnly', mpo.Constant || ~strcmp(mpo.SetAccess, 'public') || mpo.Dependent && isempty(mpo.SetMethod));
+
             mto = findprop(handle, [property 'Type']);
             if ~isempty(mto) && mto.Hidden && isa(handle.(mto.Name), 'symphonyui.core.PropertyType')
                 obj.type = handle.(mto.Name);
             end
         end
-        
-    end
-    
-end
 
+    end
+
+end
