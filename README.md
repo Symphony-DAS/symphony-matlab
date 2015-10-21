@@ -1,6 +1,6 @@
-# Symphony Matlab version 2
+# Symphony Matlab
 
-Symphony data acquisition Matlab interface, version 2. This is a work-in-progress.
+Symphony data acquisition Matlab interface.
 
 ## Requirements
 
