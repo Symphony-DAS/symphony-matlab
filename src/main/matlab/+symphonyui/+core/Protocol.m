@@ -108,15 +108,15 @@ classdef Protocol < handle
             obj.numIntervalsCompleted = obj.numIntervalsCompleted + 1;
         end
         
-        function tf = continuePreloadingEpochs(obj)
-            tf = obj.continuePreparingEpochs();
+        function tf = shouldContinuePreloadingEpochs(obj)
+            tf = obj.shouldContinuePreparingEpochs();
         end
         
-        function tf = continuePreparingEpochs(obj) %#ok<MANU>
+        function tf = shouldContinuePreparingEpochs(obj) %#ok<MANU>
             tf = false;
         end
         
-        function tf = continueRun(obj) %#ok<MANU>
+        function tf = shouldContinueRun(obj) %#ok<MANU>
             tf = false;
         end
         

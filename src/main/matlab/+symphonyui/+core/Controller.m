@@ -173,7 +173,7 @@ classdef Controller < symphonyui.core.CoreObject
                 else
                     obj.currentProtocol.completeEpoch(epoch);
                 end
-                if ~obj.currentProtocol.continueRun()
+                if ~obj.currentProtocol.shouldContinueRun()
                     obj.requestStop();
                 end
             end
@@ -210,7 +210,7 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function process(obj)
-            if ~obj.currentProtocol.continueRun()
+            if ~obj.currentProtocol.shouldContinueRun()
                 return;
             end
             
@@ -240,7 +240,7 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function preload(obj)
-            while obj.currentProtocol.continuePreloadingEpochs()
+            while obj.currentProtocol.shouldContinuePreloadingEpochs()
                 if ~obj.state.isRunning()
                     break;
                 end
@@ -254,7 +254,7 @@ classdef Controller < symphonyui.core.CoreObject
         end
         
         function processLoop(obj)
-            while obj.currentProtocol.continuePreparingEpochs()
+            while obj.currentProtocol.shouldContinuePreparingEpochs()
                 if ~obj.state.isRunning()
                     break;
                 end

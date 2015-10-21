@@ -70,11 +70,11 @@ classdef Pulse < symphonyui.core.Protocol
             end
         end
         
-        function tf = continuePreparingEpochs(obj)
+        function tf = shouldContinuePreparingEpochs(obj)
             tf = obj.numEpochsPrepared < obj.numberOfAverages;
         end
         
-        function tf = continueRun(obj)
+        function tf = shouldContinueRun(obj)
             tf = obj.numEpochsCompleted < obj.numberOfAverages;
         end
         

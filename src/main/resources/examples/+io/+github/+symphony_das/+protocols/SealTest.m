@@ -50,11 +50,11 @@ classdef SealTest < symphonyui.core.Protocol
             epoch.addStimulus(obj.rig.getDevice(obj.amp), obj.ampStimulus());
         end
         
-        function tf = continuePreparingEpochs(obj)
+        function tf = shouldContinuePreparingEpochs(obj)
             tf = obj.numEpochsPrepared < 1;
         end
         
-        function tf = continueRun(obj)
+        function tf = shouldContinueRun(obj)
             tf = obj.numEpochsCompleted < 1;
         end
         

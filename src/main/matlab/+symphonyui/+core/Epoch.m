@@ -3,7 +3,7 @@ classdef Epoch < symphonyui.core.CoreObject
     properties
         parameters
         keywords
-        waitForTrigger
+        shouldWaitForTrigger
         shouldBePersisted
     end
     
@@ -69,12 +69,12 @@ classdef Epoch < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.SetBackground(device.cobj, background.cobj, device.cobj.OutputSampleRate)); 
         end
         
-        function tf = get.waitForTrigger(obj)
-            tf = obj.cobj.WaitForTrigger;
+        function tf = get.shouldWaitForTrigger(obj)
+            tf = obj.cobj.ShouldWaitForTrigger;
         end
         
-        function set.waitForTrigger(obj, tf)
-            obj.cobj.WaitForTrigger = tf;
+        function set.shouldWaitForTrigger(obj, tf)
+            obj.cobj.ShouldWaitForTrigger = tf;
         end
         
         function tf = get.shouldBePersisted(obj)
