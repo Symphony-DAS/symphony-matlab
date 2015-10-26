@@ -10,7 +10,7 @@
       <file>${PROJECT_ROOT}\Symphony_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\Symphony_resources\icon_16.png</file>
     </param.icons>
-    <param.summary>Symphony Electrophysiology Data Acquisition System</param.summary>
+    <param.summary>Electrophysiology Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB-based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
     <param.version>2.0.1.1</param.version>
