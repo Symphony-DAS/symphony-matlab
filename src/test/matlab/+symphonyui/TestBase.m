@@ -8,7 +8,7 @@ classdef TestBase < matlab.unittest.TestCase
         function classSetup(obj)
             import matlab.unittest.fixtures.PathFixture;
             
-            rootPath = fullfile(mfilename('fullpath'), '..', '..', '..', '..', '..');
+            rootPath = fullfile(fileparts(mfilename('fullpath')), '..', '..', '..', '..');
             
             core = fullfile(rootPath, 'lib', 'Core Framework');
             ui = fullfile(rootPath, 'src', 'main', 'matlab');
