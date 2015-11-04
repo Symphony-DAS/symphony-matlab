@@ -1,4 +1,4 @@
-classdef MainView < symphonyui.ui.View
+classdef MainView < appbox.View
 
     events
         NewFile
@@ -45,7 +45,7 @@ classdef MainView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
             import symphonyui.app.App;
 
             set(obj.figureHandle, ...
@@ -102,7 +102,7 @@ classdef MainView < symphonyui.ui.View
             obj.acquireMenu.stop = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
-            
+
             % Configure menu.
             obj.configureMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Configure');
@@ -117,11 +117,11 @@ classdef MainView < symphonyui.ui.View
                 'Label', 'Options...', ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'ConfigureOptions'));
-            
+
             % Modules menu.
             obj.modulesMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Modules');
-            
+
             % Help menu.
             obj.helpMenu.root = uimenu(obj.figureHandle, ...
                 'Label', 'Help');
@@ -140,14 +140,15 @@ classdef MainView < symphonyui.ui.View
                 'Parent', obj.figureHandle, ...
                 'Padding', 9, ...
                 'Spacing', 1);
-            
+
             obj.protocolLayout = uix.VBoxFlex( ...
                 'Parent', mainLayout, ...
                 'DividerMarkings', 'off', ...
-                'DividerEnable', 'off', ...
                 'Padding', 1, ...
                 'Spacing', 3);
-            
+                
+            % TODO: Disable VBoxFlex divider
+
             protocolInputLayout = uix.VBox( ...
                 'Parent', obj.protocolLayout, ...
                 'Padding', 1, ...
@@ -162,14 +163,14 @@ classdef MainView < symphonyui.ui.View
             obj.protocolPropertyGrid = uiextras.jide.PropertyGrid(protocolInputLayout, ...
                 'Callback', @(h,d)notify(obj, 'SetProtocolProperty', d), ...
                 'ShowDescription', true);
-            
+
             set(protocolInputLayout, 'Heights', [25 -1]);
-            
+
             protocolPreviewLayout = uix.VBox( ...
                 'Parent', obj.protocolLayout, ...
                 'Padding', 1, ...
                 'Spacing', 3);
-            
+
             obj.protocolPreviewBox = uix.BoxPanel( ...
                 'Parent', protocolPreviewLayout, ...
                 'Title', 'Preview', ...
@@ -181,25 +182,25 @@ classdef MainView < symphonyui.ui.View
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'Minimized', true, ...
                 'MinimizeFcn', @(h,d)notify(obj, 'MinimizeProtocolPreview'));
-            
+
             obj.protocolPreviewPanel = uipanel( ...
                 'Parent', obj.protocolPreviewBox, ...
                 'BackgroundColor', 'white', ...
                 'BorderType', 'none', ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'));
-            
+
             set(obj.protocolLayout, ...
                 'Heights', [-1 21], ...
                 'MinimumHeights', [25 21]);
-            
+
             controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
                 'Padding', 1, ...
                 'Spacing', 1);
-            
+
             path2Url = @(path)strrep(['file:/' path '/'],'\','/');
-            
+
             obj.viewOnlyButton = uicontrol( ...
                 'Parent', controlsLayout, ...
                 'Style', 'pushbutton', ...
@@ -229,15 +230,15 @@ classdef MainView < symphonyui.ui.View
         end
 
         function close(obj)
-            close@symphonyui.ui.View(obj);
+            close@appbox.View(obj);
             obj.protocolPropertyGrid.Close();
         end
-        
+
         function h = getHeight(obj)
             p = get(obj.figureHandle, 'Position');
             h = p(4);
         end
-        
+
         function setHeight(obj, h)
             p = get(obj.figureHandle, 'Position');
             delta = p(4) - h;
@@ -245,31 +246,31 @@ classdef MainView < symphonyui.ui.View
         end
 
         function enableNewFile(obj, tf)
-            set(obj.fileMenu.newFile, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.fileMenu.newFile, 'Enable', appbox.onOff(tf));
         end
 
         function enableOpenFile(obj, tf)
-            set(obj.fileMenu.openFile, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.fileMenu.openFile, 'Enable', appbox.onOff(tf));
         end
 
         function enableCloseFile(obj, tf)
-            set(obj.fileMenu.closeFile, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.fileMenu.closeFile, 'Enable', appbox.onOff(tf));
         end
-        
+
         function enableAddSource(obj, tf)
-            set(obj.documentMenu.addSource, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.documentMenu.addSource, 'Enable', appbox.onOff(tf));
         end
 
         function enableBeginEpochGroup(obj, tf)
-            set(obj.documentMenu.beginEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.documentMenu.beginEpochGroup, 'Enable', appbox.onOff(tf));
         end
 
         function enableEndEpochGroup(obj, tf)
-            set(obj.documentMenu.endEpochGroup, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.documentMenu.endEpochGroup, 'Enable', appbox.onOff(tf));
         end
 
         function enableSelectProtocol(obj, tf)
-            set(obj.protocolPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.protocolPopupMenu, 'Enable', appbox.onOff(tf));
         end
 
         function p = getSelectedProtocol(obj)
@@ -300,85 +301,86 @@ classdef MainView < symphonyui.ui.View
         function updateProtocolProperties(obj, properties)
             obj.protocolPropertyGrid.UpdateProperties(properties);
         end
-        
+
         function stopEditingProtocolProperties(obj)
             obj.protocolPropertyGrid.StopEditing();
         end
-        
+
         function tf = isProtocolPreviewMinimized(obj)
             tf = get(obj.protocolPreviewBox, 'Minimized');
         end
-        
+
         function enableProtocolLayoutDivider(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
+            enable = appbox.onOff(tf);
             set(obj.protocolLayout, 'DividerMarkings', enable);
-            set(obj.protocolLayout, 'DividerEnable', enable);
+            % TODO: Enable protocolLayout divider
+            % set(obj.protocolLayout, 'DividerEnable', enable);
         end
-        
+
         function setProtocolPreviewMinimized(obj, tf)
             set(obj.protocolPreviewBox, 'Minimized', tf);
         end
-        
+
         function h = getProtocolPreviewMinimumHeight(obj)
             heights = get(obj.protocolLayout, 'MinimumHeights');
             h = heights(2);
         end
-        
+
         function h = getProtocolPreviewHeight(obj)
             heights = get(obj.protocolLayout, 'Heights');
             h = heights(2);
         end
-        
+
         function setProtocolPreviewHeight(obj, h)
             heights = get(obj.protocolLayout, 'Heights');
             heights(2) = h;
             set(obj.protocolLayout, 'Heights', heights);
         end
-        
+
         function p = getProtocolPreviewPanel(obj)
             p = obj.protocolPreviewPanel;
         end
-        
+
         function clearProtocolPreviewPanel(obj)
             delete(get(obj.protocolPreviewPanel, 'Children'));
         end
 
         function enableViewOnly(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
+            enable = appbox.onOff(tf);
             set(obj.acquireMenu.viewOnly, 'Enable', enable);
             set(obj.viewOnlyButton, 'Enable', enable);
         end
-        
+
         function enableRecord(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
+            enable = appbox.onOff(tf);
             set(obj.acquireMenu.record, 'Enable', enable);
             set(obj.recordButton, 'Enable', enable);
         end
-        
+
         function enablePause(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
+            enable = appbox.onOff(tf);
             set(obj.acquireMenu.pause, 'Enable', enable);
             set(obj.pauseButton, 'Enable', enable);
         end
 
         function enableStop(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
+            enable = appbox.onOff(tf);
             set(obj.acquireMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
         end
-        
+
         function enableInitializeRig(obj, tf)
-            set(obj.configureMenu.initializeRig, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.configureMenu.initializeRig, 'Enable', appbox.onOff(tf));
         end
-        
+
         function enableConfigureDeviceBackgrounds(obj, tf)
-            set(obj.configureMenu.configureDeviceBackgrounds, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.configureMenu.configureDeviceBackgrounds, 'Enable', appbox.onOff(tf));
         end
-        
+
         function enableConfigureOptions(obj, tf)
-            set(obj.configureMenu.configureOptions, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.configureMenu.configureOptions, 'Enable', appbox.onOff(tf));
         end
-        
+
         function addModule(obj, name, value)
             uimenu(obj.modulesMenu.root, ...
                 'Label', name, ...

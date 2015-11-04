@@ -1,4 +1,4 @@
-classdef DeviceBackgroundsView < symphonyui.ui.View
+classdef DeviceBackgroundsView < appbox.View
 
     events
         Apply
@@ -14,7 +14,7 @@ classdef DeviceBackgroundsView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
             
             set(obj.figureHandle, ...
                 'Name', 'Device Backgrounds', ...

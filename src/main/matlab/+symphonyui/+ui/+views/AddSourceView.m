@@ -1,4 +1,4 @@
-classdef AddSourceView < symphonyui.ui.View
+classdef AddSourceView < appbox.View
 
     events
         Add
@@ -15,7 +15,7 @@ classdef AddSourceView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
 
             set(obj.figureHandle, ...
                 'Name', 'Add Source', ...
@@ -76,11 +76,11 @@ classdef AddSourceView < symphonyui.ui.View
         end
         
         function enableAdd(obj, tf)
-            set(obj.addButton, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.addButton, 'Enable', appbox.onOff(tf));
         end
         
         function enableSelectParent(obj, tf)
-            set(obj.parentPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.parentPopupMenu, 'Enable', appbox.onOff(tf));
         end
         
         function p = getSelectedParent(obj)
@@ -101,7 +101,7 @@ classdef AddSourceView < symphonyui.ui.View
         end
         
         function enableSelectDescription(obj, tf)
-            set(obj.descriptionPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.descriptionPopupMenu, 'Enable', appbox.onOff(tf));
         end
         
         function t = getSelectedDescription(obj)

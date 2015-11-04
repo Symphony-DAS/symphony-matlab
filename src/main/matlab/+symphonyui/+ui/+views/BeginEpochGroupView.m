@@ -1,4 +1,4 @@
-classdef BeginEpochGroupView < symphonyui.ui.View
+classdef BeginEpochGroupView < appbox.View
 
     events
         Begin
@@ -16,7 +16,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
 
             set(obj.figureHandle, ...
                 'Name', 'Begin Epoch Group', ...
@@ -85,7 +85,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
         end
         
         function enableBegin(obj, tf)
-            set(obj.beginButton, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.beginButton, 'Enable', appbox.onOff(tf));
         end
         
         function setParent(obj, p)
@@ -110,7 +110,7 @@ classdef BeginEpochGroupView < symphonyui.ui.View
         end
         
         function enableSelectDescription(obj, tf)
-            set(obj.descriptionPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.descriptionPopupMenu, 'Enable', appbox.onOff(tf));
         end
         
         function t = getSelectedDescription(obj)

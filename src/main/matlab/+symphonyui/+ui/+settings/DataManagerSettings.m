@@ -1,4 +1,4 @@
-classdef DataManagerSettings < symphonyui.infra.Settings
+classdef DataManagerSettings < appbox.Settings
     
     properties
         viewPosition

@@ -1,4 +1,4 @@
-classdef NewFileSettings < symphonyui.infra.Settings
+classdef NewFileSettings < appbox.Settings
     
     properties
         selectedDescription

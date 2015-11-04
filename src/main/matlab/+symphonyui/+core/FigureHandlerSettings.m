@@ -1,4 +1,4 @@
-classdef FigureHandlerSettings < symphonyui.infra.Settings
+classdef FigureHandlerSettings < appbox.Settings
     
     properties
         figurePosition
@@ -8,7 +8,7 @@ classdef FigureHandlerSettings < symphonyui.infra.Settings
     methods
         
         function obj = FigureHandlerSettings(settingsKey)
-            obj@symphonyui.infra.Settings(settingsKey);
+            obj@appbox.Settings(settingsKey);
         end
         
         function p = get.figurePosition(obj)

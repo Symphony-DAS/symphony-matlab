@@ -1,4 +1,4 @@
-classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
+classdef BeginEpochGroupPresenter < appbox.Presenter
 
     properties (Access = private)
         log
@@ -12,7 +12,7 @@ classdef BeginEpochGroupPresenter < symphonyui.ui.Presenter
             if nargin < 2
                 view = symphonyui.ui.views.BeginEpochGroupView();
             end
-            obj = obj@symphonyui.ui.Presenter(view);
+            obj = obj@appbox.Presenter(view);
             obj.view.setWindowStyle('modal');
 
             obj.log = log4m.LogManager.getLogger(class(obj));

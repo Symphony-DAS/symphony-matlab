@@ -1,4 +1,4 @@
-classdef DataManagerView < symphonyui.ui.View
+classdef DataManagerView < appbox.View
 
     events
         AddSource
@@ -53,7 +53,7 @@ classdef DataManagerView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
             import symphonyui.ui.views.EntityNodeType;
 
             set(obj.figureHandle, ...
@@ -467,32 +467,32 @@ classdef DataManagerView < symphonyui.ui.View
         end
 
         function show(obj)
-            show@symphonyui.ui.View(obj);
+            show@appbox.View(obj);
             drawnow();
             set(obj.keywordsTab.table, 'ColumnHeaderVisible', false);
             set(obj.notesTab.table, 'ColumnHeaderVisible', false);
         end
 
         function close(obj)
-            close@symphonyui.ui.View(obj);
+            close@appbox.View(obj);
             obj.propertiesTab.grid.Close();
             obj.parametersTab.grid.Close();
         end
         
         function enableAddSource(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
+            enable = appbox.onOff(tf);
             set(obj.addSourceButtons.tool, 'Enable', enable);
             set(obj.addSourceButtons.menu, 'Enable', enable);
         end
 
         function enableBeginEpochGroup(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
+            enable = appbox.onOff(tf);
             set(obj.beginEpochGroupButtons.tool, 'Enable', enable);
             set(obj.beginEpochGroupButtons.menu, 'Enable', enable);
         end
 
         function enableEndEpochGroup(obj, tf)
-            enable = symphonyui.ui.util.onOff(tf);
+            enable = appbox.onOff(tf);
             set(obj.endEpochGroupButtons.tool, 'Enable', enable);
             set(obj.endEpochGroupButtons.menu, 'Enable', enable);
         end
@@ -540,7 +540,7 @@ classdef DataManagerView < symphonyui.ui.View
         end
 
         function enableSourceLabel(obj, tf)
-            set(obj.sourceCard.labelField, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.sourceCard.labelField, 'Enable', appbox.onOff(tf));
         end
 
         function l = getSourceLabel(obj)
@@ -564,7 +564,7 @@ classdef DataManagerView < symphonyui.ui.View
         end
 
         function enableExperimentPurpose(obj, tf)
-            set(obj.experimentCard.purposeField, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.experimentCard.purposeField, 'Enable', appbox.onOff(tf));
         end
 
         function p = getExperimentPurpose(obj)
@@ -604,7 +604,7 @@ classdef DataManagerView < symphonyui.ui.View
         end
 
         function enableEpochGroupLabel(obj, tf)
-            set(obj.epochGroupCard.labelField, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.epochGroupCard.labelField, 'Enable', appbox.onOff(tf));
         end
 
         function l = getEpochGroupLabel(obj)
@@ -674,7 +674,7 @@ classdef DataManagerView < symphonyui.ui.View
         end
         
         function enableSelectEpochSignal(obj, tf)
-            set(obj.epochCard.signalPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.epochCard.signalPopupMenu, 'Enable', appbox.onOff(tf));
         end
         
         function s = getSelectedEpochSignal(obj)

@@ -1,4 +1,4 @@
-classdef DataManagerPresenter < symphonyui.ui.Presenter
+classdef DataManagerPresenter < appbox.Presenter
 
     properties (Access = private)
         log
@@ -15,7 +15,7 @@ classdef DataManagerPresenter < symphonyui.ui.Presenter
             if nargin < 3
                 view = symphonyui.ui.views.DataManagerView();
             end
-            obj = obj@symphonyui.ui.Presenter(view);
+            obj = obj@appbox.Presenter(view);
             
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.DataManagerSettings();

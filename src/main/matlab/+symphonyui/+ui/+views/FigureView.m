@@ -1,4 +1,4 @@
-classdef FigureView < symphonyui.ui.View
+classdef FigureView < appbox.View
     
     methods
         

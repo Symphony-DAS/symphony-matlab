@@ -1,4 +1,4 @@
-classdef InitializeRigSettings < symphonyui.infra.Settings
+classdef InitializeRigSettings < appbox.Settings
     
     properties
         selectedDescription

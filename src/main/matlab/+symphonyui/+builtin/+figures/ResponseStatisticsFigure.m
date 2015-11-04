@@ -33,7 +33,7 @@ classdef ResponseStatisticsFigure < symphonyui.core.FigureHandler
         end
         
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
             
             for i = 1:numel(obj.measurementCallbacks)
                 obj.axesHandles(i) = subplot(numel(obj.measurementCallbacks), 1, i, ...

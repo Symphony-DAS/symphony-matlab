@@ -1,4 +1,4 @@
-classdef BeginEpochGroupSettings < symphonyui.infra.Settings
+classdef BeginEpochGroupSettings < appbox.Settings
     
     properties
         selectedSourceUuid

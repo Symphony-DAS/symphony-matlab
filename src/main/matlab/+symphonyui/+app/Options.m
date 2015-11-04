@@ -1,4 +1,4 @@
-classdef Options < symphonyui.infra.Settings
+classdef Options < appbox.Settings
     
     properties
         fileDefaultName

@@ -1,4 +1,4 @@
-classdef AddSourceSettings < symphonyui.infra.Settings
+classdef AddSourceSettings < appbox.Settings
     
     properties
         selectedParentUuid

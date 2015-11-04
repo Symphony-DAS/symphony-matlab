@@ -1,4 +1,4 @@
-classdef AddPropertyView < symphonyui.ui.View
+classdef AddPropertyView < appbox.View
     
     events
         Add
@@ -15,7 +15,7 @@ classdef AddPropertyView < symphonyui.ui.View
     methods
         
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
             
             set(obj.figureHandle, ...
                 'Name', 'Add Property', ...

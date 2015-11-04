@@ -1,4 +1,4 @@
-classdef InitializeRigView < symphonyui.ui.View
+classdef InitializeRigView < appbox.View
 
     events
         Initialize
@@ -14,7 +14,7 @@ classdef InitializeRigView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
             
             set(obj.figureHandle, ...
                 'Name', 'Initialize Rig', ...
@@ -65,11 +65,11 @@ classdef InitializeRigView < symphonyui.ui.View
         end
         
         function enableInitialize(obj, tf)
-            set(obj.initializeButton, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.initializeButton, 'Enable', appbox.onOff(tf));
         end
         
         function enableSelectDescription(obj, tf)
-            set(obj.descriptionPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.descriptionPopupMenu, 'Enable', appbox.onOff(tf));
         end
         
         function t = getSelectedDescription(obj)

@@ -1,4 +1,4 @@
-classdef MainPresenter < symphonyui.ui.Presenter
+classdef MainPresenter < appbox.Presenter
 
     properties (Access = private)
         log
@@ -17,7 +17,7 @@ classdef MainPresenter < symphonyui.ui.Presenter
             if nargin < 5
                 view = symphonyui.ui.views.MainView();
             end
-            obj = obj@symphonyui.ui.Presenter(view);
+            obj = obj@appbox.Presenter(view);
 
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.MainSettings();

@@ -29,7 +29,7 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
         end
         
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
             
             toolbar = findall(obj.figureHandle, 'Type', 'uitoolbar');
             storeSweepButton = uipushtool( ...

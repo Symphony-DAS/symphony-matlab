@@ -1,4 +1,4 @@
-classdef MainSettings < symphonyui.infra.Settings
+classdef MainSettings < appbox.Settings
     
     properties
         viewPosition

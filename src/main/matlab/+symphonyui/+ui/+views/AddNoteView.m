@@ -1,4 +1,4 @@
-classdef AddNoteView < symphonyui.ui.View
+classdef AddNoteView < appbox.View
     
     events
         Add
@@ -14,7 +14,7 @@ classdef AddNoteView < symphonyui.ui.View
     methods
         
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
             
             set(obj.figureHandle, ...
                 'Name', 'Add Note', ...

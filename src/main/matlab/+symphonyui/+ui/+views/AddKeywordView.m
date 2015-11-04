@@ -1,30 +1,30 @@
-classdef AddKeywordView < symphonyui.ui.View
-    
+classdef AddKeywordView < appbox.View
+
     events
         Add
         Cancel
     end
-    
+
     properties (Access = private)
         textField
         addButton
         cancelButton
     end
-    
+
     methods
-        
+
         function createUi(obj)
-            import symphonyui.ui.util.*;
-            
+            import appbox.*;
+
             set(obj.figureHandle, ...
                 'Name', 'Add Keyword', ...
                 'Position', screenCenter(250, 79));
-            
+
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 7);
-            
+
             keywordLayout = uix.VBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
@@ -32,7 +32,7 @@ classdef AddKeywordView < symphonyui.ui.View
                 'Parent', keywordLayout, ...
                 'HorizontalAlignment', 'left');
             set(keywordLayout, 'Heights', 25);
-            
+
             % Add/Cancel controls.
             controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
@@ -51,30 +51,29 @@ classdef AddKeywordView < symphonyui.ui.View
                 'Interruptible', 'off', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
             set(controlsLayout, 'Widths', [-1 75 75]);
-            
+
             set(mainLayout, 'Heights', [-1 25]);
-            
+
             % Set add button to appear as the default button.
             try %#ok<TRYNC>
                 h = handle(obj.figureHandle);
                 h.setDefaultButton(obj.addButton);
             end
         end
-        
+
         function t = getText(obj)
             t = get(obj.textField, 'String');
         end
-        
+
         function setTextCompletionList(obj, list)
             set(obj.textField, 'CompletionList', list);
         end
-        
+
         function requestTextFocus(obj)
             obj.update();
             uicontrol(obj.textField);
         end
-        
-    end
-    
-end
 
+    end
+
+end

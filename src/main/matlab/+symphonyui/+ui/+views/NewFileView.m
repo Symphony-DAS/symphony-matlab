@@ -1,4 +1,4 @@
-classdef NewFileView < symphonyui.ui.View
+classdef NewFileView < appbox.View
 
     events
         BrowseLocation
@@ -18,7 +18,7 @@ classdef NewFileView < symphonyui.ui.View
     methods
 
         function createUi(obj)
-            import symphonyui.ui.util.*;
+            import appbox.*;
 
             set(obj.figureHandle, ...
                 'Name', 'New File', ...
@@ -93,7 +93,7 @@ classdef NewFileView < symphonyui.ui.View
         end
         
         function enableOk(obj, tf)
-            set(obj.okButton, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.okButton, 'Enable', appbox.onOff(tf));
         end
 
         function n = getName(obj)
@@ -118,7 +118,7 @@ classdef NewFileView < symphonyui.ui.View
         end
         
         function enableSelectDescription(obj, tf)
-            set(obj.descriptionPopupMenu, 'Enable', symphonyui.ui.util.onOff(tf));
+            set(obj.descriptionPopupMenu, 'Enable', appbox.onOff(tf));
         end
         
         function t = getSelectedDescription(obj)

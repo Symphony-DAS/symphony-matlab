@@ -1,4 +1,4 @@
-classdef NewFilePresenter < symphonyui.ui.Presenter
+classdef NewFilePresenter < appbox.Presenter
 
     properties (Access = private)
         log
@@ -12,7 +12,7 @@ classdef NewFilePresenter < symphonyui.ui.Presenter
             if nargin < 3
                 view = symphonyui.ui.views.NewFileView();
             end
-            obj = obj@symphonyui.ui.Presenter(view);
+            obj = obj@appbox.Presenter(view);
             obj.view.setWindowStyle('modal');
 
             obj.log = log4m.LogManager.getLogger(class(obj));
