@@ -18,20 +18,19 @@
       <item>MATLAB</item>
     </param.products.name>
     <param.products.id>
-      <item>'1'</item>
-      <item>'35000'</item>
+      <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>8.5</item>
-      <item>8.5</item>
+      <item>8.6</item>
     </param.products.version>
     <param.platforms />
-    <param.output>${PROJECT_ROOT}\target\Symphony.mlappinstall</param.output>
+    <param.output>C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2</param.output>
     <param.guid>e743f2b1-d1a0-42d2-94cf-75fb1d084943</param.guid>
     <unset>
       <param.authnamewatermark />
       <param.email />
       <param.platforms />
+      <param.output />
     </unset>
     <fileset.main>
       <file>${PROJECT_ROOT}\src\main\matlab\main.m</file>
@@ -628,11 +627,11 @@
     </fileset.resources>
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\target" name="Symphony.mlappinstall" optional="false">C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2\target\Symphony.mlappinstall</file>
+      <file location="C:\Users\Client Admin\Documents\src\Symphony-DAS" name="symphony-matlab2" optional="false">C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2015a</root>
+      <root>C:\Program Files\MATLAB\R2015b</root>
       <toolboxes />
     </matlab>
     <platform>
