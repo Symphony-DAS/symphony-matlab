@@ -50,7 +50,6 @@ classdef MainPresenter < appbox.Presenter
     methods (Access = protected)
 
         function onGoing(obj)
-            obj.updateStateOfControls();
             obj.populateProtocolList();
             obj.populateProtocolProperties();
             obj.populateModuleList();
@@ -59,6 +58,7 @@ classdef MainPresenter < appbox.Presenter
             catch x
                 obj.log.debug(['Failed to load presenter settings: ' x.message], x);
             end
+            obj.updateStateOfControls();
         end
 
         function onStopping(obj)
@@ -237,7 +237,7 @@ classdef MainPresenter < appbox.Presenter
                 split = strsplit(classNames{i}, '.');
                 displayNames{i} = symphonyui.core.util.humanize(split{end});
             end
-            
+
             for i = 1:numel(displayNames)
                 name = displayNames{i};
                 repeats = find(strcmp(name, displayNames));
@@ -247,7 +247,7 @@ classdef MainPresenter < appbox.Presenter
                     end
                 end
             end
-            
+
             obj.view.setProtocolList([{'(None)'}, displayNames], [{[]}, classNames]);
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
             obj.view.enableSelectProtocol(numel(classNames) > 0);
@@ -381,7 +381,7 @@ classdef MainPresenter < appbox.Presenter
                 return;
             end
         end
-        
+
         function onViewSelectedPause(obj, ~, ~)
             try
                 obj.acquisitionService.requestPause();

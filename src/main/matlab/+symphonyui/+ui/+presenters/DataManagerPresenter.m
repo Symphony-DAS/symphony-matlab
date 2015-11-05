@@ -16,7 +16,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 view = symphonyui.ui.views.DataManagerView();
             end
             obj = obj@appbox.Presenter(view);
-            
+
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.DataManagerSettings();
             obj.documentationService = documentationService;
@@ -31,14 +31,14 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function onGoing(obj)
             obj.populateEntityTree();
-            obj.updateStateOfControls();
             try
                 obj.loadSettings();
             catch x
                 obj.log.debug(['Failed to load presenter settings: ' x.message], x);
             end
+            obj.updateStateOfControls();
         end
-        
+
         function onStopping(obj)
             try
                 obj.saveSettings();
@@ -72,7 +72,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
             obj.addListener(d, 'DeletedEntity', @obj.onServiceDeletedEntity);
-            
+
             a = obj.acquisitionService;
             obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
         end
@@ -115,7 +115,7 @@ classdef DataManagerPresenter < appbox.Presenter
         function onServiceAddedSource(obj, ~, event)
             source = event.data;
             node = obj.addSourceNode(source);
-            
+
             obj.view.stopEditingProperties();
             obj.view.update();
             obj.view.setSelectedNodes(node);
@@ -246,7 +246,7 @@ classdef DataManagerPresenter < appbox.Presenter
         function onServiceEndedEpochGroup(obj, ~, event)
             group = event.data;
             node = obj.uuidToNode(group.uuid);
-            
+
             obj.view.stopEditingProperties();
             obj.view.update();
             obj.view.setSelectedNodes(node);
@@ -331,7 +331,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setEpochBlockProtocolId(blockSet.protocolId);
             obj.view.setEpochBlockStartTime(strtrim(datestr(blockSet.startTime, 14)));
             obj.view.setEpochBlockEndTime(strtrim(datestr(blockSet.endTime, 14)));
-            
+
             % Protocol parameters
             map = map2pmap(blockSet.protocolParameters);
             try
@@ -342,7 +342,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.showError(x.message);
             end
             obj.view.setEpochBlockProtocolParameters(properties);
-            
+
             obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
 
             obj.populateAnnotationsWithEntitySet(blockSet);
@@ -357,10 +357,10 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function populateDetailsWithEpochs(obj, epochs)
             epochSet = symphonyui.core.collections.EpochSet(epochs);
-            
+
             responseMap = epochSet.responseMap;
             stimulusMap = epochSet.stimulusMap;
-            
+
             names = [strcat(responseMap.keys, ' response'), strcat(stimulusMap.keys, ' stimulus')];
             values = [responseMap.values, stimulusMap.values];
             if isempty(names)
@@ -368,7 +368,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 values = {[]};
             end
             obj.view.setEpochSignalList(names, values);
-            
+
             obj.populateDetailsWithSignals(obj.view.getSelectedEpochSignal());
 
             % Protocol parameters
@@ -387,14 +387,14 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.populateAnnotationsWithEntitySet(epochSet);
             obj.detailedEntitySet = epochSet;
         end
-        
+
         function onViewSelectedEpochSignal(obj, ~, ~)
             obj.populateDetailsWithSignals(obj.view.getSelectedEpochSignal());
         end
-        
+
         function populateDetailsWithSignals(obj, signals)
             obj.view.clearEpochDataAxes();
-            
+
             ylabels = cell(1, numel(signals));
             colorOrder = get(groot, 'defaultAxesColorOrder');
             for i = 1:numel(signals)
@@ -403,10 +403,10 @@ classdef DataManagerPresenter < appbox.Presenter
                 rate = s.getSampleRate();
                 xdata = (1:numel(ydata))/rate;
                 color = colorOrder(mod(i - 1, size(colorOrder, 1)) + 1, :);
-                ylabels{i} = [s.device.name ' (' yunits ')'];  
+                ylabels{i} = [s.device.name ' (' yunits ')'];
                 obj.view.addEpochDataLine(xdata, ydata, color);
             end
-            
+
             obj.view.setEpochDataAxesLabels('Time (s)', strjoin(unique(ylabels), ', '));
         end
 
@@ -473,14 +473,14 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.showError(x.message);
             end
             obj.view.setProperties(fields);
-            
+
             if entitySet.size == 1
                 obj.view.setPropertiesEditorStyle('normal');
             else
                 obj.view.setPropertiesEditorStyle('readonly');
             end
         end
-        
+
         function updatePropertiesWithEntitySet(obj, entitySet)
             try
                 fields = symphonyui.ui.util.desc2field(entitySet.getPropertyDescriptors());
@@ -490,7 +490,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.showError(x.message);
             end
             obj.view.updateProperties(fields);
-            
+
             if entitySet.size == 1
                 obj.view.setPropertiesEditorStyle('normal');
             else
@@ -604,7 +604,7 @@ classdef DataManagerPresenter < appbox.Presenter
         function onViewSelectedDeleteEntity(obj, ~, ~)
             nodes = obj.view.getSelectedNodes();
             assert(numel(nodes) == 1, 'Expected a single entity');
-            
+
             name = obj.view.getNodeName(nodes(1));
             result = obj.view.showMessage( ...
                 ['Are you sure you want to delete ''' name '''?'], ...
@@ -638,10 +638,10 @@ classdef DataManagerPresenter < appbox.Presenter
         function onViewSelectedOpenAxesInNewWindow(obj, ~, ~)
             obj.view.openEpochDataAxesInNewWindow();
         end
-        
+
         function onServiceChangedControllerState(obj, ~, ~)
             obj.updateStateOfControls();
-            
+
             state = obj.acquisitionService.getControllerState();
             if state == symphonyui.core.ControllerState.STOPPED
                 obj.updateCurrentEpochGroupBlocks();
@@ -654,12 +654,12 @@ classdef DataManagerPresenter < appbox.Presenter
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             controllerState = obj.acquisitionService.getControllerState();
             isStopped = controllerState.isStopped();
-            
+
             obj.view.enableAddSource(isStopped);
             obj.view.enableBeginEpochGroup(hasSource && isStopped);
             obj.view.enableEndEpochGroup(hasEpochGroup && isStopped);
         end
-        
+
         function updateCurrentEpochGroupBlocks(obj)
             group = obj.documentationService.getCurrentEpochGroup();
             if isempty(group)
@@ -673,13 +673,13 @@ classdef DataManagerPresenter < appbox.Presenter
                 end
             end
         end
-        
+
         function loadSettings(obj)
             if ~isempty(obj.settings.viewPosition)
                 obj.view.position = obj.settings.viewPosition;
             end
         end
-        
+
         function saveSettings(obj)
             obj.settings.viewPosition = obj.view.position;
             obj.settings.save();
