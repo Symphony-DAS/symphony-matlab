@@ -2,16 +2,16 @@
 
 Symphony data acquisition Matlab interface.
 
-## Requirements
-
-- Matlab 2015a+
-- Windows 7
-
 ## Clone
 
 `git clone https://github.com/Symphony-DAS/symphony-matlab2.git --recursive`
 
-**Note:** You must use the `--recursive` option to recursively clone all submodules. 
+**Note:** You must use the `--recursive` option to recursively clone all submodules.
+
+## Requirements
+
+- Matlab 2015a+
+- Windows 7
 
 ## Build
 
