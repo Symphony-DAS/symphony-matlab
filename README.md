@@ -7,6 +7,12 @@ Symphony data acquisition Matlab interface.
 - Matlab 2015a+
 - Windows 7
 
+## Clone
+
+`git clone https://github.com/Symphony-DAS/symphony-matlab2.git --recursive`
+
+**Note:** You must use the `--recursive` option to recursively clone all submodules. 
+
 ## Build
 
 Matlab functions in the root directory are used to build the project. The scripts are named according to the build phase they execute. The phases include:
