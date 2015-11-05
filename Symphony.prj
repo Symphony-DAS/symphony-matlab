@@ -36,6 +36,315 @@
       <file>${PROJECT_ROOT}\src\main\matlab\main.m</file>
     </fileset.main>
     <fileset.depfun>
+      <file>${PROJECT_ROOT}\lib\appbox\.git</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\createTable\createTable.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\createTable\license.txt</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\createTable\table.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\createTable\TableSorter.jar</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\glt.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\BoxPanel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\CardPanel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\Empty.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\get.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\Grid.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\GridFlex.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\HBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\HBoxFlex.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\HButtonBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\Panel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\set.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\TabPanel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\unset.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\VBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\VBoxFlex.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uiextras\VButtonBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\+mixin\Container.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\ancestors.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\AncestryObserver.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Box.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\BoxPanel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\ButtonBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\calcPixelSizes.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\CardPanel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\ChildEvent.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\ChildObserver.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Container.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Divider.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Empty.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Grid.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\GridFlex.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\HBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\HBoxFlex.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\HButtonBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Image.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\inrectangle.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\loadIcon.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\LocationObserver.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Node.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Panel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\pvchk.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\panelClose.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\panelDock.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\panelHelp.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\panelMaximize.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\panelMinimize.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\panelUndock.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\tab_NoEdge_NotSelected.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\tab_NoEdge_Selected.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\tab_NotSelected_NoEdge.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\tab_NotSelected_NotSelected.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\tab_NotSelected_Selected.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\tab_Selected_NoEdge.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\Resources\tab_Selected_NotSelected.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\SelectionEvent.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\TabPanel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\VBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\VBoxFlex.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\VButtonBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\+uix\VisibilityObserver.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\Contents.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layout\layoutRoot.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\about.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\atoz.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\AxesExample.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\AxesLegendsColorbars.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\BoxPanelFancyStuff.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\compatibility.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Compiling.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\demoBrowserCreateInterface.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\demoBrowserOnListSelection.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\demoBrowserRun.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\demoBrowserScalability.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\demoBrowserStructure.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\demoBrowserUpdateInterface.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\doc.css</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\doc.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\ExampleApp.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\axesexample.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\callbackexample.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\colorbarexample.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\demoBrowser.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\displayEndOfDemoMessage.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\dockexample.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\gridflexpositioning.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\guideApp.fig</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\guideApp.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\hierarchyexample.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\minimizeexample.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\tabpanelexample.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Examples\visibleexample.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\frames.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference1_1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference1_2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference1_3.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference1_4.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference2_1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference2_2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference2_3.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference2_4.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference2_5.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference2_6.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference3_1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference3_2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference4_1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Function reference4_2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Getting Started.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Getting Started1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Getting Started2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Getting Started3.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Getting Started4.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Getting Started5.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Getting Started6.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\GUI Layout.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpindex.xml</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v2\_0.cfe</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v2\_0.cfs</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v2\_0.si</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v2\segments.gen</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v2\segments_1</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v3\_0.cfe</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v3\_0.cfs</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v3\_0.si</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v3\segments.gen</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helpsearch-v3\segments_1</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helptoc.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\helptoc.xml</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\HierarchyExample.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\axes_inner.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\axes_layout_example_1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\axes_layout_example_2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\axes_layout_example_3.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\axes_outer.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\basics_example1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\basics_example2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\basics_example3.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\basics_example4.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\basics_example5.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\basics_example6.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\basics_example_tab.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\basics_example_vbox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_BorderLayout.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_BoxPanel.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_CardPanel.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_Grid.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_GridFlex.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_HBox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_HBoxFlex.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_HButtonBox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_Panel.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_TabPanel.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_VBox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_VBoxFlex.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bigicon_VButtonBox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\bookicon.gif</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\Border.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxInBox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanel.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanel2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanelDockExample1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanelDockExample2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanelDockExample3.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanelDockExample4.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanelHelpExample.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanelMinimizeExample1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanelMinimizeExample2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\BoxPanelMinimizeExample3.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\CardPanel.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\colorbar_example_1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\colorbar_example_2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\colorbar_example_3.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\CombineBoxes.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\DefaultsFigure.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\DefaultsSystem1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\DefaultsSystem2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\demoBrowser1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\demoBrowser2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\demoBrowser3.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\demoBrowser4.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\demoicon.gif</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\deploy.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\Empty.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\EnableExample1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\EnableExample2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\EnableExample3.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\greenarrowicon.gif</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\Grid.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\GridFlex.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\guide1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\guide2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\HBox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\HBoxFlex.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\HButtonBox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\header.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\headerBG.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\help_ex.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\help_fx.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\help_gs.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\help_rn.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\help_ug.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\leftarrow.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\pageicon.gif</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\pagesicon.gif</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\Panel.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\Panel2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\panelDock.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\panelHelp.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\panelMaximize.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\panelMinimize.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\panelUndock.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\reficon.gif</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\rightarrow.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\TabPanel.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\titleimage.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\uparrow.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\VBox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\VBoxFlex.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\VButtonBox.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\VisibleExample1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\VisibleExample2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\VisibleExample3.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_fixed1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_fixed2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_layout0_1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_layout0_2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_layout1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_layout2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_layout_anno1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_layout_anno2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_normalized1.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\Images\why_normalized2.png</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\index.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\info.xml</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\layout.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\layoutDocRoot.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\layoutRoot.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\layouts.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\LayoutsGUIDE.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\PanelDock.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\PanelHelp.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\PanelMinimize.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\releasenotes.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.BoxPanel.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.CardPanel.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.Empty.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.Grid.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.GridFlex.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.HBox.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.HBoxFlex.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.HButtonBox.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.Panel.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.TabPanel.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.VBox.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.VBoxFlex.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\uix.VButtonBox.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide1_1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide1_2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide1_3.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide1_4.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide1_5.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide2_1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide2_2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide2_3.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide3.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide3_1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide4.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide4_1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide4_2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide4_3.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide5.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide6.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide7.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide7_1.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide7_2.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide7_3.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide7_4.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide7_5.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide7_6.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\VisibleExample.html</file>
+      <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\license.txt</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\EventData.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\IntelliHintsTextField.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Label.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\layoutHeight.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\ListBox.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MappedPopupMenu.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessageBoxPresenter.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessageBoxView.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\onOff.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Presenter.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\screenCenter.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\setIconImage.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Settings.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\TabGroup.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Table.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\TextArea.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\UIControl.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\View.m</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\HDF5.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\hdf5_hldll.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\hdf5dll.dll</file>
@@ -49,298 +358,8 @@
       <file>${PROJECT_ROOT}\lib\Core Framework\Symphony.SimulationDAQController.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\szip.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\zlib.dll</file>
-      <file>${PROJECT_ROOT}\lib\createTable\createTable.m</file>
-      <file>${PROJECT_ROOT}\lib\createTable\license.txt</file>
-      <file>${PROJECT_ROOT}\lib\createTable\table.png</file>
-      <file>${PROJECT_ROOT}\lib\createTable\TableSorter.jar</file>
       <file>${PROJECT_ROOT}\lib\findjobj\findjobj.m</file>
       <file>${PROJECT_ROOT}\lib\findjobj\license.txt</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\glt.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\BoxPanel.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\CardPanel.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\Empty.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\get.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\Grid.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\GridFlex.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\HBox.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\HBoxFlex.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\HButtonBox.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\Panel.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\set.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\TabPanel.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\unset.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\VBox.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\VBoxFlex.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uiextras\VButtonBox.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\+mixin\Container.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\ancestors.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\AncestryObserver.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Box.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\BoxPanel.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\ButtonBox.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\calcPixelSizes.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\CardPanel.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\ChildEvent.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\ChildObserver.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Container.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Divider.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Empty.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Grid.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\GridFlex.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\HBox.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\HBoxFlex.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\HButtonBox.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Image.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\inrectangle.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\loadIcon.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\LocationObserver.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Node.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Panel.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\pvchk.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\panelClose.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\panelDock.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\panelHelp.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\panelMaximize.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\panelMinimize.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\panelUndock.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\tab_NoEdge_NotSelected.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\tab_NoEdge_Selected.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\tab_NotSelected_NoEdge.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\tab_NotSelected_NotSelected.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\tab_NotSelected_Selected.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\tab_Selected_NoEdge.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\Resources\tab_Selected_NotSelected.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\SelectionEvent.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\TabPanel.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\VBox.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\VBoxFlex.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\VButtonBox.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\+uix\VisibilityObserver.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\Contents.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layout\layoutRoot.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\about.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\atoz.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\AxesExample.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\AxesLegendsColorbars.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\BoxPanelFancyStuff.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\compatibility.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Compiling.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\demoBrowserCreateInterface.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\demoBrowserOnListSelection.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\demoBrowserRun.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\demoBrowserScalability.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\demoBrowserStructure.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\demoBrowserUpdateInterface.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\doc.css</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\doc.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\ExampleApp.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\axesexample.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\callbackexample.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\colorbarexample.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\demoBrowser.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\displayEndOfDemoMessage.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\dockexample.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\gridflexpositioning.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\guideApp.fig</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\guideApp.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\hierarchyexample.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\minimizeexample.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\tabpanelexample.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Examples\visibleexample.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\frames.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference1_1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference1_2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference1_3.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference1_4.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference2_1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference2_2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference2_3.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference2_4.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference2_5.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference2_6.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference3_1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference3_2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference4_1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Function reference4_2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Getting Started.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Getting Started1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Getting Started2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Getting Started3.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Getting Started4.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Getting Started5.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Getting Started6.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\GUI Layout.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpindex.xml</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v2\_0.cfe</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v2\_0.cfs</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v2\_0.si</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v2\segments.gen</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v2\segments_1</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v3\_0.cfe</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v3\_0.cfs</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v3\_0.si</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v3\segments.gen</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helpsearch-v3\segments_1</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helptoc.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\helptoc.xml</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\HierarchyExample.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\axes_inner.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\axes_layout_example_1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\axes_layout_example_2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\axes_layout_example_3.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\axes_outer.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\basics_example1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\basics_example2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\basics_example3.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\basics_example4.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\basics_example5.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\basics_example6.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\basics_example_tab.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\basics_example_vbox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_BorderLayout.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_BoxPanel.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_CardPanel.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_Grid.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_GridFlex.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_HBox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_HBoxFlex.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_HButtonBox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_Panel.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_TabPanel.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_VBox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_VBoxFlex.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bigicon_VButtonBox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\bookicon.gif</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\Border.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxInBox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanel.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanel2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanelDockExample1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanelDockExample2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanelDockExample3.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanelDockExample4.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanelHelpExample.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanelMinimizeExample1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanelMinimizeExample2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\BoxPanelMinimizeExample3.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\CardPanel.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\colorbar_example_1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\colorbar_example_2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\colorbar_example_3.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\CombineBoxes.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\DefaultsFigure.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\DefaultsSystem1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\DefaultsSystem2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\demoBrowser1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\demoBrowser2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\demoBrowser3.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\demoBrowser4.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\demoicon.gif</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\deploy.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\Empty.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\EnableExample1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\EnableExample2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\EnableExample3.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\greenarrowicon.gif</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\Grid.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\GridFlex.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\guide1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\guide2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\HBox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\HBoxFlex.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\HButtonBox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\header.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\headerBG.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\help_ex.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\help_fx.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\help_gs.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\help_rn.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\help_ug.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\leftarrow.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\pageicon.gif</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\pagesicon.gif</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\Panel.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\Panel2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\panelDock.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\panelHelp.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\panelMaximize.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\panelMinimize.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\panelUndock.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\reficon.gif</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\rightarrow.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\TabPanel.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\titleimage.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\uparrow.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\VBox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\VBoxFlex.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\VButtonBox.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\VisibleExample1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\VisibleExample2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\VisibleExample3.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_fixed1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_fixed2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_layout0_1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_layout0_2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_layout1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_layout2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_layout_anno1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_layout_anno2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_normalized1.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\Images\why_normalized2.png</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\index.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\info.xml</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\layout.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\layoutDocRoot.m</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\layoutRoot.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\layouts.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\LayoutsGUIDE.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\PanelDock.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\PanelHelp.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\PanelMinimize.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\releasenotes.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.BoxPanel.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.CardPanel.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.Empty.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.Grid.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.GridFlex.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.HBox.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.HBoxFlex.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.HButtonBox.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.Panel.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.TabPanel.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.VBox.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.VBoxFlex.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\uix.VButtonBox.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide1_1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide1_2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide1_3.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide1_4.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide1_5.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide2_1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide2_2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide2_3.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide3.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide3_1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide4.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide4_1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide4_2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide4_3.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide5.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide6.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide7.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide7_1.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide7_2.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide7_3.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide7_4.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide7_5.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\User guide7_6.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\layoutdoc\VisibleExample.html</file>
-      <file>${PROJECT_ROOT}\lib\GUI Layout Toolbox 2.1.2\license.txt</file>
       <file>${PROJECT_ROOT}\lib\JavaTreeWrapper_20150126\JavaTreeWrapper\+uiextras\+jTree\CheckboxTree.m</file>
       <file>${PROJECT_ROOT}\lib\JavaTreeWrapper_20150126\JavaTreeWrapper\+uiextras\+jTree\CheckboxTreeNode.m</file>
       <file>${PROJECT_ROOT}\lib\JavaTreeWrapper_20150126\JavaTreeWrapper\+uiextras\+jTree\loadJavaCustomizations.m</file>
@@ -502,7 +521,6 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\StimulusGenerator.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+infra\ClassRepository.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+infra\PersistorFactory.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+infra\Settings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\AddKeywordPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\AddNotePresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\AddPropertyPresenter.m</file>
@@ -512,7 +530,6 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\DeviceBackgroundsPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\InitializeRigPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\MainPresenter.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\MessageBoxPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\NewFilePresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\OptionsPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\AddSourceSettings.m</file>
@@ -522,18 +539,6 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\MainSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\NewFileSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\desc2field.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\IntelliHintsTextField.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\Label.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\layoutHeight.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\ListBox.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\MappedPopupMenu.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\onOff.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\screenCenter.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\setIconImage.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\TabGroup.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\Table.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\TextArea.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\UIControl.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddKeywordView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddNoteView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddPropertyView.m</file>
@@ -545,13 +550,10 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\FigureView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\InitializeRigView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\MainView.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\MessageBoxView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\NewFileView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\OptionsView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\Module.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\Presenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\UiEventData.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\View.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\Contents.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+epochgroups\EpochGroup.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+experiments\Electrophysiology.m</file>
@@ -567,6 +569,11 @@
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Preparation.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Subject.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\log.xml</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-21</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-23</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-30</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-30.1</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\block.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\close.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\device.png</file>
