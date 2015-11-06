@@ -1,7 +1,7 @@
 classdef HekaDaqController < symphonyui.core.DaqController
-    
+
     methods
-        
+
         function obj = HekaDaqController(deviceType, deviceNumber)
             import symphonyui.builtin.daqs.HekaDeviceType;
 
@@ -34,32 +34,31 @@ classdef HekaDaqController < symphonyui.core.DaqController
 
             cobj = Heka.HekaDAQController(double(ctype), deviceNumber);
             obj@symphonyui.core.DaqController(cobj);
-            
+
             Heka.HekaDAQInputStream.RegisterConverters();
             Heka.HekaDAQOutputStream.RegisterConverters();
-            
+
             obj.sampleRate = symphonyui.core.Measurement(10000, 'Hz');
-            obj.sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {10000, 20000, 50000});
-            
+            obj.sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {1000, 10000, 20000, 50000});
+
             obj.tryCore(@()obj.cobj.InitHardware());
         end
-        
+
         function delete(obj)
             obj.close();
         end
-        
+
         function close(obj)
             obj.tryCore(@()obj.cobj.Dispose());
         end
-        
+
         function s = getStream(obj, name)
             s = getStream@symphonyui.core.DaqController(obj, name);
             if strncmp(name, 'DIGITAL', 7)
                 s = symphonyui.builtin.daqs.HekaDigitalDaqStream(s.cobj);
             end
         end
-        
-    end
-    
-end
 
+    end
+
+end
