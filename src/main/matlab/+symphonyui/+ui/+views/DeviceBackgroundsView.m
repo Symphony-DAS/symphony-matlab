@@ -4,7 +4,7 @@ classdef DeviceBackgroundsView < appbox.View
         Apply
         Cancel
     end
-    
+
     properties (Access = private)
         backgroundsPropertyGrid
         applyButton
@@ -15,19 +15,19 @@ classdef DeviceBackgroundsView < appbox.View
 
         function createUi(obj)
             import appbox.*;
-            
+
             set(obj.figureHandle, ...
                 'Name', 'Device Backgrounds', ...
-                'Position', screenCenter(300, 160));
+                'Position', screenCenter(304, 164));
 
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
-                'Spacing', 7);
+                'Spacing', 11);
 
             backgroundsLayout = uix.VBox( ...
                 'Parent', mainLayout);
-            
+
             obj.backgroundsPropertyGrid = uiextras.jide.PropertyGrid(backgroundsLayout, ...
                 'ShowDescription', false);
 
@@ -50,7 +50,7 @@ classdef DeviceBackgroundsView < appbox.View
                 'Callback', @(h,d)notify(obj, 'Cancel'));
             set(controlsLayout, 'Widths', [-1 75 75]);
 
-            set(mainLayout, 'Heights', [-1 25]);
+            set(mainLayout, 'Heights', [-1 23]);
 
             % Set apply button to appear as the default button.
             try %#ok<TRYNC>
@@ -58,15 +58,15 @@ classdef DeviceBackgroundsView < appbox.View
                 h.setDefaultButton(obj.applyButton);
             end
         end
-        
+
         function f = getDeviceBackgrounds(obj)
             f = get(obj.backgroundsPropertyGrid, 'Properties');
         end
-        
+
         function setDeviceBackgrounds(obj, fields)
             set(obj.backgroundsPropertyGrid, 'Properties', fields);
         end
-        
+
         function stopEditingDeviceBackgrounds(obj)
             obj.backgroundsPropertyGrid.StopEditing();
         end

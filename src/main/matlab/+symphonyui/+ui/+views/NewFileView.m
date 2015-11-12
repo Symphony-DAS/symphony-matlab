@@ -22,12 +22,12 @@ classdef NewFileView < appbox.View
 
             set(obj.figureHandle, ...
                 'Name', 'New File', ...
-            	'Position', screenCenter(500, 143));
+            	'Position', screenCenter(500, 139));
 
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
-                'Spacing', 7);
+                'Spacing', 11);
 
             fileLayout = uix.Grid( ...
                 'Parent', mainLayout, ...
@@ -61,8 +61,8 @@ classdef NewFileView < appbox.View
                 'Callback', @(h,d)notify(obj, 'BrowseLocation'));
             uix.Empty('Parent', fileLayout);
             set(fileLayout, ...
-                'Widths', [65 -1 25], ...
-                'Heights', [25 25 25]);
+                'Widths', [65 -1 23], ...
+                'Heights', [23 23 23]);
 
             % OK/Cancel controls.
             controlsLayout = uix.HBox( ...
@@ -83,7 +83,7 @@ classdef NewFileView < appbox.View
                 'Callback', @(h,d)notify(obj, 'Cancel'));
             set(controlsLayout, 'Widths', [-1 75 75]);
 
-            set(mainLayout, 'Heights', [-1 25]);
+            set(mainLayout, 'Heights', [-1 23]);
 
             % Set OK button to appear as the default button.
             try %#ok<TRYNC>
@@ -91,7 +91,7 @@ classdef NewFileView < appbox.View
                 h.setDefaultButton(obj.okButton);
             end
         end
-        
+
         function enableOk(obj, tf)
             set(obj.okButton, 'Enable', appbox.onOff(tf));
         end
@@ -103,7 +103,7 @@ classdef NewFileView < appbox.View
         function setName(obj, n)
             set(obj.nameField, 'String', n);
         end
-        
+
         function requestNameFocus(obj)
             obj.update();
             uicontrol(obj.nameField);
@@ -116,23 +116,23 @@ classdef NewFileView < appbox.View
         function setLocation(obj, l)
             set(obj.locationField, 'String', l);
         end
-        
+
         function enableSelectDescription(obj, tf)
             set(obj.descriptionPopupMenu, 'Enable', appbox.onOff(tf));
         end
-        
+
         function t = getSelectedDescription(obj)
             t = get(obj.descriptionPopupMenu, 'Value');
         end
-        
+
         function setSelectedDescription(obj, t)
             set(obj.descriptionPopupMenu, 'Value', t);
         end
-        
+
         function l = getDescriptionList(obj)
             l = get(obj.descriptionPopupMenu, 'Values');
         end
-        
+
         function setDescriptionList(obj, names, values)
             set(obj.descriptionPopupMenu, 'String', names);
             set(obj.descriptionPopupMenu, 'Values', values);

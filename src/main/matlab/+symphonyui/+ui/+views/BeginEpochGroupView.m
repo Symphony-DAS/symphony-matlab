@@ -20,13 +20,13 @@ classdef BeginEpochGroupView < appbox.View
 
             set(obj.figureHandle, ...
                 'Name', 'Begin Epoch Group', ...
-                'Position', screenCenter(260, 143));
+                'Position', screenCenter(260, 139));
 
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
-                'Spacing', 7);
-            
+                'Spacing', 11);
+
             groupLayout = uix.Grid( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
@@ -47,14 +47,14 @@ classdef BeginEpochGroupView < appbox.View
             obj.sourcePopupMenu = MappedPopupMenu( ...
                 'Parent', groupLayout, ...
                 'String', {' '}, ...
-                'HorizontalAlignment', 'left'); 
+                'HorizontalAlignment', 'left');
             obj.descriptionPopupMenu = MappedPopupMenu( ...
                 'Parent', groupLayout, ...
                 'String', {' '}, ...
                 'HorizontalAlignment', 'left');
             set(groupLayout, ...
                 'Widths', [65 -1], ...
-                'Heights', [25 25 25]);
+                'Heights', [23 23 23]);
 
             % Begin/Cancel controls.
             controlsLayout = uix.HBox( ...
@@ -75,7 +75,7 @@ classdef BeginEpochGroupView < appbox.View
                 'Callback', @(h,d)notify(obj, 'Cancel'));
             set(controlsLayout, 'Widths', [-1 75 75]);
 
-            set(mainLayout, 'Heights', [-1 25]);
+            set(mainLayout, 'Heights', [-1 23]);
 
             % Set begin button to appear as the default button.
             try %#ok<TRYNC>
@@ -83,11 +83,11 @@ classdef BeginEpochGroupView < appbox.View
                 h.setDefaultButton(obj.beginButton);
             end
         end
-        
+
         function enableBegin(obj, tf)
             set(obj.beginButton, 'Enable', appbox.onOff(tf));
         end
-        
+
         function setParent(obj, p)
             set(obj.parentField, 'String', p);
         end
@@ -99,7 +99,7 @@ classdef BeginEpochGroupView < appbox.View
         function setSelectedSource(obj, s)
             set(obj.sourcePopupMenu, 'Value', s);
         end
-        
+
         function l = getSourceList(obj)
             l = get(obj.sourcePopupMenu, 'Values');
         end
@@ -108,28 +108,28 @@ classdef BeginEpochGroupView < appbox.View
             set(obj.sourcePopupMenu, 'String', names);
             set(obj.sourcePopupMenu, 'Values', values);
         end
-        
+
         function enableSelectDescription(obj, tf)
             set(obj.descriptionPopupMenu, 'Enable', appbox.onOff(tf));
         end
-        
+
         function t = getSelectedDescription(obj)
             t = get(obj.descriptionPopupMenu, 'Value');
         end
-        
+
         function setSelectedDescription(obj, t)
             set(obj.descriptionPopupMenu, 'Value', t);
         end
-        
+
         function l = getDescriptionList(obj)
             l = get(obj.descriptionPopupMenu, 'Values');
         end
-        
+
         function setDescriptionList(obj, names, values)
             set(obj.descriptionPopupMenu, 'String', names);
             set(obj.descriptionPopupMenu, 'Values', values);
         end
-        
+
     end
 
 end

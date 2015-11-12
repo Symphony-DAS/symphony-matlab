@@ -148,7 +148,7 @@ classdef DataManagerView < appbox.View
                 'HorizontalAlignment', 'center');
             uix.Empty('Parent',emptyLayout);
             set(emptyLayout, ...
-                'Heights', [-1 25 -1], ...
+                'Heights', [-1 23 -1], ...
                 'UserData', struct('Height', -1));
 
             % Source card.
@@ -168,7 +168,7 @@ classdef DataManagerView < appbox.View
                 'Callback', @(h,d)notify(obj, 'SetSourceLabel'));
             set(sourceGrid, ...
                 'Widths', [35 -1], ...
-                'Heights', 25);
+                'Heights', 23);
             obj.sourceCard.annotationsLayout = uix.VBox( ...
                 'Parent', sourceLayout);
             set(sourceLayout, ...
@@ -207,7 +207,7 @@ classdef DataManagerView < appbox.View
                 'HorizontalAlignment', 'left');
             set(experimentGrid, ...
                 'Widths', [60 -1], ...
-                'Heights', [25 25 25]);
+                'Heights', [23 23 23]);
             obj.experimentCard.annotationsLayout = uix.VBox( ...
                 'Parent', experimentLayout);
             set(experimentLayout, ...
@@ -254,7 +254,7 @@ classdef DataManagerView < appbox.View
                 'HorizontalAlignment', 'left');
             set(epochGroupGrid, ...
                 'Widths', [60 -1], ...
-                'Heights', [25 25 25 25]);
+                'Heights', [23 23 23 23]);
             obj.epochGroupCard.annotationsLayout = uix.VBox( ...
                 'Parent', epochGroupLayout);
             set(epochGroupLayout, ...
@@ -293,7 +293,7 @@ classdef DataManagerView < appbox.View
                 'HorizontalAlignment', 'left');
             set(epochBlockGrid, ...
                 'Widths', [65 -1], ...
-                'Heights', [25 25 25]);
+                'Heights', [23 23 23]);
             obj.epochBlockCard.annotationsLayout = uix.VBox( ...
                 'Parent', epochBlockLayout);
             set(epochBlockLayout, ...
@@ -316,7 +316,7 @@ classdef DataManagerView < appbox.View
                 'Callback', @(h,d)notify(obj, 'SelectedEpochSignal'));
             set(epochGrid, ...
                 'Widths', [80 -1], ...
-                'Heights', 25);
+                'Heights', 23);
             obj.epochCard.panel = uipanel( ...
                 'Parent', epochLayout, ...
                 'BorderType', 'line', ...
@@ -375,9 +375,9 @@ classdef DataManagerView < appbox.View
                 'String', '-', ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
                 'Callback', @(h,d)notify(obj, 'RemoveProperty'));
-            set(propertiesToolbarLayout, 'Widths', [-1 50]);
-            
-            set(propertiesLayout, 'Heights', [-1 25]);
+            set(propertiesToolbarLayout, 'Widths', [-1 46]);
+
+            set(propertiesLayout, 'Heights', [-1 23]);
 
             % Keywords tab.
             obj.keywordsTab.tab = uitab( ...
@@ -411,9 +411,9 @@ classdef DataManagerView < appbox.View
                 'String', '-', ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
                 'Callback', @(h,d)notify(obj, 'RemoveKeyword'));
-            set(keywordsToolbarLayout, 'Widths', [-1 50]);
+            set(keywordsToolbarLayout, 'Widths', [-1 46]);
 
-            set(keywordsLayout, 'Heights', [-1 25]);
+            set(keywordsLayout, 'Heights', [-1 23]);
 
             % Notes tab.
             obj.notesTab.tab = uitab( ...
@@ -448,9 +448,9 @@ classdef DataManagerView < appbox.View
                 'String', '-', ...
                 'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize') + 1, ...
                 'Enable', 'off');
-            set(notesToolbarLayout, 'Widths', [-1 50]);
+            set(notesToolbarLayout, 'Widths', [-1 46]);
 
-            set(notesLayout, 'Heights', [-1 25]);
+            set(notesLayout, 'Heights', [-1 23]);
 
             % Parameters tab.
             obj.parametersTab.tab = uitab( ...
@@ -478,7 +478,7 @@ classdef DataManagerView < appbox.View
             obj.propertiesTab.grid.Close();
             obj.parametersTab.grid.Close();
         end
-        
+
         function enableAddSource(obj, tf)
             enable = appbox.onOff(tf);
             set(obj.addSourceButtons.tool, 'Enable', enable);
@@ -649,7 +649,7 @@ classdef DataManagerView < appbox.View
         function setEpochBlockProtocolId(obj, i)
             set(obj.epochBlockCard.protocolIdField, 'String', i);
         end
-        
+
         function setEpochBlockProtocolParameters(obj, properties)
             set(obj.parametersTab.grid, 'Properties', properties);
         end
@@ -672,11 +672,11 @@ classdef DataManagerView < appbox.View
             n.setIcon(symphonyui.app.App.getResource('icons/epoch.png'));
             set(n, 'UIContextMenu', obj.createEntityContextMenu());
         end
-        
+
         function enableSelectEpochSignal(obj, tf)
             set(obj.epochCard.signalPopupMenu, 'Enable', appbox.onOff(tf));
         end
-        
+
         function s = getSelectedEpochSignal(obj)
             s = get(obj.epochCard.signalPopupMenu, 'Value');
         end
@@ -684,7 +684,7 @@ classdef DataManagerView < appbox.View
         function setSelectedEpochSignal(obj, s)
             set(obj.epochCard.signalPopupMenu, 'Value', s);
         end
-        
+
         function setEpochSignalList(obj, names, values)
             set(obj.epochCard.signalPopupMenu, 'String', names);
             set(obj.epochCard.signalPopupMenu, 'Values', values);
@@ -766,11 +766,11 @@ classdef DataManagerView < appbox.View
         function setPropertiesEditorStyle(obj, s)
             set(obj.propertiesTab.grid, 'EditorStyle', s);
         end
-        
+
         function p = getSelectedProperty(obj)
             p = obj.propertiesTab.grid.GetSelectedProperty();
         end
-        
+
         function f = getProperties(obj)
             f = get(obj.propertiesTab.grid, 'Properties');
         end
@@ -782,7 +782,7 @@ classdef DataManagerView < appbox.View
         function updateProperties(obj, fields)
             obj.propertiesTab.grid.UpdateProperties(fields);
         end
-        
+
         function stopEditingProperties(obj)
             obj.propertiesTab.grid.StopEditing();
         end

@@ -23,7 +23,7 @@ classdef AddKeywordView < appbox.View
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
-                'Spacing', 7);
+                'Spacing', 11);
 
             keywordLayout = uix.VBox( ...
                 'Parent', mainLayout, ...
@@ -31,7 +31,7 @@ classdef AddKeywordView < appbox.View
             obj.textField = IntelliHintsTextField( ...
                 'Parent', keywordLayout, ...
                 'HorizontalAlignment', 'left');
-            set(keywordLayout, 'Heights', 25);
+            set(keywordLayout, 'Heights', 23);
 
             % Add/Cancel controls.
             controlsLayout = uix.HBox( ...
@@ -52,7 +52,7 @@ classdef AddKeywordView < appbox.View
                 'Callback', @(h,d)notify(obj, 'Cancel'));
             set(controlsLayout, 'Widths', [-1 75 75]);
 
-            set(mainLayout, 'Heights', [-1 25]);
+            set(mainLayout, 'Heights', [-1 23]);
 
             % Set add button to appear as the default button.
             try %#ok<TRYNC>

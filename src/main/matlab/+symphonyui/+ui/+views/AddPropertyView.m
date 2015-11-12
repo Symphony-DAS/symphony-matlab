@@ -1,31 +1,31 @@
 classdef AddPropertyView < appbox.View
-    
+
     events
         Add
         Cancel
     end
-    
+
     properties (Access = private)
         keyField
         valueField
         addButton
         cancelButton
     end
-    
+
     methods
-        
+
         function createUi(obj)
             import appbox.*;
-            
+
             set(obj.figureHandle, ...
                 'Name', 'Add Property', ...
-                'Position', screenCenter(250, 111));
-            
+                'Position', screenCenter(250, 109));
+
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
-                'Spacing', 7);
-            
+                'Spacing', 11);
+
             propertyLayout = uix.Grid( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
@@ -45,8 +45,8 @@ classdef AddPropertyView < appbox.View
                 'HorizontalAlignment', 'left');
             set(propertyLayout, ...
                 'Widths', [40 -1], ...
-                'Heights', [25 25]);
-            
+                'Heights', [23 23]);
+
             % Add/Cancel controls.
             controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
@@ -65,30 +65,29 @@ classdef AddPropertyView < appbox.View
                 'Interruptible', 'off', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
             set(controlsLayout, 'Widths', [-1 75 75]);
-            
-            set(mainLayout, 'Heights', [-1 25]);
-            
+
+            set(mainLayout, 'Heights', [-1 23]);
+
             % Set add button to appear as the default button.
             try %#ok<TRYNC>
                 h = handle(obj.figureHandle);
                 h.setDefaultButton(obj.addButton);
             end
         end
-        
+
         function k = getKey(obj)
             k = get(obj.keyField, 'String');
         end
-        
+
         function requestKeyFocus(obj)
             obj.update();
             uicontrol(obj.keyField);
         end
-        
+
         function v = getValue(obj)
             v = get(obj.valueField, 'String');
         end
-        
-    end
-    
-end
 
+    end
+
+end

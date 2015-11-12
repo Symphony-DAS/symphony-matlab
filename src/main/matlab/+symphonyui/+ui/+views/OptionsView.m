@@ -33,11 +33,11 @@ classdef OptionsView < appbox.View
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 11);
-            
+
             optionsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 6);
-            
+
             masterLayout = uix.VBox( ...
                 'Parent', optionsLayout, ...
                 'Padding', 1);
@@ -47,15 +47,15 @@ classdef OptionsView < appbox.View
                 'Style', 'list', ...
                 'String', {'File', 'Search Path', 'Logging'}, ...
                 'Callback', @(h,d)notify(obj, 'SelectedNode'));
-            
+
             detailLayout = uix.VBox( ...
                 'Parent', optionsLayout, ...
                 'Padding', 1, ...
                 'Spacing', 7);
-            
+
             obj.detailCardPanel = uix.CardPanel( ...
                 'Parent', detailLayout);
-            
+
             % File card.
             fileGrid = uix.Grid( ...
                 'Parent', obj.detailCardPanel, ...
@@ -76,8 +76,8 @@ classdef OptionsView < appbox.View
                 'HorizontalAlignment', 'left');
             set(fileGrid, ...
                 'Widths', [90 -1], ...
-                'Heights', [25 25]);
-            
+                'Heights', [23 23]);
+
             % Search path card.
             searchPathLayout = uix.VBox( ...
                 'Parent', obj.detailCardPanel, ...
@@ -113,8 +113,8 @@ classdef OptionsView < appbox.View
                 'Callback', @(h,d)notify(obj, 'RemoveSearchPath'));
             uix.Empty('Parent', searchPathControlsLayout);
             set(searchPathControlsLayout, 'Widths', [75 75 -1]);
-            set(searchPathLayout, 'Heights', [-1 25]);
-            
+            set(searchPathLayout, 'Heights', [-1 23]);
+
             % Logging card.
             loggingGrid = uix.Grid( ...
                 'Parent', obj.detailCardPanel, ...
@@ -135,16 +135,16 @@ classdef OptionsView < appbox.View
                 'HorizontalAlignment', 'left');
             set(loggingGrid, ...
                 'Widths', [100 -1], ...
-                'Heights', [25 25]);
-            
+                'Heights', [23 23]);
+
             set(obj.detailCardPanel, 'Selection', 1);
-            
+
             javacomponent('javax.swing.JSeparator', [], detailLayout);
-            
+
             set(detailLayout, 'Heights', [-1 1]);
-            
+
             set(optionsLayout, 'Widths', [120 -1]);
-            
+
             % Save/Default/Cancel controls.
             controlsLayout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
@@ -170,7 +170,7 @@ classdef OptionsView < appbox.View
                 'Callback', @(h,d)notify(obj, 'Cancel'));
             set(controlsLayout, 'Sizes', [-1 75 75 75]);
 
-            set(mainLayout, 'Heights', [-1 25]);
+            set(mainLayout, 'Heights', [-1 23]);
 
             % Set OK button to appear as the default button.
             try %#ok<TRYNC>
@@ -186,59 +186,59 @@ classdef OptionsView < appbox.View
         function setCardSelection(obj, index)
             set(obj.detailCardPanel, 'Selection', index);
         end
-        
+
         function n = getFileDefaultName(obj)
             n = get(obj.fileCard.defaultNameField, 'String');
         end
-        
+
         function setFileDefaultName(obj, n)
             set(obj.fileCard.defaultNameField, 'String', n);
         end
-        
+
         function n = getFileDefaultLocation(obj)
             n = get(obj.fileCard.defaultLocationField, 'String');
         end
-        
+
         function setFileDefaultLocation(obj, l)
             set(obj.fileCard.defaultLocationField, 'String', l);
         end
-        
+
         function i = getSelectedSearchPath(obj)
             i = get(obj.searchPathCard.list, 'Value');
         end
-        
+
         function p = getSearchPaths(obj)
             p = get(obj.searchPathCard.list, 'String');
         end
-        
+
         function clearSearchPaths(obj)
             set(obj.searchPathCard.list, 'String', {});
         end
-        
+
         function addSearchPath(obj, path)
             s = get(obj.searchPathCard.list, 'String');
             s = [s; {path}];
             set(obj.searchPathCard.list, 'String', s);
         end
-        
+
         function removeSearchPath(obj, index)
             s = get(obj.searchPathCard.list, 'String');
             s(index) = [];
             set(obj.searchPathCard.list, 'String', s);
         end
-        
+
         function f = getLoggingConfigurationFile(obj)
             f = get(obj.loggingCard.configurationFileField, 'String');
         end
-        
+
         function setLoggingConfigurationFile(obj, f)
             set(obj.loggingCard.configurationFileField, 'String', f);
         end
-        
+
         function d = getLoggingLogDirectory(obj)
             d = get(obj.loggingCard.logDirectoryField, 'String');
         end
-        
+
         function setLoggingLogDirectory(obj, d)
             set(obj.loggingCard.logDirectoryField, 'String', d);
         end
