@@ -114,8 +114,7 @@ classdef NewFilePresenter < appbox.Presenter
                 path = obj.documentationService.getFilePath(name, location);
                 if exist(path, 'file')
                     [~, n, e] = fileparts(path);
-                    filename = [n e];
-                    result = obj.view.showMessage(['''' filename ''' already exists. Overwrite?'], ...
+                    result = obj.view.showMessage(['''' path ''' already exists. Overwrite?'], ...
                         'Overwrite File', ...
                         'Cancel', 'Overwrite');
                     if ~strcmp(result, 'Overwrite')
@@ -123,7 +122,7 @@ classdef NewFilePresenter < appbox.Presenter
                     end
                     delete(path);
                     if exist(path, 'file')
-                        error(['Unable to delete ''' filename '''']);
+                        error(['Unable to delete ''' path '''']);
                     end
                 end
                 obj.documentationService.newFile(name, location, description);
