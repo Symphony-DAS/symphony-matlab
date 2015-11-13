@@ -277,6 +277,28 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.addEpochGroupNode(children{i});
             end
         end
+        
+        function updateEpochGroupNode(obj, group)
+            blocks = group.epochBlocks;
+            for i = 1:numel(blocks)
+                b = blocks{i};
+                if ~obj.uuidToNode.isKey(b.uuid)
+                    obj.addEpochBlockNode(b);
+                else
+                    obj.updateEpochBlockNode(b);
+                end
+            end
+            
+            children = group.epochGroups;
+            for i = 1:numel(children)
+                c = children{i};
+                if ~obj.uuidToNode.isKey(c.uuid)
+                    obj.addEpochGroupNode(c);
+                else
+                    obj.updateEpochGroupNode(c);
+                end
+            end
+        end
 
         function populateDetailsWithEpochGroups(obj, groups)
             groupSet = symphonyui.core.collections.EpochGroupSet(groups);
@@ -322,6 +344,16 @@ classdef DataManagerPresenter < appbox.Presenter
             epochs = block.epochs;
             for i = 1:numel(epochs)
                 obj.addEpochNode(epochs{i});
+            end
+        end
+        
+        function updateEpochBlockNode(obj, block)
+            epochs = block.epochs;
+            for i = 1:numel(epochs)
+                e = epochs{i};
+                if ~obj.uuidToNode.isKey(e.uuid)
+                    obj.addEpochNode(e);
+                end
             end
         end
 
@@ -643,8 +675,12 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.updateStateOfControls();
 
             state = obj.acquisitionService.getControllerState();
-            if state == symphonyui.core.ControllerState.STOPPED
-                obj.updateCurrentEpochGroupBlocks();
+            if state.isPaused() || state.isStopped()
+                group = obj.documentationService.getCurrentEpochGroup();
+                if isempty(group)
+                    return;
+                end
+                obj.updateEpochGroupNode(group);
             end
         end
 
@@ -658,20 +694,6 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.enableAddSource(isStopped);
             obj.view.enableBeginEpochGroup(hasSource && isStopped);
             obj.view.enableEndEpochGroup(hasEpochGroup && isStopped);
-        end
-
-        function updateCurrentEpochGroupBlocks(obj)
-            group = obj.documentationService.getCurrentEpochGroup();
-            if isempty(group)
-                return;
-            end
-            blocks = group.epochBlocks;
-            for i = 1:numel(blocks)
-                b = blocks{i};
-                if ~obj.uuidToNode.isKey(b.uuid)
-                    obj.addEpochBlockNode(b);
-                end
-            end
         end
 
         function loadSettings(obj)

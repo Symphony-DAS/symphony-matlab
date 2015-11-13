@@ -100,6 +100,10 @@ classdef DocumentationService < handle
         function g = getCurrentEpochGroup(obj)
             g = obj.session.getPersistor().currentEpochGroup;
         end
+        
+        function b = getCurrentEpochBlock(obj)
+            b = obj.session.getPersistor().currentEpochBlock;
+        end
 
         function deleteEntity(obj, entity)
             uuid = entity.uuid;
