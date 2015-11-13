@@ -141,7 +141,7 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
         function delete(nObj)
             delete(nObj.Children(isvalid(nObj.Children)))
             nObj.Children(:) = [];
-            nObj.Parent(:) = [];
+            %nObj.Parent(:) = [];
             delete(nObj.jNode);
         end
     end %methods
