@@ -113,7 +113,6 @@ classdef NewFilePresenter < appbox.Presenter
             try
                 path = obj.documentationService.getFilePath(name, location);
                 if exist(path, 'file')
-                    [~, n, e] = fileparts(path);
                     result = obj.view.showMessage(['''' path ''' already exists. Overwrite?'], ...
                         'Overwrite File', ...
                         'Cancel', 'Overwrite');
