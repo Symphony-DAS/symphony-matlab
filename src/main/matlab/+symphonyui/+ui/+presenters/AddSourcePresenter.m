@@ -65,7 +65,7 @@ classdef AddSourcePresenter < appbox.Presenter
             displayNames = cell(1, numel(classNames));
             for i = 1:numel(classNames)
                 split = strsplit(classNames{i}, '.');
-                displayNames{i} = symphonyui.core.util.humanize(split{end});
+                displayNames{i} = appbox.humanize(split{end});
             end
 
             if numel(classNames) > 0
@@ -98,7 +98,7 @@ classdef AddSourcePresenter < appbox.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-            
+
             try
                 obj.saveSettings();
             catch x
@@ -112,7 +112,7 @@ classdef AddSourcePresenter < appbox.Presenter
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
         end
-        
+
         function loadSettings(obj)
             p = find(cellfun(@(p)strcmp(obj.settings.selectedParentUuid, p.uuid), {obj.view.getParentList{2:end}}), 1); %#ok<CCAT1>
             if ~isempty(p)

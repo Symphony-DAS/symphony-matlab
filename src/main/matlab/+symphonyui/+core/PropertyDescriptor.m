@@ -20,7 +20,7 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
 
         function obj = PropertyDescriptor(name, value, varargin)
             obj.field = uiextras.jide.PropertyGridField(name, value, ...
-                'DisplayName', symphonyui.core.util.humanize(name));
+                'DisplayName', appbox.humanize(name));
             if nargin > 2
                 obj.set(varargin{:});
             end

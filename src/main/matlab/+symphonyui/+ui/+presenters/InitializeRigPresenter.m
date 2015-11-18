@@ -50,7 +50,7 @@ classdef InitializeRigPresenter < appbox.Presenter
             displayNames = cell(1, numel(classNames));
             for i = 1:numel(classNames)
                 split = strsplit(classNames{i}, '.');
-                displayNames{i} = symphonyui.core.util.humanize(split{end});
+                displayNames{i} = appbox.humanize(split{end});
             end
 
             if numel(classNames) > 0
