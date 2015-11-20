@@ -88,6 +88,9 @@ classdef Rig < handle
         end
         
         function n = getDeviceNames(obj, expression)
+            if nargin < 2
+                expression = '.';
+            end
             n = cellfun(@(d)d.name, obj.getDevices(expression), 'UniformOutput', false);
         end
         
