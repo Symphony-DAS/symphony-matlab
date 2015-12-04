@@ -48,7 +48,7 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
     % Auth/Revision:
     %   MathWorks Consulting
     %   $Author: rjackey $
-    %   $Revision: 1064 $  $Date: 2015-01-26 15:51:42 -0500 (Mon, 26 Jan 2015) $
+    %   $Revision: 1245 $  $Date: 2015-11-06 09:19:24 -0500 (Fri, 06 Nov 2015) $
     % ---------------------------------------------------------------------
     
     % DEVELOPER NOTE: Java objects that may be used in a callback must be
@@ -359,7 +359,7 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
                 
                 % Always make the parent an empty TreeNode, in case empty
                 % [] was passed in
-                newParent = uiextras.jTree.TreeNode;
+                newParent = uiextras.jTree.TreeNode.empty(0,1);
                 
                 % Is there an old parent to clean up?
                 if ~isempty(nObj.Parent)
