@@ -214,7 +214,7 @@ classdef Controller < symphonyui.core.CoreObject
                 return;
             end
             
-            obj.preload();
+            obj.preloadLoop();
             
             task = obj.startAsync(obj.currentPersistor);
                         
@@ -239,35 +239,43 @@ classdef Controller < symphonyui.core.CoreObject
             end
         end
         
-        function preload(obj)
-            while obj.currentProtocol.shouldContinuePreloadingEpochs()
-                if ~obj.state.isRunning()
-                    break;
-                end
+        function preloadLoop(obj)
+            while obj.shouldContinuePreloadingEpochs()
                 obj.enqueueEpoch(obj.nextEpoch());
                 obj.enqueueEpoch(obj.nextInterval());
                 drawnow();
-                if obj.epochQueueDuration >= obj.MAX_EPOCH_QUEUE_DURATION
-                    break;
+            end
+        end
+        
+        function tf = shouldContinuePreloadingEpochs(obj)
+            tf = obj.currentProtocol.shouldContinuePreloadingEpochs() ...
+                && obj.epochQueueDuration < obj.MAX_EPOCH_QUEUE_DURATION ...
+                && obj.state.isRunning();
+        end
+        
+        function processLoop(obj)
+            while obj.shouldWaitToContinuePreparingEpochs()
+                pause(0.01);
+            end
+            while obj.shouldContinuePreparingEpochs()                
+                obj.enqueueEpoch(obj.nextEpoch());
+                obj.enqueueEpoch(obj.nextInterval());
+                drawnow();
+                while obj.shouldWaitToContinuePreparingEpochs()
+                    pause(0.01);
                 end
             end
         end
         
-        function processLoop(obj)
-            while obj.currentProtocol.shouldContinuePreparingEpochs()
-                if ~obj.state.isRunning()
-                    break;
-                end
-                obj.enqueueEpoch(obj.nextEpoch());
-                obj.enqueueEpoch(obj.nextInterval());
-                drawnow();
-                while obj.epochQueueDuration >= obj.MAX_EPOCH_QUEUE_DURATION
-                    if ~obj.state.isRunning();
-                        break;
-                    end
-                    pause(0.01);
-                end
-            end
+        function tf = shouldWaitToContinuePreparingEpochs(obj)
+            tf = (obj.currentProtocol.shouldWaitToContinuePreparingEpochs() ...
+                || obj.epochQueueDuration >= obj.MAX_EPOCH_QUEUE_DURATION) ...
+                && obj.state.isRunning();
+        end
+        
+        function tf = shouldContinuePreparingEpochs(obj)
+            tf = obj.currentProtocol.shouldContinuePreparingEpochs() ...
+                && obj.state.isRunning();
         end
         
         function e = nextEpoch(obj)

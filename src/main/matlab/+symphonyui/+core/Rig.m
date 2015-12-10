@@ -65,14 +65,14 @@ classdef Rig < handle
             t = obj.daqController.sampleRateType;
         end
         
-        function d = getDevice(obj, name)
+        function d = getDevice(obj, expression)
             for i = 1:numel(obj.devices)
-                if strcmp(obj.devices{i}.name, name)
+                if regexpi(obj.devices{i}.name, expression, 'once')
                     d = obj.devices{i};
                     return;
                 end
             end
-            error(['A device named ''' name ''' does not exist']);
+            error(['A device named ''' expression ''' does not exist']);
         end
         
         function d = getDevices(obj, expression)

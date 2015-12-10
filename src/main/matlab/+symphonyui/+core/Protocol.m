@@ -112,6 +112,10 @@ classdef Protocol < handle
             tf = obj.shouldContinuePreparingEpochs();
         end
         
+        function tf = shouldWaitToContinuePreparingEpochs(obj) %#ok<MANU>
+            tf = false;
+        end
+        
         function tf = shouldContinuePreparingEpochs(obj) %#ok<MANU>
             tf = false;
         end
@@ -122,6 +126,10 @@ classdef Protocol < handle
         
         function completeRun(obj) %#ok<MANU>
             
+        end
+        
+        function h = showFigure(obj, className, varargin)
+            h = obj.figureHandlerManager.showFigure(className, varargin{:});
         end
         
         function clearFigures(obj)
@@ -135,14 +143,6 @@ classdef Protocol < handle
         function [tf, msg] = isValid(obj) %#ok<MANU>
             tf = true;
             msg = [];
-        end
-        
-    end
-    
-    methods (Access = protected)
-        
-        function h = showFigure(obj, className, varargin)
-            h = obj.figureHandlerManager.showFigure(className, varargin{:});
         end
         
     end
