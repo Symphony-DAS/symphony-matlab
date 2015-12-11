@@ -17,7 +17,7 @@ classdef ClassRepository < handle
             dirs = strsplit(path, ';');
             for i = 1:numel(dirs)
                 if exist(dirs{i}, 'dir')
-                    [~, p] = packageName(dirs{i});
+                    [~, ~, p] = appbox.packageName(dirs{i});
                     addpath(p);
                 end
             end
@@ -47,7 +47,7 @@ classdef ClassRepository < handle
         end
         
         function loadDirectory(obj, path)
-            package = packageName(path);
+            package = appbox.packageName(path);
             if ~isempty(package)
                 package = [package '.'];
             end
@@ -90,16 +90,4 @@ classdef ClassRepository < handle
         
     end
     
-end
-
-function [name, parentPath] = packageName(path)
-    if isempty(path)
-        name = [];
-        parentPath = [];
-        return;
-    end
-    [parentPath, name] = strtok(path, '+');
-    name = regexp(name, '\+(\w)+', 'tokens');
-    name = strcat([name{:}], [repmat({'.'},1,numel(name)-1) {''}]);
-    name = [name{:}];
 end
