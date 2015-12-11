@@ -2,6 +2,9 @@ classdef FigureHandlerManager < handle
     
     properties (Access = private)
         log
+    end
+    
+    properties (Access = private, Transient)
         figureHandlers
     end
     
@@ -9,7 +12,6 @@ classdef FigureHandlerManager < handle
         
         function obj = FigureHandlerManager()
             obj.log = log4m.LogManager.getLogger(class(obj));
-            obj.figureHandlers = {};
         end
         
         function delete(obj)
@@ -36,11 +38,7 @@ classdef FigureHandlerManager < handle
         
         function updateFigures(obj, epoch)
             for i = 1:numel(obj.figureHandlers)
-                try
-                    obj.figureHandlers{i}.handleEpoch(epoch);
-                catch x
-                    obj.log.warn(x.message, x);
-                end
+                obj.figureHandlers{i}.handleEpoch(epoch);
             end
         end
         

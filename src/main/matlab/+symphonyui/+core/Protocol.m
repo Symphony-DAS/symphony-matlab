@@ -9,13 +9,16 @@ classdef Protocol < handle
     end
     
     properties (Access = protected)
-        rig
-        persistor
         numEpochsPrepared
         numEpochsCompleted
         numIntervalsPrepared
         numIntervalsCompleted
         figureHandlerManager
+    end
+    
+    properties (Access = protected, Transient)
+        rig
+        persistor
     end
     
     methods
