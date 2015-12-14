@@ -88,6 +88,12 @@ classdef OptionsPresenter < appbox.Presenter
             if isempty(path)
                 return;
             end
+            [~, name] = fileparts(path);
+            if strncmp(name, '+', 1)
+                obj.view.showError(['Cannot add package directories (directories starting with +) to the ' ...
+                    'search path. Add the root directory containing the package instead.']);
+                return;
+            end
             obj.view.addSearchPath(path);
         end
         

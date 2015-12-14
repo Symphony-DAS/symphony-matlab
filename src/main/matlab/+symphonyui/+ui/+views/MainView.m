@@ -234,12 +234,12 @@ classdef MainView < appbox.View
             obj.protocolPropertyGrid.Close();
         end
 
-        function h = getHeight(obj)
+        function h = getViewHeight(obj)
             p = get(obj.figureHandle, 'Position');
             h = p(4);
         end
 
-        function setHeight(obj, h)
+        function setViewHeight(obj, h)
             p = get(obj.figureHandle, 'Position');
             delta = p(4) - h;
             set(obj.figureHandle, 'Position', p + [0 delta 0 -delta]);

@@ -344,7 +344,7 @@ classdef MainPresenter < appbox.Presenter
 
         function minimizeProtocolPreview(obj)
             delta = obj.view.getProtocolPreviewHeight() - obj.view.getProtocolPreviewMinimumHeight();
-            obj.view.setHeight(obj.view.getHeight() - delta);
+            obj.view.setViewHeight(obj.view.getViewHeight() - delta);
             obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() - delta);
             obj.view.enableProtocolLayoutDivider(false);
             obj.view.setProtocolPreviewMinimized(true);
@@ -352,7 +352,7 @@ classdef MainPresenter < appbox.Presenter
 
         function maximizeProtocolPreview(obj)
             delta = 253;
-            obj.view.setHeight(obj.view.getHeight() + delta);
+            obj.view.setViewHeight(obj.view.getViewHeight() + delta);
             obj.view.setProtocolPreviewHeight(obj.view.getProtocolPreviewHeight() + delta);
             obj.view.enableProtocolLayoutDivider(true);
             obj.view.setProtocolPreviewMinimized(false);
