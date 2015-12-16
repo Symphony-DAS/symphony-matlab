@@ -45,6 +45,10 @@ classdef StimuliPreview < symphonyui.core.ProtocolPreview
                 return;
             end
             
+            if ~iscell(stimuli) && isa(stimuli, 'symphonyui.core.Stimulus')
+                stimuli = {stimuli};
+            end
+            
             ylabels = cell(1, numel(stimuli));
             for i = 1:numel(stimuli)
                 [quantities, units] = stimuli{i}.getData();

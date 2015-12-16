@@ -26,7 +26,7 @@ classdef SealTest < symphonyui.core.Protocol
             p = symphonyui.builtin.previews.StimuliPreview(panel, @()createPreviewStimuli(obj));
             function s = createPreviewStimuli(obj)
                 gen = symphonyui.builtin.stimuli.PulseGenerator(obj.ampStimulus().parameters);
-                s = {gen.generate()};
+                s = gen.generate();
             end
         end
         

@@ -25,10 +25,7 @@ classdef Ramp < symphonyui.core.Protocol
         end
         
         function p = getPreview(obj, panel)
-            p = symphonyui.builtin.previews.StimuliPreview(panel, @()createPreviewStimuli(obj));
-            function s = createPreviewStimuli(obj)
-                s = {obj.ampStimulus()};
-            end
+            p = symphonyui.builtin.previews.StimuliPreview(panel, @()obj.ampStimulus());
         end
         
         function prepareRun(obj)
