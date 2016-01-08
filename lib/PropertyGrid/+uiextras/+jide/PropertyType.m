@@ -602,7 +602,7 @@ classdef PropertyType
             if isempty(domain)
                 tf = true;
             elseif iscellstr(domain)
-                tf = any(strcmp(value, domain));
+                tf = any(strcmp(value, domain)) || strcmp(domain(end), '...');
             elseif iscell(domain)
                 tf = any(cellfun(@(v) v==value, domain));
             elseif isnumeric(domain) && length(domain) == 2
