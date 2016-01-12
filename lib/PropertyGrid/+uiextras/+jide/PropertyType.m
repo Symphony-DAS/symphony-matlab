@@ -101,6 +101,7 @@ classdef PropertyType
                 'sparserealsingle','sparserealdouble', ...
                 'sparsecomplexsingle','sparsecomplexdouble', ...
                 'cellstr', ...
+                'datestr', ...
                 'object'});
         end
 
@@ -285,6 +286,16 @@ classdef PropertyType
                             end
                         case 'cellstr'
                             javavalue = java.lang.String(strjoin(value, sprintf('\n')));
+                        case 'datestr'
+                            if isempty(value)
+                                javavalue = [];
+                            else
+                                value = datestr(value, 'dd-mmm-yy HH:MM:SS');
+                                format = java.text.SimpleDateFormat('dd-MMM-yy HH:mm:ss');
+                                date = format.parse(value);
+                                javavalue = java.util.Calendar.getInstance();
+                                javavalue.setTime(date);
+                            end
                         case 'logical'
                             if ~isempty(self.Domain)
                                 javavalue = uiextras.jide.javaStringArray(self.Domain(value));  % value is an indicator vector
@@ -341,6 +352,13 @@ classdef PropertyType
                             end
                         case 'cellstr'
                             value = strsplit(javavalue);
+                        case 'datestr'
+                            if isempty(javavalue)
+                                value = '';
+                            else
+                                serial = javavalue.getTimeInMillis() + javavalue.get(javavalue.ZONE_OFFSET) + javavalue.get(javavalue.DST_OFFSET);
+                                value = datestr(datenum([1970 1 1 0 0 serial / 1000]));
+                            end
                         case 'logical'
                             if ~isempty(self.Domain)
                                 value = uiextras.jide.strsetmatch(cell(javavalue), self.Domain);
@@ -423,7 +441,7 @@ classdef PropertyType
                     value = sparse(single(value));
                 case {'int8','uint8','int16','uint16','int32','uint32','int64','logical'}
                     value = cast(value, self.PrimitiveType);
-                case {'char'}
+                case {'char', 'datestr'}
                     value = char(value);
                 otherwise
                     error('PropertyType:ArgumentTypeMismatch', 'Cannot coerce type %s into type %s.', class(value), self.PrimitiveType);
@@ -477,6 +495,8 @@ classdef PropertyType
                         error('PropertyType:InvalidArgumentValue', ...
                             'Cell arrays other than cell array of strings are not supported.');
                     end
+                case 'java.util.GregorianCalendar'
+                    type = 'datestr';
                 otherwise
                     error('PropertyType:InvalidArgumentValue', ...
                         'Argument type "%s" is not supported.', class(value));
@@ -562,6 +582,8 @@ classdef PropertyType
                     type = {'int8','uint8','int16','uint16','int32','uint32'};
                 case 'cellstr'
                     type = {};
+                case 'datestr'
+                    type = {'char'};
                 otherwise
                     type = {};
             end

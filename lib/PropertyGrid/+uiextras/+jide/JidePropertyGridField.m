@@ -206,6 +206,10 @@ classdef JidePropertyGridField < handle
                 case 'cellstr'
                     field.setType(uiextras.jide.javaclass('char',1));
                     field.setEditorContext(com.jidesoft.grid.MultilineStringCellEditor.CONTEXT);
+                case 'datestr'
+                    field.setType(java.lang.Class.forName('java.util.Calendar'));
+                    field.setConverterContext(com.jidesoft.converter.DateConverter.DATETIME_CONTEXT);
+                    field.setEditorContext(com.jidesoft.grid.DateCellEditor.DATETIME_CONTEXT);
                 case 'logical'
                     if ~isempty(data.Type.Domain)
                         field.setType(uiextras.jide.javaclass('cellstr',1));  % java.lang.String array
