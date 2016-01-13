@@ -366,7 +366,7 @@ classdef PropertyType
                                 return;
                             end
                         case 'cellstr'
-                            value = strsplit(javavalue);
+                            value = strsplit(javavalue, '\n');
                         case 'logical'
                             if ~isempty(self.Domain)
                                 value = uiextras.jide.strsetmatch(cell(javavalue), self.Domain);
