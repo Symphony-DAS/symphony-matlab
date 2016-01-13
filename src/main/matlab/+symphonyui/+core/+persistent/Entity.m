@@ -27,15 +27,38 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function m = get.propertyMap(obj)
-            m = obj.mapFromKeyValueEnumerable(obj.cobj.Properties);
+            function out = wrap(in)
+                out = in;
+                if ischar(in) && ~isempty(in) && in(1) == '{' && in(end) == '}'
+                    if ~isempty(strfind(in, ','))
+                        out = strsplit(in(2:end-1), {','});
+                    else
+                        out = strsplit(in(2:end-1), {';'})';
+                    end
+                end
+            end
+            m = obj.mapFromKeyValueEnumerable(obj.cobj.Properties, @wrap);
         end
 
         function addProperty(obj, key, value)
             if isobject(value)
                 error('Object property values are not supported');
             end
-            if isempty(value) && ~ischar(value)
+            if isempty(value) && ~ischar(value) && ~iscell(value)
                 value = NET.createArray('System.Double', 0);
+            end
+            if ischar(value) && ~isempty(value) && value(1) == '{' && value(end) == '}'
+                error('String cannot start with ''{'' and end with ''}'' characters');
+            end
+            if iscellstr(value)
+                if any(~cellfun(@isempty, strfind(value, ','))) || any(~cellfun(@isempty, strfind(value, ';')))
+                    error('Cell array of strings with '','' or '';'' characters are not supported');
+                end
+                if isrow(value)
+                    value = ['{' strjoin(value, ',') '}'];
+                elseif iscolumn(value)
+                    value = ['{' strjoin(value, ';') '}'];
+                end
             end
             obj.tryCore(@()obj.cobj.AddProperty(key, value));
         end

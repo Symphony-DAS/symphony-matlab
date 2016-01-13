@@ -13,10 +13,7 @@ classdef PropertyType < matlab.mixin.SetGet %#ok<*MCSUP>
     methods
         
         function obj = PropertyType(primitiveType, shape, domain)
-            if strcmp(primitiveType, 'cellstr')
-                error('Type of cellstr is not supported');
-            end
-            if strcmp(primitiveType, 'cellstr')
+            if strcmp(primitiveType, 'object')
                 error('Type of object is not supported');
             end
             if nargin < 3
@@ -26,10 +23,7 @@ classdef PropertyType < matlab.mixin.SetGet %#ok<*MCSUP>
         end
         
         function set.primitiveType(obj, t)
-            if strcmp(t, 'cellstr')
-                error('Type of cellstr is not supported');
-            end
-            if strcmp(t, 'cellstr')
+            if strcmp(t, 'object')
                 error('Type of object is not supported');
             end
             obj.type.PrimitiveType = t; 

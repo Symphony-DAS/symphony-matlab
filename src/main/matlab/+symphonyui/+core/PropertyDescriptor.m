@@ -19,9 +19,6 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
     methods
 
         function obj = PropertyDescriptor(name, value, varargin)
-            if iscell(value)
-                error('Value of type cell are not supported');
-            end
             if isobject(value)
                 error('Value of type object are not supported');
             end
@@ -45,9 +42,6 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
         end
 
         function set.value(obj, v)
-            if iscell(v)
-                error('Value of type cell are not supported');
-            end
             if isobject(v)
                 error('Value of type object are not supported');
             end

@@ -101,7 +101,7 @@ classdef (Abstract) CoreObject < handle
         
         function m = mapFromKeyValueEnumerable(obj, enum, wrap) %#ok<INUSL>
             if nargin < 3
-                wrap = @(e)convert(e);
+                wrap = @(e)(e);
             end
             
             m = containers.Map();
@@ -109,7 +109,7 @@ classdef (Abstract) CoreObject < handle
             e = enum.GetEnumerator();
             while e.MoveNext()
                 kv = e.Current();
-                m(char(kv.Key)) = wrap(kv.Value);
+                m(char(kv.Key)) = wrap(convert(kv.Value));
             end
         end
         
