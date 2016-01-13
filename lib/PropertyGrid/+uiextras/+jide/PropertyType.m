@@ -101,7 +101,6 @@ classdef PropertyType
                 'sparserealsingle','sparserealdouble', ...
                 'sparsecomplexsingle','sparsecomplexdouble', ...
                 'cellstr', ...
-                'datestr', ...
                 'object'});
         end
 
@@ -135,6 +134,9 @@ classdef PropertyType
                 assert(length(domain) == 2, 'PropertyType:InvalidArgumentValue', ...
                     'Closed interval data is expected in the form [a,b] where a and b are numbers.');
                 domain = [min(domain) max(domain)];
+            elseif ischar(domain) && strcmp(domain, 'datestr')
+                assert(isstring(self), 'PropertyType:InvalidArgumentValue', ...
+                    'Invalid value specified for property domain.');
             else
                 error('PropertyType:InvalidArgumentValue', ...
                     'Closed interval specification [a,b] or explicit enumeration {a,b,c,...} is expected.');
@@ -279,23 +281,23 @@ classdef PropertyType
                 case {'row','column'}
                     switch self.PrimitiveType
                         case 'char'  % add a string property
-                            if strcmp(self.Shape, 'row')
+                            if strcmp(self.Domain, 'datestr')
+                                if isempty(value)
+                                    javavalue = [];
+                                else
+                                    value = datestr(value, 'dd-mmm-yy HH:MM:SS');
+                                    format = java.text.SimpleDateFormat('dd-MMM-yy HH:mm:ss');
+                                    date = format.parse(value);
+                                    javavalue = java.util.Calendar.getInstance();
+                                    javavalue.setTime(date);
+                                end
+                            elseif strcmp(self.Shape, 'row')
                                 javavalue = value;
                             else
                                 javavalue = mat2str(value);
                             end
                         case 'cellstr'
                             javavalue = java.lang.String(strjoin(value, sprintf('\n')));
-                        case 'datestr'
-                            if isempty(value)
-                                javavalue = [];
-                            else
-                                value = datestr(value, 'dd-mmm-yy HH:MM:SS');
-                                format = java.text.SimpleDateFormat('dd-MMM-yy HH:mm:ss');
-                                date = format.parse(value);
-                                javavalue = java.util.Calendar.getInstance();
-                                javavalue.setTime(date);
-                            end
                         case 'logical'
                             if ~isempty(self.Domain)
                                 javavalue = uiextras.jide.javaStringArray(self.Domain(value));  % value is an indicator vector
@@ -343,7 +345,14 @@ classdef PropertyType
                 case {'row','column'}
                     switch self.PrimitiveType
                         case 'char'  % add a string property
-                            if strcmp(self.Shape, 'row')
+                            if strcmp(self.Domain, 'datestr')
+                                if isempty(javavalue)
+                                    value = '';
+                                else
+                                    serial = javavalue.getTimeInMillis() + javavalue.get(javavalue.ZONE_OFFSET) + javavalue.get(javavalue.DST_OFFSET);
+                                    value = datestr(datenum([1970 1 1 0 0 serial / 1000]));
+                                end
+                            elseif strcmp(self.Shape, 'row')
                                 value = char(javavalue);
                             else
                                 value = self.ConvertFromString(javavalue);
@@ -352,13 +361,6 @@ classdef PropertyType
                             end
                         case 'cellstr'
                             value = strsplit(javavalue);
-                        case 'datestr'
-                            if isempty(javavalue)
-                                value = '';
-                            else
-                                serial = javavalue.getTimeInMillis() + javavalue.get(javavalue.ZONE_OFFSET) + javavalue.get(javavalue.DST_OFFSET);
-                                value = datestr(datenum([1970 1 1 0 0 serial / 1000]));
-                            end
                         case 'logical'
                             if ~isempty(self.Domain)
                                 value = uiextras.jide.strsetmatch(cell(javavalue), self.Domain);
@@ -441,7 +443,7 @@ classdef PropertyType
                     value = sparse(single(value));
                 case {'int8','uint8','int16','uint16','int32','uint32','int64','logical'}
                     value = cast(value, self.PrimitiveType);
-                case {'char', 'datestr'}
+                case {'char'}
                     value = char(value);
                 otherwise
                     error('PropertyType:ArgumentTypeMismatch', 'Cannot coerce type %s into type %s.', class(value), self.PrimitiveType);
@@ -495,8 +497,6 @@ classdef PropertyType
                         error('PropertyType:InvalidArgumentValue', ...
                             'Cell arrays other than cell array of strings are not supported.');
                     end
-                case 'java.util.GregorianCalendar'
-                    type = 'datestr';
                 otherwise
                     error('PropertyType:InvalidArgumentValue', ...
                         'Argument type "%s" is not supported.', class(value));
@@ -582,8 +582,6 @@ classdef PropertyType
                     type = {'int8','uint8','int16','uint16','int32','uint32'};
                 case 'cellstr'
                     type = {};
-                case 'datestr'
-                    type = {'char'};
                 otherwise
                     type = {};
             end
@@ -629,6 +627,8 @@ classdef PropertyType
                 tf = any(cellfun(@(v) v==value, domain));
             elseif isnumeric(domain) && length(domain) == 2
                 tf = value >= min(domain) && value <= max(domain);
+            elseif ischar(domain) && strcmp(domain, 'datestr')
+                tf = true;
             end
         end
     end

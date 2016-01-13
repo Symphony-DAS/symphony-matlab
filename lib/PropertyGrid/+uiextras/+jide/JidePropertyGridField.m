@@ -197,7 +197,11 @@ classdef JidePropertyGridField < handle
                     switch data.Type.Shape
                         case 'row'
                             field.setType(uiextras.jide.javaclass('char',1));
-                            if ~isempty(data.Type.Domain)
+                            if ischar(data.Type.Domain) && strcmp(data.Type.Domain, 'datestr')
+                                field.setType(java.lang.Class.forName('java.util.Calendar'));
+                                field.setConverterContext(com.jidesoft.converter.DateConverter.DATETIME_CONTEXT);
+                                field.setEditorContext(com.jidesoft.grid.DateCellEditor.DATETIME_CONTEXT);
+                            elseif ~isempty(data.Type.Domain)
                                 self.AddComboBoxEditor(field, uiextras.jide.javaclass('char',1), uiextras.jide.javaStringArray(data.Type.Domain));
                             end
                         otherwise
@@ -206,10 +210,6 @@ classdef JidePropertyGridField < handle
                 case 'cellstr'
                     field.setType(uiextras.jide.javaclass('char',1));
                     field.setEditorContext(com.jidesoft.grid.MultilineStringCellEditor.CONTEXT);
-                case 'datestr'
-                    field.setType(java.lang.Class.forName('java.util.Calendar'));
-                    field.setConverterContext(com.jidesoft.converter.DateConverter.DATETIME_CONTEXT);
-                    field.setEditorContext(com.jidesoft.grid.DateCellEditor.DATETIME_CONTEXT);
                 case 'logical'
                     if ~isempty(data.Type.Domain)
                         field.setType(uiextras.jide.javaclass('cellstr',1));  % java.lang.String array
