@@ -201,6 +201,8 @@ classdef JidePropertyGridField < handle
                                 field.setType(java.lang.Class.forName('java.util.Calendar'));
                                 field.setConverterContext(com.jidesoft.converter.DateConverter.DATETIME_CONTEXT);
                                 field.setEditorContext(com.jidesoft.grid.DateCellEditor.DATETIME_CONTEXT);
+                            elseif isstruct(data.Type.Domain)
+                                self.AddTreeEditor(field, uiextras.jide.javaclass('char',1), uiextras.jide.javaTree(data.Type.Domain));
                             elseif ~isempty(data.Type.Domain)
                                 self.AddComboBoxEditor(field, uiextras.jide.javaclass('char',1), uiextras.jide.javaStringArray(data.Type.Domain));
                             end
@@ -270,6 +272,11 @@ classdef JidePropertyGridField < handle
         %    a cell array of strings to label elements in the set shown
             editor = com.jidesoft.grid.CheckBoxListComboBoxCellEditor(uiextras.jide.javaStringArray(labels), uiextras.jide.javaclass('cellstr',1));
             self.ApplyContext(field, uiextras.jide.javaclass('cellstr',1), editor, 'checkboxlist');
+        end
+        
+        function AddTreeEditor(self, field, javatype, javadomain)
+            editor = com.jidesoft.grid.TreeComboBoxCellEditor(javadomain, true);
+            self.ApplyContext(field, javatype, editor, 'tree');
         end
 
         function AddComboBoxEditor(self, field, javatype, javadomain)

@@ -19,6 +19,12 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
     methods
 
         function obj = PropertyDescriptor(name, value, varargin)
+            if iscell(value)
+                error('Value of type cell are not supported');
+            end
+            if isobject(value)
+                error('Value of type object are not supported');
+            end
             obj.field = uiextras.jide.PropertyGridField(name, value, ...
                 'DisplayName', appbox.humanize(name));
             if nargin > 2
@@ -39,6 +45,12 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
         end
 
         function set.value(obj, v)
+            if iscell(v)
+                error('Value of type cell are not supported');
+            end
+            if isobject(v)
+                error('Value of type object are not supported');
+            end
             if isempty(v) && ~ischar(v)
                 v = [];
             end

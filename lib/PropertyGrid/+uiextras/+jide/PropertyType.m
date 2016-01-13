@@ -118,7 +118,13 @@ classdef PropertyType
                 error('PropertyType:InvalidArgumentValue', ...
                     'Domain can be set only for scalars, strings or logical vectors.');
             end
-            if iscell(domain)
+            if isstruct(domain)
+                validateattributes(domain, {'struct'}, {'scalar'});
+                fields = fieldnames(domain);
+                for k = 1 : numel(fields)
+                    validateattributes(domain.(fields{k}), {'cell'}, {'vector'});
+                end
+            elseif iscell(domain)
                 validateattributes(domain, {'cell'}, {'vector'});
                 if ~(islogical(self) && isvector(self))  % interpret as exhaustive enumeration of domain elements
                     for k = 1 : numel(domain)
@@ -135,8 +141,8 @@ classdef PropertyType
                     'Closed interval data is expected in the form [a,b] where a and b are numbers.');
                 domain = [min(domain) max(domain)];
             elseif ischar(domain) && strcmp(domain, 'datestr')
-                assert(isstring(self), 'PropertyType:InvalidArgumentValue', ...
-                    'Invalid value specified for property domain.');
+                assert(isstring(self), 'PropertyType:ArgumentTypeMismatch', ...
+                    'A datestr domain can only be applied on a string');
             else
                 error('PropertyType:InvalidArgumentValue', ...
                     'Closed interval specification [a,b] or explicit enumeration {a,b,c,...} is expected.');
@@ -620,6 +626,8 @@ classdef PropertyType
 
         function tf = IsInDomain(domain, value)
             if isempty(domain)
+                tf = true;
+            elseif isstruct(domain)
                 tf = true;
             elseif iscellstr(domain)
                 tf = any(strcmp(value, domain)) || strcmp(domain(end), '...');
