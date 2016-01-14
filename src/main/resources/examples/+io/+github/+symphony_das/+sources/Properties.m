@@ -1,8 +1,8 @@
-classdef Example < symphonyui.core.descriptions.SourceDescription
+classdef Properties < symphonyui.core.descriptions.SourceDescription
     
     methods
         
-        function obj = Example()
+        function obj = Properties()
             import symphonyui.core.*;
             
             obj.propertyDescriptors = [ ...
