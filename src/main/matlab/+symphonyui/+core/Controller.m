@@ -117,7 +117,15 @@ classdef Controller < symphonyui.core.CoreObject
             
             if ~isempty(persistor)
                 d = protocol.getPropertyDescriptors();
-                persistor.beginEpochBlock(class(protocol), d.toMap());
+                map = d.toMap();
+                keys = map.keys;
+                for i = 1:numel(keys)
+                    value = map(keys{i});
+                    if iscellstr(value)
+                        map(keys{i}) = symphonyui.core.util.cell2str(value);
+                    end
+                end
+                persistor.beginEpochBlock(class(protocol), map);
             end
         end
         
