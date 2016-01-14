@@ -209,10 +209,7 @@ classdef JidePropertyGridField < handle
                         otherwise
                             field.setType(uiextras.jide.javaclass('char',1));  % edit as string and convert with eval
                     end
-                case 'cellstr'
-                    field.setType(uiextras.jide.javaclass('char',1));
-                    field.setEditorContext(com.jidesoft.grid.MultilineStringCellEditor.CONTEXT);
-                case 'logical'
+                case {'logical', 'cellstr'}
                     if ~isempty(data.Type.Domain)
                         field.setType(uiextras.jide.javaclass('cellstr',1));  % java.lang.String array
                         self.AddCheckBoxListEditor(field, data.Type.Domain);
@@ -270,6 +267,9 @@ classdef JidePropertyGridField < handle
         %    a com.jidesoft.grid.Property instance
         % labels:
         %    a cell array of strings to label elements in the set shown
+            if strcmp(labels(end), '...')
+                labels = labels(1:end-1);
+            end 
             editor = com.jidesoft.grid.CheckBoxListComboBoxCellEditor(uiextras.jide.javaStringArray(labels), uiextras.jide.javaclass('cellstr',1));
             self.ApplyContext(field, uiextras.jide.javaclass('cellstr',1), editor, 'checkboxlist');
         end

@@ -303,7 +303,11 @@ classdef PropertyType
                                 javavalue = mat2str(value);
                             end
                         case 'cellstr'
-                            javavalue = java.lang.String(strjoin(value, sprintf('\n')));
+                            if ~isempty(self.Domain)
+                                javavalue = uiextras.jide.javaStringArray(value);
+                            else
+                                javavalue = strjoin(value, '; ');
+                            end
                         case 'logical'
                             if ~isempty(self.Domain)
                                 javavalue = uiextras.jide.javaStringArray(self.Domain(value));  % value is an indicator vector
@@ -366,7 +370,11 @@ classdef PropertyType
                                 return;
                             end
                         case 'cellstr'
-                            value = strsplit(javavalue, '\n');
+                            if ~isempty(self.Domain)
+                                value = cell(javavalue);
+                            else
+                                value = strtrim(strsplit(javavalue, {',', ';'}))';
+                            end
                         case 'logical'
                             if ~isempty(self.Domain)
                                 value = uiextras.jide.strsetmatch(cell(javavalue), self.Domain);
@@ -630,7 +638,10 @@ classdef PropertyType
             elseif isstruct(domain)
                 tf = true;
             elseif iscellstr(domain)
-                tf = any(strcmp(value, domain)) || strcmp(domain(end), '...');
+                if ~iscell(value)
+                    value = {value};
+                end
+                tf = all(cellfun(@(v)any(strcmp(v, domain)), value)) || strcmp(domain(end), '...');
             elseif iscell(domain)
                 tf = any(cellfun(@(v) v==value, domain));
             elseif isnumeric(domain) && length(domain) == 2
