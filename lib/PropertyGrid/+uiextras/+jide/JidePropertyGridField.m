@@ -334,6 +334,7 @@ classdef JidePropertyGridField < handle
         %    an integer representing the upper bound of the interval
             spinner = javax.swing.SpinnerNumberModel(int32(lower), int32(lower), int32(upper), int32(1));
             editor = com.jidesoft.grid.SpinnerCellEditor(spinner);
+            editor.getSpinner().getEditor().getTextField().setHorizontalAlignment(javax.swing.JTextField.LEFT);
             self.ApplyContext(field, javatype, editor, 'spinner');
         end
     end
