@@ -595,7 +595,7 @@ classdef PropertyType
                 case 'logical'
                     type = {'int8','uint8','int16','uint16','int32','uint32'};
                 case 'cellstr'
-                    type = {};
+                    type = {'char'};
                 otherwise
                     type = {};
             end

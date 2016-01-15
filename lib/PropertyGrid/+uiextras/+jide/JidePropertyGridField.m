@@ -275,7 +275,7 @@ classdef JidePropertyGridField < handle
         end
         
         function AddTreeEditor(self, field, javatype, javadomain)
-            editor = com.jidesoft.grid.TreeComboBoxCellEditor(javadomain, true);
+            editor = UIExtrasPropertyGrid.RootlessTreeComboBoxCellEditor(javadomain, true);
             self.ApplyContext(field, javatype, editor, 'tree');
         end
 
