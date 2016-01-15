@@ -20,7 +20,7 @@ public class RootlessTreeComboBoxCellEditor extends TreeComboBoxCellEditor {
     protected TreeExComboBox createTreeComboBox() {
         return new TreeExComboBox() {
             protected TreeChooserPanel createTreeChooserPanel(TreeModel model) {
-                return new TreeChooserPanel() {
+                return new TreeChooserPanel(model) {
                     protected void setupTree(final JTree tree) {
                         super.setupTree(tree);
                         tree.setRootVisible(false);
