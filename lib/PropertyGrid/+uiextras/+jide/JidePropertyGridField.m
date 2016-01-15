@@ -196,15 +196,18 @@ classdef JidePropertyGridField < handle
                 case 'char'  % add a string property
                     switch data.Type.Shape
                         case 'row'
-                            field.setType(uiextras.jide.javaclass('char',1));
                             if ischar(data.Type.Domain) && strcmp(data.Type.Domain, 'datestr')
                                 field.setType(java.lang.Class.forName('java.util.Calendar'));
                                 field.setConverterContext(com.jidesoft.converter.DateConverter.DATETIME_CONTEXT);
                                 field.setEditorContext(com.jidesoft.grid.DateCellEditor.DATETIME_CONTEXT);
                             elseif isstruct(data.Type.Domain)
+                                field.setType(uiextras.jide.javaclass('char',1));
                                 self.AddTreeEditor(field, uiextras.jide.javaclass('char',1), uiextras.jide.javaTree(data.Type.Domain));
                             elseif ~isempty(data.Type.Domain)
+                                field.setType(uiextras.jide.javaclass('char',1));
                                 self.AddComboBoxEditor(field, uiextras.jide.javaclass('char',1), uiextras.jide.javaStringArray(data.Type.Domain));
+                            else
+                                field.setType(uiextras.jide.javaclass('char',1));
                             end
                         otherwise
                             field.setType(uiextras.jide.javaclass('char',1));  % edit as string and convert with eval

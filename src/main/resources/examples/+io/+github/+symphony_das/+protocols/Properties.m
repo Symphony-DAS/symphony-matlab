@@ -20,12 +20,13 @@ classdef Properties < symphonyui.core.Protocol
         intervalType = symphonyui.core.PropertyType('int32', 'scalar', [0 6])
         enumeratedType = symphonyui.core.PropertyType('int32', 'scalar', {int32(-1), int32(0), int32(1)})
         doubleMatrixType = symphonyui.core.PropertyType('denserealdouble', 'matrix')
+        stringType = symphonyui.core.PropertyType('char', 'row')
         setType = symphonyui.core.PropertyType('cellstr', 'row', {'a', 'set', 'of', 'strings'})
         selectionType = symphonyui.core.PropertyType('char', 'row', {'spring', 'summer', 'fall', 'winter'})
         suggestionType = symphonyui.core.PropertyType('char', 'row', {'banana', 'apple', 'pear', 'kiwi', '...'})
         numberType = symphonyui.core.PropertyType('denserealdouble', 'row', {1, 2, 3, 4})
         dateType = symphonyui.core.PropertyType('char', 'row', 'datestr')
-        treeType = symphonyui.core.PropertyType('char', 'row', struct('folder1', {{'item1', 'item2'}}, 'folder2', {{'item1', 'item2'}}))
+        treeType = symphonyui.core.PropertyType('char', 'row', struct('folder1', {{'item1', 'item2'}}, 'folder2', {{'item1', 'item2'}}, 'item1', []))
     end
     
 end

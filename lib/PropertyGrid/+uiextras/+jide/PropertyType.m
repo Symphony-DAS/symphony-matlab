@@ -119,11 +119,7 @@ classdef PropertyType
                     'Domain can be set only for scalars, strings or logical vectors.');
             end
             if isstruct(domain)
-                validateattributes(domain, {'struct'}, {'scalar'});
-                fields = fieldnames(domain);
-                for k = 1 : numel(fields)
-                    validateattributes(domain.(fields{k}), {'cell'}, {'vector'});
-                end
+                validateattributes(domain, {'struct'}, {'nonempty', 'scalar'});
             elseif iscell(domain)
                 validateattributes(domain, {'cell'}, {'vector'});
                 if ~(islogical(self) && isvector(self))  % interpret as exhaustive enumeration of domain elements
