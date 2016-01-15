@@ -632,7 +632,7 @@ classdef PropertyType
             if isempty(domain)
                 tf = true;
             elseif isstruct(domain)
-                tf = true;
+                tf = uiextras.jide.PropertyType.IsInStruct(domain, value);
             elseif iscellstr(domain)
                 if ~iscell(value)
                     value = {value};
@@ -644,6 +644,33 @@ classdef PropertyType
                 tf = value >= min(domain) && value <= max(domain);
             elseif ischar(domain) && strcmp(domain, 'datestr')
                 tf = true;
+            end
+        end
+        
+        function tf = IsInStruct(s, value)
+            if isempty(value)
+                tf = false;
+                return;
+            end
+            split = strsplit(value(2:end-1), ', ');
+            tf = strcmp(split{1}, '>');
+            for i = 2:numel(split)
+                if i == numel(split)
+                    if iscellstr(s)
+                        tf = any(strcmp(s, split{end})) & tf;
+                    elseif isstruct(s)
+                        tf = any(strcmp(fieldnames(s), split{end})) & tf;
+                    else
+                        tf = false;
+                    end
+                else
+                    tf = isfield(s, split{i}) & tf;
+                    if tf
+                        s = s.(split{i});
+                    else
+                        break;
+                    end
+                end
             end
         end
     end

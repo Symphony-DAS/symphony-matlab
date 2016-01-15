@@ -1,5 +1,5 @@
 function root = javaTree(s)
-    root = javax.swing.tree.DefaultMutableTreeNode('root');
+    root = javax.swing.tree.DefaultMutableTreeNode('>');
     addNodes(root, s);
 end
 
