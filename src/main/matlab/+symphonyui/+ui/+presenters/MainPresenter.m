@@ -62,10 +62,6 @@ classdef MainPresenter < appbox.Presenter
         end
 
         function onStopping(obj)
-            controllerState = obj.acquisitionService.getControllerState();
-            if ~controllerState.isStopped()
-                obj.acquisitionService.requestStop();
-            end
             if ~isempty(obj.dataManagerPresenter)
                 obj.closeDataManager();
             end
@@ -117,6 +113,10 @@ classdef MainPresenter < appbox.Presenter
             c = obj.configurationService;
             obj.addListener(c, 'InitializedRig', @obj.onServiceInitializedRig);
         end
+        
+        function onViewSelectedClose(obj, ~, ~)
+            obj.exit();
+        end
 
     end
 
@@ -136,7 +136,8 @@ classdef MainPresenter < appbox.Presenter
             obj.openFile();
         end
 
-        function openFile(obj)
+        function tf = openFile(obj)
+            tf = false;
             path = obj.view.showGetFile('File Location');
             if isempty(path)
                 return;
@@ -148,6 +149,7 @@ classdef MainPresenter < appbox.Presenter
                 obj.view.showError(x.message);
                 return;
             end
+            tf = true;
         end
 
         function onServiceOpenedFile(obj, ~, ~)
@@ -159,8 +161,13 @@ classdef MainPresenter < appbox.Presenter
             obj.closeFile();
         end
 
-        function closeFile(obj)
-            if ~obj.documentationService.hasOpenFile()
+        function tf = closeFile(obj)
+            tf = false;
+            result = obj.view.showMessage( ...
+                'Are you sure you want to close the current file?', ...
+                'Close File', ...
+                'Cancel', 'Close');
+            if ~strcmp(result, 'Close')
                 return;
             end
             try
@@ -170,6 +177,7 @@ classdef MainPresenter < appbox.Presenter
                 obj.view.showError(x.message);
                 return;
             end
+            tf = true;
         end
 
         function onServiceClosedFile(obj, ~, ~)
@@ -178,7 +186,21 @@ classdef MainPresenter < appbox.Presenter
         end
 
         function onViewSelectedExit(obj, ~, ~)
-            obj.stop();
+            obj.exit();
+        end
+        
+        function exit(obj)
+            shouldExit = true;
+            controllerState = obj.acquisitionService.getControllerState();
+            if ~controllerState.isStopped()
+                obj.acquisitionService.requestStop();
+            end
+            if obj.documentationService.hasOpenFile()
+                shouldExit = obj.closeFile();
+            end
+            if shouldExit
+                obj.stop();
+            end
         end
 
         function onViewSelectedAddSource(obj, ~, ~)
@@ -219,7 +241,7 @@ classdef MainPresenter < appbox.Presenter
 
         function showDataManager(obj)
             presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.acquisitionService);
-            addlistener(presenter, 'Stopped', @(h,d)obj.closeFile());
+            presenter.viewSelectedCloseFcn = @obj.closeFile;
             presenter.go();
             obj.dataManagerPresenter = presenter;
         end

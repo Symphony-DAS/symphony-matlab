@@ -1,5 +1,9 @@
 classdef DataManagerPresenter < appbox.Presenter
-
+    
+    properties
+        viewSelectedCloseFcn
+    end
+    
     properties (Access = private)
         log
         settings
@@ -16,7 +20,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 view = symphonyui.ui.views.DataManagerView();
             end
             obj = obj@appbox.Presenter(view);
-
+            
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.DataManagerSettings();
             obj.documentationService = documentationService;
@@ -75,6 +79,12 @@ classdef DataManagerPresenter < appbox.Presenter
 
             a = obj.acquisitionService;
             obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
+        end
+        
+        function onViewSelectedClose(obj, ~, ~)
+            if ~isempty(obj.viewSelectedCloseFcn)
+                obj.viewSelectedCloseFcn();
+            end
         end
 
     end
