@@ -30,7 +30,7 @@ classdef Entity < symphonyui.core.CoreObject
             function out = wrap(in)
                 out = in;
                 if ischar(in) && ~isempty(in) && in(1) == '{' && in(end) == '}'
-                    out = symphonyui.core.util.str2cell(in);
+                    out = symphonyui.core.util.str2cellstr(in);
                 end
             end
             m = obj.mapFromKeyValueEnumerable(obj.cobj.Properties, @wrap);
@@ -50,7 +50,7 @@ classdef Entity < symphonyui.core.CoreObject
                 if any(~cellfun(@isempty, strfind(value, ','))) || any(~cellfun(@isempty, strfind(value, ';')))
                     error('Cell array of strings with '','' or '';'' characters are not supported');
                 end
-                value = symphonyui.core.util.cell2str(value);
+                value = symphonyui.core.util.cellstr2str(value);
             end
             obj.tryCore(@()obj.cobj.AddProperty(key, value));
         end

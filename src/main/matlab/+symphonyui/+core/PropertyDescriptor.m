@@ -45,9 +45,6 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
             if isobject(v)
                 error('Value of type object are not supported');
             end
-            if isempty(v) && ~ischar(v)
-                v = [];
-            end
             obj.field.Value = v;
         end
 

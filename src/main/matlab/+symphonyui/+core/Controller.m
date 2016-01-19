@@ -122,7 +122,7 @@ classdef Controller < symphonyui.core.CoreObject
                 for i = 1:numel(keys)
                     value = map(keys{i});
                     if iscellstr(value)
-                        map(keys{i}) = symphonyui.core.util.cell2str(value);
+                        map(keys{i}) = symphonyui.core.util.cellstr2str(value);
                     end
                 end
                 persistor.beginEpochBlock(class(protocol), map);
