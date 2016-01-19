@@ -200,7 +200,7 @@ classdef JidePropertyGridField < handle
                                 field.setType(java.lang.Class.forName('java.util.Calendar'));
                                 field.setConverterContext(com.jidesoft.converter.DateConverter.DATETIME_CONTEXT);
                                 field.setEditorContext(com.jidesoft.grid.DateCellEditor.DATETIME_CONTEXT);
-                            elseif isstruct(data.Type.Domain)
+                            elseif isa(data.Type.Domain, 'containers.Map')
                                 field.setType(uiextras.jide.javaclass('char',1));
                                 self.AddTreeEditor(field, uiextras.jide.javaclass('char',1), uiextras.jide.javaTree(data.Type.Domain));
                             elseif ~isempty(data.Type.Domain)

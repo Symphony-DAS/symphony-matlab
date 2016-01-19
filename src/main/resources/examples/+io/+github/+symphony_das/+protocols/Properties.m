@@ -13,7 +13,7 @@ classdef Properties < symphonyui.core.Protocol
         suggestion = 'banana'       % Row vector of characters that offers suggestions
         number = 1                  % Row vector of characters that can take any of the predefined set of values
         date = datestr(now)         % Row vector of characters that can take a date string
-        tree = '[>, item1]'         % Row vector of characters that can take any of the predefined set of values
+        tree = '[>, item 1]'        % Row vector of characters that can take any of the predefined set of values
     end
     
     properties (Hidden)
@@ -26,7 +26,7 @@ classdef Properties < symphonyui.core.Protocol
         suggestionType = symphonyui.core.PropertyType('char', 'row', {'banana', 'apple', 'pear', 'kiwi', '...'})
         numberType = symphonyui.core.PropertyType('denserealdouble', 'row', {1, 2, 3, 4})
         dateType = symphonyui.core.PropertyType('char', 'row', 'datestr')
-        treeType = symphonyui.core.PropertyType('char', 'row', struct('folder1', {{'item1', 'item2'}}, 'folder2', {{'item1', 'item2'}}, 'item1', []))
+        treeType = symphonyui.core.PropertyType('char', 'row', containers.Map({'folder 1', 'folder 2', 'item 1'}, {{'item 1', 'item 2'}, {'item 1', 'item 2'}, []}))
     end
     
 end

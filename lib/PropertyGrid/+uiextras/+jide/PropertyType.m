@@ -118,8 +118,8 @@ classdef PropertyType
                 error('PropertyType:InvalidArgumentValue', ...
                     'Domain can be set only for scalars, strings or logical vectors.');
             end
-            if isstruct(domain)
-                validateattributes(domain, {'struct'}, {'nonempty', 'scalar'});
+            if isa(domain, 'containers.Map')
+                validateattributes(domain, {'containers.Map'}, {'vector'});
             elseif iscell(domain)
                 validateattributes(domain, {'cell'}, {'vector'});
                 if ~(islogical(self) && isvector(self))  % interpret as exhaustive enumeration of domain elements
@@ -141,7 +141,7 @@ classdef PropertyType
                     'A datestr domain can only be applied on a string');
             else
                 error('PropertyType:InvalidArgumentValue', ...
-                    'Closed interval specification [a,b] or explicit enumeration {a,b,c,...} is expected.');
+                    'Closed interval specification [a,b], explicit enumeration {a,b,c,...}, or containers.Map is expected.');
             end
             self.Domain = domain;
         end
@@ -631,8 +631,8 @@ classdef PropertyType
         function tf = IsInDomain(domain, value)
             if isempty(domain)
                 tf = true;
-            elseif isstruct(domain)
-                tf = uiextras.jide.PropertyType.IsInStruct(domain, value);
+            elseif isa(domain, 'containers.Map')
+                tf = uiextras.jide.PropertyType.IsInMap(domain, value);
             elseif iscellstr(domain)
                 if ~iscell(value)
                     value = {value};
@@ -647,7 +647,7 @@ classdef PropertyType
             end
         end
         
-        function tf = IsInStruct(s, value)
+        function tf = IsInMap(m, value)
             if isempty(value)
                 tf = false;
                 return;
@@ -656,17 +656,17 @@ classdef PropertyType
             tf = strcmp(split{1}, '>');
             for i = 2:numel(split)
                 if i == numel(split)
-                    if iscellstr(s)
-                        tf = any(strcmp(s, split{end})) & tf;
-                    elseif isstruct(s)
-                        tf = any(strcmp(fieldnames(s), split{end})) & tf;
+                    if iscellstr(m)
+                        tf = any(strcmp(m, split{end})) & tf;
+                    elseif isa(m, 'containers.Map')
+                        tf = any(strcmp(m.keys, split{end})) & tf;
                     else
                         tf = false;
                     end
                 else
-                    tf = isfield(s, split{i}) & tf;
+                    tf = isKey(m, split{i}) & tf;
                     if tf
-                        s = s.(split{i});
+                        m = m(split{i});
                     else
                         break;
                     end
