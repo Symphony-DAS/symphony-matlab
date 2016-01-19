@@ -124,9 +124,14 @@ classdef NewFilePresenter < appbox.Presenter
                         error(['Unable to delete ''' path '''']);
                     end
                 end
+                
+                obj.enableControls(false);
+                obj.view.update();
+                
                 obj.documentationService.newFile(name, location, description);
             catch x
                 obj.view.showError(x.message);
+                obj.enableControls(true);
                 return;
             end
             
@@ -144,6 +149,15 @@ classdef NewFilePresenter < appbox.Presenter
             obj.stop();
         end
         
+        function enableControls(obj, tf)
+            obj.view.enableName(tf);
+            obj.view.enableLocation(tf);
+            obj.view.enableBrowseLocation(tf);
+            obj.view.enableSelectDescription(tf);
+            obj.view.enableOk(tf);
+            obj.view.enableCancel(tf);
+        end
+            
         function loadSettings(obj)
             if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
                 obj.view.setSelectedDescription(obj.settings.selectedDescription);

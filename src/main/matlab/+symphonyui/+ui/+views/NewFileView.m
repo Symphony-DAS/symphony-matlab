@@ -95,6 +95,14 @@ classdef NewFileView < appbox.View
         function enableOk(obj, tf)
             set(obj.okButton, 'Enable', appbox.onOff(tf));
         end
+        
+        function enableCancel(obj, tf)
+            set(obj.cancelButton, 'Enable', appbox.onOff(tf));
+        end
+        
+        function enableName(obj, tf)
+            set(obj.nameField, 'Enable', appbox.onOff(tf));
+        end
 
         function n = getName(obj)
             n = get(obj.nameField, 'String');
@@ -108,6 +116,10 @@ classdef NewFileView < appbox.View
             obj.update();
             uicontrol(obj.nameField);
         end
+        
+        function enableLocation(obj, tf)
+            set(obj.locationField, 'Enable', appbox.onOff(tf));
+        end
 
         function l = getLocation(obj)
             l = get(obj.locationField, 'String');
@@ -115,6 +127,10 @@ classdef NewFileView < appbox.View
 
         function setLocation(obj, l)
             set(obj.locationField, 'String', l);
+        end
+        
+        function enableBrowseLocation(obj, tf)
+            set(obj.browseLocationButton, 'Enable', appbox.onOff(tf));
         end
 
         function enableSelectDescription(obj, tf)
