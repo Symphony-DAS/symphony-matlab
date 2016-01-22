@@ -37,19 +37,9 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function addProperty(obj, key, value)
-            if isobject(value)
-                error('Object property values are not supported');
-            end
             if isempty(value) && ~ischar(value) && ~iscell(value)
                 value = NET.createArray('System.Double', 0);
-            end
-            if ischar(value) && ~isempty(value) && value(1) == '{' && value(end) == '}'
-                error('String cannot start with ''{'' and end with ''}'' characters');
-            end
-            if iscellstr(value)
-                if any(~cellfun(@isempty, strfind(value, ','))) || any(~cellfun(@isempty, strfind(value, ';')))
-                    error('Cell array of strings with '','' or '';'' characters are not supported');
-                end
+            elseif iscellstr(value)
                 value = symphonyui.core.util.cellstr2str(value);
             end
             obj.tryCore(@()obj.cobj.AddProperty(key, value));
@@ -61,7 +51,7 @@ classdef Entity < symphonyui.core.CoreObject
             end
             desc = obj.getStaticPropertyDescriptors();
             if ~isempty(desc.findByName(key))
-                error('Cannot remove a property with a descriptor');
+                error('Cannot remove a property with a static descriptor');
             end
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(key));
         end

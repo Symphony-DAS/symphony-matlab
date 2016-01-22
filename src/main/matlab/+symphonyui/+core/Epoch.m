@@ -60,13 +60,7 @@ classdef Epoch < symphonyui.core.CoreObject
         end
 
         function addParameter(obj, name, value)
-            if ischar(value) && ~isempty(value) && value(1) == '{' && value(end) == '}'
-                error('String cannot start with ''{'' and end with ''}'' characters');
-            end
             if iscellstr(value)
-                if any(~cellfun(@isempty, strfind(value, ','))) || any(~cellfun(@isempty, strfind(value, ';')))
-                    error('Cell array of strings with '','' or '';'' characters are not supported');
-                end
                 value = symphonyui.core.util.cellstr2str(value);
             end
             obj.tryCore(@()obj.cobj.ProtocolParameters.Add(name, value));

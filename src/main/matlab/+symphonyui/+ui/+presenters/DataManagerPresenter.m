@@ -416,13 +416,13 @@ classdef DataManagerPresenter < appbox.Presenter
             % Protocol parameters
             map = map2pmap(epochSet.protocolParameters);
             try
-                properties = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
             catch x
-                properties = uiextras.jide.PropertyGridField.empty(0, 1);
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
-            obj.view.setEpochProtocolParameters(properties);
+            obj.view.setEpochProtocolParameters(fields);
 
             obj.view.setCardSelection(obj.view.EPOCH_CARD);
 
@@ -548,7 +548,6 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-
             obj.updatePropertiesWithEntitySet(obj.detailedEntitySet);
         end
 

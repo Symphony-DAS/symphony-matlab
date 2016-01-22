@@ -719,8 +719,8 @@ classdef DataManagerView < appbox.View
             set(fig, 'Visible', 'on');
         end
 
-        function setEpochProtocolParameters(obj, properties)
-            set(obj.parametersTab.grid, 'Properties', properties);
+        function setEpochProtocolParameters(obj, fields)
+            set(obj.parametersTab.grid, 'Properties', fields);
         end
 
         function n = getNodeName(obj, node) %#ok<INUSL>

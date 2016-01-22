@@ -8,6 +8,10 @@ classdef Device < symphonyui.core.CoreObject
         outputStreams
     end
     
+    properties (Access = private)
+        staticConfigurationDescriptors
+    end        
+    
     properties
         sampleRate
         background
@@ -17,14 +21,15 @@ classdef Device < symphonyui.core.CoreObject
         
         function obj = Device(cobj)
             obj@symphonyui.core.CoreObject(cobj);
+            obj.staticConfigurationDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
         end
         
         function delete(obj)
             obj.close();
         end
         
-        function close(obj)
-            
+        function close(obj) %#ok<MANU>
+            % For subclasses.
         end
         
         function n = get.name(obj)
@@ -36,11 +41,55 @@ classdef Device < symphonyui.core.CoreObject
         end
         
         function c = get.configuration(obj)
-            c = obj.mapFromKeyValueEnumerable(obj.cobj.Configuration);
+            function out = wrap(in)
+                out = in;
+                if ischar(in) && ~isempty(in) && in(1) == '{' && in(end) == '}'
+                    out = symphonyui.core.util.str2cellstr(in);
+                end
+            end
+            c = obj.mapFromKeyValueEnumerable(obj.cobj.Configuration, @wrap);
         end
         
-        function addConfigurationParameter(obj, name, value)
-            obj.tryCore(@()obj.cobj.Configuration.Add(name, value));
+        function addConfigurationSetting(obj, key, value)
+            if isempty(key)
+                error('Key cannot be empty');
+            end
+            if isempty(value) && ~ischar(value) && ~iscell(value)
+                value = NET.createArray('System.Double', 0);
+            elseif iscellstr(value)
+                value = symphonyui.core.util.cellstr2str(value);
+            end
+            obj.tryCore(@()obj.cobj.Configuration.Item(key, value));
+        end
+        
+        function tf = removeConfigurationSetting(obj, key)
+            desc = obj.staticConfigurationDescriptors;
+            if ~isempty(desc.findByName(key))
+                error('Cannot remove a setting with a static descriptor');
+            end
+            tf = obj.tryCoreWithReturn(@()obj.cobj.Configuration.Remove(key));
+        end
+        
+        function d = getConfigurationDescriptors(obj)
+            desc = obj.staticConfigurationDescriptors;
+            map = obj.configuration;
+            keys = map.keys;
+            d = symphonyui.core.PropertyDescriptor.empty(0, numel(keys));
+            for i = 1:numel(keys)
+                static = desc.findByName(keys{i});
+                if isempty(static)
+                    d(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}), ...
+                        'isReadOnly', true);
+                else
+                    static.value = map(static.name);
+                    d(i) = static;
+                end
+            end
+        end
+        
+        function addStaticConfigurationDescriptor(obj, desc)
+            obj.addConfigurationSetting(desc.name, desc.value);
+            obj.staticConfigurationDescriptors(end + 1) = desc;
         end
         
         function d = bindStream(obj, stream, name)

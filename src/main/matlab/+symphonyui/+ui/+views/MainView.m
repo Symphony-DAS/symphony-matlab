@@ -298,8 +298,8 @@ classdef MainView < appbox.View
             set(obj.protocolPropertyGrid, 'Properties', fields);
         end
 
-        function updateProtocolProperties(obj, properties)
-            obj.protocolPropertyGrid.UpdateProperties(properties);
+        function updateProtocolProperties(obj, fields)
+            obj.protocolPropertyGrid.UpdateProperties(fields);
         end
 
         function stopEditingProtocolProperties(obj)
