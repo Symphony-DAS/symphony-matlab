@@ -89,7 +89,7 @@ classdef MainPresenter < appbox.Presenter
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
-            obj.addListener(v, 'ConfigureDeviceBackgrounds', @obj.onViewSelectedConfigureDeviceBackgrounds);
+            obj.addListener(v, 'ConfigureDevices', @obj.onViewSelectedConfigureDevices);
             obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
             obj.addListener(v, 'SelectedModule', @obj.onViewSelectedModule);
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
@@ -463,7 +463,7 @@ classdef MainPresenter < appbox.Presenter
             enablePause = ~isPausing && ~isViewingPaused && ~isRecordingPaused && ~isStopping && ~isStopped;
             enableStop = ~isStopping && ~isStopped;
             enableInitializeRig = isStopped;
-            enableConfigureDeviceBackgrounds = isStopped;
+            enableConfigureDevices = isStopped;
 
             if ~isValid
                 status = validationMessage;
@@ -486,7 +486,7 @@ classdef MainPresenter < appbox.Presenter
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
             obj.view.enableInitializeRig(enableInitializeRig);
-            obj.view.enableConfigureDeviceBackgrounds(enableConfigureDeviceBackgrounds);
+            obj.view.enableConfigureDevices(enableConfigureDevices);
             obj.view.setStatus(status);
         end
 
@@ -498,16 +498,9 @@ classdef MainPresenter < appbox.Presenter
             obj.updateStateOfControls();
         end
 
-        function onViewSelectedConfigureDeviceBackgrounds(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.DeviceBackgroundsPresenter(obj.configurationService);
+        function onViewSelectedConfigureDevices(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.ConfigureDevicesPresenter(obj.configurationService);
             presenter.goWaitStop();
-            if presenter.result
-                obj.updateStateOfControls();
-                obj.populateProtocolProperties();
-                if ~obj.view.isProtocolPreviewMinimized()
-                    obj.populateProtocolPreview();
-                end
-            end
         end
 
         function onViewSelectedConfigureOptions(obj, ~, ~) %#ok<INUSD>
