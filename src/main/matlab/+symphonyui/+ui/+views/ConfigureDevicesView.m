@@ -116,6 +116,11 @@ classdef ConfigureDevicesView < appbox.View
             set(mainLayout, 'Widths', [-1 -2]);
         end
         
+        function close(obj)
+            close@appbox.View(obj);
+            obj.configurationPropertyGrid.Close();
+        end
+        
         function d = getSelectedDevice(obj)
             d = get(obj.deviceListBox, 'Value');
         end
