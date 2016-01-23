@@ -2,6 +2,7 @@ classdef ConfigureDevicesView < appbox.View
 
     events
         SelectedDevice
+        SetBackground
         SetConfigurationSetting
         AddConfigurationSetting
         RemoveConfigurationSetting
@@ -13,6 +14,8 @@ classdef ConfigureDevicesView < appbox.View
         manufacturerField
         inputStreamsField
         outputStreamsField
+        backgroundField
+        backgroundUnitsField
         configurationPropertyGrid
         addConfigurationSettingButton
         removeConfigurationSettingButton
@@ -25,7 +28,7 @@ classdef ConfigureDevicesView < appbox.View
 
             set(obj.figureHandle, ...
                 'Name', 'Configure Devices', ...
-                'Position', screenCenter(500, 300));
+                'Position', screenCenter(450, 300));
 
             mainLayout = uix.HBox( ...
                 'Parent', obj.figureHandle, ...
@@ -55,6 +58,9 @@ classdef ConfigureDevicesView < appbox.View
             Label( ...
                 'Parent', deviceGrid, ...
                 'String', 'Output Streams:');
+            Label( ...
+                'Parent', deviceGrid, ...
+                'String', 'Background:');
             configurationLabelLayout = uix.VBox( ...
                 'Parent', deviceGrid);
             Label( ...
@@ -79,6 +85,19 @@ classdef ConfigureDevicesView < appbox.View
                 'HorizontalAlignment', 'left');
             obj.outputStreamsField = uicontrol( ...
                 'Parent', deviceGrid, ...
+                'Style', 'edit', ...
+                'Enable', 'off', ...
+                'HorizontalAlignment', 'left');
+            backgroundLayout = uix.HBox( ...
+                'Parent', deviceGrid, ...
+                'Spacing', 5);
+            obj.backgroundField = uicontrol( ...
+                'Parent', backgroundLayout, ...
+                'Style', 'edit', ...
+                'HorizontalAlignment', 'left', ...
+                'Callback', @(h,d)notify(obj, 'SetBackground'));
+            obj.backgroundUnitsField = uicontrol( ...
+                'Parent', backgroundLayout, ...
                 'Style', 'edit', ...
                 'Enable', 'off', ...
                 'HorizontalAlignment', 'left');
@@ -111,7 +130,7 @@ classdef ConfigureDevicesView < appbox.View
             
             set(deviceGrid, ...
                 'Widths', [90 -1], ...
-                'Heights', [23 23 23 23 -1]);
+                'Heights', [23 23 23 23 23 -1]);
             
             set(mainLayout, 'Widths', [-1 -2]);
         end
@@ -150,6 +169,18 @@ classdef ConfigureDevicesView < appbox.View
             set(obj.outputStreamsField, 'String', s);
         end
         
+        function setBackground(obj, b)
+            set(obj.backgroundField, 'String', b);
+        end
+        
+        function b = getBackground(obj)
+            b = get(obj.backgroundField, 'String');
+        end
+        
+        function setBackgroundUnits(obj, u)
+            set(obj.backgroundUnitsField, 'String', u);
+        end
+        
         function p = getSelectedConfigurationSetting(obj)
             p = obj.configurationPropertyGrid.GetSelectedProperty();
         end
@@ -160,6 +191,10 @@ classdef ConfigureDevicesView < appbox.View
         
         function updateConfiguration(obj, fields)
             obj.configurationPropertyGrid.UpdateProperties(fields);
+        end
+        
+        function stopEditingConfiguration(obj)
+            obj.configurationPropertyGrid.StopEditing();
         end
         
         function enableAddConfigurationSetting(obj, tf)

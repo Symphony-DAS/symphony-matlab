@@ -30,6 +30,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'SelectedDevice', @obj.onViewSelectedDevice);
+            obj.addListener(v, 'SetBackground', @obj.onViewSetBackground);
             obj.addListener(v, 'SetConfigurationSetting', @obj.onViewSetConfigurationSetting);
             obj.addListener(v, 'AddConfigurationSetting', @obj.onViewSelectedAddConfigurationSetting);
             obj.addListener(v, 'RemoveConfigurationSetting', @obj.onViewSelectedRemoveConfigurationSetting);
@@ -51,6 +52,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
         end
         
         function onViewSelectedDevice(obj, ~, ~)
+            obj.view.stopEditingConfiguration();
             obj.view.update();
             obj.populateDetailsWithDevice(obj.view.getSelectedDevice());
         end
@@ -60,6 +62,8 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             obj.view.setManufacturer(device.manufacturer);
             obj.view.setInputStreams(strjoin(cellfun(@(s)s.name, device.inputStreams, 'UniformOutput', false), ', '));
             obj.view.setOutputStreams(strjoin(cellfun(@(s)s.name, device.outputStreams, 'UniformOutput', false), ', '));
+            obj.view.setBackground(num2str(device.background.quantity));
+            obj.view.setBackgroundUnits(device.background.displayUnits);
             
             obj.populateConfigurationWithDevice(device);
         end
@@ -84,6 +88,20 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
                 obj.view.showError(x.message);
             end
             obj.view.updateConfiguration(fields);
+        end
+        
+        function onViewSetBackground(obj, ~, ~)
+            device = obj.view.getSelectedDevice();
+            b = device.background;
+            try
+                device.background = symphonyui.core.Measurement(str2double(obj.view.getBackground()), b.displayUnits);
+                device.applyBackground();
+            catch x
+                obj.view.showError(x.message);
+                device.background = b;
+                obj.populateDetailsWithDevice(device);
+                return;
+            end
         end
         
         function onViewSetConfigurationSetting(obj, ~, event)
