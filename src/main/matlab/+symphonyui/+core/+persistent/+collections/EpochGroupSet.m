@@ -1,4 +1,4 @@
-classdef EpochGroupSet < symphonyui.core.collections.TimelineEntitySet
+classdef EpochGroupSet < symphonyui.core.persistent.collections.TimelineEntitySet
     
     properties
         label
@@ -11,11 +11,11 @@ classdef EpochGroupSet < symphonyui.core.collections.TimelineEntitySet
     methods
         
         function obj = EpochGroupSet(groups)
-            obj@symphonyui.core.collections.TimelineEntitySet(groups);
+            obj@symphonyui.core.persistent.collections.TimelineEntitySet(groups);
         end
         
         function l = get.label(obj)
-            l = strjoin(unique(cellfun(@(g)g.label, obj.entities, 'UniformOutput', false)), ', ');
+            l = strjoin(unique(cellfun(@(g)g.label, obj.objects, 'UniformOutput', false)), ', ');
         end
         
         function set.label(obj, l)
@@ -25,7 +25,7 @@ classdef EpochGroupSet < symphonyui.core.collections.TimelineEntitySet
         end
         
         function s = get.sources(obj)
-            s = cellfun(@(g)g.source, obj.entities, 'UniformOutput', false);
+            s = cellfun(@(g)g.source, obj.objects, 'UniformOutput', false);
         end
         
     end

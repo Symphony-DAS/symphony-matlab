@@ -1,7 +1,7 @@
 classdef ConfigureDevicesView < appbox.View
 
     events
-        SelectedDevice
+        SelectedDevices
         SetBackground
         SetConfigurationSetting
         AddConfigurationSetting
@@ -37,8 +37,10 @@ classdef ConfigureDevicesView < appbox.View
             
             obj.deviceListBox = MappedListBox( ...
                 'Parent', mainLayout, ...
+                'Max', 10, ...
+                'Min', 1, ...
                 'Enable', 'off', ...
-                'Callback', @(h,d)notify(obj, 'SelectedDevice'));
+                'Callback', @(h,d)notify(obj, 'SelectedDevices'));
             
             deviceLayout = uix.VBox( ...
                 'Parent', mainLayout, ...
@@ -140,7 +142,7 @@ classdef ConfigureDevicesView < appbox.View
             obj.configurationPropertyGrid.Close();
         end
         
-        function d = getSelectedDevice(obj)
+        function d = getSelectedDevices(obj)
             d = get(obj.deviceListBox, 'Value');
         end
         
@@ -179,6 +181,10 @@ classdef ConfigureDevicesView < appbox.View
         
         function setBackgroundUnits(obj, u)
             set(obj.backgroundUnitsField, 'String', u);
+        end
+        
+        function u = getBackgroundUnits(obj)
+            u = get(obj.backgroundUnitsField);
         end
         
         function p = getSelectedConfigurationSetting(obj)

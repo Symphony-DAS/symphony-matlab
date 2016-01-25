@@ -1,4 +1,4 @@
-classdef SourceSet < symphonyui.core.collections.EntitySet
+classdef SourceSet < symphonyui.core.persistent.collections.EntitySet
     
     properties
         label
@@ -7,11 +7,11 @@ classdef SourceSet < symphonyui.core.collections.EntitySet
     methods
         
         function obj = SourceSet(sources)
-            obj@symphonyui.core.collections.EntitySet(sources);
+            obj@symphonyui.core.persistent.collections.EntitySet(sources);
         end
         
         function l = get.label(obj)
-            l = strjoin(unique(cellfun(@(s)s.label, obj.entities, 'UniformOutput', false)), ', ');
+            l = strjoin(unique(cellfun(@(s)s.label, obj.objects, 'UniformOutput', false)), ', ');
         end
         
         function set.label(obj, l)

@@ -2,12 +2,12 @@ classdef AddConfigurationSettingPresenter < appbox.Presenter
 
     properties (Access = private)
         log
-        device
+        deviceSet
     end
 
     methods
 
-        function obj = AddConfigurationSettingPresenter(device, view)
+        function obj = AddConfigurationSettingPresenter(deviceSet, view)
             if nargin < 2
                 view = symphonyui.ui.views.AddConfigurationSettingView();
             end
@@ -15,7 +15,7 @@ classdef AddConfigurationSettingPresenter < appbox.Presenter
             obj.view.setWindowStyle('modal');
 
             obj.log = log4m.LogManager.getLogger(class(obj));
-            obj.device = device;
+            obj.deviceSet = deviceSet;
         end
 
     end
@@ -55,7 +55,7 @@ classdef AddConfigurationSettingPresenter < appbox.Presenter
                 value = valueStr;
             end
             try
-                obj.device.addConfigurationSetting(key, value);
+                obj.deviceSet.addConfigurationSetting(key, value);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

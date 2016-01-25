@@ -25,7 +25,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.settings = symphonyui.ui.settings.DataManagerSettings();
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
-            obj.detailedEntitySet = symphonyui.core.collections.EntitySet();
+            obj.detailedEntitySet = symphonyui.core.persistent.collections.EntitySet();
             obj.uuidToNode = containers.Map();
         end
 
@@ -151,7 +151,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function populateDetailsWithSources(obj, sources)
-            sourceSet = symphonyui.core.collections.SourceSet(sources);
+            sourceSet = symphonyui.core.persistent.collections.SourceSet(sources);
 
             obj.view.enableSourceLabel(sourceSet.size == 1);
             obj.view.setSourceLabel(sourceSet.label);
@@ -188,7 +188,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function populateDetailsWithExperiments(obj, experiments)
-            experimentSet = symphonyui.core.collections.ExperimentSet(experiments);
+            experimentSet = symphonyui.core.persistent.collections.ExperimentSet(experiments);
 
             obj.view.enableExperimentPurpose(experimentSet.size == 1);
             obj.view.setExperimentPurpose(experimentSet.purpose);
@@ -311,8 +311,8 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function populateDetailsWithEpochGroups(obj, groups)
-            groupSet = symphonyui.core.collections.EpochGroupSet(groups);
-            sourceSet = symphonyui.core.collections.SourceSet(groupSet.sources);
+            groupSet = symphonyui.core.persistent.collections.EpochGroupSet(groups);
+            sourceSet = symphonyui.core.persistent.collections.SourceSet(groupSet.sources);
 
             obj.view.enableEpochGroupLabel(groupSet.size == 1);
             obj.view.setEpochGroupLabel(groupSet.label);
@@ -368,7 +368,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function populateDetailsWithEpochBlocks(obj, blocks)
-            blockSet = symphonyui.core.collections.EpochBlockSet(blocks);
+            blockSet = symphonyui.core.persistent.collections.EpochBlockSet(blocks);
 
             obj.view.setEpochBlockProtocolId(blockSet.protocolId);
             obj.view.setEpochBlockStartTime(strtrim(datestr(blockSet.startTime, 14)));
@@ -398,7 +398,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function populateDetailsWithEpochs(obj, epochs)
-            epochSet = symphonyui.core.collections.EpochSet(epochs);
+            epochSet = symphonyui.core.persistent.collections.EpochSet(epochs);
 
             responseMap = epochSet.responseMap;
             stimulusMap = epochSet.stimulusMap;
@@ -453,7 +453,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function populateDetailsWithEmpty(obj, text)
-            emptySet = symphonyui.core.collections.EntitySet();
+            emptySet = symphonyui.core.persistent.collections.EntitySet();
 
             obj.view.setEmptyText(text);
             obj.view.setCardSelection(obj.view.EMPTY_CARD);

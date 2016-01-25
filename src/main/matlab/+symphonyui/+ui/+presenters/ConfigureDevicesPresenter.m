@@ -3,6 +3,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
     properties (Access = private)
         log
         configurationService
+        detailedDeviceSet
     end
 
     methods
@@ -16,6 +17,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
 
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.configurationService = configurationService;
+            obj.detailedDeviceSet = symphonyui.core.collections.DeviceSet();
         end
 
     end
@@ -29,7 +31,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
 
         function onBind(obj)
             v = obj.view;
-            obj.addListener(v, 'SelectedDevice', @obj.onViewSelectedDevice);
+            obj.addListener(v, 'SelectedDevices', @obj.onViewSelectedDevices);
             obj.addListener(v, 'SetBackground', @obj.onViewSetBackground);
             obj.addListener(v, 'SetConfigurationSetting', @obj.onViewSetConfigurationSetting);
             obj.addListener(v, 'AddConfigurationSetting', @obj.onViewSelectedAddConfigurationSetting);
@@ -45,32 +47,42 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             names = cellfun(@(d)d.name, devices, 'UniformOutput', false);
             obj.view.setDeviceList(names, devices);
             
-            device = obj.view.getSelectedDevice();
-            if ~isempty(device)
-                obj.populateDetailsWithDevice(device);
+            devices = obj.view.getSelectedDevices();
+            if ~isempty(devices)
+                obj.populateDetailsWithDevices(devices);
             end
         end
         
-        function onViewSelectedDevice(obj, ~, ~)
+        function onViewSelectedDevices(obj, ~, ~)
             obj.view.stopEditingConfiguration();
             obj.view.update();
-            obj.populateDetailsWithDevice(obj.view.getSelectedDevice());
+            obj.populateDetailsWithDevices(obj.view.getSelectedDevices());
         end
         
-        function populateDetailsWithDevice(obj, device)            
-            obj.view.setName(device.name);
-            obj.view.setManufacturer(device.manufacturer);
-            obj.view.setInputStreams(strjoin(cellfun(@(s)s.name, device.inputStreams, 'UniformOutput', false), ', '));
-            obj.view.setOutputStreams(strjoin(cellfun(@(s)s.name, device.outputStreams, 'UniformOutput', false), ', '));
-            obj.view.setBackground(num2str(device.background.quantity));
-            obj.view.setBackgroundUnits(device.background.displayUnits);
+        function populateDetailsWithDevices(obj, devices)
+            deviceSet = symphonyui.core.collections.DeviceSet(devices);
             
-            obj.populateConfigurationWithDevice(device);
+            obj.view.setName(deviceSet.name);
+            obj.view.setManufacturer(deviceSet.manufacturer);
+            obj.view.setInputStreams(strjoin(cellfun(@(s)s.name, deviceSet.inputStreams, 'UniformOutput', false), ', '));
+            obj.view.setOutputStreams(strjoin(cellfun(@(s)s.name, deviceSet.outputStreams, 'UniformOutput', false), ', '));
+            
+            background = deviceSet.background;
+            if isempty(background)
+                obj.view.setBackground('');
+                obj.view.setBackgroundUnits('');
+            else
+                obj.view.setBackground(num2str(background.quantity));
+                obj.view.setBackgroundUnits(background.displayUnits);
+            end
+            
+            obj.populateConfigurationWithDeviceSet(deviceSet);
+            obj.detailedDeviceSet = deviceSet;
         end
         
-        function populateConfigurationWithDevice(obj, device)
+        function populateConfigurationWithDeviceSet(obj, deviceSet)
             try
-                fields = symphonyui.ui.util.desc2field(device.getConfigurationDescriptors());
+                fields = symphonyui.ui.util.desc2field(deviceSet.getConfigurationDescriptors());
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
@@ -79,9 +91,9 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             obj.view.setConfiguration(fields);
         end
         
-        function updateConfigurationWithDevice(obj, device)
+        function updateConfigurationWithDeviceSet(obj, deviceSet)
             try
-                fields = symphonyui.ui.util.desc2field(device.getConfigurationDescriptors());
+                fields = symphonyui.ui.util.desc2field(deviceSet.getConfigurationDescriptors());
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
@@ -91,15 +103,14 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
         end
         
         function onViewSetBackground(obj, ~, ~)
-            device = obj.view.getSelectedDevice();
-            b = device.background;
+            deviceSet = obj.detailedDeviceSet;
+            
             try
-                device.background = symphonyui.core.Measurement(str2double(obj.view.getBackground()), b.displayUnits);
-                device.applyBackground();
+                deviceSet.background = symphonyui.core.Measurement(str2double(obj.view.getBackground()), obj.view.getBackgroundUnits());
+                deviceSet.applyBackground();
             catch x
+                obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
-                device.background = b;
-                obj.populateDetailsWithDevice(device);
                 return;
             end
         end
@@ -107,20 +118,20 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
         function onViewSetConfigurationSetting(obj, ~, event)
             p = event.data.Property;
             try
-                obj.view.getSelectedDevice().addConfigurationSetting(p.Name, p.Value);
+                obj.detailedDeviceSet.addConfigurationSetting(p.Name, p.Value);
             catch x
                 obj.view.showError(x.message);
                 return;
             end
-            obj.updateConfigurationWithDevice(obj.view.getSelectedDevice());
+            obj.updateConfigurationWithDeviceSet(obj.detailedDeviceSet);
         end
         
         function onViewSelectedAddConfigurationSetting(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddConfigurationSettingPresenter(obj.view.getSelectedDevice());
+            presenter = symphonyui.ui.presenters.AddConfigurationSettingPresenter(obj.detailedDeviceSet);
             presenter.goWaitStop();
 
             if ~isempty(presenter.result)
-                obj.populateConfigurationWithDevice(obj.view.getSelectedDevice());
+                obj.populateConfigurationWithDeviceSet(obj.detailedDeviceSet);
             end
         end
         
@@ -129,9 +140,8 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             if isempty(key)
                 return;
             end           
-            
             try
-                tf = obj.view.getSelectedDevice().removeConfigurationSetting(key);
+                tf = obj.detailedDeviceSet.removeConfigurationSetting(key);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -139,7 +149,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             end
 
             if tf
-                obj.populateConfigurationWithDevice(obj.view.getSelectedDevice());
+                obj.populateConfigurationWithDeviceSet(obj.detailedDeviceSet);
             end
         end
         

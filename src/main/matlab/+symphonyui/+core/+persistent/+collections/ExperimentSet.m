@@ -1,4 +1,4 @@
-classdef ExperimentSet < symphonyui.core.collections.TimelineEntitySet
+classdef ExperimentSet < symphonyui.core.persistent.collections.TimelineEntitySet
     
     properties
         purpose
@@ -7,11 +7,11 @@ classdef ExperimentSet < symphonyui.core.collections.TimelineEntitySet
     methods
         
         function obj = ExperimentSet(experiments)
-            obj@symphonyui.core.collections.TimelineEntitySet(experiments);
+            obj@symphonyui.core.persistent.collections.TimelineEntitySet(experiments);
         end
         
         function p = get.purpose(obj)
-            p = strjoin(unique(cellfun(@(e)e.purpose, obj.entities, 'UniformOutput', false)), ', ');
+            p = strjoin(unique(cellfun(@(e)e.purpose, obj.objects, 'UniformOutput', false)), ', ');
         end
         
         function set.purpose(obj, p)

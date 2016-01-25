@@ -1,4 +1,4 @@
-classdef TimelineEntitySet < symphonyui.core.collections.EntitySet
+classdef TimelineEntitySet < symphonyui.core.persistent.collections.EntitySet
     
     properties
         startTime
@@ -7,12 +7,12 @@ classdef TimelineEntitySet < symphonyui.core.collections.EntitySet
     
     methods
         
-        function obj = TimelineEntitySet(entities)
-            obj@symphonyui.core.collections.EntitySet(entities);
+        function obj = TimelineEntitySet(objects)
+            obj@symphonyui.core.persistent.collections.EntitySet(objects);
         end
         
         function t = get.startTime(obj)
-            times = cellfun(@(e)e.startTime, obj.entities, 'UniformOutput', false);
+            times = cellfun(@(e)e.startTime, obj.objects, 'UniformOutput', false);
             if isempty(times)
                 t = [];
                 return;
@@ -22,7 +22,7 @@ classdef TimelineEntitySet < symphonyui.core.collections.EntitySet
         end
         
         function t = get.endTime(obj)
-            times = cellfun(@(e)e.endTime, obj.entities, 'UniformOutput', false);
+            times = cellfun(@(e)e.endTime, obj.objects, 'UniformOutput', false);
             if isempty(times) || any(cellfun(@isempty, times))
                 t = [];
                 return;
