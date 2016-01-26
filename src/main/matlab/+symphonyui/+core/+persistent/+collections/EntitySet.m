@@ -16,11 +16,14 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
         end
         
         function m = get.propertyMap(obj)
-            maps = cell(1, numel(obj.objects));
-            for i = 1:numel(obj.objects)
-                maps{i} = obj.objects{i}.propertyMap;
+            if isempty(obj.objects)
+                m = containers.Map();
+                return;
             end
-            m = obj.intersectMaps(maps);
+            m = obj.objects{1}.propertyMap;
+            for i = 2:numel(obj.objects)
+                m = obj.intersectMaps(m, obj.objects{i}.propertyMap);
+            end
         end
         
         function addProperty(obj, key, value)
@@ -38,20 +41,13 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
         end
         
         function d = getPropertyDescriptors(obj)
-            d = symphonyui.core.PropertyDescriptor.empty();
             if isempty(obj.objects)
+                d = symphonyui.core.PropertyDescriptor.empty();
                 return;
             end
-            
             d = obj.objects{1}.getPropertyDescriptors();
             for i = 2:numel(obj.objects)
-                keep = false(1, numel(d));
-                for j = 1:numel(d)
-                    if any(arrayfun(@(c)isequal(c,d(j)), obj.objects{i}.getPropertyDescriptors()))
-                        keep(j) = true;
-                    end
-                end
-                d = d(keep);
+                d = obj.intersect(d, obj.objects{i}.getPropertyDescriptors());
             end
         end
         
@@ -60,10 +56,9 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 k = {};
                 return;
             end
-            
             k = obj.objects{1}.keywords;
             for i = 2:numel(obj.objects)
-                k = intersect(k, obj.objects{i}.keywords);
+                k = obj.intersect(k, obj.objects{i}.keywords);
             end
         end
         
@@ -88,16 +83,9 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 n = {};
                 return;
             end
-            
             n = obj.objects{1}.notes;
             for i = 2:numel(obj.objects)
-                keep = false(1, numel(n));
-                for j = 1:numel(n)
-                    if any(cellfun(@(c)isequal(c,n{j}), obj.objects{i}.notes))
-                        keep(j) = true;
-                    end
-                end
-                n = n(keep);
+                n = obj.intersect(n, obj.objects{i}.notes);
             end
         end
         

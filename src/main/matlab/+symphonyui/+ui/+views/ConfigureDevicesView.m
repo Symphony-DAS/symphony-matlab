@@ -171,6 +171,10 @@ classdef ConfigureDevicesView < appbox.View
             set(obj.outputStreamsField, 'String', s);
         end
         
+        function enableBackground(obj, tf)
+            set(obj.backgroundField, 'Enable', appbox.onOff(tf));
+        end
+        
         function setBackground(obj, b)
             set(obj.backgroundField, 'String', b);
         end
@@ -184,7 +188,7 @@ classdef ConfigureDevicesView < appbox.View
         end
         
         function u = getBackgroundUnits(obj)
-            u = get(obj.backgroundUnitsField);
+            u = get(obj.backgroundUnitsField, 'String');
         end
         
         function p = getSelectedConfigurationSetting(obj)

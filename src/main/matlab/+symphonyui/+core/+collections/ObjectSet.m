@@ -32,36 +32,37 @@ classdef ObjectSet < handle
     
     methods (Access = protected)
         
-        function m = intersectMaps(obj, maps)
-            m = containers.Map();
-            if isempty(maps)
-                return;
+        function c = intersect(obj, a, b) %#ok<INUSL>
+            keep = false(1, numel(a));
+            for i = 1:numel(a)
+                for k = numel(b):-1:1
+                    if isequal(a(i), b(k))
+                        keep(i) = true;
+                        b(k) = [];
+                        break;
+                    end
+                end
             end
-            
-            keys = maps{1}.keys;
-            for i = 2:numel(obj.objects)
-                keys = intersect(keys, maps{i}.keys);
-            end
-            
+            c = a(keep);
+        end
+        
+        function c = intersectMaps(obj, a, b) %#ok<INUSL>
+            keys = intersect(a.keys, b.keys);
+
             values = cell(1, numel(keys));
             for i = 1:numel(keys)
                 k = keys{i};
-                v = {};
-                for j = 1:numel(obj.objects)
-                    p = maps{j}(k);
-                    if ~any(cellfun(@(c)isequal(c, p), v))
-                        v{end + 1} = p; %#ok<AGROW>
-                    end
-                end
-                if numel(v) == 1
-                    values{i} = v{1};
+                if isequal(a(k), b(k))
+                    values{i} = a(k);
                 else
-                    values{i} = v;
+                    values{i} = [];
                 end
             end
-            
-            if ~isempty(keys)
-                m = containers.Map(keys, values);
+
+            if isempty(keys)
+                c = containers.Map();
+            else
+                c = containers.Map(keys, values);
             end
         end
         

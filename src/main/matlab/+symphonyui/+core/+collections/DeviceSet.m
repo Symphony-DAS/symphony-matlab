@@ -22,19 +22,28 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
         end
         
         function n = get.name(obj)
-            n = strjoin(unique(cellfun(@(d)d.name, obj.objects, 'UniformOutput', false)), ', ');
+            n = '';
+            if ~isempty(obj.objects) && all(cellfun(@(d)isequal(d.name, obj.objects{1}.name), obj.objects))
+                n = obj.objects{1}.name;
+            end
         end
         
         function m = get.manufacturer(obj)
-            m = strjoin(unique(cellfun(@(d)d.manufacturer, obj.objects, 'UniformOutput', false)), ', ');
+            m = '';
+            if ~isempty(obj.objects) && all(cellfun(@(d)isequal(d.manufacturer, obj.objects{1}.manufacturer), obj.objects))
+                m = obj.objects{1}.manufacturer;
+            end
         end
         
         function m = get.configuration(obj)
-            maps = cell(1, numel(obj.objects));
-            for i = 1:numel(obj.objects)
-                maps{i} = obj.objects{i}.configuration;
+            if isempty(obj.objects)
+                m = containers.Map();
+                return;
             end
-            m = obj.intersectMaps(maps);
+            m = obj.objects{1}.configuration;
+            for i = 2:numel(obj.objects)
+                m = obj.intersectMaps(m, obj.objects{i}.configuration);
+            end
         end
         
         function addConfigurationSetting(obj, key, value)
@@ -52,20 +61,13 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
         end
         
         function d = getConfigurationDescriptors(obj)
-            d = symphonyui.core.PropertyDescriptor.empty();
             if isempty(obj.objects)
+                d = symphonyui.core.PropertyDescriptor.empty();
                 return;
             end
-            
             d = obj.objects{1}.getConfigurationDescriptors();
             for i = 2:numel(obj.objects)
-                keep = false(1, numel(d));
-                for j = 1:numel(d)
-                    if any(arrayfun(@(c)isequal(c,d(j)), obj.objects{i}.getConfigurationDescriptors()))
-                        keep(j) = true;
-                    end
-                end
-                d = d(keep);
+                d = obj.intersect(d, obj.objects{i}.getConfigurationDescriptors());
             end
         end
         
@@ -74,16 +76,9 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
                 s = {};
                 return;
             end
-            
             s = obj.objects{1}.inputStreams;
             for i = 2:numel(obj.objects)
-                keep = false(1, numel(s));
-                for j = 1:numel(s)
-                    if any(cellfun(@(c)isequal(c,s{j}), obj.objects{i}.inputStreams))
-                        keep(j) = true;
-                    end
-                end
-                s = s(keep);
+                s = obj.intersect(s, obj.objects{i}.inputStreams);
             end
         end
         
@@ -92,23 +87,16 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
                 s = {};
                 return;
             end
-            
             s = obj.objects{1}.outputStreams;
             for i = 2:numel(obj.objects)
-                keep = false(1, numel(s));
-                for j = 1:numel(s)
-                    if any(cellfun(@(c)isequal(c,s{j}), obj.objects{i}.outputStreams))
-                        keep(j) = true;
-                    end
-                end
-                s = s(keep);
+                s = obj.intersect(s, obj.objects{i}.outputStreams);
             end
         end
         
         function b = get.background(obj)
             b = [];
-            if isempty(obj.objects)
-                return;
+            if ~isempty(obj.objects) && all(cellfun(@(d)isequal(d.background, obj.objects{1}.background), obj.objects))
+                b = obj.objects{1}.background;
             end
         end
         

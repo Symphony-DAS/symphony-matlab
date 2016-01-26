@@ -11,7 +11,10 @@ classdef SourceSet < symphonyui.core.persistent.collections.EntitySet
         end
         
         function l = get.label(obj)
-            l = strjoin(unique(cellfun(@(s)s.label, obj.objects, 'UniformOutput', false)), ', ');
+            l = '';
+            if ~isempty(obj.objects) && all(cellfun(@(s)isequal(s.label, obj.objects{1}.label), obj.objects))
+                l = obj.objects{1}.label;
+            end
         end
         
         function set.label(obj, l)

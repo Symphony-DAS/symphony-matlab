@@ -15,7 +15,10 @@ classdef EpochGroupSet < symphonyui.core.persistent.collections.TimelineEntitySe
         end
         
         function l = get.label(obj)
-            l = strjoin(unique(cellfun(@(g)g.label, obj.objects, 'UniformOutput', false)), ', ');
+            l = '';
+            if ~isempty(obj.objects) && all(cellfun(@(g)isequal(g.label, obj.objects{1}.label), obj.objects))
+                l = obj.objects{1}.label;
+            end
         end
         
         function set.label(obj, l)

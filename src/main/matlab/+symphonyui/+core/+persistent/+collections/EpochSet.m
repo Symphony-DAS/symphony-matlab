@@ -12,12 +12,15 @@ classdef EpochSet < symphonyui.core.persistent.collections.TimelineEntitySet
             obj@symphonyui.core.persistent.collections.TimelineEntitySet(epochs);
         end
         
-        function p = get.protocolParameters(obj)
-            maps = cell(1, numel(obj.objects));
-            for i = 1:numel(obj.objects)
-                maps{i} = obj.objects{i}.protocolParameters;
+        function m = get.protocolParameters(obj)
+            if isempty(obj.objects)
+                m = containers.Map();
+                return;
             end
-            p = obj.intersectMaps(maps);
+            m = obj.objects{1}.protocolParameters;
+            for i = 2:numel(obj.objects)
+                m = obj.intersectMaps(m, obj.objects{i}.protocolParameters);
+            end
         end
         
         function m = get.stimulusMap(obj)

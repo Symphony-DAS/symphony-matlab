@@ -68,6 +68,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             obj.view.setOutputStreams(strjoin(cellfun(@(s)s.name, deviceSet.outputStreams, 'UniformOutput', false), ', '));
             
             background = deviceSet.background;
+            obj.view.enableBackground(~isempty(background));
             if isempty(background)
                 obj.view.setBackground('');
                 obj.view.setBackgroundUnits('');

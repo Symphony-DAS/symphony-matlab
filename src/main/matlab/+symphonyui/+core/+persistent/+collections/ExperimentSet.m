@@ -11,7 +11,10 @@ classdef ExperimentSet < symphonyui.core.persistent.collections.TimelineEntitySe
         end
         
         function p = get.purpose(obj)
-            p = strjoin(unique(cellfun(@(e)e.purpose, obj.objects, 'UniformOutput', false)), ', ');
+            p = '';
+            if ~isempty(obj.objects) && all(cellfun(@(e)isequal(e.purpose, obj.objects{1}.purpose), obj.objects))
+                p = obj.objects{1}.purpose;
+            end
         end
         
         function set.purpose(obj, p)

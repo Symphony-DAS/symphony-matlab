@@ -12,15 +12,21 @@ classdef EpochBlockSet < symphonyui.core.persistent.collections.TimelineEntitySe
         end
         
         function i = get.protocolId(obj)
-            i = strjoin(unique(cellfun(@(b)b.protocolId, obj.objects, 'UniformOutput', false)), ', ');
+            i = '';
+            if ~isempty(obj.objects) && all(cellfun(@(b)isequal(b.protocolId, obj.objects{1}.protocolId), obj.objects))
+                i = obj.objects{1}.protocolId;
+            end
         end
         
-        function p = get.protocolParameters(obj)
-            maps = cell(1, numel(obj.objects));
-            for i = 1:numel(obj.objects)
-                maps{i} = obj.objects{i}.protocolParameters;
+        function m = get.protocolParameters(obj)
+            if isempty(obj.objects)
+                m = containers.Map();
+                return;
             end
-            p = obj.intersectMaps(maps);
+            m = obj.objects{1}.protocolParameters;
+            for i = 2:numel(obj.objects)
+                m = obj.intersectMaps(m, obj.objects{i}.protocolParameters);
+            end
         end
         
     end
