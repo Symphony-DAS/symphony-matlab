@@ -2,8 +2,6 @@ classdef EpochSet < symphonyui.core.persistent.collections.TimelineEntitySet
     
     properties (SetAccess = private)
         protocolParameters
-        stimulusMap
-        responseMap
     end
     
     methods
@@ -23,35 +21,25 @@ classdef EpochSet < symphonyui.core.persistent.collections.TimelineEntitySet
             end
         end
         
-        function m = get.stimulusMap(obj)
-            m = containers.Map();
-            for i = 1:numel(obj.objects)
-                epoch = obj.objects{i};
-                stimuli = epoch.stimuli;
-                for k = 1:numel(stimuli)
-                    device = stimuli{k}.device.name;
-                    if ~m.isKey(device)
-                        m(device) = [];
-                    end
-                    
-                    m(device) = [m(device) stimuli(k)];
-                end
+        function m = getStimulusMap(obj)
+            if isempty(obj.objects)
+                m = containers.Map();
+                return;
+            end
+            m = cellWrapValues(obj.objects{1}.getStimulusMap());
+            for i = 2:numel(obj.objects)
+                m = obj.intersectMaps(m, cellWrapValues(obj.objects{i}.getStimulusMap()), true);
             end
         end
         
-        function m = get.responseMap(obj)
-            m = containers.Map();
-            for i = 1:numel(obj.objects)
-                epoch = obj.objects{i};
-                responses = epoch.responses;
-                for k = 1:numel(responses)
-                    device = responses{k}.device.name;
-                    if ~m.isKey(device)
-                        m(device) = [];
-                    end
-                    
-                    m(device) = [m(device) responses(k)];
-                end
+        function m = getResponseMap(obj)
+            if isempty(obj.objects)
+                m = containers.Map();
+                return;
+            end
+            m = cellWrapValues(obj.objects{1}.getResponseMap());
+            for i = 2:numel(obj.objects)
+                m = obj.intersectMaps(m, cellWrapValues(obj.objects{i}.getResponseMap()), true);
             end
         end
         
@@ -59,3 +47,10 @@ classdef EpochSet < symphonyui.core.persistent.collections.TimelineEntitySet
     
 end
 
+function m = cellWrapValues(m)
+    keys = m.keys;
+    for i = 1:numel(keys)
+        k = keys{i};
+        m(k) = {m(k)};
+    end
+end

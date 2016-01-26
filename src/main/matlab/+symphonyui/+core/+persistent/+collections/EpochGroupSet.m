@@ -5,7 +5,7 @@ classdef EpochGroupSet < symphonyui.core.persistent.collections.TimelineEntitySe
     end
     
     properties (SetAccess = private)
-        sources
+        source
     end
     
     methods
@@ -27,8 +27,11 @@ classdef EpochGroupSet < symphonyui.core.persistent.collections.TimelineEntitySe
             end
         end
         
-        function s = get.sources(obj)
-            s = cellfun(@(g)g.source, obj.objects, 'UniformOutput', false);
+        function s = get.source(obj)
+            s = [];
+            if ~isempty(obj.objects) && all(cellfun(@(g)isequal(g.source, obj.objects{1}.source), obj.objects))
+                s = obj.objects{1}.source;
+            end
         end
         
     end

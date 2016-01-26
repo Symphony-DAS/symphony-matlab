@@ -46,7 +46,11 @@ classdef ObjectSet < handle
             c = a(keep);
         end
         
-        function c = intersectMaps(obj, a, b) %#ok<INUSL>
+        function c = intersectMaps(obj, a, b, unionValues) %#ok<INUSL>
+            if nargin < 4
+                unionValues = false;
+            end
+            
             keys = intersect(a.keys, b.keys);
 
             values = cell(1, numel(keys));
@@ -54,6 +58,8 @@ classdef ObjectSet < handle
                 k = keys{i};
                 if isequal(a(k), b(k))
                     values{i} = a(k);
+                elseif unionValues
+                    values{i} = [a(k) b(k)];
                 else
                     values{i} = [];
                 end

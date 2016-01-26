@@ -312,7 +312,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function populateDetailsWithEpochGroups(obj, groups)
             groupSet = symphonyui.core.persistent.collections.EpochGroupSet(groups);
-            sourceSet = symphonyui.core.persistent.collections.SourceSet(groupSet.sources);
+            sourceSet = symphonyui.core.persistent.collections.SourceSet(groupSet.source);
 
             obj.view.enableEpochGroupLabel(groupSet.size == 1);
             obj.view.setEpochGroupLabel(groupSet.label);
@@ -400,8 +400,8 @@ classdef DataManagerPresenter < appbox.Presenter
         function populateDetailsWithEpochs(obj, epochs)
             epochSet = symphonyui.core.persistent.collections.EpochSet(epochs);
 
-            responseMap = epochSet.responseMap;
-            stimulusMap = epochSet.stimulusMap;
+            responseMap = epochSet.getResponseMap();
+            stimulusMap = epochSet.getStimulusMap();
 
             names = [strcat(responseMap.keys, ' response'), strcat(stimulusMap.keys, ' stimulus')];
             values = [responseMap.values, stimulusMap.values];
@@ -515,12 +515,6 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.showError(x.message);
             end
             obj.view.setProperties(fields);
-
-            if entitySet.size == 1
-                obj.view.setPropertiesEditorStyle('normal');
-            else
-                obj.view.setPropertiesEditorStyle('readonly');
-            end
         end
 
         function updatePropertiesWithEntitySet(obj, entitySet)
@@ -532,12 +526,6 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.showError(x.message);
             end
             obj.view.updateProperties(fields);
-
-            if entitySet.size == 1
-                obj.view.setPropertiesEditorStyle('normal');
-            else
-                obj.view.setPropertiesEditorStyle('readonly');
-            end
         end
 
         function onViewSetProperty(obj, ~, event)

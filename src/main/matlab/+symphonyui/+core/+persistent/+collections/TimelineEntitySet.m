@@ -12,23 +12,17 @@ classdef TimelineEntitySet < symphonyui.core.persistent.collections.EntitySet
         end
         
         function t = get.startTime(obj)
-            times = cellfun(@(e)e.startTime, obj.objects, 'UniformOutput', false);
-            if isempty(times)
-                t = [];
-                return;
+            t = [];
+            if ~isempty(obj.objects) && all(cellfun(@(s)isequal(s.startTime, obj.objects{1}.startTime), obj.objects))
+                t = obj.objects{1}.startTime;
             end
-            times = sort([times{:}]);
-            t = times(1);
         end
         
         function t = get.endTime(obj)
-            times = cellfun(@(e)e.endTime, obj.objects, 'UniformOutput', false);
-            if isempty(times) || any(cellfun(@isempty, times))
-                t = [];
-                return;
+            t = [];
+            if ~isempty(obj.objects) && all(cellfun(@(s)isequal(s.endTime, obj.objects{1}.endTime), obj.objects))
+                t = obj.objects{1}.endTime;
             end
-            times = sort([times{:}]);
-            t = times(end);
         end
         
     end
