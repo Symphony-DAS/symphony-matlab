@@ -1,8 +1,8 @@
-classdef Properties < symphonyui.core.descriptions.SourceDescription
+classdef PropertyDemo < symphonyui.core.descriptions.SourceDescription
     
     methods
         
-        function obj = Properties()
+        function obj = PropertyDemo()
             import symphonyui.core.*;
             
             obj.propertyDescriptors = [ ...

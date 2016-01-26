@@ -1,4 +1,4 @@
-classdef Properties < symphonyui.core.Protocol
+classdef PropertyDemo < symphonyui.core.Protocol
     
     properties
         double = pi                 % Standard MatLab type
