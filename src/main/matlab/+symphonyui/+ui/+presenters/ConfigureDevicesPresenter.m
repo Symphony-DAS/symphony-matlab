@@ -48,9 +48,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             obj.view.setDeviceList(names, devices);
             
             devices = obj.view.getSelectedDevices();
-            if ~isempty(devices)
-                obj.populateDetailsWithDevices(devices);
-            end
+            obj.populateDetailsWithDevices(devices);
         end
         
         function onViewSelectedDevices(obj, ~, ~)
@@ -68,14 +66,15 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             obj.view.setOutputStreams(strjoin(cellfun(@(s)s.name, deviceSet.outputStreams, 'UniformOutput', false), ', '));
             
             background = deviceSet.background;
-            obj.view.enableBackground(~isempty(background));
             if isempty(background)
                 obj.view.setBackground('');
-                obj.view.setBackgroundUnits('');
             else
                 obj.view.setBackground(num2str(background.quantity));
-                obj.view.setBackgroundUnits(background.displayUnits);
             end
+            
+            backgroundUnits = deviceSet.getBackgroundDisplayUnits();            
+            obj.view.enableBackground(~isempty(backgroundUnits));
+            obj.view.setBackgroundUnits(backgroundUnits);
             
             obj.populateConfigurationWithDeviceSet(deviceSet);
             obj.detailedDeviceSet = deviceSet;

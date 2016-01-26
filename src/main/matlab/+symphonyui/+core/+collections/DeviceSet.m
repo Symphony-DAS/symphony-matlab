@@ -106,6 +106,13 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             end
         end
         
+        function u = getBackgroundDisplayUnits(obj)
+            u = '';
+            if ~isempty(obj.objects) && all(cellfun(@(d)isequal(d.background.displayUnits, obj.objects{1}.background.displayUnits), obj.objects))
+                u = obj.objects{1}.background.displayUnits;
+            end
+        end
+        
         function applyBackground(obj)
             for i = 1:obj.size
                 obj.get(i).applyBackground();
