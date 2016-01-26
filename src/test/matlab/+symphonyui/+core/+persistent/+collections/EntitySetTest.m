@@ -19,7 +19,7 @@ classdef EntitySetTest < symphonyui.TestBase
             
             set1 = symphonyui.core.persistent.collections.EntitySet({e1, e2});
             obj.verifyCellsAreEquivalent(set1.propertyMap.keys, {'one', 'three'});
-            obj.verifyCellsAreEquivalent(set1.propertyMap('one'), {1, 'one'});
+            obj.verifyEqual(set1.propertyMap('one'), []);
             obj.verifyEqual(set1.propertyMap('three'), [1 2 3]);
             
             m3 = containers.Map();
@@ -29,7 +29,7 @@ classdef EntitySetTest < symphonyui.TestBase
             
             set2 = symphonyui.core.persistent.collections.EntitySet({e1, e2, e3});
             obj.verifyCellsAreEquivalent(set2.propertyMap.keys, {'one'});
-            obj.verifyCellsAreEquivalent(set2.propertyMap('one'), {1, 'one'});
+            obj.verifyEqual(set1.propertyMap('one'), []);
         end
         
     end
