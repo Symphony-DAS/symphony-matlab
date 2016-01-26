@@ -11,6 +11,7 @@ classdef NewFileView < appbox.View
         locationField
         browseLocationButton
         descriptionPopupMenu
+        spinner
         okButton
         cancelButton
     end
@@ -63,11 +64,17 @@ classdef NewFileView < appbox.View
             set(fileLayout, ...
                 'Widths', [65 -1 23], ...
                 'Heights', [23 23 23]);
-
+            
             % OK/Cancel controls.
             controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
+            spinnerLayout = uix.VBox( ...
+                'Parent', controlsLayout);
+            uix.Empty('Parent', spinnerLayout);
+            obj.spinner = com.mathworks.widgets.BusyAffordance();
+            javacomponent(obj.spinner.getComponent(), [], spinnerLayout);
+            set(spinnerLayout, 'Heights', [4 -1]);
             uix.Empty('Parent', controlsLayout);
             obj.okButton = uicontrol( ...
                 'Parent', controlsLayout, ...
@@ -81,7 +88,7 @@ classdef NewFileView < appbox.View
                 'String', 'Cancel', ...
                 'Interruptible', 'off', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
-            set(controlsLayout, 'Widths', [-1 75 75]);
+            set(controlsLayout, 'Widths', [16 -1 75 75]);
 
             set(mainLayout, 'Heights', [-1 23]);
 
@@ -152,6 +159,14 @@ classdef NewFileView < appbox.View
         function setDescriptionList(obj, names, values)
             set(obj.descriptionPopupMenu, 'String', names);
             set(obj.descriptionPopupMenu, 'Values', values);
+        end
+        
+        function startSpinner(obj)
+            obj.spinner.start();
+        end
+        
+        function stopSpinner(obj)
+            obj.spinner.stop();
         end
 
     end

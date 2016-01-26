@@ -2,7 +2,7 @@ classdef PersistorFactory < handle
     
     methods
         
-        function p = getPath(obj, name, location)
+        function p = getPath(obj, name, location) %#ok<INUSL>
             p = fullfile(location, name);
             [~, ~, ext] = fileparts(p);
             if ~strcmpi(ext, '.h5')
@@ -11,6 +11,9 @@ classdef PersistorFactory < handle
         end
         
         function p = new(obj, name, location, description)
+            if ~exist(location, 'dir')
+                error('Location does not exist');
+            end
             path = obj.getPath(name, location);
             if exist(path, 'file')
                 error('File exists');
@@ -19,7 +22,7 @@ classdef PersistorFactory < handle
             p = symphonyui.core.Persistor.newPersistor(cper, description);
         end
         
-        function p = open(obj, path)
+        function p = open(obj, path) %#ok<INUSL>
             if ~exist(path, 'file')
                 error('File does not exist');
             end

@@ -126,11 +126,13 @@ classdef NewFilePresenter < appbox.Presenter
                 end
                 
                 obj.enableControls(false);
+                obj.view.startSpinner();
                 obj.view.update();
                 
                 obj.documentationService.newFile(name, location, description);
             catch x
                 obj.view.showError(x.message);
+                obj.view.stopSpinner();
                 obj.enableControls(true);
                 return;
             end
