@@ -3,7 +3,7 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
     properties
         label
     end
-    
+
     properties (SetAccess = private)
         source
         epochGroups
@@ -22,7 +22,7 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         function p = get.label(obj)
             p = char(obj.cobj.Label);
         end
-        
+
         function set.label(obj, l)
             obj.cobj.Label = l;
         end
@@ -34,7 +34,7 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         function g = get.epochGroups(obj)
             g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.EpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
         end
-        
+
         function g = get.allEpochGroups(obj)
             g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.AllEpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
         end
@@ -57,17 +57,14 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         end
 
     end
-    
+
     methods (Static)
-        
-        function e = newEpochGroup(cobj, description, propertyMap)
-            if nargin < 3
-                propertyMap = containers.Map();
-            end
-            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, description, propertyMap);
+
+        function e = newEpochGroup(cobj, description)
+            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, description);
             e = symphonyui.core.persistent.EpochGroup(cobj);
         end
-        
+
     end
 
 end

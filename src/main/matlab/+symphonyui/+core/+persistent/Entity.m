@@ -143,7 +143,7 @@ classdef Entity < symphonyui.core.CoreObject
 
     methods (Static)
 
-        function e = newEntity(cobj, description, propertyMap)
+        function e = newEntity(cobj, description)
             e = symphonyui.core.persistent.Entity(cobj);
 
             descriptors = description.propertyDescriptors;
@@ -154,10 +154,17 @@ classdef Entity < symphonyui.core.CoreObject
                 e.addProperty(desc.name, desc.value);
             end
             e.addProperty(e.DESCRIPTION_TYPE_KEY, class(description));
-
+            
+            propertyMap = description.propertyMap;
             keys = propertyMap.keys;
             for i = 1:numel(keys)
                 e.addProperty(keys{i}, propertyMap(keys{i}));
+            end
+            
+            resources = description.resources;
+            keys = resources.keys;
+            for i = 1:numel(keys)
+                e.addResource(keys{i}, resources(keys{i}));
             end
         end
 

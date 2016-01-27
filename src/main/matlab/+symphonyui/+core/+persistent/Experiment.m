@@ -3,7 +3,7 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
     properties
         purpose
     end
-    
+
     properties (SetAccess = private)
         devices
         sources
@@ -21,7 +21,7 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         function p = get.purpose(obj)
             p = char(obj.cobj.Purpose);
         end
-        
+
         function set.purpose(obj, p)
             obj.cobj.Purpose = p;
         end
@@ -41,23 +41,20 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         function g = get.epochGroups(obj)
             g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.EpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
         end
-        
+
         function g = get.allEpochGroups(obj)
             g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.AllEpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
         end
 
     end
-    
+
     methods (Static)
-        
-        function e = newExperiment(cobj, description, propertyMap)
-            if nargin < 3
-                propertyMap = containers.Map();
-            end
-            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, description, propertyMap);
+
+        function e = newExperiment(cobj, description)
+            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, description);
             e = symphonyui.core.persistent.Experiment(cobj);
         end
-        
+
     end
 
 end
