@@ -133,8 +133,7 @@ classdef Entity < symphonyui.core.CoreObject
             
             descriptors = description.getPropertyDescriptors();
             for i = 1:numel(descriptors)
-                d = descriptors(i);
-                e.tryCore(@()e.cobj.AddProperty(d.name, e.propertyValueFromValue(d.value)));
+                e.tryCore(@()e.cobj.AddProperty(descriptors(i).name, e.propertyValueFromValue(descriptors(i).value)));
             end
             e.addResource(e.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
             

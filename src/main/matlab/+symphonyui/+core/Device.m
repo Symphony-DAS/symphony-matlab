@@ -9,6 +9,7 @@ classdef Device < symphonyui.core.CoreObject
 
     properties (Access = private)
         configurationSettingDescriptors
+        resources
     end
 
     properties
@@ -21,6 +22,7 @@ classdef Device < symphonyui.core.CoreObject
         function obj = Device(cobj)
             obj@symphonyui.core.CoreObject(cobj);
             obj.configurationSettingDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
+            obj.resources = containers.Map();
         end
 
         function delete(obj)
@@ -68,6 +70,18 @@ classdef Device < symphonyui.core.CoreObject
 
         function d = getConfigurationSettingDescriptors(obj)
             d = obj.configurationSettingDescriptors;
+        end
+        
+        function addResource(obj, name, variable)
+            obj.resources(name) = variable;
+        end
+        
+        function v = getResource(obj, name)
+            v = obj.resources(name);
+        end
+        
+        function n = getResourceNames(obj)
+            n = obj.resources.keys;
         end
 
         function d = bindStream(obj, stream, name)

@@ -28,6 +28,7 @@ classdef Controller < symphonyui.core.CoreObject
             obj@symphonyui.core.CoreObject(cobj);
 
             obj.state = symphonyui.core.ControllerState.STOPPED;
+            obj.devices = {};
         end
 
         function setRig(obj, rig)
@@ -90,10 +91,6 @@ classdef Controller < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.RequestStop());
         end
 
-        function d = get.devices(obj)
-            d = obj.cellArrayFromEnumerable(obj.cobj.Devices, @symphonyui.core.Device);
-        end
-
         function d = get.epochQueueDuration(obj)
             cdur = obj.cobj.EpochQueueDuration;
             if cdur.IsNone()
@@ -116,8 +113,26 @@ classdef Controller < symphonyui.core.CoreObject
             protocol.prepareRun();
 
             if ~isempty(persistor)
-                d = protocol.getPropertyDescriptors();
-                map = d.toMap();
+                for i = 1:numel(obj.devices)
+                    device = obj.devices{i};
+                    pDevice = persistor.device(device.name, device.manufacturer);
+                    
+                    resourceNames = device.getResourceNames();
+                    pResourceNames = pDevice.getResourceNames();
+                    
+                    for k = 1:numel(resourceNames)
+                        name = resourceNames{k};
+                        if any(strcmp(name, pResourceNames))
+                            if ~isequal(device.getResource(name), pDevice.getResource(name))
+                                error([device.name ' already contains a resource named ''' name ''' with a different value']);
+                            end
+                        else
+                            pDevice.addResource(name, device.getResource(name));
+                        end
+                    end
+                end
+                
+                map = protocol.getPropertyDescriptors().toMap();
                 keys = map.keys;
                 for i = 1:numel(keys)
                     map(keys{i}) = obj.propertyValueFromValue(map(keys{i}));
@@ -149,10 +164,12 @@ classdef Controller < symphonyui.core.CoreObject
 
         function addDevice(obj, device)
             obj.tryCore(@()obj.cobj.AddDevice(device.cobj));
+            obj.devices{end + 1} = device;
         end
 
         function removeAllDevices(obj)
             obj.tryCore(@()obj.cobj.RemoveAllDevices());
+            obj.devices = {};
         end
 
         function run(obj)

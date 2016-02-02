@@ -33,6 +33,11 @@ classdef Persistor < symphonyui.core.CoreObject
             cdev = obj.tryCoreWithReturn(@()obj.cobj.AddDevice(name, manufacturer));
             d = symphonyui.core.persistent.Device(cdev);
         end
+        
+        function d = device(obj, name, manufacturer)
+            cdev = obj.tryCoreWithReturn(@()obj.cobj.Device(name, manufacturer));
+            d = symphonyui.core.persistent.Device(cdev);
+        end
 
         function s = addSource(obj, parent, description)
             if ischar(description)
@@ -60,7 +65,6 @@ classdef Persistor < symphonyui.core.CoreObject
                 description = symphonyui.core.descriptions.EpochGroupDescription();
                 description.label = label;
             end
-            groups = obj.experiment.allEpochGroups;
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochGroup(description.label, source.cobj));
             try
                 g = symphonyui.core.persistent.EpochGroup.newEpochGroup(cgrp, description);
