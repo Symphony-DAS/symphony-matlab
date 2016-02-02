@@ -19,6 +19,11 @@ classdef Entity < symphonyui.core.CoreObject
 
         function obj = Entity(cobj)
             obj@symphonyui.core.CoreObject(cobj);
+            if any(strcmp(obj.getResourceNames(), obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME))
+                obj.propertyDescriptors = obj.getResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME);
+            else
+                obj.propertyDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
+            end
         end
 
         function i = get.uuid(obj)
@@ -56,17 +61,6 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function d = getPropertyDescriptors(obj)
-            d = obj.propertyDescriptors;
-        end
-        
-        function d = get.propertyDescriptors(obj)
-            if isempty(obj.propertyDescriptors)
-                if any(strcmp(obj.getResourceNames(), obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME))
-                    obj.propertyDescriptors = obj.getResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME);
-                else
-                    obj.propertyDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
-                end
-            end
             d = obj.propertyDescriptors;
         end
 
