@@ -1,8 +1,7 @@
 classdef EntityDescription < symphonyui.core.Description
     
-    properties
+    properties (Access = private)
         propertyDescriptors
-        propertyMap
         resources
     end
     
@@ -10,23 +9,28 @@ classdef EntityDescription < symphonyui.core.Description
         
         function obj = EntityDescription()
             obj.propertyDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
-            obj.propertyMap = containers.Map();
             obj.resources = containers.Map();
         end
         
-        function set.propertyDescriptors(obj, d)
-            validateattributes(d, {'symphonyui.core.PropertyDescriptor'}, {'vector'});
-            obj.propertyDescriptors = d;
+        function addProperty(obj, name, value, varargin)
+            d = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
+            obj.propertyDescriptors(end + 1) = d;
         end
         
-        function set.propertyMap(obj, m)
-            validateattributes(m, {'containers.Map'}, {'2d'});
-            obj.propertyMap = m;
+        function d = getPropertyDescriptors(obj)
+            d = obj.propertyDescriptors;
         end
         
-        function set.resources(obj, r)
-            validateattributes(r, {'containers.Map'}, {'2d'});
-            obj.resources = r;
+        function addResource(obj, name, variable)
+            obj.resources(name) = variable;
+        end
+        
+        function v = getResource(obj, name)
+            v = obj.resources(name);
+        end
+        
+        function n = getResourceNames(obj)
+            n = obj.resources.keys;
         end
         
     end

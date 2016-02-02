@@ -52,6 +52,12 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             end
         end
         
+        function setConfigurationSetting(obj, key, value)
+            for i = 1:numel(obj.objects)
+                obj.objects{i}.setConfigurationSetting(key, value);
+            end
+        end
+        
         function tf = removeConfigurationSetting(obj, key)
             tf = false;
             for i = 1:numel(obj.objects)
@@ -60,14 +66,14 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             end
         end
         
-        function d = getConfigurationDescriptors(obj)
+        function d = getConfigurationSettingDescriptors(obj)
             if isempty(obj.objects)
                 d = symphonyui.core.PropertyDescriptor.empty();
                 return;
             end
-            d = obj.objects{1}.getConfigurationDescriptors();
+            d = obj.objects{1}.getConfigurationSettingDescriptors();
             for i = 2:numel(obj.objects)
-                d = obj.intersect(d, obj.objects{i}.getConfigurationDescriptors());
+                d = obj.intersect(d, obj.objects{i}.getConfigurationSettingDescriptors());
             end
         end
         

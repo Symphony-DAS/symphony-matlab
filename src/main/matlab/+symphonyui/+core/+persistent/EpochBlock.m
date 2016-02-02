@@ -16,15 +16,9 @@ classdef EpochBlock < symphonyui.core.persistent.TimelineEntity
         function p = get.protocolId(obj)
             p = char(obj.cobj.ProtocolID);
         end
-        
+
         function p = get.protocolParameters(obj)
-            function out = wrap(in)
-                out = in;
-                if ischar(in) && ~isempty(in) && in(1) == '{' && in(end) == '}'
-                    out = symphonyui.core.util.str2cellstr(in);
-                end
-            end
-            p = obj.mapFromKeyValueEnumerable(obj.cobj.ProtocolParameters, @wrap);
+            p = obj.mapFromKeyValueEnumerable(obj.cobj.ProtocolParameters, @obj.valueFromPropertyValue);
         end
 
         function e = get.epochs(obj)

@@ -82,7 +82,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
         
         function populateConfigurationWithDeviceSet(obj, deviceSet)
             try
-                fields = symphonyui.ui.util.desc2field(deviceSet.getConfigurationDescriptors());
+                fields = symphonyui.ui.util.desc2field(deviceSet.getConfigurationSettingDescriptors());
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
@@ -93,7 +93,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
         
         function updateConfigurationWithDeviceSet(obj, deviceSet)
             try
-                fields = symphonyui.ui.util.desc2field(deviceSet.getConfigurationDescriptors());
+                fields = symphonyui.ui.util.desc2field(deviceSet.getConfigurationSettingDescriptors());
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
@@ -118,7 +118,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
         function onViewSetConfigurationSetting(obj, ~, event)
             p = event.data.Property;
             try
-                obj.detailedDeviceSet.addConfigurationSetting(p.Name, p.Value);
+                obj.detailedDeviceSet.setConfigurationSetting(p.Name, p.Value);
             catch x
                 obj.view.showError(x.message);
                 return;

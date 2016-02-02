@@ -1,7 +1,6 @@
 classdef EntitySet < symphonyui.core.collections.ObjectSet
     
     properties (SetAccess = private)
-        propertyMap
         keywords
         notes
     end
@@ -15,20 +14,15 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             obj@symphonyui.core.collections.ObjectSet(entities);
         end
         
-        function m = get.propertyMap(obj)
-            if isempty(obj.objects)
-                m = containers.Map();
-                return;
-            end
-            m = obj.objects{1}.propertyMap;
-            for i = 2:numel(obj.objects)
-                m = obj.intersectMaps(m, obj.objects{i}.propertyMap);
-            end
-        end
-        
         function addProperty(obj, key, value)
             for i = 1:numel(obj.objects)
                 obj.objects{i}.addProperty(key, value);
+            end
+        end
+        
+        function setProperty(obj, key, value)
+            for i = 1:numel(obj.objects)
+                obj.objects{i}.setProperty(key, value);
             end
         end
         

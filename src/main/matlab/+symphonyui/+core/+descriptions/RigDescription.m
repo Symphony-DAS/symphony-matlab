@@ -2,6 +2,9 @@ classdef RigDescription < symphonyui.core.Description
     
     properties
         daqController
+    end
+    
+    properties (SetAccess = private)
         devices
     end
     
@@ -17,9 +20,9 @@ classdef RigDescription < symphonyui.core.Description
             obj.daqController = c;
         end
         
-        function set.devices(obj, d)
-            validateattributes(d, {'cell'}, {'2d'});
-            obj.devices = d;
+        function addDevice(obj, device)
+            validateattributes(device, {'symphonyui.core.Device'}, {'scalar'});
+            obj.devices{end + 1} = device;
         end
         
     end

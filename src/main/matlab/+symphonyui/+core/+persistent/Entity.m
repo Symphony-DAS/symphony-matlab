@@ -2,18 +2,17 @@ classdef Entity < symphonyui.core.CoreObject
 
     properties (SetAccess = private)
         uuid
-        propertyMap
         keywords
         notes
     end
 
     properties (Access = private)
-        staticPropertyDescriptors
+        propertyDescriptors
     end
 
     properties (Constant)
-        DESCRIPTION_TYPE_KEY = 'descriptionType'
-        STATIC_PROPERTY_DESCRIPTORS_NAME = 'descriptors'
+        DESCRIPTION_TYPE_RESOURCE_NAME = 'descriptionType'
+        PROPERTY_DESCRIPTORS_RESOURCE_NAME = 'propertyDescriptors'
     end
 
     methods
@@ -26,52 +25,49 @@ classdef Entity < symphonyui.core.CoreObject
             i = char(obj.cobj.UUID.ToString());
         end
 
-        function m = get.propertyMap(obj)
-            function out = wrap(in)
-                out = in;
-                if ischar(in) && ~isempty(in) && in(1) == '{' && in(end) == '}'
-                    out = symphonyui.core.util.str2cellstr(in);
-                end
+        function addProperty(obj, name, value, varargin)
+            if obj.isProperty(name)
+                error([name ' already exists']);
             end
-            m = obj.mapFromKeyValueEnumerable(obj.cobj.Properties, @wrap);
+            d = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
+            obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
+            obj.propertyDescriptors(end + 1) = d;
+            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, obj.propertyDescriptors);
+        end
+        
+        function setProperty(obj, name, value)
+            if ~obj.isProperty(name)
+                error([name ' does not exist']);
+            end
+            obj.propertyDescriptors.findByName(name).value = value;
+            obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
+            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, obj.propertyDescriptors);
         end
 
-        function addProperty(obj, key, value)
-            if isempty(value) && ~ischar(value) && ~iscell(value)
-                value = NET.createArray('System.Double', 0);
-            elseif iscellstr(value)
-                value = symphonyui.core.util.cellstr2str(value);
-            end
-            obj.tryCore(@()obj.cobj.AddProperty(key, value));
+        function tf = removeProperty(obj, name)
+            tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(name));
+            index = arrayfun(@(d)strcmp(d.name, name), obj.propertyDescriptors);
+            obj.propertyDescriptors(index) = [];
+            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, obj.propertyDescriptors);
         end
-
-        function tf = removeProperty(obj, key)
-            if strcmp(key, obj.DESCRIPTION_TYPE_KEY)
-                error('Cannot remove the description type property');
-            end
-            desc = obj.getStaticPropertyDescriptors();
-            if ~isempty(desc.findByName(key))
-                error('Cannot remove a property with a static descriptor');
-            end
-            tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(key));
+        
+        function tf = isProperty(obj, name)
+            tf = ~isempty(obj.propertyDescriptors.findByName(name));
         end
 
         function d = getPropertyDescriptors(obj)
-            desc = obj.getStaticPropertyDescriptors();
-            map = obj.propertyMap;
-            keys = map.keys;
-            d = symphonyui.core.PropertyDescriptor.empty(0, numel(keys));
-            for i = 1:numel(keys)
-                static = desc.findByName(keys{i});
-                if isempty(static)
-                    d(i) = symphonyui.core.PropertyDescriptor(keys{i}, map(keys{i}), ...
-                        'isHidden', strcmp(keys{i}, obj.DESCRIPTION_TYPE_KEY), ...
-                        'isReadOnly', true);
+            d = obj.propertyDescriptors;
+        end
+        
+        function d = get.propertyDescriptors(obj)
+            if isempty(obj.propertyDescriptors)
+                if any(strcmp(obj.getResourceNames(), obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME))
+                    obj.propertyDescriptors = obj.getResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME);
                 else
-                    static.value = map(static.name);
-                    d(i) = static;
+                    obj.propertyDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
                 end
             end
+            d = obj.propertyDescriptors;
         end
 
         function k = get.keywords(obj)
@@ -94,6 +90,11 @@ classdef Entity < symphonyui.core.CoreObject
             delete(temp);
             obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.workspace', name, bytes));
         end
+        
+        function updateResource(obj, name, variable)
+            obj.removeResource(name);
+            obj.addResource(name, variable);
+        end
 
         function v = getResource(obj, name)
             cres = obj.tryCoreWithReturn(@()obj.cobj.GetResource(name));
@@ -104,6 +105,10 @@ classdef Entity < symphonyui.core.CoreObject
             s = load(temp);
             delete(temp);
             v = s.variable;
+        end
+        
+        function tf = removeResource(obj, name)
+            tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(name));
         end
 
         function n = getResourceNames(obj)
@@ -125,46 +130,23 @@ classdef Entity < symphonyui.core.CoreObject
 
     end
 
-    methods (Access = private)
-
-        function p = getStaticPropertyDescriptors(obj)
-            if isempty(obj.staticPropertyDescriptors)
-                if any(strcmp(obj.STATIC_PROPERTY_DESCRIPTORS_NAME, obj.getResourceNames()))
-                    d = obj.getResource(obj.STATIC_PROPERTY_DESCRIPTORS_NAME);
-                else
-                    d = symphonyui.core.PropertyDescriptor.empty();
-                end
-                obj.staticPropertyDescriptors = d;
-            end
-            p = obj.staticPropertyDescriptors;
-        end
-
-    end
-
     methods (Static)
 
         function e = newEntity(cobj, description)
             e = symphonyui.core.persistent.Entity(cobj);
-
-            descriptors = description.propertyDescriptors;
-            e.addResource(e.STATIC_PROPERTY_DESCRIPTORS_NAME, descriptors);
-
+            
+            e.addResource(e.DESCRIPTION_TYPE_RESOURCE_NAME, class(description));            
+            
+            descriptors = description.getPropertyDescriptors();
             for i = 1:numel(descriptors)
-                desc = descriptors(i);
-                e.addProperty(desc.name, desc.value);
+                d = descriptors(i);
+                e.tryCore(@()e.cobj.AddProperty(d.name, e.propertyValueFromValue(d.value)));
             end
-            e.addProperty(e.DESCRIPTION_TYPE_KEY, class(description));
+            e.addResource(e.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
             
-            propertyMap = description.propertyMap;
-            keys = propertyMap.keys;
-            for i = 1:numel(keys)
-                e.addProperty(keys{i}, propertyMap(keys{i}));
-            end
-            
-            resources = description.resources;
-            keys = resources.keys;
-            for i = 1:numel(keys)
-                e.addResource(keys{i}, resources(keys{i}));
+            names = description.getResourceNames();
+            for i = 1:numel(names)
+                e.addResource(names{i}, description.getResource(names{i}));
             end
         end
 

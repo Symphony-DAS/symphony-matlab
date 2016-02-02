@@ -531,7 +531,7 @@ classdef DataManagerPresenter < appbox.Presenter
         function onViewSetProperty(obj, ~, event)
             p = event.data.Property;
             try
-                obj.detailedEntitySet.addProperty(p.Name, p.Value);
+                obj.detailedEntitySet.setProperty(p.Name, p.Value);
             catch x
                 obj.view.showError(x.message);
                 return;

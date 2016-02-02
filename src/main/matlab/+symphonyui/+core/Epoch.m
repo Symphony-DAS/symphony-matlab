@@ -50,20 +50,11 @@ classdef Epoch < symphonyui.core.CoreObject
         end
 
         function m = get.parameters(obj)
-            function out = wrap(in)
-                out = in;
-                if ischar(in) && ~isempty(in) && in(1) == '{' && in(end) == '}'
-                    out = symphonyui.core.util.str2cellstr(in);
-                end
-            end
-            m = obj.mapFromKeyValueEnumerable(obj.cobj.ProtocolParameters, @wrap);
+            m = obj.mapFromKeyValueEnumerable(obj.cobj.ProtocolParameters, @obj.valueFromPropertyValue);
         end
 
         function addParameter(obj, name, value)
-            if iscellstr(value)
-                value = symphonyui.core.util.cellstr2str(value);
-            end
-            obj.tryCore(@()obj.cobj.ProtocolParameters.Add(name, value));
+            obj.tryCore(@()obj.cobj.ProtocolParameters.Add(name, obj.propertyValueFromValue(value)));
         end
 
         function k = get.keywords(obj)

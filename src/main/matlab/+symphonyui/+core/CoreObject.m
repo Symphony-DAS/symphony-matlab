@@ -153,6 +153,22 @@ classdef (Abstract) CoreObject < handle
             t = System.TimeSpan.FromSeconds(seconds(d));
         end
         
+        function v = propertyValueFromValue(obj, v) %#ok<INUSL>
+            if iscell(v) || isstruct(v)
+                try %#ok<TRYNC>
+                    v = savejson('', v, 'Compact', true);
+                end
+            end
+        end
+        
+        function v = valueFromPropertyValue(obj, v) %#ok<INUSL>
+            if ischar(v) && ~isempty(regexp(v, '^\s*(?:\[.+\])|(?:\{.+\})\s*$', 'once'))
+                try %#ok<TRYNC>
+                    v = loadjson(v);
+                end
+            end
+        end
+        
     end
     
 end

@@ -63,13 +63,6 @@ classdef Persistor < symphonyui.core.CoreObject
             groups = obj.experiment.allEpochGroups;
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochGroup(description.label, source.cobj));
             try
-                for i = numel(groups):-1:1
-                    map = groups{i}.propertyMap;
-                    if strcmp(map(symphonyui.core.persistent.Entity.DESCRIPTION_TYPE_KEY), class(description))
-                        description.propertyMap = [description.propertyMap; map];
-                        break;
-                    end
-                end
                 g = symphonyui.core.persistent.EpochGroup.newEpochGroup(cgrp, description);
             catch x
                 obj.endEpochGroup();
