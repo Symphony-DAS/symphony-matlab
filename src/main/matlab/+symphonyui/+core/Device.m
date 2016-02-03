@@ -40,30 +40,32 @@ classdef Device < symphonyui.core.CoreObject
         end
 
         function addConfigurationSetting(obj, name, value, varargin)
-            if obj.isConfigurationSetting(name)
+            descriptors = obj.getConfigurationSettingDescriptors();
+            if ~isempty(descriptors.findByName(name))
                 error([name ' already exists']);
             end
-            d = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
+            descriptors(end + 1) = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
             obj.tryCore(@()obj.cobj.Configuration.Add(name, obj.propertyValueFromValue(value)));
-            obj.configurationSettingDescriptors(end + 1) = d;
+            obj.configurationSettingDescriptors = descriptors;
         end
 
         function setConfigurationSetting(obj, name, value)
-            if ~obj.isConfigurationSetting(name)
+            descriptors = obj.getConfigurationSettingDescriptors();
+            d = descriptors.findByName(name);
+            if isempty(d)
                 error([name ' does not exist']);
             end
-            obj.configurationSettingDescriptors.findByName(name).value = value;
+            d.value = value;
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
+            obj.configurationSettingDescriptors = descriptors;
         end
 
         function tf = removeConfigurationSetting(obj, name)
+            descriptors = obj.getConfigurationSettingDescriptors();
+            index = arrayfun(@(d)strcmp(d.name, name), descriptors);
+            descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.Configuration.Remove(name));
-            index = arrayfun(@(d)strcmp(d.name, name), obj.configurationSettingDescriptors);
-            obj.configurationSettingDescriptors(index) = [];
-        end
-
-        function tf = isConfigurationSetting(obj, name)
-            tf = ~isempty(obj.configurationSettingDescriptors.findByName(name));
+            obj.configurationSettingDescriptors = descriptors;
         end
 
         function d = getConfigurationSettingDescriptors(obj)

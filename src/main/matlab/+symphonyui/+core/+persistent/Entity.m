@@ -6,10 +6,6 @@ classdef Entity < symphonyui.core.CoreObject
         notes
     end
 
-    properties (Access = private)
-        propertyDescriptors
-    end
-
     properties (Constant)
         DESCRIPTION_TYPE_RESOURCE_NAME = 'descriptionType'
         PROPERTY_DESCRIPTORS_RESOURCE_NAME = 'propertyDescriptors'
@@ -19,11 +15,6 @@ classdef Entity < symphonyui.core.CoreObject
 
         function obj = Entity(cobj)
             obj@symphonyui.core.CoreObject(cobj);
-            if any(strcmp(obj.getResourceNames(), obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME))
-                obj.propertyDescriptors = obj.getResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME);
-            else
-                obj.propertyDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
-            end
         end
 
         function i = get.uuid(obj)
@@ -31,37 +22,40 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function addProperty(obj, name, value, varargin)
-            if obj.isProperty(name)
+            descriptors = obj.getPropertyDescriptors();
+            if ~isempty(descriptors.findByName(name))
                 error([name ' already exists']);
             end
-            d = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
+            descriptors(end + 1) = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
-            obj.propertyDescriptors(end + 1) = d;
-            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, obj.propertyDescriptors);
+            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
         end
         
         function setProperty(obj, name, value)
-            if ~obj.isProperty(name)
+            descriptors = obj.getPropertyDescriptors();
+            d = descriptors.findByName(name);
+            if isempty(d)
                 error([name ' does not exist']);
             end
-            obj.propertyDescriptors.findByName(name).value = value;
+            d.value = value;
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
-            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, obj.propertyDescriptors);
+            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
         end
 
         function tf = removeProperty(obj, name)
+            descriptors = obj.getPropertyDescriptors();
+            index = arrayfun(@(d)strcmp(d.name, name), descriptors);
+            descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(name));
-            index = arrayfun(@(d)strcmp(d.name, name), obj.propertyDescriptors);
-            obj.propertyDescriptors(index) = [];
-            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, obj.propertyDescriptors);
+            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
         end
         
-        function tf = isProperty(obj, name)
-            tf = ~isempty(obj.propertyDescriptors.findByName(name));
-        end
-
         function d = getPropertyDescriptors(obj)
-            d = obj.propertyDescriptors;
+            if any(strcmp(obj.getResourceNames(), obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME))
+                d = obj.getResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME);
+            else
+                d = symphonyui.core.PropertyDescriptor.empty(0, 1);
+            end
         end
 
         function k = get.keywords(obj)
