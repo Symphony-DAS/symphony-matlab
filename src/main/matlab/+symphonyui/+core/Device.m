@@ -9,7 +9,6 @@ classdef Device < symphonyui.core.CoreObject
 
     properties (Access = private)
         configurationSettingDescriptors
-        resources
     end
 
     properties
@@ -22,7 +21,6 @@ classdef Device < symphonyui.core.CoreObject
         function obj = Device(cobj)
             obj@symphonyui.core.CoreObject(cobj);
             obj.configurationSettingDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
-            obj.resources = containers.Map();
         end
 
         function delete(obj)
@@ -73,15 +71,17 @@ classdef Device < symphonyui.core.CoreObject
         end
         
         function addResource(obj, name, variable)
-            obj.resources(name) = variable;
+            bytes = getByteStreamFromArray(variable);
+            obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.workspace', name, bytes));
         end
         
         function v = getResource(obj, name)
-            v = obj.resources(name);
+            cres = obj.tryCoreWithReturn(@()obj.cobj.GetResource(name));
+            v = getArrayFromByteStream(uint8(cres.Data));
         end
         
         function n = getResourceNames(obj)
-            n = obj.resources.keys;
+            n = obj.cellArrayFromEnumerable(obj.cobj.GetResourceNames(), @char);
         end
 
         function d = bindStream(obj, stream, name)

@@ -76,12 +76,8 @@ classdef Entity < symphonyui.core.CoreObject
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveKeyword(keyword));
         end
 
-        function addResource(obj, name, variable) %#ok<INUSD>
-            temp = [tempname '.mat'];
-            save(temp, 'variable');
-            file = java.io.File(temp);
-            bytes = typecast(java.nio.file.Files.readAllBytes(file.toPath), 'uint8');
-            delete(temp);
+        function addResource(obj, name, variable)
+            bytes = getByteStreamFromArray(variable);
             obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.workspace', name, bytes));
         end
         
@@ -92,13 +88,7 @@ classdef Entity < symphonyui.core.CoreObject
 
         function v = getResource(obj, name)
             cres = obj.tryCoreWithReturn(@()obj.cobj.GetResource(name));
-            temp = [tempname '.mat'];
-            fid = fopen(temp, 'w');
-            fwrite(fid, uint8(cres.Data));
-            fclose(fid);
-            s = load(temp);
-            delete(temp);
-            v = s.variable;
+            v = getArrayFromByteStream(uint8(cres.Data));
         end
         
         function tf = removeResource(obj, name)
