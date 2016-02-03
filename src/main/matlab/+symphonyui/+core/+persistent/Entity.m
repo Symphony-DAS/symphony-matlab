@@ -72,7 +72,7 @@ classdef Entity < symphonyui.core.CoreObject
 
         function addResource(obj, name, variable)
             bytes = getByteStreamFromArray(variable);
-            obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.workspace', name, bytes));
+            obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.data', name, bytes));
         end
         
         function updateResource(obj, name, variable)
