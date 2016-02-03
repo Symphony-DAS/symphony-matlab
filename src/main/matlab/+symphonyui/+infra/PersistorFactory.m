@@ -19,7 +19,12 @@ classdef PersistorFactory < handle
                 error('File exists');
             end
             cper = Symphony.Core.H5EpochPersistor.Create(path);
-            p = symphonyui.core.Persistor.newPersistor(cper, description);
+            try
+                p = symphonyui.core.Persistor.newPersistor(cper, description);
+            catch x
+                cper.Close();
+                rethrow(x);
+            end
         end
         
         function p = open(obj, path) %#ok<INUSL>
