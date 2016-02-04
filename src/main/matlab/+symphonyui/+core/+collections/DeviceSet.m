@@ -3,7 +3,6 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
     properties (SetAccess = private)
         name
         manufacturer
-        configuration
         inputStreams
         outputStreams
     end
@@ -32,17 +31,6 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             m = '';
             if ~isempty(obj.objects) && all(cellfun(@(d)isequal(d.manufacturer, obj.objects{1}.manufacturer), obj.objects))
                 m = obj.objects{1}.manufacturer;
-            end
-        end
-        
-        function m = get.configuration(obj)
-            if isempty(obj.objects)
-                m = containers.Map();
-                return;
-            end
-            m = obj.objects{1}.configuration;
-            for i = 2:numel(obj.objects)
-                m = obj.intersectMaps(m, obj.objects{i}.configuration);
             end
         end
         

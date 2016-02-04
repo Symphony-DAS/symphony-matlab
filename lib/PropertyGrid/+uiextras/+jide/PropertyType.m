@@ -386,6 +386,9 @@ classdef PropertyType
                             value = self.ConvertFromString(javavalue);
                             stringconversion = true;
                     end
+                    if isempty(value) && ischar(value)
+                        return;
+                    end
                     switch self.Shape
                         case 'row'
                             value = reshape(value, 1, numel(value));
