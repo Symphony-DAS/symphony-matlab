@@ -30,7 +30,7 @@ classdef Entity < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
             obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
         end
-        
+
         function setProperty(obj, name, value)
             descriptors = obj.getPropertyDescriptors();
             d = descriptors.findByName(name);
@@ -49,7 +49,7 @@ classdef Entity < symphonyui.core.CoreObject
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(name));
             obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
         end
-        
+
         function d = getPropertyDescriptors(obj)
             if any(strcmp(obj.getResourceNames(), obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME))
                 d = obj.getResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME);
@@ -72,9 +72,9 @@ classdef Entity < symphonyui.core.CoreObject
 
         function addResource(obj, name, variable)
             bytes = getByteStreamFromArray(variable);
-            obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.data', name, bytes));
+            obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.byte-stream', name, bytes));
         end
-        
+
         function updateResource(obj, name, variable)
             obj.removeResource(name);
             obj.addResource(name, variable);
@@ -84,7 +84,7 @@ classdef Entity < symphonyui.core.CoreObject
             cres = obj.tryCoreWithReturn(@()obj.cobj.GetResource(name));
             v = getArrayFromByteStream(uint8(cres.Data));
         end
-        
+
         function tf = removeResource(obj, name)
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(name));
         end
@@ -112,15 +112,15 @@ classdef Entity < symphonyui.core.CoreObject
 
         function e = newEntity(cobj, description)
             e = symphonyui.core.persistent.Entity(cobj);
-            
-            e.addResource(e.DESCRIPTION_TYPE_RESOURCE_NAME, class(description));            
-            
+
+            e.addResource(e.DESCRIPTION_TYPE_RESOURCE_NAME, class(description));
+
             descriptors = description.getPropertyDescriptors();
             for i = 1:numel(descriptors)
                 e.tryCore(@()e.cobj.AddProperty(descriptors(i).name, e.propertyValueFromValue(descriptors(i).value)));
             end
             e.addResource(e.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
-            
+
             names = description.getResourceNames();
             for i = 1:numel(names)
                 e.addResource(names{i}, description.getResource(names{i}));
