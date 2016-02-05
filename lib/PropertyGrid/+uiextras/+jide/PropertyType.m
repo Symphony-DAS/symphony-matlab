@@ -351,7 +351,16 @@ classdef PropertyType
                 case {'row','column'}
                     switch self.PrimitiveType
                         case 'char'  % add a string property
-                            if strcmp(self.Domain, 'datestr')
+                            if isa(javavalue, 'javax.swing.tree.TreePath')
+                                nPaths = javavalue.getPathCount() - 1; % skip root
+                                paths = cell(1, nPaths);
+                                for i = 1:nPaths
+                                    paths{i} = char(javavalue.getPathComponent(i));
+                                end
+                                value = strjoin(paths, '\');
+                                stringconversion = true;
+                                return;
+                            elseif strcmp(self.Domain, 'datestr')
                                 if isempty(javavalue)
                                     value = '';
                                 else
@@ -651,13 +660,9 @@ classdef PropertyType
         end
         
         function tf = IsInMap(m, value)
-            if isempty(value)
-                tf = false;
-                return;
-            end
-            split = strsplit(value(2:end-1), ', ');
-            tf = strcmp(split{1}, '>');
-            for i = 2:numel(split)
+            tf = true;
+            split = strsplit(value, '\');
+            for i = 1:numel(split)
                 if i == numel(split)
                     if iscellstr(m)
                         tf = any(strcmp(m, split{end})) & tf;

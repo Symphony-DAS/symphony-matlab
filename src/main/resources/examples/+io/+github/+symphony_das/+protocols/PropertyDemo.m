@@ -13,7 +13,7 @@ classdef PropertyDemo < symphonyui.core.Protocol
         suggestion = 'banana'       % Row vector of characters that offers suggestions
         number = 1                  % Row vector of characters that can take any of the predefined set of values
         date = datestr(now)         % Row vector of characters that can take a date string
-        tree = '[>, item 1]'        % Row vector of characters that can take any of the predefined set of values
+        tree = 'folder 2\item 1'    % Row vector of characters that can take any of the predefined set of values
     end
     
     properties (Hidden)

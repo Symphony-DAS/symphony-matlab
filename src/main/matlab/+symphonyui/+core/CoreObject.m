@@ -155,9 +155,7 @@ classdef (Abstract) CoreObject < handle
         
         function v = propertyValueFromValue(obj, v) %#ok<INUSL>
             if iscell(v) || isstruct(v)
-                try %#ok<TRYNC>
-                    v = savejson('', v, 'Compact', true);
-                end
+                v = savejson('', v, 'Compact', true);
             end
         end
         
