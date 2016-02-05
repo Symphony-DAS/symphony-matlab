@@ -17,20 +17,18 @@ classdef SealTest < symphonyui.core.Protocol
         function onSetRig(obj)
             onSetRig@symphonyui.core.Protocol(obj);
             
-            amps = appbox.firstNonEmpty(obj.rig.getDeviceNames('Amp'), {'(None)'});
-            obj.amp = amps{1};
-            obj.ampType = symphonyui.core.PropertyType('char', 'row', amps);
+            [obj.amp, obj.ampType] = obj.createDeviceNamesProperty('Amp');
         end
         
         function p = getPreview(obj, panel)
             p = symphonyui.builtin.previews.StimuliPreview(panel, @()createPreviewStimuli(obj));
             function s = createPreviewStimuli(obj)
-                gen = symphonyui.builtin.stimuli.PulseGenerator(obj.ampStimulus().parameters);
+                gen = symphonyui.builtin.stimuli.PulseGenerator(obj.createAmpStimulus().parameters);
                 s = gen.generate();
             end
         end
         
-        function stim = ampStimulus(obj)
+        function stim = createAmpStimulus(obj)
             gen = symphonyui.builtin.stimuli.RepeatingPulseGenerator();
             
             gen.preTime = obj.preTime;
@@ -47,7 +45,7 @@ classdef SealTest < symphonyui.core.Protocol
         function prepareEpoch(obj, epoch)
             prepareEpoch@symphonyui.core.Protocol(obj, epoch);
             
-            epoch.addStimulus(obj.rig.getDevice(obj.amp), obj.ampStimulus());
+            epoch.addStimulus(obj.rig.getDevice(obj.amp), obj.createAmpStimulus());
         end
         
         function tf = shouldContinuePreparingEpochs(obj)

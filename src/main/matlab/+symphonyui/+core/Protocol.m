@@ -149,5 +149,18 @@ classdef Protocol < handle
         end
         
     end
+    
+    methods (Access = protected)
+        
+        function [value, type] = createDeviceNamesProperty(obj, expression)
+            names = obj.rig.getDeviceNames(expression);
+            if isempty(names)
+                names = {'(None)'};
+            end
+            value = names{1};
+            type = symphonyui.core.PropertyType('char', 'row', names);
+        end
+        
+    end
 
 end

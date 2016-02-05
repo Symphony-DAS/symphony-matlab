@@ -22,17 +22,12 @@ classdef LedPulse < symphonyui.core.Protocol
         function onSetRig(obj)
             onSetRig@symphonyui.core.Protocol(obj);
             
-            leds = appbox.firstNonEmpty(obj.rig.getDeviceNames('LED'), {'(None)'});
-            obj.led = leds{1};
-            obj.ledType = symphonyui.core.PropertyType('char', 'row', leds);
-            
-            amps = appbox.firstNonEmpty(obj.rig.getDeviceNames('Amp'), {'(None)'});
-            obj.amp = amps{1};
-            obj.ampType = symphonyui.core.PropertyType('char', 'row', amps);
+            [obj.led, obj.ledType] = obj.createDeviceNamesProperty('LED');
+            [obj.amp, obj.ampType] = obj.createDeviceNamesProperty('Amp');
         end
         
         function p = getPreview(obj, panel)
-            p = symphonyui.builtin.previews.StimuliPreview(panel, @()obj.ledStimulus());
+            p = symphonyui.builtin.previews.StimuliPreview(panel, @()obj.createLedStimulus());
         end
         
         function prepareRun(obj)
@@ -44,7 +39,7 @@ classdef LedPulse < symphonyui.core.Protocol
                 'measurementRegion', [obj.preTime obj.preTime+obj.stimTime]);
         end
         
-        function stim = ledStimulus(obj)
+        function stim = createLedStimulus(obj)
             gen = symphonyui.builtin.stimuli.PulseGenerator();
             
             gen.preTime = obj.preTime;
@@ -61,17 +56,15 @@ classdef LedPulse < symphonyui.core.Protocol
         function prepareEpoch(obj, epoch)
             prepareEpoch@symphonyui.core.Protocol(obj, epoch);
             
-            epoch.addStimulus(obj.rig.getDevice(obj.led), obj.ledStimulus());
+            epoch.addStimulus(obj.rig.getDevice(obj.led), obj.createLedStimulus());
             epoch.addResponse(obj.rig.getDevice(obj.amp));
         end
         
         function prepareInterval(obj, interval)
             prepareInterval@symphonyui.core.Protocol(obj, interval);
             
-            if obj.interpulseInterval > 0
-                device = obj.rig.getDevice(obj.led);
-                interval.addDirectCurrentStimulus(device, device.background, obj.interpulseInterval, obj.sampleRate);
-            end
+            device = obj.rig.getDevice(obj.led);
+            interval.addDirectCurrentStimulus(device, device.background, obj.interpulseInterval, obj.sampleRate);
         end
         
         function tf = shouldContinuePreparingEpochs(obj)

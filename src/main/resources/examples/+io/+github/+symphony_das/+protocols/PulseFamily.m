@@ -21,9 +21,7 @@ classdef PulseFamily < symphonyui.core.Protocol
         function onSetRig(obj)
             onSetRig@symphonyui.core.Protocol(obj);
             
-            amps = appbox.firstNonEmpty(obj.rig.getDeviceNames('Amp'), {'(None)'});
-            obj.amp = amps{1};
-            obj.ampType = symphonyui.core.PropertyType('char', 'row', amps);
+            [obj.amp, obj.ampType] = obj.createDeviceNamesProperty('Amp');
         end
         
         function p = getPreview(obj, panel)
@@ -31,7 +29,7 @@ classdef PulseFamily < symphonyui.core.Protocol
             function s = createPreviewStimuli(obj)
                 s = cell(1, obj.pulsesInFamily);
                 for i = 1:numel(s)
-                    s{i} = obj.ampStimulus(i);
+                    s{i} = obj.createAmpStimulus(i);
                 end
             end
         end
@@ -43,7 +41,7 @@ classdef PulseFamily < symphonyui.core.Protocol
             obj.showFigure('symphonyui.builtin.figures.MeanResponseFigure', obj.rig.getDevice(obj.amp));
         end
         
-        function [stim, pulseSignal] = ampStimulus(obj, pulseNum)
+        function [stim, pulseSignal] = createAmpStimulus(obj, pulseNum)
             pulseSignal = obj.incrementPerPulse * (double(pulseNum) - 1) + obj.firstPulseSignal;
             
             gen = symphonyui.builtin.stimuli.PulseGenerator();
@@ -63,7 +61,7 @@ classdef PulseFamily < symphonyui.core.Protocol
             prepareEpoch@symphonyui.core.Protocol(obj, epoch);
             
             pulseNum = mod(obj.numEpochsPrepared - 1, obj.pulsesInFamily) + 1;
-            [stim, pulseSignal] = obj.ampStimulus(pulseNum);
+            [stim, pulseSignal] = obj.createAmpStimulus(pulseNum);
             
             epoch.addParameter('pulseSignal', pulseSignal);
             epoch.addStimulus(obj.rig.getDevice(obj.amp), stim);
@@ -73,10 +71,8 @@ classdef PulseFamily < symphonyui.core.Protocol
         function prepareInterval(obj, interval)
             prepareInterval@symphonyui.core.Protocol(obj, interval);
             
-            if obj.interpulseInterval > 0
-                device = obj.rig.getDevice(obj.amp);
-                interval.addDirectCurrentStimulus(device, device.background, obj.interpulseInterval, obj.sampleRate);
-            end
+            device = obj.rig.getDevice(obj.amp);
+            interval.addDirectCurrentStimulus(device, device.background, obj.interpulseInterval, obj.sampleRate);
         end
         
         function tf = shouldContinuePreparingEpochs(obj)

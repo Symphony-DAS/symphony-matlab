@@ -18,13 +18,6 @@ classdef DirectCurrentGenerator < symphonyui.core.StimulusGenerator
             obj@symphonyui.core.StimulusGenerator(map);
         end
         
-        function set.time(obj, t)
-            if t <= 0
-                error('Stimulus time must be greater than 0');
-            end
-            obj.time = t;
-        end
-        
     end
     
     methods (Access = protected)
@@ -36,14 +29,20 @@ classdef DirectCurrentGenerator < symphonyui.core.StimulusGenerator
             
             pts = timeToPts(obj.time);
             
+            % Allows the RenderedStimulus to determine the BaseUnits of the output when the duration is zero. The
+            % duration (span) is being explicitly declared below so a zero duration stimulus will truely be of duration
+            % zero even though it has one data point.
+            pts = max(pts, 1);
+            
             data = ones(1, pts) * obj.offset;
             
             parameters = obj.dictionaryFromMap(obj.propertyMap);
             measurements = Measurement.FromArray(data, obj.units);
             rate = Measurement(obj.sampleRate, 'Hz');
             output = OutputData(measurements, rate);
+            span = TimeSpanOption(System.TimeSpan.FromSeconds(obj.time));
             
-            cobj = RenderedStimulus(class(obj), parameters, output);
+            cobj = RenderedStimulus(class(obj), parameters, output, span);
             s = symphonyui.core.Stimulus(cobj);
         end
         

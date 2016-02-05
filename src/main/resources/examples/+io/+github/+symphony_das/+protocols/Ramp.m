@@ -19,13 +19,11 @@ classdef Ramp < symphonyui.core.Protocol
         function onSetRig(obj)
             onSetRig@symphonyui.core.Protocol(obj);
             
-            amps = appbox.firstNonEmpty(obj.rig.getDeviceNames('Amp'), {'(None)'});
-            obj.amp = amps{1};
-            obj.ampType = symphonyui.core.PropertyType('char', 'row', amps);
+            [obj.amp, obj.ampType] = obj.createDeviceNamesProperty('Amp');
         end
         
         function p = getPreview(obj, panel)
-            p = symphonyui.builtin.previews.StimuliPreview(panel, @()obj.ampStimulus());
+            p = symphonyui.builtin.previews.StimuliPreview(panel, @()obj.createAmpStimulus());
         end
         
         function prepareRun(obj)
@@ -37,7 +35,7 @@ classdef Ramp < symphonyui.core.Protocol
                 'measurementRegion', [obj.preTime obj.preTime+obj.stimTime]);
         end
         
-        function stim = ampStimulus(obj)
+        function stim = createAmpStimulus(obj)
             gen = symphonyui.builtin.stimuli.RampGenerator();
             
             gen.preTime = obj.preTime;
@@ -54,17 +52,15 @@ classdef Ramp < symphonyui.core.Protocol
         function prepareEpoch(obj, epoch)
             prepareEpoch@symphonyui.core.Protocol(obj, epoch);
             
-            epoch.addStimulus(obj.rig.getDevice(obj.amp), obj.ampStimulus());
+            epoch.addStimulus(obj.rig.getDevice(obj.amp), obj.createAmpStimulus());
             epoch.addResponse(obj.rig.getDevice(obj.amp));
         end
         
         function prepareInterval(obj, interval)
             prepareInterval@symphonyui.core.Protocol(obj, interval);
             
-            if obj.interpulseInterval > 0
-                device = obj.rig.getDevice(obj.amp);
-                interval.addDirectCurrentStimulus(device, device.background, obj.interpulseInterval, obj.sampleRate);
-            end
+            device = obj.rig.getDevice(obj.amp);
+            interval.addDirectCurrentStimulus(device, device.background, obj.interpulseInterval, obj.sampleRate);
         end
         
         function tf = shouldContinuePreparingEpochs(obj)
