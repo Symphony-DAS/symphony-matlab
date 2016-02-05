@@ -25,7 +25,7 @@ classdef DocumentationService < handle
         end
 
         function d = getAvailableExperimentDescriptions(obj)
-            d = obj.classRepository.get('symphonyui.core.descriptions.ExperimentDescription');
+            d = obj.classRepository.get('symphonyui.core.persistent.descriptions.ExperimentDescription');
         end
         
         function p = getFilePath(obj, name, location)
@@ -67,7 +67,7 @@ classdef DocumentationService < handle
         end
 
         function d = getAvailableSourceDescriptions(obj)
-            d = obj.classRepository.get('symphonyui.core.descriptions.SourceDescription');
+            d = obj.classRepository.get('symphonyui.core.persistent.descriptions.SourceDescription');
         end
 
         function s = addSource(obj, parent, description)
@@ -80,7 +80,7 @@ classdef DocumentationService < handle
         end
 
         function d = getAvailableEpochGroupDescriptions(obj)
-            d = obj.classRepository.get('symphonyui.core.descriptions.EpochGroupDescription');
+            d = obj.classRepository.get('symphonyui.core.persistent.descriptions.EpochGroupDescription');
         end
 
         function g = beginEpochGroup(obj, source, description)

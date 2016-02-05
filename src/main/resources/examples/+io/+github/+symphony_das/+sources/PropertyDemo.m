@@ -1,4 +1,4 @@
-classdef PropertyDemo < symphonyui.core.descriptions.SourceDescription
+classdef PropertyDemo < symphonyui.core.persistent.descriptions.SourceDescription
     
     methods
         

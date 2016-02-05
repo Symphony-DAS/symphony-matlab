@@ -15,7 +15,7 @@ classdef PersistorTest < symphonyui.TestBase
         
         function methodSetup(obj)
             cobj = Symphony.Core.H5EpochPersistor.Create(obj.TEST_FILE);
-            obj.persistor = symphonyui.core.Persistor.newPersistor(cobj, symphonyui.core.descriptions.ExperimentDescription());
+            obj.persistor = symphonyui.core.Persistor.newPersistor(cobj, symphonyui.core.persistent.descriptions.ExperimentDescription());
         end
         
     end

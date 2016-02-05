@@ -1,4 +1,4 @@
-classdef Preparation < symphonyui.core.descriptions.SourceDescription
+classdef Preparation < symphonyui.core.persistent.descriptions.SourceDescription
     
     methods
         

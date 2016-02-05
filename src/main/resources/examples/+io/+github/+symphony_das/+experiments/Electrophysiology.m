@@ -1,4 +1,4 @@
-classdef Electrophysiology < symphonyui.core.descriptions.ExperimentDescription
+classdef Electrophysiology < symphonyui.core.persistent.descriptions.ExperimentDescription
     
     methods
         

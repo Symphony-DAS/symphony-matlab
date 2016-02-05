@@ -1,4 +1,4 @@
-classdef EpochGroupDescription < symphonyui.core.descriptions.EntityDescription
+classdef EpochGroupDescription < symphonyui.core.persistent.descriptions.EntityDescription
     
     properties
         label

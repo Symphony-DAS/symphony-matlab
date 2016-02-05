@@ -1,4 +1,4 @@
-classdef SourceDescription < symphonyui.core.descriptions.EntityDescription
+classdef SourceDescription < symphonyui.core.persistent.descriptions.EntityDescription
     
     properties
         label

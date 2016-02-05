@@ -1,4 +1,4 @@
-classdef Subject < symphonyui.core.descriptions.SourceDescription
+classdef Subject < symphonyui.core.persistent.descriptions.SourceDescription
     
     methods
         

@@ -42,7 +42,7 @@ classdef Persistor < symphonyui.core.CoreObject
         function s = addSource(obj, parent, description)
             if ischar(description)
                 l = description;
-                description = symphonyui.core.descriptions.SourceDescription();
+                description = symphonyui.core.persistent.descriptions.SourceDescription();
                 description.label = l;
             end
             if isempty(parent)
@@ -62,7 +62,7 @@ classdef Persistor < symphonyui.core.CoreObject
         function g = beginEpochGroup(obj, source, description)
             if ischar(description)
                 label = description;
-                description = symphonyui.core.descriptions.EpochGroupDescription();
+                description = symphonyui.core.persistent.descriptions.EpochGroupDescription();
                 description.label = label;
             end
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochGroup(description.label, source.cobj));

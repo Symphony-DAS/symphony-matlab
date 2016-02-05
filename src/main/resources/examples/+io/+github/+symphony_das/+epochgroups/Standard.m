@@ -1,4 +1,4 @@
-classdef Standard < symphonyui.core.descriptions.EpochGroupDescription
+classdef Standard < symphonyui.core.persistent.descriptions.EpochGroupDescription
     
     methods
         
