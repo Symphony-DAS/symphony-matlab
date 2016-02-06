@@ -18,7 +18,9 @@ classdef Subject < symphonyui.core.persistent.descriptions.SourceDescription
             obj.addProperty('age', '', ...
                 'description', 'Age of person, animal, embryo');
             obj.addProperty('weight', '', ...
-                'description', 'Weight at time of experiment, at time of surgery, and at other important times');          
+                'description', 'Weight at time of experiment, at time of surgery, and at other important times');
+            
+            obj.addAllowableParentType([]);
         end
         
     end

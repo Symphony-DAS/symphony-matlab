@@ -47,8 +47,14 @@ classdef Persistor < symphonyui.core.CoreObject
             end
             if isempty(parent)
                 cparent = [];
+                parentType = [];
             else
                 cparent = parent.cobj;
+                parentType = parent.getType();
+            end
+            allowableParentTypes = description.getAllowableParentTypes();
+            if ~isempty(allowableParentTypes) && ~any(cellfun(@(t)isequal(t, parentType), allowableParentTypes))
+                error('Parent type is not in allowable parent types');
             end
             csrc = obj.tryCoreWithReturn(@()obj.cobj.AddSource(description.label, cparent));
             try
@@ -64,6 +70,16 @@ classdef Persistor < symphonyui.core.CoreObject
                 label = description;
                 description = symphonyui.core.persistent.descriptions.EpochGroupDescription();
                 description.label = label;
+            end
+            parent = obj.currentEpochGroup;
+            if isempty(parent)
+                parentType = [];
+            else
+                parentType = parent.getType();
+            end
+            allowableParentTypes = description.getAllowableParentTypes();
+            if ~isempty(allowableParentTypes) && ~any(cellfun(@(t)isequal(t, parentType), allowableParentTypes))
+                error('Parent type is not in allowable parent types');
             end
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochGroup(description.label, source.cobj));
             try

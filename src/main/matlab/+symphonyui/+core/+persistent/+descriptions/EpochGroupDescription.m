@@ -4,6 +4,10 @@ classdef EpochGroupDescription < symphonyui.core.persistent.descriptions.EntityD
         label
     end
     
+    properties (Access = private)
+        allowableParentTypes
+    end
+    
     methods
         
         function obj = EpochGroupDescription()
@@ -14,6 +18,17 @@ classdef EpochGroupDescription < symphonyui.core.persistent.descriptions.EntityD
         function set.label(obj, l)
             validateattributes(l, {'char'}, {'nonempty', 'row'});
             obj.label = l;
+        end
+        
+        function addAllowableParentType(obj, t)
+            if ~isempty(t)
+                validateattributes(t, {'char'}, {'nonempty', 'row'});
+            end
+            obj.allowableParentTypes{end + 1} = t;
+        end
+        
+        function t = getAllowableParentTypes(obj)
+            t = obj.allowableParentTypes;
         end
         
     end

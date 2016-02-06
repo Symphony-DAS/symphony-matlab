@@ -10,7 +10,9 @@ classdef Cell < symphonyui.core.persistent.descriptions.SourceDescription
             obj.addProperty('confirmedType', '', ...
                 'description', 'The confirmed type of the recorded cell');
             obj.addProperty('recordingLocation', '', ...
-                'description', 'The recording location in the cell. E.g. axonal, dendritic, somatic, ...');         
+                'description', 'The recording location in the cell. E.g. axonal, dendritic, somatic, ...');
+            
+            obj.addAllowableParentType('io.github.symphony_das.sources.Preparation');
         end
         
     end

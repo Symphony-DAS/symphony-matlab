@@ -33,6 +33,10 @@ classdef EntityDescription < symphonyui.core.Description
             n = obj.resources.keys;
         end
         
+        function t = getType(obj)
+            t = class(obj);
+        end
+        
     end
     
 end

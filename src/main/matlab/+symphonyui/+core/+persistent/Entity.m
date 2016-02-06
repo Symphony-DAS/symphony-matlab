@@ -7,7 +7,7 @@ classdef Entity < symphonyui.core.CoreObject
     end
 
     properties (Constant)
-        DESCRIPTION_TYPE_RESOURCE_NAME = 'descriptionType'
+        TYPE_RESOURCE_NAME = 'type'
         PROPERTY_DESCRIPTORS_RESOURCE_NAME = 'propertyDescriptors'
     end
 
@@ -105,6 +105,14 @@ classdef Entity < symphonyui.core.CoreObject
             cnote = obj.tryCoreWithReturn(@()obj.cobj.AddNote(dto, text));
             n = symphonyui.core.persistent.Note(cnote);
         end
+        
+        function t = getType(obj)
+            if any(strcmp(obj.getResourceNames(), obj.TYPE_RESOURCE_NAME))
+                t = obj.getResource(obj.TYPE_RESOURCE_NAME);
+            else
+                t = [];
+            end
+        end
 
     end
 
@@ -113,7 +121,7 @@ classdef Entity < symphonyui.core.CoreObject
         function e = newEntity(cobj, description)
             e = symphonyui.core.persistent.Entity(cobj);
 
-            e.addResource(e.DESCRIPTION_TYPE_RESOURCE_NAME, class(description));
+            e.addResource(e.TYPE_RESOURCE_NAME, description.getType());
 
             descriptors = description.getPropertyDescriptors();
             for i = 1:numel(descriptors)

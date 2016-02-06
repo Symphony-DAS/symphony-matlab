@@ -17,7 +17,9 @@ classdef Preparation < symphonyui.core.persistent.descriptions.SourceDescription
             obj.addProperty('bathTemperature', 0, ...
                 'description', 'The temperature of the bath solution');
             obj.addProperty('bathSolution', '', ...
-                'description', 'The solution the slice is bathed in');         
+                'description', 'The solution the slice is bathed in');
+            
+            obj.addAllowableParentType('io.github.symphony_das.sources.Subject');
         end
         
     end
