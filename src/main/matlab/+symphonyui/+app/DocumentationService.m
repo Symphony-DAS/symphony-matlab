@@ -11,6 +11,7 @@ classdef DocumentationService < handle
     end
 
     properties (Access = private)
+        log
         session
         persistorFactory
         classRepository
@@ -19,6 +20,7 @@ classdef DocumentationService < handle
     methods
 
         function obj = DocumentationService(session, persistorFactory, classRepository)
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.session = session;
             obj.persistorFactory = persistorFactory;
             obj.classRepository = classRepository;
@@ -66,26 +68,65 @@ classdef DocumentationService < handle
             e = obj.session.getPersistor().experiment;
         end
 
-        function d = getAvailableSourceDescriptions(obj)
-            d = obj.classRepository.get('symphonyui.core.persistent.descriptions.SourceDescription');
+        function d = getAvailableSourceDescriptions(obj, parentType)
+            d = {};
+            classNames = obj.classRepository.get('symphonyui.core.persistent.descriptions.SourceDescription');
+            for i = 1:numel(classNames)
+                constructor = str2func(classNames{i});
+                try
+                    description = constructor();
+                    allowableParentTypes = description.getAllowableParentTypes();
+                catch x
+                    obj.log.debug(x.message, x);
+                    continue;
+                end
+                if isempty(allowableParentTypes) || any(cellfun(@(t)isequal(t, parentType), allowableParentTypes))
+                    d{end + 1} = classNames{i}; %#ok<AGROW>
+                end
+            end
         end
 
         function s = addSource(obj, parent, description)
-            if ~any(strcmp(description, obj.getAvailableSourceDescriptions()))
-                error([description ' is not an available source description']);
+            if isempty(parent)
+                parentType = [];
+            else
+                parentType = parent.getType();
+            end
+            if ~any(strcmp(description, obj.getAvailableSourceDescriptions(parentType)))
+                error([description ' is not an available source description for the current parent type']);
             end
             constructor = str2func(description);
             s = obj.session.getPersistor().addSource(parent, constructor());
             notify(obj, 'AddedSource', symphonyui.app.AppEventData(s));
         end
 
-        function d = getAvailableEpochGroupDescriptions(obj)
-            d = obj.classRepository.get('symphonyui.core.persistent.descriptions.EpochGroupDescription');
+        function d = getAvailableEpochGroupDescriptions(obj, parentType)
+            d = {};
+            classNames = obj.classRepository.get('symphonyui.core.persistent.descriptions.EpochGroupDescription');
+            for i = 1:numel(classNames)
+                constructor = str2func(classNames{i});
+                try
+                    description = constructor();
+                    allowableParentTypes = description.getAllowableParentTypes();
+                catch x
+                    obj.log.debug(x.message, x);
+                    continue;
+                end
+                if isempty(allowableParentTypes) || any(cellfun(@(t)isequal(t, parentType), allowableParentTypes))
+                    d{end + 1} = classNames{i}; %#ok<AGROW>
+                end
+            end
         end
 
         function g = beginEpochGroup(obj, source, description)
-            if ~any(strcmp(description, obj.getAvailableEpochGroupDescriptions()))
-                error([description ' is not an available epoch group description']);
+            parent = obj.getCurrentEpochGroup();
+            if isempty(parent)
+                parentType = [];
+            else
+                parentType = parent.getType();
+            end
+            if ~any(strcmp(description, obj.getAvailableEpochGroupDescriptions(parentType)))
+                error([description ' is not an available epoch group description for the current parent type']);
             end
             constructor = str2func(description);
             g = obj.session.getPersistor().beginEpochGroup(source, constructor());

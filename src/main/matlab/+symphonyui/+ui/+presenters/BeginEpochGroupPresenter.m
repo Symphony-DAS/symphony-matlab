@@ -68,7 +68,13 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
         end
 
         function populateDescriptionList(obj)
-            classNames = obj.documentationService.getAvailableEpochGroupDescriptions();
+            parent = obj.documentationService.getCurrentEpochGroup();
+            if isempty(parent)
+                parentType = [];
+            else
+                parentType = parent.getType();
+            end
+            classNames = obj.documentationService.getAvailableEpochGroupDescriptions(parentType);
 
             displayNames = cell(1, numel(classNames));
             for i = 1:numel(classNames)

@@ -37,6 +37,7 @@ classdef AddSourcePresenter < appbox.Presenter
         function onBind(obj)
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
+            obj.addListener(v, 'SelectedParent', @obj.onViewSelectedParent);
             obj.addListener(v, 'Add', @obj.onViewSelectedAdd);
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
@@ -60,7 +61,13 @@ classdef AddSourcePresenter < appbox.Presenter
         end
 
         function populateDescriptionList(obj)
-            classNames = obj.documentationService.getAvailableSourceDescriptions();
+            parent = obj.view.getSelectedParent();
+            if isempty(parent)
+                parentType = [];
+            else
+                parentType = parent.getType();
+            end
+            classNames = obj.documentationService.getAvailableSourceDescriptions(parentType);
 
             displayNames = cell(1, numel(classNames));
             for i = 1:numel(classNames)
@@ -84,6 +91,10 @@ classdef AddSourcePresenter < appbox.Presenter
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
+        end
+        
+        function onViewSelectedParent(obj, ~, ~)
+            obj.populateDescriptionList();
         end
 
         function onViewSelectedAdd(obj, ~, ~)

@@ -7,6 +7,8 @@ classdef Standard < symphonyui.core.persistent.descriptions.EpochGroupDescriptio
             
             obj.addProperty('solution', '', ...
                 'description', 'Description of the solutions used in terms of name, components with concentrations');
+            
+            obj.addAllowableParentType([]);
         end
         
     end

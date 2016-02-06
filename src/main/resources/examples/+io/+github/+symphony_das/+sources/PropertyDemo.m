@@ -54,6 +54,8 @@ classdef PropertyDemo < symphonyui.core.persistent.descriptions.SourceDescriptio
                 'type', PropertyType('char', 'row', containers.Map({'folder 1', 'folder 2', 'item 1'}, {{'item 1', 'item 2'}, {'item 1', 'item 2'}, []})), ...
                 'category', 'Compound', ...
                 'description', 'Row vector of characters that can take any of the predefined set of values');
+            
+            obj.addAllowableParentType([]);
         end
         
     end
