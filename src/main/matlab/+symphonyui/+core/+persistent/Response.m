@@ -2,6 +2,7 @@ classdef Response < symphonyui.core.persistent.IoBase
 
     properties (SetAccess = private)
         inputTime
+        epoch
     end
 
     methods
@@ -12,6 +13,10 @@ classdef Response < symphonyui.core.persistent.IoBase
 
         function t = get.inputTime(obj)
             t = obj.datetimeFromDateTimeOffset(obj.cobj.InputTime);
+        end
+        
+        function b = get.epoch(obj)
+            b = symphonyui.core.persistent.Epoch(obj.cobj.Epoch);
         end
 
         function [q, u] = getSampleRate(obj)

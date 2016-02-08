@@ -444,6 +444,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.clearEpochDataAxes();
 
             ylabels = cell(1, numel(signals));
+            llabels = cell(1, numel(signals));
             colorOrder = get(groot, 'defaultAxesColorOrder');
             for i = 1:numel(signals)
                 s = signals{i};
@@ -452,10 +453,15 @@ classdef DataManagerPresenter < appbox.Presenter
                 xdata = (1:numel(ydata))/rate;
                 color = colorOrder(mod(i - 1, size(colorOrder, 1)) + 1, :);
                 ylabels{i} = [s.device.name ' (' yunits ')'];
+                llabels{i} = datestr(s.epoch.startTime, 'HH:MM:SS:FFF');
                 obj.view.addEpochDataLine(xdata, ydata, color);
             end
-
+            
             obj.view.setEpochDataAxesLabels('Time (s)', strjoin(unique(ylabels), ', '));
+            
+            if numel(llabels) > 1
+                obj.view.addEpochDataLegend(llabels);
+            end
         end
 
         function populateDetailsWithEmpty(obj, text)

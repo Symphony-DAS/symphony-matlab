@@ -674,6 +674,7 @@ classdef DataManagerView < appbox.View
 
         function clearEpochDataAxes(obj)
             cla(obj.epochCard.axes);
+            legend(obj.epochCard.axes, 'off');
         end
 
         function setEpochDataAxesLabels(obj, x, y)
@@ -689,6 +690,10 @@ classdef DataManagerView < appbox.View
 
         function addEpochDataLine(obj, x, y, color)
             line(x, y, 'Parent', obj.epochCard.axes, 'Color', color);
+        end
+        
+        function addEpochDataLegend(obj, str)
+            legend(obj.epochCard.axes, str);
         end
 
         function openEpochDataAxesInNewWindow(obj)
