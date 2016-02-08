@@ -4,12 +4,16 @@ classdef AddSourcePresenter < appbox.Presenter
         log
         settings
         documentationService
+        initialParent
     end
 
     methods
 
-        function obj = AddSourcePresenter(documentationService, view)
+        function obj = AddSourcePresenter(documentationService, initialParent, view)
             if nargin < 2
+                initialParent = [];
+            end
+            if nargin < 3
                 view = symphonyui.ui.views.AddSourceView();
             end
             obj = obj@appbox.Presenter(view);
@@ -18,6 +22,7 @@ classdef AddSourcePresenter < appbox.Presenter
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.AddSourceSettings();
             obj.documentationService = documentationService;
+            obj.initialParent = initialParent;
         end
 
     end
@@ -26,6 +31,7 @@ classdef AddSourcePresenter < appbox.Presenter
 
         function onGoing(obj, ~, ~)
             obj.populateParentList();
+            obj.view.setSelectedParent(obj.initialParent);
             obj.populateDescriptionList();
             try
                 obj.loadSettings();
@@ -125,22 +131,12 @@ classdef AddSourcePresenter < appbox.Presenter
         end
 
         function loadSettings(obj)
-            p = find(cellfun(@(p)strcmp(obj.settings.selectedParentUuid, p.uuid), {obj.view.getParentList{2:end}}), 1); %#ok<CCAT1>
-            if ~isempty(p)
-                obj.view.setSelectedParent(obj.view.getParentList{p + 1});
-            end
             if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
                 obj.view.setSelectedDescription(obj.settings.selectedDescription);
             end
         end
 
         function saveSettings(obj)
-            parent = obj.view.getSelectedParent();
-            if isempty(parent)
-                obj.settings.selectedParentUuid = '';
-            else
-                obj.settings.selectedParentUuid = parent.uuid;
-            end
             obj.settings.selectedDescription = obj.view.getSelectedDescription();
             obj.settings.save();
         end

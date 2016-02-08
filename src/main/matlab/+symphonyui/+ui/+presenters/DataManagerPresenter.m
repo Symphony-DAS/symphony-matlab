@@ -118,7 +118,13 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSelectedAddSource(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.documentationService);
+            selectedParent = [];
+            nodes = obj.view.getSelectedNodes();
+            if numel(nodes) == 1 && obj.view.getNodeType(nodes(1)) == symphonyui.ui.views.EntityNodeType.SOURCE
+                selectedParent = obj.view.getNodeEntity(nodes(1));
+            end
+            
+            presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.documentationService, selectedParent);
             presenter.goWaitStop();
         end
 
