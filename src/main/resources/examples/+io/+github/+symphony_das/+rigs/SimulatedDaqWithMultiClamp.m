@@ -1,13 +1,13 @@
-classdef HekaMultiClamp < symphonyui.core.descriptions.RigDescription
+classdef SimulatedDaqWithMultiClamp < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function obj = HekaMultiClamp()
+        function obj = SimulatedDaqWithMultiClamp()
             import symphonyui.builtin.daqs.*;
             import symphonyui.builtin.devices.*;
             import symphonyui.core.*;
             
-            daq = HekaDaqController();
+            daq = HekaSimulationDaqController();
             obj.daqController = daq;
             
             amp1 = MultiClampDevice('Amp1', 1).bindStream(daq.getStream('ANALOG_OUT.0')).bindStream(daq.getStream('ANALOG_IN.0'));

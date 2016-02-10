@@ -1,19 +1,25 @@
-classdef SimMultiClamp < symphonyui.core.descriptions.RigDescription
+classdef HekaDaqWithAxopatch < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function obj = SimMultiClamp()
+        function obj = HekaDaqWithAxopatch()
             import symphonyui.builtin.daqs.*;
             import symphonyui.builtin.devices.*;
             import symphonyui.core.*;
             
-            daq = HekaSimulationDaqController();
+            daq = HekaDaqController();
             obj.daqController = daq;
             
-            amp1 = MultiClampDevice('Amp1', 1).bindStream(daq.getStream('ANALOG_OUT.0')).bindStream(daq.getStream('ANALOG_IN.0'));
+            amp1 = AxopatchDevice('Amp1').bindStream(daq.getStream('ANALOG_OUT.0'));
+            amp1.bindStream(daq.getStream('ANALOG_IN.0'), AxopatchDevice.SCALED_OUTPUT_STREAM_NAME);
+            amp1.bindStream(daq.getStream('ANALOG_IN.1'), AxopatchDevice.GAIN_TELEGRAPH_STREAM_NAME);
+            amp1.bindStream(daq.getStream('ANALOG_IN.2'), AxopatchDevice.MODE_TELEGRAPH_STREAM_NAME);
             obj.addDevice(amp1);
             
-            amp2 = MultiClampDevice('Amp2', 2).bindStream(daq.getStream('ANALOG_OUT.1')).bindStream(daq.getStream('ANALOG_IN.1'));
+            amp2 = AxopatchDevice('Amp2').bindStream(daq.getStream('ANALOG_OUT.1'));
+            amp2.bindStream(daq.getStream('ANALOG_IN.3'), AxopatchDevice.SCALED_OUTPUT_STREAM_NAME);
+            amp2.bindStream(daq.getStream('ANALOG_IN.4'), AxopatchDevice.GAIN_TELEGRAPH_STREAM_NAME);
+            amp2.bindStream(daq.getStream('ANALOG_IN.5'), AxopatchDevice.MODE_TELEGRAPH_STREAM_NAME);
             obj.addDevice(amp2);
             
             green = UnitConvertingDevice('Green LED', 'V').bindStream(daq.getStream('ANALOG_OUT.2'));
