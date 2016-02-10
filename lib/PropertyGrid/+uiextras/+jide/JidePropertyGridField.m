@@ -293,14 +293,18 @@ classdef JidePropertyGridField < handle
         % javatype:
         %    a java.lang.Class instance
         % javadomain:
-        %    an array of Java objects whose type corresponds to javatype   
-            isEditable = false;
+        %    an array of Java objects whose type corresponds to javatype
+            nonstrict = false;
             if javatype == java.lang.Class.forName('java.lang.String') && strcmp(javadomain(end), '...')
                 javadomain = javadomain(1:end-1);
-                isEditable = true;
+                nonstrict = true;
             end        
             editor = com.jidesoft.grid.ListComboBoxCellEditor(javadomain);
-            editor.getComboBox.setEditable(isEditable);
+            if nonstrict
+                editor.getComboBox().setEditable(true);
+                autocomplete = com.jidesoft.swing.AutoCompletion(editor.getComboBox());
+                autocomplete.setStrict(false);
+            end
             self.ApplyContext(field, javatype, editor, 'combobox');
         end
 
