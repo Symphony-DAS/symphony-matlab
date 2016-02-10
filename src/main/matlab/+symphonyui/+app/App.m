@@ -7,11 +7,11 @@ classdef App < handle
         end
         
         function v = version()
-            v = '2.0.1.2'; % i.e. 2.0-b2
+            v = '2.0.1.3'; % i.e. 2.0-b3
         end
         
         function c = copyright()
-            c = [char(169) ' 2015 Symphony-DAS'];
+            c = [char(169) ' 2016 Symphony-DAS'];
         end
         
         function u = documentationUrl()

@@ -2,12 +2,17 @@ classdef MultiClampDevice < symphonyui.core.Device
     
     methods
         
-        function obj = MultiClampDevice(name, channel, serialNumber)
-            if nargin < 3
-                serialNumber = 0;
-            end
-            
+        function obj = MultiClampDevice(name, channel, serialNumber)            
             NET.addAssembly(which('Symphony.ExternalDevices.dll'));
+            
+            if nargin < 3
+                enum = Symphony.Core.EnumerableExtensions.Wrap(Symphony.ExternalDevices.MultiClampDevice.AvailableSerialNumbers());
+                e = enum.GetEnumerator();
+                if ~e.MoveNext()
+                    error('Unable to find any MultiClamps. Make sure MultiClamp Commander is open and try again.');
+                end
+                serialNumber = e.Current();
+            end
             
             modes = NET.createArray('System.String', 3);
             modes(1) = 'VClamp';
