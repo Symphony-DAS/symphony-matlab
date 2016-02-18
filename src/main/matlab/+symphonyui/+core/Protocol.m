@@ -19,6 +19,7 @@ classdef Protocol < handle
     properties (Access = protected, Transient)
         rig
         persistor
+        listeners
     end
     
     methods
@@ -28,7 +29,12 @@ classdef Protocol < handle
         end
         
         function delete(obj)
+            obj.close();
+        end
+        
+        function close(obj)
             obj.closeFigures();
+            delete(obj.listeners);
         end
         
         function setRig(obj, rig)
@@ -92,23 +98,21 @@ classdef Protocol < handle
             obj.numIntervalsCompleted = 0;
             
             obj.rig.sampleRate = obj.sampleRate;
+            
+            obj.listeners = event.listener.empty(0, 1);
+            obj.listeners(end + 1) = addlistener(obj.rig.daqController, 'StartedHardware', @(h,d)obj.onDaqControllerStartedHardware);
         end
         
         function prepareEpoch(obj, epoch) %#ok<INUSD>
             obj.numEpochsPrepared = obj.numEpochsPrepared + 1;
         end
         
-        function completeEpoch(obj, epoch)
-            obj.numEpochsCompleted = obj.numEpochsCompleted + 1;
-            obj.figureHandlerManager.updateFigures(epoch);
-        end
-        
         function prepareInterval(obj, interval) %#ok<INUSD>
             obj.numIntervalsPrepared = obj.numIntervalsPrepared + 1;
         end
         
-        function completeInterval(obj, interval) %#ok<INUSD>
-            obj.numIntervalsCompleted = obj.numIntervalsCompleted + 1;
+        function onDaqControllerStartedHardware(obj) %#ok<MANU>
+            
         end
         
         function tf = shouldContinuePreloadingEpochs(obj)
@@ -127,8 +131,17 @@ classdef Protocol < handle
             tf = false;
         end
         
-        function completeRun(obj) %#ok<MANU>
-            
+        function completeEpoch(obj, epoch)
+            obj.numEpochsCompleted = obj.numEpochsCompleted + 1;
+            obj.figureHandlerManager.updateFigures(epoch);
+        end
+        
+        function completeInterval(obj, interval) %#ok<INUSD>
+            obj.numIntervalsCompleted = obj.numIntervalsCompleted + 1;
+        end
+        
+        function completeRun(obj)
+            delete(obj.listeners);
         end
         
         function h = showFigure(obj, className, varargin)

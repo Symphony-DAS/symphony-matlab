@@ -43,10 +43,10 @@ classdef AcquisitionService < handle
             end
             try %#ok<TRYNC>
                 protocol.applyPreset(obj.presetMap(className));
-            end 
+            end
             protocol.setRig(obj.session.rig);
-            protocol.setPersistor(obj.session.persistor);           
-            obj.session.protocol.closeFigures();
+            protocol.setPersistor(obj.session.persistor);
+            obj.session.protocol.close();
             obj.session.protocol = protocol;
             notify(obj, 'SelectedProtocol');
         end
@@ -88,7 +88,7 @@ classdef AcquisitionService < handle
             end
             obj.session.controller.runProtocol(obj.session.protocol, obj.session.getPersistor());
         end
-        
+
         function requestPause(obj)
             obj.session.controller.requestPause();
         end

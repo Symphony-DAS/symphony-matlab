@@ -5,12 +5,12 @@ classdef Controller < symphonyui.core.CoreObject
     end
 
     properties (SetAccess = private)
+        rig
         currentProtocol
         currentPersistor
     end
 
     properties (Access = private)
-        devices
         epochQueueDuration
     end
 
@@ -22,8 +22,6 @@ classdef Controller < symphonyui.core.CoreObject
     methods
 
         function obj = Controller()
-            import symphonyui.core.util.NetListener;
-
             cobj = Symphony.Core.Controller();
             obj@symphonyui.core.CoreObject(cobj);
 
@@ -33,19 +31,17 @@ classdef Controller < symphonyui.core.CoreObject
         function setRig(obj, rig)
             obj.cobj.DAQController = [];
             obj.cobj.Clock = [];
-            obj.removeAllDevices();
-
-            if isempty(rig)
-                return;
-            end
+            obj.tryCore(@()obj.cobj.RemoveAllDevices());
 
             obj.cobj.DAQController = rig.daqController.cobj;
             obj.cobj.Clock = rig.daqController.cobj.Clock;
 
             devs = rig.devices;
             for i = 1:numel(devs)
-                obj.addDevice(devs{i});
+                obj.tryCore(@()obj.cobj.AddDevice(devs{i}.cobj));
             end
+            
+            obj.rig = rig;
         end
 
         function runProtocol(obj, protocol, persistor)
@@ -88,10 +84,6 @@ classdef Controller < symphonyui.core.CoreObject
             end
             obj.state = symphonyui.core.ControllerState.STOPPING;
             obj.tryCore(@()obj.cobj.RequestStop());
-        end
-        
-        function d = get.devices(obj)
-            d = obj.cellArrayFromEnumerable(obj.cobj.Devices, @symphonyui.core.Device);
         end
 
         function d = get.epochQueueDuration(obj)
@@ -145,14 +137,6 @@ classdef Controller < symphonyui.core.CoreObject
     end
 
     methods (Access = private)
-
-        function addDevice(obj, device)
-            obj.tryCore(@()obj.cobj.AddDevice(device.cobj));
-        end
-
-        function removeAllDevices(obj)
-            obj.tryCore(@()obj.cobj.RemoveAllDevices());
-        end
 
         function run(obj)
             import symphonyui.core.util.NetListener;
@@ -290,8 +274,8 @@ classdef Controller < symphonyui.core.CoreObject
         function e = nextEpoch(obj)
             e = symphonyui.core.Epoch(class(obj.currentProtocol));
 
-            for i = 1:numel(obj.devices)
-                d = obj.devices{i};
+            for i = 1:numel(obj.rig.devices)
+                d = obj.rig.devices{i};
                 if ~isempty(d.outputStreams)
                     e.setBackground(d, d.background);
                 end
@@ -305,8 +289,8 @@ classdef Controller < symphonyui.core.CoreObject
             i.shouldBePersisted = false;
             i.addKeyword(obj.INTERVAL_KEYWORD);
 
-            for k = 1:numel(obj.devices)
-                d = obj.devices{k};
+            for k = 1:numel(obj.rig.devices)
+                d = obj.rig.devices{k};
                 if ~isempty(d.outputStreams)
                     i.setBackground(d, d.background);
                 end

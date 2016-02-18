@@ -1,5 +1,9 @@
 classdef DaqController < symphonyui.core.CoreObject
-
+    
+    events
+        StartedHardware
+    end
+    
     properties
         sampleRate
     end
@@ -12,11 +16,20 @@ classdef DaqController < symphonyui.core.CoreObject
         streams
         processInterval
     end
+    
+    properties (Access = private)
+        listeners
+    end
 
     methods
 
         function obj = DaqController(cobj)
+            import symphonyui.core.util.NetListener;
+            
             obj@symphonyui.core.CoreObject(cobj);
+            
+            obj.listeners = NetListener.empty(0, 1);
+            obj.listeners(end + 1) = NetListener(obj.cobj, 'StartedHardware', 'Symphony.Core.TimeStampedEventArgs', @(h,d)notify(obj, 'StartedHardware'));
         end
         
         function delete(obj)
@@ -24,7 +37,7 @@ classdef DaqController < symphonyui.core.CoreObject
         end
         
         function close(obj)
-            
+            delete(obj.listeners);
         end
         
         function s = getStream(obj, name)

@@ -43,12 +43,9 @@ classdef HekaDaqController < symphonyui.core.DaqController
 
             obj.tryCore(@()obj.cobj.InitHardware());
         end
-
-        function delete(obj)
-            obj.close();
-        end
-
+        
         function close(obj)
+            close@symphonyui.core.DaqController(obj);
             obj.tryCore(@()obj.cobj.Dispose());
         end
 
