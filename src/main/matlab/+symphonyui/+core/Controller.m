@@ -53,8 +53,8 @@ classdef Controller < symphonyui.core.CoreObject
                 error('Controller is paused');
             end
 
-            onRunEnded = onCleanup(@()obj.endRun());
-            obj.beginRun(protocol, persistor);
+            onRunCompleted = onCleanup(@()obj.completeRun());
+            obj.prepareRun(protocol, persistor);
 
             obj.run();
         end
@@ -64,7 +64,7 @@ classdef Controller < symphonyui.core.CoreObject
                 error('Controller not paused');
             end
 
-            onRunEnded = onCleanup(@()obj.endRun());
+            onRunCompleted = onCleanup(@()obj.completeRun());
 
             obj.run();
         end
@@ -80,7 +80,7 @@ classdef Controller < symphonyui.core.CoreObject
         function requestStop(obj)
             if obj.state.isPaused()
                 obj.state = symphonyui.core.ControllerState.STOPPED;
-                obj.endRun();
+                obj.completeRun();
                 return;
             end
             if ~obj.state.isRunning()
@@ -107,7 +107,7 @@ classdef Controller < symphonyui.core.CoreObject
 
     methods (Access = protected)
 
-        function beginRun(obj, protocol, persistor)
+        function prepareRun(obj, protocol, persistor)
             obj.currentProtocol = protocol;
             obj.currentPersistor = persistor;
 
@@ -125,7 +125,7 @@ classdef Controller < symphonyui.core.CoreObject
             end
         end
 
-        function endRun(obj)
+        function completeRun(obj)
             if obj.state.isPaused()
                 return;
             end
