@@ -14,8 +14,8 @@ classdef SealTest < symphonyui.core.Protocol
     
     methods
         
-        function onSetRig(obj)
-            onSetRig@symphonyui.core.Protocol(obj);
+        function didSetRig(obj)
+            didSetRig@symphonyui.core.Protocol(obj);
             
             [obj.amp, obj.ampType] = obj.createDeviceNamesProperty('Amp');
         end

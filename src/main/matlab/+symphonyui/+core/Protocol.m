@@ -1,13 +1,13 @@
 classdef Protocol < handle
-    
+
     properties
         sampleRate  % Acquisition sample rate (Hz)
     end
-    
+
     properties (Hidden)
         sampleRateType
     end
-    
+
     properties (Access = protected)
         numEpochsPrepared
         numEpochsCompleted
@@ -15,34 +15,32 @@ classdef Protocol < handle
         numIntervalsCompleted
         figureHandlerManager
     end
-    
+
     properties (Access = protected, Transient)
         rig
         persistor
-        listeners
     end
-    
+
     methods
-        
+
         function obj = Protocol()
             obj.figureHandlerManager = symphonyui.core.FigureHandlerManager();
         end
-        
+
         function delete(obj)
             obj.close();
         end
-        
+
         function close(obj)
             obj.closeFigures();
-            delete(obj.listeners);
         end
-        
+
         function setRig(obj, rig)
             obj.rig = rig;
-            obj.onSetRig();
+            obj.didSetRig();
         end
-        
-        function onSetRig(obj)
+
+        function didSetRig(obj)
             rate = obj.rig.sampleRate;
             if isempty(rate)
                 obj.sampleRate = [];
@@ -51,16 +49,16 @@ classdef Protocol < handle
             end
             obj.sampleRateType = obj.rig.sampleRateType;
         end
-        
+
         function setPersistor(obj, persistor)
             obj.persistor = persistor;
-            obj.onSetPersistor();
+            obj.didSetPersistor();
         end
-        
-        function onSetPersistor(obj) %#ok<MANU>
-            
+
+        function didSetPersistor(obj) %#ok<MANU>
+
         end
-        
+
         function applyPreset(obj, preset)
             descriptors = obj.getPropertyDescriptors();
             names = preset.propertyMap.keys;
@@ -72,7 +70,7 @@ classdef Protocol < handle
                 end
             end
         end
-        
+
         function d = getPropertyDescriptors(obj)
             names = properties(obj);
             d = symphonyui.core.PropertyDescriptor.empty(0, numel(names));
@@ -80,78 +78,75 @@ classdef Protocol < handle
                 d(i) = obj.getPropertyDescriptor(names{i});
             end
         end
-        
+
         function d = getPropertyDescriptor(obj, name)
             d = symphonyui.core.PropertyDescriptor.fromProperty(obj, name);
         end
-        
+
         function p = getPreview(obj, panel) %#ok<INUSD>
             p = [];
         end
-        
+
         function prepareRun(obj)
             obj.clearFigures();
-            
+
             obj.numEpochsPrepared = 0;
             obj.numEpochsCompleted = 0;
             obj.numIntervalsPrepared = 0;
             obj.numIntervalsCompleted = 0;
-            
+
             obj.rig.sampleRate = obj.sampleRate;
-            
-            obj.listeners = event.listener.empty(0, 1);
-            obj.listeners(end + 1) = addlistener(obj.rig.daqController, 'StartedHardware', @(h,d)obj.onDaqControllerStartedHardware);
         end
-        
+
         function prepareEpoch(obj, epoch) %#ok<INUSD>
             obj.numEpochsPrepared = obj.numEpochsPrepared + 1;
         end
-        
+
         function prepareInterval(obj, interval) %#ok<INUSD>
             obj.numIntervalsPrepared = obj.numIntervalsPrepared + 1;
         end
-        
-        function onDaqControllerStartedHardware(obj) %#ok<MANU>
-            
+
+        function controllerDidStartHardware(obj) %#ok<MANU>
+
         end
-        
+
         function tf = shouldContinuePreloadingEpochs(obj)
             tf = obj.shouldContinuePreparingEpochs();
         end
-        
+
         function tf = shouldWaitToContinuePreparingEpochs(obj) %#ok<MANU>
             tf = false;
         end
-        
+
         function tf = shouldContinuePreparingEpochs(obj) %#ok<MANU>
             tf = false;
         end
-        
+
         function tf = shouldContinueRun(obj) %#ok<MANU>
             tf = false;
         end
-        
+
         function completeEpoch(obj, epoch)
             obj.numEpochsCompleted = obj.numEpochsCompleted + 1;
             obj.figureHandlerManager.updateFigures(epoch);
         end
-        
+
         function completeInterval(obj, interval) %#ok<INUSD>
             obj.numIntervalsCompleted = obj.numIntervalsCompleted + 1;
         end
-        
-        function completeRun(obj)
-            delete(obj.listeners);
+
+        function completeRun(obj) %#ok<MANU>
+
         end
-        
+
         function h = showFigure(obj, className, varargin)
             h = obj.figureHandlerManager.showFigure(className, varargin{:});
         end
-        
+
         function clearFigures(obj)
             obj.figureHandlerManager.clearFigures();
         end
-        
+
         function closeFigures(obj)
             obj.figureHandlerManager.closeFigures();
         end
@@ -160,11 +155,11 @@ classdef Protocol < handle
             tf = true;
             msg = [];
         end
-        
+
     end
-    
+
     methods (Access = protected)
-        
+
         function [value, type] = createDeviceNamesProperty(obj, expression)
             names = obj.rig.getDeviceNames(expression);
             if isempty(names)
@@ -173,7 +168,7 @@ classdef Protocol < handle
             value = names{1};
             type = symphonyui.core.PropertyType('char', 'row', names);
         end
-        
+
     end
 
 end

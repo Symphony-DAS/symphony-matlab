@@ -20,8 +20,8 @@ classdef LedPulseFamily < symphonyui.core.Protocol
     
     methods
         
-        function onSetRig(obj)
-            onSetRig@symphonyui.core.Protocol(obj);
+        function didSetRig(obj)
+            didSetRig@symphonyui.core.Protocol(obj);
             
             [obj.led, obj.ledType] = obj.createDeviceNamesProperty('LED');
             [obj.amp, obj.ampType] = obj.createDeviceNamesProperty('Amp');

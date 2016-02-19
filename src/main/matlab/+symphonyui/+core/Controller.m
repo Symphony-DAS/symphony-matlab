@@ -152,6 +152,16 @@ classdef Controller < symphonyui.core.CoreObject
                     obj.tryCore(@()obj.cobj.RequestStop());
                 end
             end
+            
+            listeners(end + 1) = NetListener(obj.cobj.DAQController, 'StartedHardware', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onDaqControllerStartedHardware(obj, h, d));
+            function onDaqControllerStartedHardware(obj, ~, ~)
+                try
+                    obj.currentProtocol.controllerDidStartHardware();
+                catch ex
+                    obj.requestStop();
+                    rethrow(ex);
+                end
+            end
 
             listeners(end + 1) = NetListener(obj.cobj, 'CompletedEpoch', 'Symphony.Core.TimeStampedEpochEventArgs', @(h,d)onCompletedEpoch(obj,h,d));
             function onCompletedEpoch(obj, ~, event)
