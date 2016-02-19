@@ -49,7 +49,7 @@ classdef MainPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj)
+        function willGo(obj)
             obj.populateProtocolList();
             obj.populateProtocolProperties();
             obj.populateModuleList();
@@ -61,7 +61,7 @@ classdef MainPresenter < appbox.Presenter
             obj.updateStateOfControls();
         end
 
-        function onStopping(obj)
+        function willStop(obj)
             if ~isempty(obj.dataManagerPresenter)
                 obj.closeDataManager();
             end
@@ -72,7 +72,9 @@ classdef MainPresenter < appbox.Presenter
             end
         end
 
-        function onBind(obj)
+        function bind(obj)
+            bind@appbox.Presenter(obj);
+            
             v = obj.view;
             obj.addListener(v, 'NewFile', @obj.onViewSelectedNewFile);
             obj.addListener(v, 'OpenFile', @obj.onViewSelectedOpenFile);
@@ -113,7 +115,7 @@ classdef MainPresenter < appbox.Presenter
             c = obj.configurationService;
             obj.addListener(c, 'InitializedRig', @obj.onServiceInitializedRig);
         end
-        
+
         function onViewSelectedClose(obj, ~, ~)
             obj.exit();
         end
@@ -188,7 +190,7 @@ classdef MainPresenter < appbox.Presenter
         function onViewSelectedExit(obj, ~, ~)
             obj.exit();
         end
-        
+
         function exit(obj)
             shouldExit = true;
             controllerState = obj.acquisitionService.getControllerState();

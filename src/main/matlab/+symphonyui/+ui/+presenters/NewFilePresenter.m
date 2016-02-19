@@ -24,7 +24,7 @@ classdef NewFilePresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj)
+        function willGo(obj)
             obj.populateName();
             obj.populateLocation();
             obj.populateDescriptionList();
@@ -35,11 +35,13 @@ classdef NewFilePresenter < appbox.Presenter
             end
         end
 
-        function onGo(obj)
+        function didGo(obj)
             obj.view.requestNameFocus();
         end
 
-        function onBind(obj)
+        function bind(obj)
+            bind@appbox.Presenter(obj);
+            
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'BrowseLocation', @obj.onViewSelectedBrowseLocation);
@@ -124,11 +126,11 @@ classdef NewFilePresenter < appbox.Presenter
                         error(['Unable to delete ''' path '''']);
                     end
                 end
-                
+
                 obj.enableControls(false);
                 obj.view.startSpinner();
                 obj.view.update();
-                
+
                 obj.documentationService.newFile(name, location, description);
             catch x
                 obj.log.debug(x.message, x);
@@ -137,7 +139,7 @@ classdef NewFilePresenter < appbox.Presenter
                 obj.enableControls(true);
                 return;
             end
-            
+
             try
                 obj.saveSettings();
             catch x
@@ -151,7 +153,7 @@ classdef NewFilePresenter < appbox.Presenter
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
         end
-        
+
         function enableControls(obj, tf)
             obj.view.enableName(tf);
             obj.view.enableLocation(tf);
@@ -160,7 +162,7 @@ classdef NewFilePresenter < appbox.Presenter
             obj.view.enableOk(tf);
             obj.view.enableCancel(tf);
         end
-            
+
         function loadSettings(obj)
             if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
                 obj.view.setSelectedDescription(obj.settings.selectedDescription);

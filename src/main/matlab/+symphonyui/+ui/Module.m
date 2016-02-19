@@ -22,14 +22,29 @@ classdef Module < appbox.Presenter
         
         function setDocumentationService(obj, service)
             obj.documentationService = service;
+            obj.didSetDocumentationService();
+        end
+        
+        function didSetDocumentationService(obj) %#ok<MANU>
+            
         end
         
         function setAcquisitionService(obj, service)
             obj.acquisitionService = service;
+            obj.didSetAcquisitionService();
+        end
+        
+        function didSetAcquisitionService(obj) %#ok<MANU>
+            
         end
         
         function setConfigurationService(obj, service)
             obj.configurationService = service;
+            obj.didSetConfigurationService();
+        end
+        
+        function didSetConfigurationService(obj) %#ok<MANU>
+            
         end
         
     end

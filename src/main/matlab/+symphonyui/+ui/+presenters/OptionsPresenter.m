@@ -22,11 +22,13 @@ classdef OptionsPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj)
+        function willGo(obj)
             obj.populateDetails();
         end
 
-        function onBind(obj)
+        function bind(obj)
+            bind@appbox.Presenter(obj);
+            
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);

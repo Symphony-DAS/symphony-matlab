@@ -22,11 +22,13 @@ classdef AddConfigurationSettingPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function onGo(obj)
+        function didGo(obj)
             obj.view.requestKeyFocus();
         end
 
-        function onBind(obj)
+        function bind(obj)
+            bind@appbox.Presenter(obj);
+            
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Add', @obj.onViewSelectedAdd);

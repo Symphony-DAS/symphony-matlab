@@ -1,9 +1,9 @@
 classdef DataManagerPresenter < appbox.Presenter
-    
+
     properties
         viewSelectedCloseFcn
     end
-    
+
     properties (Access = private)
         log
         settings
@@ -20,7 +20,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 view = symphonyui.ui.views.DataManagerView();
             end
             obj = obj@appbox.Presenter(view);
-            
+
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.DataManagerSettings();
             obj.documentationService = documentationService;
@@ -33,7 +33,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj)
+        function willGo(obj)
             obj.populateEntityTree();
             try
                 obj.loadSettings();
@@ -43,7 +43,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.updateStateOfControls();
         end
 
-        function onStopping(obj)
+        function willStop(obj)
             try
                 obj.saveSettings();
             catch x
@@ -51,7 +51,9 @@ classdef DataManagerPresenter < appbox.Presenter
             end
         end
 
-        function onBind(obj)
+        function bind(obj)
+            bind@appbox.Presenter(obj);
+            
             v = obj.view;
             obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
@@ -80,7 +82,7 @@ classdef DataManagerPresenter < appbox.Presenter
             a = obj.acquisitionService;
             obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
         end
-        
+
         function onViewSelectedClose(obj, ~, ~)
             if ~isempty(obj.viewSelectedCloseFcn)
                 obj.viewSelectedCloseFcn();
@@ -123,7 +125,7 @@ classdef DataManagerPresenter < appbox.Presenter
             if numel(nodes) == 1 && obj.view.getNodeType(nodes(1)) == symphonyui.ui.views.EntityNodeType.SOURCE
                 selectedParent = obj.view.getNodeEntity(nodes(1));
             end
-            
+
             presenter = symphonyui.ui.presenters.AddSourcePresenter(obj.documentationService, selectedParent);
             presenter.goWaitStop();
         end
@@ -293,7 +295,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.addEpochGroupNode(children{i});
             end
         end
-        
+
         function updateEpochGroupNode(obj, group)
             blocks = group.epochBlocks;
             for i = 1:numel(blocks)
@@ -304,7 +306,7 @@ classdef DataManagerPresenter < appbox.Presenter
                     obj.updateEpochBlockNode(b);
                 end
             end
-            
+
             children = group.epochGroups;
             for i = 1:numel(children)
                 c = children{i};
@@ -362,7 +364,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.addEpochNode(epochs{i});
             end
         end
-        
+
         function updateEpochBlockNode(obj, block)
             epochs = block.epochs;
             for i = 1:numel(epochs)
@@ -456,9 +458,9 @@ classdef DataManagerPresenter < appbox.Presenter
                 llabels{i} = datestr(s.epoch.startTime, 'HH:MM:SS:FFF');
                 obj.view.addEpochDataLine(xdata, ydata, color);
             end
-            
+
             obj.view.setEpochDataAxesLabels('Time (s)', strjoin(unique(ylabels), ', '));
-            
+
             if numel(llabels) > 1
                 obj.view.addEpochDataLegend(llabels);
             end

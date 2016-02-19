@@ -29,7 +29,7 @@ classdef AddSourcePresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj, ~, ~)
+        function willGo(obj, ~, ~)
             obj.populateParentList();
             obj.view.setSelectedParent(obj.initialParent);
             obj.populateDescriptionList();
@@ -40,7 +40,9 @@ classdef AddSourcePresenter < appbox.Presenter
             end
         end
 
-        function onBind(obj)
+        function bind(obj)
+            bind@appbox.Presenter(obj);
+            
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'SelectedParent', @obj.onViewSelectedParent);
@@ -98,7 +100,7 @@ classdef AddSourcePresenter < appbox.Presenter
                     obj.onViewSelectedCancel();
             end
         end
-        
+
         function onViewSelectedParent(obj, ~, ~)
             obj.populateDescriptionList();
         end

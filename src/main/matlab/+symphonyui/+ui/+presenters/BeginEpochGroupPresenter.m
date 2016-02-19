@@ -24,7 +24,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj, ~, ~)
+        function willGo(obj, ~, ~)
             obj.populateParent();
             obj.populateSourceList();
             obj.populateDescriptionList();
@@ -35,7 +35,9 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             end
         end
 
-        function onBind(obj)
+        function bind(obj)
+            bind@appbox.Presenter(obj);
+            
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Begin', @obj.onViewSelectedBegin);
@@ -112,7 +114,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-            
+
             try
                 obj.saveSettings();
             catch x
@@ -126,7 +128,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
         end
-        
+
         function loadSettings(obj)
             s = find(cellfun(@(s)strcmp(obj.settings.selectedSourceUuid, s.uuid), obj.view.getSourceList()), 1);
             if ~isempty(s)

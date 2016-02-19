@@ -22,15 +22,17 @@ classdef AddKeywordPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj)
+        function willGo(obj)
             obj.populateTextCompletionList();
         end
 
-        function onGo(obj)
+        function didGo(obj)
             obj.view.requestTextFocus();
         end
 
-        function onBind(obj)
+        function bind(obj)
+            bind@appbox.Presenter(obj);
+            
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Add', @obj.onViewSelectedAdd);

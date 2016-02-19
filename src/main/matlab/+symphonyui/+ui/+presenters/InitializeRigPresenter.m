@@ -24,7 +24,7 @@ classdef InitializeRigPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function onGoing(obj, ~, ~)
+        function willGo(obj, ~, ~)
             obj.populateDescriptionList();
             try
                 obj.loadSettings();
@@ -33,7 +33,9 @@ classdef InitializeRigPresenter < appbox.Presenter
             end
         end
 
-        function onBind(obj)
+        function bind(obj)
+            bind@appbox.Presenter(obj);
+            
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Initialize', @obj.onViewSelectedInitialize);
@@ -108,7 +110,7 @@ classdef InitializeRigPresenter < appbox.Presenter
             obj.settings.selectedDescription = obj.view.getSelectedDescription();
             obj.settings.save();
         end
-        
+
     end
 
 end
