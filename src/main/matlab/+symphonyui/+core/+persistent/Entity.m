@@ -45,6 +45,13 @@ classdef Entity < symphonyui.core.CoreObject
         function tf = removeProperty(obj, name)
             descriptors = obj.getPropertyDescriptors();
             index = arrayfun(@(d)strcmp(d.name, name), descriptors);
+            d = descriptors(index);
+            if isempty(d)
+                return;
+            end
+            if ~d.isRemovable
+                error([name ' is not removable']);
+            end
             descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(name));
             obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);

@@ -63,6 +63,13 @@ classdef Device < symphonyui.core.CoreObject
         function tf = removeConfigurationSetting(obj, name)
             descriptors = obj.getConfigurationSettingDescriptors();
             index = arrayfun(@(d)strcmp(d.name, name), descriptors);
+            d = descriptors(index);
+            if isempty(d)
+                return;
+            end
+            if ~d.isRemovable
+                error([name ' is not removable']);
+            end
             descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.Configuration.Remove(name));
             obj.configurationSettingDescriptors = descriptors;

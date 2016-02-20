@@ -34,9 +34,9 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             end
         end
         
-        function addConfigurationSetting(obj, key, value)
+        function addConfigurationSetting(obj, key, value, varargin)
             for i = 1:numel(obj.objects)
-                obj.objects{i}.addConfigurationSetting(key, value);
+                obj.objects{i}.addConfigurationSetting(key, value, varargin{:});
             end
         end
         

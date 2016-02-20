@@ -57,7 +57,7 @@ classdef AddPropertyPresenter < appbox.Presenter
                 value = valueStr;
             end
             try
-                obj.entitySet.addProperty(key, value);
+                obj.entitySet.addProperty(key, value, 'isRemovable', true);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);

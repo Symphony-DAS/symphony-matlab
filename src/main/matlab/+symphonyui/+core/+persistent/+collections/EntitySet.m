@@ -14,9 +14,9 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             obj@symphonyui.core.collections.ObjectSet(entities);
         end
         
-        function addProperty(obj, key, value)
+        function addProperty(obj, key, value, varargin)
             for i = 1:numel(obj.objects)
-                obj.objects{i}.addProperty(key, value);
+                obj.objects{i}.addProperty(key, value, varargin{:});
             end
         end
         

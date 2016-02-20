@@ -10,6 +10,7 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
         isReadOnly
         isHidden
         isPreferred
+        isRemovable
     end
 
     properties (Access = private, Transient)
@@ -22,6 +23,7 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
             if isobject(value)
                 error('Value of type object are not supported');
             end
+            obj.isRemovable = false;
             obj.field = uiextras.jide.PropertyGridField(name, value, ...
                 'DisplayName', appbox.humanize(name));
             if nargin > 2
@@ -106,6 +108,11 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
             obj.field.Preferred = tf;
         end
 
+        function set.isRemovable(obj, tf)
+            validateattributes(tf, {'logical'}, {'scalar'});
+            obj.isRemovable = tf;
+        end
+
         function p = findByName(array, name)
             p = [];
             for i = 1:numel(array)
@@ -146,7 +153,8 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
                     'description', s.description, ...
                     'isReadOnly', s.isReadOnly, ...
                     'isHidden', s.isHidden, ...
-                    'isPreferred', s.isPreferred);
+                    'isPreferred', s.isPreferred, ...
+                    'isRemovable', s.isRemovable);
             end
         end
 

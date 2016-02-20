@@ -57,7 +57,7 @@ classdef AddConfigurationSettingPresenter < appbox.Presenter
                 value = valueStr;
             end
             try
-                obj.deviceSet.addConfigurationSetting(key, value);
+                obj.deviceSet.addConfigurationSetting(key, value, 'isRemovable', true);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
