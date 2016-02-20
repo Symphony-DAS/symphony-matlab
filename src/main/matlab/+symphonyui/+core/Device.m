@@ -59,6 +59,15 @@ classdef Device < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
             obj.configurationSettingDescriptors = descriptors;
         end
+        
+        function v = getConfigurationSetting(obj, name)
+            descriptors = obj.getConfigurationSettingDescriptors();
+            d = descriptors.findByName(name);
+            if isempty(d)
+                error([name ' does not exist']);
+            end
+            v = d.value;
+        end
 
         function tf = removeConfigurationSetting(obj, name)
             descriptors = obj.getConfigurationSettingDescriptors();

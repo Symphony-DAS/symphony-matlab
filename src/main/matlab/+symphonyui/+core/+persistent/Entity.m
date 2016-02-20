@@ -41,6 +41,15 @@ classdef Entity < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
             obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
         end
+        
+        function v = getProperty(obj, name)
+            descriptors = obj.getPropertyDescriptors();
+            d = descriptors.findByName(name);
+            if isempty(d)
+                error([name ' does not exist']);
+            end
+            v = d.value;
+        end
 
         function tf = removeProperty(obj, name)
             descriptors = obj.getPropertyDescriptors();
