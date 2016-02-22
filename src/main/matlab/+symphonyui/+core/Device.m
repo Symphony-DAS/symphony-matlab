@@ -55,6 +55,9 @@ classdef Device < symphonyui.core.CoreObject
             if isempty(d)
                 error([name ' does not exist']);
             end
+            if d.isReadOnly
+                error([name ' is read only']);
+            end
             d.value = value;
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
             obj.configurationSettingDescriptors = descriptors;
@@ -150,6 +153,21 @@ classdef Device < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.ApplyBackground());
         end
 
+    end
+    
+    methods (Access = protected)
+        
+        function setReadOnlyConfigurationSetting(obj, name, value)
+            descriptors = obj.getConfigurationSettingDescriptors();
+            d = descriptors.findByName(name);
+            if isempty(d)
+                error([name ' does not exist']);
+            end
+            d.value = value;
+            obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
+            obj.configurationSettingDescriptors = descriptors;
+        end
+        
     end
 
 end

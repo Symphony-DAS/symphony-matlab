@@ -37,6 +37,9 @@ classdef Entity < symphonyui.core.CoreObject
             if isempty(d)
                 error([name ' does not exist']);
             end
+            if d.isReadOnly
+                error([name ' is read only']);
+            end
             d.value = value;
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
             obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
