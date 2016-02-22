@@ -76,6 +76,16 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             end
         end
         
+        function tf = allHaveBoundInputStreams(obj)
+            tf = true;
+            for i = 1:numel(obj.objects)
+                if isempty(obj.objects{i}.inputStreams)
+                    tf = false;
+                    return;
+                end
+            end
+        end
+        
         function s = get.outputStreams(obj)
             if isempty(obj.objects)
                 s = {};
@@ -84,6 +94,16 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             s = obj.objects{1}.outputStreams;
             for i = 2:numel(obj.objects)
                 s = obj.intersect(s, obj.objects{i}.outputStreams);
+            end
+        end
+        
+        function tf = allHaveBoundOutputStreams(obj)
+            tf = true;
+            for i = 1:numel(obj.objects)
+                if isempty(obj.objects{i}.outputStreams)
+                    tf = false;
+                    return;
+                end
             end
         end
         

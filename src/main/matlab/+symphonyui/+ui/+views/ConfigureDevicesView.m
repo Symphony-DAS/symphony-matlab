@@ -220,6 +220,12 @@ classdef ConfigureDevicesView < appbox.View
         function enableRemoveConfigurationSetting(obj, tf)
             set(obj.removeConfigurationSettingButton, 'Enable', appbox.onOff(tf));
         end
+        
+        function requestFigureFocus(obj)
+            obj.update();
+            jframe = get(handle(obj.figureHandle), 'JavaFrame');
+            jframe.getAxisComponent().requestFocus();
+        end
 
     end
 

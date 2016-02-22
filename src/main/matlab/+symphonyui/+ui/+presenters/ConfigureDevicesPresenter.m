@@ -75,7 +75,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             end
 
             backgroundUnits = deviceSet.getBackgroundDisplayUnits();
-            obj.view.enableBackground(~isempty(backgroundUnits));
+            obj.view.enableBackground(~isempty(backgroundUnits) && deviceSet.allHaveBoundOutputStreams());
             obj.view.setBackgroundUnits(backgroundUnits);
 
             obj.populateConfigurationWithDeviceSet(deviceSet);
@@ -110,6 +110,7 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
             try
                 deviceSet.background = symphonyui.core.Measurement(str2double(obj.view.getBackground()), obj.view.getBackgroundUnits());
                 deviceSet.applyBackground();
+                obj.view.requestFigureFocus();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
