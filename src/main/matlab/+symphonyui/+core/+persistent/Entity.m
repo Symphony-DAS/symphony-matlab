@@ -28,7 +28,7 @@ classdef Entity < symphonyui.core.CoreObject
             end
             descriptors(end + 1) = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
-            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
+            obj.updatePropertyDescriptorsResource(descriptors);
         end
 
         function setProperty(obj, name, value)
@@ -42,7 +42,7 @@ classdef Entity < symphonyui.core.CoreObject
             end
             d.value = value;
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
-            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
+            obj.updatePropertyDescriptorsResource(descriptors);
         end
         
         function v = getProperty(obj, name)
@@ -66,7 +66,7 @@ classdef Entity < symphonyui.core.CoreObject
             end
             descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(name));
-            obj.updateResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
+            obj.updatePropertyDescriptorsResource(descriptors);
         end
 
         function d = getPropertyDescriptors(obj)
@@ -94,17 +94,18 @@ classdef Entity < symphonyui.core.CoreObject
             obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.byte-stream', name, bytes));
         end
 
-        function updateResource(obj, name, variable)
-            obj.removeResource(name);
-            obj.addResource(name, variable);
-        end
-
         function v = getResource(obj, name)
             cres = obj.tryCoreWithReturn(@()obj.cobj.GetResource(name));
             v = getArrayFromByteStream(uint8(cres.Data));
         end
 
         function tf = removeResource(obj, name)
+            if strcmp(name, obj.TYPE_RESOURCE_NAME)
+                error('Cannot remove type resource');
+            end
+            if strcmp(name, obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME)
+                error('Cannot remove property descriptors resource');
+            end
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(name));
         end
 
@@ -133,6 +134,15 @@ classdef Entity < symphonyui.core.CoreObject
             end
         end
 
+    end
+    
+    methods (Access = private)
+        
+        function updatePropertyDescriptorsResource(obj, descriptors)
+            obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME));
+            obj.addResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
+        end
+        
     end
 
     methods (Static)
