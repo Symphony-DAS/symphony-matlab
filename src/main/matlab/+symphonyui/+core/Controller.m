@@ -79,7 +79,7 @@ classdef Controller < symphonyui.core.CoreObject
                 obj.completeRun();
                 return;
             end
-            if ~obj.state.isRunning()
+            if ~obj.state.isRunning() && ~obj.state.isPausing()
                 return;
             end
             obj.state = symphonyui.core.ControllerState.STOPPING;
