@@ -3,9 +3,7 @@ classdef ModuleService < handle
     properties (Access = private)
         session
         classRepository
-        documentationService
-        acquisitionService
-        configurationService
+        moduleManager
     end
     
     methods
@@ -13,9 +11,11 @@ classdef ModuleService < handle
         function obj = ModuleService(session, classRepository, documentationService, acquisitionService, configurationService)
             obj.session = session;
             obj.classRepository = classRepository;
-            obj.documentationService = documentationService;
-            obj.acquisitionService = acquisitionService;
-            obj.configurationService = configurationService;
+            obj.moduleManager = symphonyui.app.ModuleManager(documentationService, acquisitionService, configurationService);
+        end
+        
+        function delete(obj)
+            obj.stopModules();
         end
         
         function cn = getAvailableModules(obj)
@@ -26,12 +26,11 @@ classdef ModuleService < handle
             if ~any(strcmp(className, obj.getAvailableModules()))
                 error([className ' is not an available module']);
             end
-            constructor = str2func(className);
-            module = constructor();
-            module.setDocumentationService(obj.documentationService);
-            module.setAcquisitionService(obj.acquisitionService);
-            module.setConfigurationService(obj.configurationService);
-            module.go();
+            obj.moduleManager.showModule(className);
+        end
+        
+        function stopModules(obj)
+            obj.moduleManager.stopModules();
         end
         
     end

@@ -4,7 +4,6 @@ classdef Session < handle
         rig
         protocol
         persistor
-        modules
     end
     
     properties (SetAccess = private)
