@@ -60,6 +60,7 @@ classdef FigureHandlerManager < handle
         
         function onFigureHandlerClosed(obj, handler, ~)
             index = cellfun(@(h)h == handler, obj.figureHandlers);
+            delete(handler);
             obj.figureHandlers(index) = [];
         end
         

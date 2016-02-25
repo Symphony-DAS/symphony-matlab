@@ -57,6 +57,7 @@ classdef ModuleManager < handle
         
         function onModuleStopped(obj, module, ~)
             index = cellfun(@(m)m == module, obj.modules);
+            delete(module);
             obj.modules(index) = [];
         end
         

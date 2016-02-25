@@ -15,7 +15,7 @@ classdef ModuleService < handle
         end
         
         function delete(obj)
-            obj.stopModules();
+            obj.moduleManager.stopModules();
         end
         
         function cn = getAvailableModules(obj)
