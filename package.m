@@ -16,17 +16,30 @@ function package(skipTests)
     version = config.getElementsByTagName('param.version').item(0);
     version.setTextContent(symphonyui.app.App.version);
     
-    % FIXME: Not sure why Matlab is including the runtime core requirement.
+    % Not sure why Matlab is including the runtime core requirement.
     products = config.getElementsByTagName('param.products.name').item(0);
     items = products.getElementsByTagName('item');
+    commentItems = {};
     for i = 1:items.getLength()
         item = items.item(i-1);
         if strcmp(item.getTextContent(), 'MATLAB Runtime - Core')
-            products.removeChild(item);
+            commentItems{end + 1} = item; %#ok<AGROW>
         end
     end
     
-    xmlwrite(projectFile, dom);
+    for i = 1:numel(commentItems)
+        item = commentItems{i};
+        comment = item.getOwnerDocument().createComment(item.getTextContent());
+        products.replaceChild(comment, item);
+    end
+    
+    % This adds a new line after each line in the XML
+    %xmlwrite(projectFile, dom);
+    
+    domString = strrep(char(dom.saveXML(root)), 'encoding="UTF-16"', 'encoding="UTF-8"');
+    fid = fopen(projectFile, 'w');
+    fwrite(fid, domString);
+    fclose(fid);
     
     matlab.apputil.package(projectFile);
 end
