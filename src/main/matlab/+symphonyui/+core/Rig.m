@@ -1,6 +1,6 @@
 classdef Rig < handle
     
-    properties
+    properties (SetObservable)
         sampleRate
     end
     

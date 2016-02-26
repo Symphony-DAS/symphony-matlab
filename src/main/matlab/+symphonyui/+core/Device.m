@@ -11,7 +11,7 @@ classdef Device < symphonyui.core.CoreObject
         configurationSettingDescriptors
     end
 
-    properties
+    properties (SetObservable)
         sampleRate
         background
     end
