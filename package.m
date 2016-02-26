@@ -6,8 +6,13 @@ function package(skipTests)
     if ~skipTests
         test();
     end
-    addpath(genpath(fullfile('src', 'main')));
-    projectFile = fullfile(fileparts(mfilename('fullpath')), 'Symphony.prj');
+    
+    rootPath = fileparts(mfilename('fullpath'));
+    
+    addpath(genpath(fullfile(rootPath, 'lib')));
+    addpath(genpath(fullfile(rootPath, 'src')));
+    
+    projectFile = fullfile(rootPath, 'Symphony.prj');
     
     dom = xmlread(projectFile);
     root = dom.getDocumentElement();

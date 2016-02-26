@@ -2,7 +2,12 @@ function test(package)
     if nargin < 1
         package = 'symphonyui';
     end
-    addpath(genpath(fullfile('src', 'test')));
+    
+    rootPath = fileparts(mfilename('fullpath'));
+    
+    addpath(genpath(fullfile(rootPath, 'lib')));
+    addpath(genpath(fullfile(rootPath, 'src')));
+    
     suite = matlab.unittest.TestSuite.fromPackage(package, 'IncludingSubpackages', true);
     results = run(suite);
     
