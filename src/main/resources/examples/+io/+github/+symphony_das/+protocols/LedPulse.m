@@ -6,7 +6,7 @@ classdef LedPulse < symphonyui.core.Protocol
         stimTime = 100                  % Pulse duration (ms)
         tailTime = 400                  % Pulse trailing duration (ms)
         lightAmplitude = 1              % Pulse amplitude (V)
-        lightMean = 0                   % Pulse and background mean (V)
+        lightMean = 0                   % Pulse and LED background mean (V)
         amp                             % Input amplifier
         numberOfAverages = uint16(5)    % Number of epochs
         interpulseInterval = 0          % Duration between pulses (s)
@@ -37,6 +37,8 @@ classdef LedPulse < symphonyui.core.Protocol
             obj.showFigure('symphonyui.builtin.figures.ResponseStatisticsFigure', obj.rig.getDevice(obj.amp), {@mean, @var}, ...
                 'baselineRegion', [0 obj.preTime], ...
                 'measurementRegion', [obj.preTime obj.preTime+obj.stimTime]);
+            
+            obj.rig.getDevice(obj.led).background = symphonyui.core.Measurement(obj.lightMean, 'V');
         end
         
         function stim = createLedStimulus(obj)
