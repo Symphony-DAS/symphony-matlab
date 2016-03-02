@@ -151,7 +151,7 @@ classdef Tree < hgsetget
         ButtonUpFcn %callback when the mouse button goes up over the tree
         ButtonDownFcn %callback when the mouse button goes down over the tree
         MouseClickedCallback %callback when the mouse is clicked on the tree
-        MouseMotionFcn %callback while the mouse is being moved over the tree
+        %MouseMotionFcn %callback while the mouse is being moved over the tree
         NodeDraggedCallback %callback for a node being dragged
         NodeDroppedCallback %callback for a node being dropped
         NodeExpandedCallback %callback for a node being expanded
@@ -506,7 +506,7 @@ classdef Tree < hgsetget
             %set(CbProps,'TreeWillCollapseCallback',@(src,e)onCollapse(tObj,e))
             set(CbProps,'TreeCollapsedCallback',@(src,e)onCollapse(tObj,e))
             %set(CbProps,'MouseDraggedCallback',@(src,e)onMouseDrag(tObj,e))
-            set(CbProps,'MouseMovedCallback',@(src,e)onMouseMotion(tObj,e))
+            %set(CbProps,'MouseMovedCallback',@(src,e)onMouseMotion(tObj,e))
             set(CbProps,'ValueChangedCallback',@(src,e)onNodeSelection(tObj,e))
             
             % Set up editability callback
@@ -704,28 +704,28 @@ classdef Tree < hgsetget
         end %function onButtonUp
         
         
-        function onMouseMotion(tObj,e)
-            % Occurs when the mouse moves within the pane
-            
-            % Is there a custom MouseMotionFcn?
-            if callbacksEnabled(tObj) && ~isempty(tObj.MouseMotionFcn)
-                
-                % Get the click position
-                x = e.getX;
-                y = e.getY;
-                
-                % Was a tree node clicked?
-                nObj = getNodeFromMouseEvent(tObj,e);
-                
-                % Call the custom callback
-                e1 = struct(...
-                    'Position',[x,y],...
-                    'Nodes',nObj);
-                hgfeval(tObj.MouseMotionFcn,tObj,e1);
-                
-            end %if ~isempty(tObj.MouseMotionFcn)
-            
-        end %function onMouseMotion
+%         function onMouseMotion(tObj,e)
+%             % Occurs when the mouse moves within the pane
+%             
+%             % Is there a custom MouseMotionFcn?
+%             if callbacksEnabled(tObj) && ~isempty(tObj.MouseMotionFcn)
+%                 
+%                 % Get the click position
+%                 x = e.getX;
+%                 y = e.getY;
+%                 
+%                 % Was a tree node clicked?
+%                 nObj = getNodeFromMouseEvent(tObj,e);
+%                 
+%                 % Call the custom callback
+%                 e1 = struct(...
+%                     'Position',[x,y],...
+%                     'Nodes',nObj);
+%                 hgfeval(tObj.MouseMotionFcn,tObj,e1);
+%                 
+%             end %if ~isempty(tObj.MouseMotionFcn)
+%             
+%         end %function onMouseMotion
         
         
         function onNodeSelection(tObj,e)
