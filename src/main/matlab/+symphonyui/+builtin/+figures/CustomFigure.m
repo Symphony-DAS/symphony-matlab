@@ -1,5 +1,9 @@
 classdef CustomFigure < symphonyui.core.FigureHandler
     
+    properties
+        userData
+    end
+    
     properties (SetAccess = private)
         handleEpochCallback
         clearCallback
