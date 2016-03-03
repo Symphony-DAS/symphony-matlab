@@ -337,8 +337,8 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\ListBox.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MappedListBox.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MappedPopupMenu.m</file>
-      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessageBoxPresenter.m</file>
-      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessageBoxView.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessagePresenter.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessageView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\onOff.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\packageName.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Presenter.m</file>

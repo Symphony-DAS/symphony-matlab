@@ -144,6 +144,8 @@ classdef MainPresenter < appbox.Presenter
             if isempty(path)
                 return;
             end
+            p = obj.view.showBusy('This may take a moment.', 'Opening file...');
+            d = onCleanup(@()delete(p));
             try
                 obj.documentationService.openFile(path);
             catch x
