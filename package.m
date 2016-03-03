@@ -38,6 +38,23 @@ function package(skipTests)
         products.replaceChild(comment, item);
     end
     
+    % Exclude log files.
+    filedeps = config.getElementsByTagName('fileset.depfun').item(0);
+    files = filedeps.getElementsByTagName('file');
+    commentFiles = {};
+    for i = 1:files.getLength()
+        file = files.item(i-1);
+        if ~isempty(strfind(file.getTextContent(), 'debug.log'))
+            commentFiles{end + 1} = file; %#ok<AGROW>
+        end
+    end
+    
+    for i = 1:numel(commentFiles)
+        file = commentFiles{i};
+        comment = file.getOwnerDocument().createComment(file.getTextContent());
+        filedeps.replaceChild(comment, file);
+    end
+    
     % This adds a new line after each line in the XML
     %xmlwrite(projectFile, dom);
     

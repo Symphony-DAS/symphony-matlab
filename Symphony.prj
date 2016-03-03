@@ -14,7 +14,7 @@
     <param.summary>Electrophysiology Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB-based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.0.1.3</param.version>
+    <param.version>2.0.1.4</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -328,6 +328,8 @@
       <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\User guide7_6.html</file>
       <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\layoutdoc\VisibleExample.html</file>
       <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\license.txt</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\BusyPresenter.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\BusyView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\EventData.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\firstNonEmpty.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\humanize.m</file>
@@ -610,68 +612,74 @@
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\PropertyDemo.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Subject.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\log.xml</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-21</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-23</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-30</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-30.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-04</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-05</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-06</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-12</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-13</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-13.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-13.2</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-17</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-02</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-04</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-04.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-11</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-11.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-11.2</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-14</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-18</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-22</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-06</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-07</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-08</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-11</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-12</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-13</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-14</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-15</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-19</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-27</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-28</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-01</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-03</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-03.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-03.2</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-04</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-08</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-08.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-11</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-16</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-17</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-18</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-18.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-18.2</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-19</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-19.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-19.2</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-22</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-22.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-22.2</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-23</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-23.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-23.2</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-24</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-24.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-24.2</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-25</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-25.1</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-25.2</file>
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-21-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-23-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-30-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-30.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-04-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-05-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-06-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-12-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-13-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-13.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-13.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-11-17-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-02-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-04-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-04.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-11-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-11.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-11.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-14-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-18-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-12-22-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-06-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-07-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-08-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-11-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-12-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-13-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-14-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-15-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-19-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-27-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-01-28-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-01-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-03-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-03.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-03.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-04-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-08-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-08.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-11-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-16-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-17-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-18-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-18.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-18.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-19-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-19.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-19.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-22-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-22.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-22.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-23-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-23.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-23.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-24-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-24.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-24.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-25-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-25.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-25.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-26-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-26.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-26.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-29-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-29.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-29.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-01-->
       <file>${PROJECT_ROOT}\src\main\resources\icons\block.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\close.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\device.png</file>
