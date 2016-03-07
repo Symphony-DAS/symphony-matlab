@@ -6,7 +6,7 @@ classdef CoreEventData < event.EventData
     
     methods
         
-        function obj = AppEventData(data)
+        function obj = CoreEventData(data)
             obj.data = data;
         end
         

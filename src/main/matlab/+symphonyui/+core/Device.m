@@ -1,5 +1,9 @@
 classdef Device < symphonyui.core.CoreObject
 
+    events (NotifyAccess = private)
+        SetConfigurationSetting
+    end
+
     properties (SetAccess = private)
         name
         manufacturer
@@ -61,8 +65,9 @@ classdef Device < symphonyui.core.CoreObject
             d.value = value;
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
             obj.configurationSettingDescriptors = descriptors;
+            notify(obj, 'SetConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
-        
+
         function v = getConfigurationSetting(obj, name)
             descriptors = obj.getConfigurationSettingDescriptors();
             d = descriptors.findByName(name);
@@ -90,17 +95,17 @@ classdef Device < symphonyui.core.CoreObject
         function d = getConfigurationSettingDescriptors(obj)
             d = obj.configurationSettingDescriptors;
         end
-        
+
         function addResource(obj, name, variable)
             bytes = getByteStreamFromArray(variable);
             obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.byte-stream', name, bytes));
         end
-        
+
         function v = getResource(obj, name)
             cres = obj.tryCoreWithReturn(@()obj.cobj.GetResource(name));
             v = getArrayFromByteStream(uint8(cres.Data));
         end
-        
+
         function n = getResourceNames(obj)
             n = obj.cellArrayFromEnumerable(obj.cobj.GetResourceNames(), @char);
         end
@@ -154,9 +159,9 @@ classdef Device < symphonyui.core.CoreObject
         end
 
     end
-    
+
     methods (Access = protected)
-        
+
         function setReadOnlyConfigurationSetting(obj, name, value)
             descriptors = obj.getConfigurationSettingDescriptors();
             d = descriptors.findByName(name);
@@ -167,7 +172,7 @@ classdef Device < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
             obj.configurationSettingDescriptors = descriptors;
         end
-        
+
     end
 
 end
