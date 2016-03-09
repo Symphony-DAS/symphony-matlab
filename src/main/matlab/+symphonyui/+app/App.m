@@ -7,7 +7,7 @@ classdef App < handle
         end
         
         function v = version()
-            v = '2.0.1.4'; % i.e. 2.0-b4
+            v = '2.0.1.5'; % i.e. 2.0-b5
         end
         
         function c = copyright()
@@ -15,7 +15,7 @@ classdef App < handle
         end
         
         function u = documentationUrl()
-            u = 'https://github.com/Symphony-DAS/Symphony/wiki';
+            u = 'https://github.com/Symphony-DAS/symphony-matlab2/wiki';
         end
         
         function u = userGroupUrl()
