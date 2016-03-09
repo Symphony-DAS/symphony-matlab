@@ -39,6 +39,10 @@ classdef Epoch < symphonyui.core.CoreObject
         function addResponse(obj, device)
             obj.tryCore(@()obj.cobj.Responses.Add(device.cobj, Symphony.Core.Response()));
         end
+        
+        function removeResponse(obj, device)
+            obj.tryCore(@()obj.cobj.Responses.Remove(device.cobj));
+        end
 
         function r = getResponse(obj, device)
             cres = obj.tryCoreWithReturn(@()obj.cobj.Responses.Item(device.cobj));
