@@ -32,6 +32,10 @@ classdef OptionsPresenter < appbox.Presenter
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
+            obj.addListener(v, 'BrowseStartupFile', @obj.onViewSelectedBrowseStartupFile);
+            obj.addListener(v, 'BrowseFileDefaultLocation', @obj.onViewSelectedBrowseFileDefaultLocation);
+            obj.addListener(v, 'BrowseLoggingConfigurationFile', @obj.onViewSelectedBrowseLoggingConfigurationFile);
+            obj.addListener(v, 'BrowseLoggingLogDirectory', @obj.onViewSelectedBrowseLoggingLogDirectory);
             obj.addListener(v, 'AddSearchPath', @obj.onViewSelectedAddSearchPath);
             obj.addListener(v, 'RemoveSearchPath', @obj.onViewSelectedRemoveSearchPath);
             obj.addListener(v, 'Save', @obj.onViewSelectedSave);
@@ -44,9 +48,14 @@ classdef OptionsPresenter < appbox.Presenter
     methods (Access = private)
         
         function populateDetails(obj)
+            obj.populateGeneralDetails();
             obj.populateFileDetails();
             obj.populateSearchPathDetails();
             obj.populateLoggingDetails();
+        end
+        
+        function populateGeneralDetails(obj)
+            obj.view.setStartupFile(char(obj.options.startupFile));
         end
 
         function populateFileDetails(obj)
@@ -85,6 +94,38 @@ classdef OptionsPresenter < appbox.Presenter
             obj.view.setCardSelection(index);
         end
         
+        function onViewSelectedBrowseStartupFile(obj, ~, ~)
+            file = obj.view.showGetFile('Select Startup File', '*.m');
+            if isempty(file)
+                return;
+            end
+            obj.view.setStartupFile(file);
+        end
+        
+        function onViewSelectedBrowseFileDefaultLocation(obj, ~, ~)
+            location = obj.view.showGetDirectory('Select Default Location');
+            if isempty(location)
+                return;
+            end
+            obj.view.setFileDefaultLocation(location);
+        end
+        
+        function onViewSelectedBrowseLoggingConfigurationFile(obj, ~, ~)
+            file = obj.view.showGetFile('Select Configuration File', '*.m');
+            if isempty(file)
+                return;
+            end
+            obj.view.setLoggingConfigurationFile(file);
+        end
+        
+        function onViewSelectedBrowseLoggingLogDirectory(obj, ~, ~)
+            directory = obj.view.showGetDirectory('Select Log Directory');
+            if isempty(directory)
+                return;
+            end
+            obj.view.setLoggingLogDirectory(directory);
+        end
+        
         function onViewSelectedAddSearchPath(obj, ~, ~)
             path = obj.view.showGetDirectory('Select Path');
             if isempty(path)
@@ -118,6 +159,7 @@ classdef OptionsPresenter < appbox.Presenter
             end
             
             try
+                startupFile = parse(obj.view.getStartupFile());
                 fileDefaultName = parse(obj.view.getFileDefaultName());
                 fileDefaultLocation = parse(obj.view.getFileDefaultLocation());
                 searchPath = strjoin(obj.view.getSearchPaths(), ';');
@@ -129,6 +171,7 @@ classdef OptionsPresenter < appbox.Presenter
                 return;
             end
             
+            obj.options.startupFile = startupFile;
             obj.options.fileDefaultName = fileDefaultName;
             obj.options.fileDefaultLocation = fileDefaultLocation;
             obj.options.searchPath = searchPath;

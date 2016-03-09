@@ -1,6 +1,7 @@
 classdef Options < appbox.Settings
     
     properties
+        startupFile
         fileDefaultName
         fileDefaultLocation
         searchPath
@@ -9,6 +10,15 @@ classdef Options < appbox.Settings
     end
     
     methods
+        
+        function f = get.startupFile(obj)
+            f = obj.get('startupFile', '');
+        end
+        
+        function set.startupFile(obj, f)
+            validateattributes(f, {'char', 'function_handle'}, {'2d'});
+            obj.put('startupFile', f);
+        end
         
         function n = get.fileDefaultName(obj)
             n = obj.get('fileDefaultName', @()datestr(now, 'yyyy-mm-dd'));
@@ -43,7 +53,7 @@ classdef Options < appbox.Settings
         
         function set.loggingConfigurationFile(obj, f)
             validateattributes(f, {'char', 'function_handle'}, {'2d'});
-            obj.put('loggingConfigurationFile', f)
+            obj.put('loggingConfigurationFile', f);
         end
         
         function f = get.loggingLogDirectory(obj)
@@ -52,7 +62,7 @@ classdef Options < appbox.Settings
         
         function set.loggingLogDirectory(obj, f)
             validateattributes(f, {'char', 'function_handle'}, {'2d'});
-            obj.put('loggingLogDirectory', f)
+            obj.put('loggingLogDirectory', f);
         end
         
     end

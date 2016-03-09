@@ -7,6 +7,12 @@ function main()
     
     options = symphonyui.app.Options.getDefault();
     
+    try
+        run(options.startupFile());
+    catch x
+        warning(['Failed to run startup file: ', x.message]);
+    end
+        
     Symphony.Core.Logging.ConfigureLogging(options.loggingConfigurationFile(), options.loggingLogDirectory());
     
     session = Session();
