@@ -518,7 +518,8 @@ classdef MainPresenter < appbox.Presenter
             displayNames = cell(1, numel(classNames));
             for i = 1:numel(classNames)
                 split = strsplit(classNames{i}, '.');
-                displayNames{i} = appbox.humanize(split{end});
+                name = appbox.humanize(split{end});
+                displayNames{i} = appbox.capitalize(name);
             end
 
             for i = 1:numel(classNames)
