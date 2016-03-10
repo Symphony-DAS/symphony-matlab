@@ -153,6 +153,13 @@ classdef Controller < symphonyui.core.CoreObject
                 end
             end
             
+            listeners(end + 1) = NetListener(obj.cobj, 'Stopped', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onStopped(obj,h,d));
+            function onStopped(obj, ~, ~)
+                if obj.state.isRunning()
+                    obj.state = symphonyui.core.ControllerState.STOPPING;
+                end
+            end
+            
             listeners(end + 1) = NetListener(obj.cobj.DAQController, 'StartedHardware', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onDaqControllerStartedHardware(obj, h, d));
             function onDaqControllerStartedHardware(obj, ~, ~)
                 try
