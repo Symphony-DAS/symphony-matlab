@@ -10,6 +10,7 @@ classdef SealTest < symphonyui.core.Protocol
     
     properties (Hidden)
         ampType
+        statusFigure
     end
     
     methods
@@ -25,6 +26,30 @@ classdef SealTest < symphonyui.core.Protocol
             function s = createPreviewStimuli(obj)
                 gen = symphonyui.builtin.stimuli.PulseGenerator(obj.createAmpStimulus().parameters);
                 s = gen.generate();
+            end
+        end
+        
+        function prepareRun(obj)
+            prepareRun@symphonyui.core.Protocol(obj);
+            
+            if isempty(obj.statusFigure) || ~isvalid(obj.statusFigure)
+                obj.statusFigure = obj.showFigure('symphonyui.builtin.figures.CustomFigure', @null);
+                f = obj.statusFigure.getFigureHandle();
+                set(f, 'Name', 'Status');
+                layout = uix.VBox('Parent', f);
+                uix.Empty('Parent', layout);
+                obj.statusFigure.userData.text = uicontrol( ...
+                    'Parent', layout, ...
+                    'Style', 'text', ...
+                    'FontSize', 24, ...
+                    'HorizontalAlignment', 'center', ...
+                    'String', '');
+                uix.Empty('Parent', layout);
+                set(layout, 'Height', [-1 42 -1]);
+            end
+            
+            if isvalid(obj.statusFigure)
+                set(obj.statusFigure.userData.text, 'String', 'Running...');
             end
         end
         
@@ -54,6 +79,14 @@ classdef SealTest < symphonyui.core.Protocol
         
         function tf = shouldContinueRun(obj)
             tf = obj.numEpochsCompleted < 1;
+        end
+        
+        function completeRun(obj)
+            completeRun@symphonyui.core.Protocol(obj);
+            
+            if isvalid(obj.statusFigure)
+                set(obj.statusFigure.userData.text, 'String', 'Completed');
+            end
         end
         
     end
