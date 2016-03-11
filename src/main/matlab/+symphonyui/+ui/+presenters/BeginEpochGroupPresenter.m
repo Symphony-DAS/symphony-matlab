@@ -67,23 +67,22 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
     methods (Access = private)
 
         function populateParentList(obj)
-            groups = {};
             currentGroup = obj.documentationService.getCurrentEpochGroup();
-            while ~isempty(currentGroup)
-                groups{end + 1} = currentGroup; %#ok<AGROW>
-                currentGroup = currentGroup.parent;
+            if isempty(currentGroup)
+                parents = {};
+            else
+                parents = flip([{currentGroup} currentGroup.getAncestors()]);
             end
-            groups = flip(groups);
             
-            names = cell(1, numel(groups));
-            for i = 1:numel(groups)
-                names{i} = groups{i}.label;
+            names = cell(1, numel(parents));
+            for i = 1:numel(parents)
+                names{i} = parents{i}.label;
             end
             names = [{'(None)'}, names];
-            values = [{[]}, groups];
+            values = [{[]}, parents];
             
             obj.view.setParentList(names, values);
-            obj.view.enableSelectParent(numel(groups) > 0);
+            obj.view.enableSelectParent(numel(parents) > 0);
         end
         
         function populateSourceList(obj)
@@ -138,10 +137,14 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
         function onViewSelectedBegin(obj, ~, ~)
             obj.view.update();
-
+            
+            parent = obj.view.getSelectedParent();
             source = obj.view.getSelectedSource();
             description = obj.view.getSelectedDescription();
             try
+                while obj.documentationService.getCurrentEpochGroup() ~= parent
+                    obj.documentationService.endEpochGroup();
+                end
                 group = obj.documentationService.beginEpochGroup(source, description);
             catch x
                 obj.log.debug(x.message, x);

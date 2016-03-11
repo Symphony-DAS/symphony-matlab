@@ -617,7 +617,7 @@ classdef DataManagerView < appbox.View
             node.setIcon(symphonyui.app.App.getResource('icons/group.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
             menu = obj.addEntityContextMenus(menu);
-            set(n, 'UIContextMenu', menu);
+            set(node, 'UIContextMenu', menu);
         end
 
         function n = addEpochBlockNode(obj, parent, name, entity)

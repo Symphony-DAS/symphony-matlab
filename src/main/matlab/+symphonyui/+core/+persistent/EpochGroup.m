@@ -51,6 +51,15 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
                 g = symphonyui.core.persistent.EpochGroup(cgrp);
             end
         end
+        
+        function a = getAncestors(obj)
+            a = {};
+            current = obj.parent;
+            while ~isempty(current)
+                a{end + 1} = current; %#ok<AGROW>
+                current = current.parent;
+            end
+        end
 
         function e = get.experiment(obj)
             e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
