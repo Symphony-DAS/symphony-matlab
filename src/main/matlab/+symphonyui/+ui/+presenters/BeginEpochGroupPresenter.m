@@ -19,7 +19,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
                 if isempty(sources)
                     initialSource = [];
                 else
-                    initialSource = sources{1};
+                    initialSource = sources{end};
                 end
             end
             if nargin < 4
@@ -41,16 +41,10 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
         function willGo(obj, ~, ~)
             obj.populateParentList();
-            obj.view.setSelectedParent(obj.initialParent);
             obj.populateSourceList();
-            obj.view.setSelectedSource(obj.initialSource);
             obj.populateDescriptionList();
-            try
-                obj.loadSettings();
-            catch x
-                obj.log.debug(['Failed to load presenter settings: ' x.message], x);
-            end
-            obj.updateStateOfControls();
+            obj.selectParent(obj.initialParent);
+            obj.selectSource(obj.initialSource);
         end
 
         function bind(obj)
@@ -85,6 +79,12 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             obj.view.enableSelectParent(numel(parents) > 0);
         end
         
+        function selectParent(obj, parent)
+            obj.view.setSelectedParent(parent);
+            obj.populateDescriptionList();
+            obj.updateStateOfControls();
+        end
+        
         function populateSourceList(obj)
             sources = obj.documentationService.getExperiment().allSources();
 
@@ -99,6 +99,10 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
                 obj.view.setSourceList({'(None)'}, {[]});
             end
             obj.view.enableSelectSource(numel(sources) > 0);
+        end
+        
+        function selectSource(obj, source)
+            obj.view.setSelectedSource(source);
         end
 
         function populateDescriptionList(obj)
@@ -152,12 +156,6 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
                 return;
             end
 
-            try
-                obj.saveSettings();
-            catch x
-                obj.log.debug(['Failed to save presenter settings: ' x.message], x);
-            end
-
             obj.result = group;
             obj.stop();
         end
@@ -173,17 +171,6 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             hasDescription = ~isempty(descriptionList{1});
             
             obj.view.enableBegin(hasSource && hasDescription);
-        end
-
-        function loadSettings(obj)
-            if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
-                obj.view.setSelectedDescription(obj.settings.selectedDescription);
-            end
-        end
-
-        function saveSettings(obj)
-            obj.settings.selectedDescription = obj.view.getSelectedDescription();
-            obj.settings.save();
         end
 
     end

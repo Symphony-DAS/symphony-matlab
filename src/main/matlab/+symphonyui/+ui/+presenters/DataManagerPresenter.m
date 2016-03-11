@@ -235,17 +235,15 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
             initialParent = [];
-            initialSource = [];
             nodes = obj.view.getSelectedNodes();
-            if numel(nodes) == 1
-                entity = obj.view.getNodeEntity(nodes(1));
-                type = obj.view.getNodeType(nodes(1));
-                switch type
-                    case symphonyui.ui.views.EntityNodeType.EPOCH_GROUP
-                        initialParent = entity;
-                    case symphonyui.ui.views.EntityNodeType.SOURCE
-                        initialSource = entity;
-                end
+            if numel(nodes) == 1 && obj.view.getNodeType(nodes(1)) == symphonyui.ui.views.EntityNodeType.EPOCH_GROUP
+                initialParent = obj.view.getNodeEntity(nodes(1));
+            end
+            
+            initialSource = [];
+            currentGroup = obj.documentationService.getCurrentEpochGroup();
+            if ~isempty(currentGroup)
+                initialSource = currentGroup.source;
             end
             
             presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.documentationService, initialParent, initialSource);
