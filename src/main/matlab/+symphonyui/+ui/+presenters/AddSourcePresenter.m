@@ -2,7 +2,6 @@ classdef AddSourcePresenter < appbox.Presenter
 
     properties (Access = private)
         log
-        settings
         documentationService
         initialParent
     end
@@ -20,7 +19,6 @@ classdef AddSourcePresenter < appbox.Presenter
             obj.view.setWindowStyle('modal');
 
             obj.log = log4m.LogManager.getLogger(class(obj));
-            obj.settings = symphonyui.ui.settings.AddSourceSettings();
             obj.documentationService = documentationService;
             obj.initialParent = initialParent;
         end
@@ -31,14 +29,8 @@ classdef AddSourcePresenter < appbox.Presenter
 
         function willGo(obj, ~, ~)
             obj.populateParentList();
-            obj.view.setSelectedParent(obj.initialParent);
             obj.populateDescriptionList();
-            try
-                obj.loadSettings();
-            catch x
-                obj.log.debug(['Failed to load presenter settings: ' x.message], x);
-            end
-            obj.updateStateOfControls();
+            obj.selectParent(obj.initialParent);
         end
 
         function bind(obj)
@@ -67,6 +59,12 @@ classdef AddSourcePresenter < appbox.Presenter
 
             obj.view.setParentList(names, values);
             obj.view.enableSelectParent(numel(sources) > 0);
+        end
+        
+        function selectParent(obj, parent)
+            obj.view.setSelectedParent(parent);
+            obj.populateDescriptionList();
+            obj.updateStateOfControls();
         end
 
         function populateDescriptionList(obj)
@@ -104,7 +102,7 @@ classdef AddSourcePresenter < appbox.Presenter
         end
 
         function onViewSelectedParent(obj, ~, ~)
-            obj.populateDescriptionList();
+            obj.selectParent(obj.view.getSelectedParent());
         end
 
         function onViewSelectedAdd(obj, ~, ~)
@@ -120,12 +118,6 @@ classdef AddSourcePresenter < appbox.Presenter
                 return;
             end
 
-            try
-                obj.saveSettings();
-            catch x
-                obj.log.debug(['Failed to save presenter settings: ' x.message], x);
-            end
-
             obj.result = source;
             obj.stop();
         end
@@ -139,17 +131,6 @@ classdef AddSourcePresenter < appbox.Presenter
             hasDescription = ~isempty(descriptionList{1});
             
             obj.view.enableAdd(hasDescription);
-        end
-        
-        function loadSettings(obj)
-            if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
-                obj.view.setSelectedDescription(obj.settings.selectedDescription);
-            end
-        end
-
-        function saveSettings(obj)
-            obj.settings.selectedDescription = obj.view.getSelectedDescription();
-            obj.settings.save();
         end
 
     end
