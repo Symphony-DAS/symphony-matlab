@@ -7,6 +7,7 @@ classdef MainView < appbox.View
         Exit
         AddSource
         BeginEpochGroup
+        EndEpochGroup
         SelectedProtocol
         SetProtocolProperty
         MinimizeProtocolPreview
@@ -78,7 +79,11 @@ classdef MainView < appbox.View
                 'Callback', @(h,d)notify(obj, 'AddSource'));
             obj.documentMenu.beginEpochGroup = uimenu(obj.documentMenu.root, ...
                 'Label', 'Begin Epoch Group...', ...
+                'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
+            obj.documentMenu.endEpochGroup = uimenu(obj.documentMenu.root, ...
+                'Label', 'End Epoch Group', ...
+                'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
 
             % Acquire menu.
             obj.acquireMenu.root = uimenu(obj.figureHandle, ...
@@ -258,6 +263,10 @@ classdef MainView < appbox.View
 
         function enableBeginEpochGroup(obj, tf)
             set(obj.documentMenu.beginEpochGroup, 'Enable', appbox.onOff(tf));
+        end
+        
+        function enableEndEpochGroup(obj, tf)
+            set(obj.documentMenu.endEpochGroup, 'Enable', appbox.onOff(tf));
         end
 
         function enableSelectProtocol(obj, tf)
