@@ -266,8 +266,22 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSelectedEndEpochGroup(obj, ~, ~)
+            nodes = obj.view.getSelectedNodes();
+            assert(numel(nodes) == 1 && obj.view.getNodeType(nodes(1)) == symphonyui.ui.views.EntityNodeType.EPOCH_GROUP, ...
+                'Expected a single epoch group to be selected');
+            
+            currentGroup = obj.documentationService.getCurrentEpochGroup();
+            assert(~isempty(currentGroup), 'Expected current group not to be empty');
+            
+            group = obj.view.getNodeEntity(nodes(1));
+            assert(any(cellfun(@(g)g == group, [{currentGroup} currentGroup.getAncestors()])), ...
+                'Expected selected group to be the current epoch group or an ancestor');
+            
             try
-                obj.documentationService.endEpochGroup();
+                while currentGroup ~= group.parent
+                    obj.documentationService.endEpochGroup();
+                    currentGroup = obj.documentationService.getCurrentEpochGroup();
+                end
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
