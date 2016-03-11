@@ -1,12 +1,12 @@
 classdef DataManagerView < appbox.View
 
     events
-        AddSource
-        BeginEpochGroup
-        EndEpochGroup
         SelectedNodes
+        AddSource
         SetSourceLabel
         SetExperimentPurpose
+        BeginEpochGroup
+        EndEpochGroup
         SetEpochGroupLabel
         SelectedEpochSignal
         SetProperty
@@ -21,9 +21,6 @@ classdef DataManagerView < appbox.View
     end
 
     properties (Access = private)
-        addSourceButtons
-        beginEpochGroupButtons
-        endEpochGroupButtons
         entityTree
         sourcesFolderNode
         epochGroupsFolderNode
@@ -60,29 +57,6 @@ classdef DataManagerView < appbox.View
                 'Name', 'Data Manager', ...
                 'Position', screenCenter(611, 450));
 
-            % Toolbar.
-            toolbar = uitoolbar( ...
-                'Parent', obj.figureHandle);
-            obj.addSourceButtons.tool = uipushtool( ...
-                'Parent', toolbar, ...
-                'TooltipString', 'Add Source...', ...
-                'Interruptible', 'off', ...
-                'ClickedCallback', @(h,d)notify(obj, 'AddSource'));
-            setIconImage(obj.addSourceButtons.tool, symphonyui.app.App.getResource('icons/source_add.png'));
-            obj.beginEpochGroupButtons.tool = uipushtool( ...
-                'Parent', toolbar, ...
-                'TooltipString', 'Begin Epoch Group...', ...
-                'Separator', 'on', ...
-                'Interruptible', 'off', ...
-                'ClickedCallback', @(h,d)notify(obj, 'BeginEpochGroup'));
-            setIconImage(obj.beginEpochGroupButtons.tool, symphonyui.app.App.getResource('icons/group_begin.png'));
-            obj.endEpochGroupButtons.tool = uipushtool( ...
-                'Parent', toolbar, ...
-                'TooltipString', 'End Epoch Group', ...
-                'Interruptible', 'off', ...
-                'ClickedCallback', @(h,d)notify(obj, 'EndEpochGroup'));
-            setIconImage(obj.endEpochGroupButtons.tool, symphonyui.app.App.getResource('icons/group_end.png'));
-
             mainLayout = uix.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
@@ -101,13 +75,29 @@ classdef DataManagerView < appbox.View
             root = obj.entityTree.Root;
             set(root, 'Value', struct('entity', [], 'type', EntityNodeType.EXPERIMENT));
             root.setIcon(symphonyui.app.App.getResource('icons/experiment.png'));
-            set(root, 'UIContextMenu', obj.createEntityContextMenu());
+            rootMenu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', rootMenu, ...
+                'Label', 'Add Source...', ...
+                'Callback', @(h,d)notify(obj, 'AddSource'));
+            uimenu( ...
+                'Parent', rootMenu, ...
+                'Label', 'Begin Epoch Group...', ...
+                'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
+            rootMenu = obj.addEntityContextMenus(rootMenu);
+            set(root, 'UIContextMenu', rootMenu);
 
             sources = uiextras.jTree.TreeNode( ...
                 'Parent', root, ...
                 'Name', 'Sources', ...
                 'Value', struct('entity', [], 'type', EntityNodeType.FOLDER));
             sources.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
+            sourcesMenu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', sourcesMenu, ...
+                'Label', 'Add Source...', ...
+                'Callback', @(h,d)notify(obj, 'AddSource'));
+            set(sources, 'UIContextMenu', sourcesMenu);
             obj.sourcesFolderNode = sources;
 
             groups = uiextras.jTree.TreeNode( ...
@@ -115,6 +105,12 @@ classdef DataManagerView < appbox.View
                 'Name', 'Epoch Groups', ...
                 'Value', struct('entity', [], 'type', EntityNodeType.FOLDER));
             groups.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
+            groupsMenu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', groupsMenu, ...
+                'Label', 'Begin Epoch Group...', ...
+                'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
+            set(groups, 'UIContextMenu', groupsMenu);
             obj.epochGroupsFolderNode = groups;
 
             detailLayout = uix.VBox( ...
@@ -464,21 +460,6 @@ classdef DataManagerView < appbox.View
             obj.parametersTab.grid.Close();
         end
 
-        function enableAddSource(obj, tf)
-            enable = appbox.onOff(tf);
-            set(obj.addSourceButtons.tool, 'Enable', enable);
-        end
-
-        function enableBeginEpochGroup(obj, tf)
-            enable = appbox.onOff(tf);
-            set(obj.beginEpochGroupButtons.tool, 'Enable', enable);
-        end
-
-        function enableEndEpochGroup(obj, tf)
-            enable = appbox.onOff(tf);
-            set(obj.endEpochGroupButtons.tool, 'Enable', enable);
-        end
-
         function setCardSelection(obj, index)
             set(obj.detailCardPanel, 'Selection', index);
 
@@ -518,7 +499,17 @@ classdef DataManagerView < appbox.View
                 'Name', name, ...
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/source.png'));
-            set(n, 'UIContextMenu', obj.createEntityContextMenu());
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', menu, ...
+                'Label', 'Add Source...', ...
+                'Callback', @(h,d)notify(obj, 'AddSource'));
+            uimenu( ...
+                'Parent', menu, ...
+                'Label', 'Begin Epoch Group...', ...
+                'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
+            menu = obj.addEntityContextMenus(menu);
+            set(n, 'UIContextMenu', menu);
         end
 
         function enableSourceLabel(obj, tf)
@@ -582,7 +573,9 @@ classdef DataManagerView < appbox.View
                 'Name', name, ...
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/group.png'));
-            set(n, 'UIContextMenu', obj.createEntityContextMenu());
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            menu = obj.addEntityContextMenus(menu);
+            set(n, 'UIContextMenu', menu);
         end
 
         function enableEpochGroupLabel(obj, tf)
@@ -609,12 +602,22 @@ classdef DataManagerView < appbox.View
             set(obj.epochGroupCard.sourceField, 'String', s);
         end
 
-        function setEpochGroupNodeCurrent(obj, node) %#ok<INUSL>
+        function setEpochGroupNodeCurrent(obj, node)
             node.setIcon(symphonyui.app.App.getResource('icons/group_current.png'));
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', menu, ...
+                'Label', 'Begin Epoch Group...', ...
+                'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
+            menu = obj.addEntityContextMenus(menu);
+            set(node, 'UIContextMenu', menu);
         end
 
-        function setEpochGroupNodeNormal(obj, node) %#ok<INUSL>
+        function setEpochGroupNodeNormal(obj, node)
             node.setIcon(symphonyui.app.App.getResource('icons/group.png'));
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            menu = obj.addEntityContextMenus(menu);
+            set(n, 'UIContextMenu', menu);
         end
 
         function n = addEpochBlockNode(obj, parent, name, entity)
@@ -625,7 +628,9 @@ classdef DataManagerView < appbox.View
                 'Name', name, ...
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/block.png'));
-            set(n, 'UIContextMenu', obj.createEntityContextMenu());
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            menu = obj.addEntityContextMenus(menu);
+            set(n, 'UIContextMenu', menu);
         end
 
         function setEpochBlockProtocolId(obj, i)
@@ -652,7 +657,9 @@ classdef DataManagerView < appbox.View
                 'Name', name, ...
                 'Value', value);
             n.setIcon(symphonyui.app.App.getResource('icons/epoch.png'));
-            set(n, 'UIContextMenu', obj.createEntityContextMenu());
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            menu = obj.addEntityContextMenus(menu);
+            set(n, 'UIContextMenu', menu);
         end
 
         function enableSelectEpochSignal(obj, tf)
@@ -805,17 +812,16 @@ classdef DataManagerView < appbox.View
 
     methods (Access = private)
 
-        function menu = createEntityContextMenu(obj)
-            menu = uicontextmenu('Parent', obj.figureHandle);
-            m.sendToWorkspaceMenu = uimenu( ...
+        function menu = addEntityContextMenus(obj, menu)
+            uimenu( ...
                 'Parent', menu, ...
                 'Label', 'Send to Workspace', ...
+                'Separator', appbox.onOff(~isempty(get(menu, 'Children'))), ...
                 'Callback', @(h,d)notify(obj, 'SendEntityToWorkspace'));
-            m.deleteMenu = uimenu( ...
+            uimenu( ...
                 'Parent', menu, ...
                 'Label', 'Delete', ...
                 'Callback', @(h,d)notify(obj, 'DeleteEntity'));
-            set(menu, 'UserData', m);
         end
 
     end

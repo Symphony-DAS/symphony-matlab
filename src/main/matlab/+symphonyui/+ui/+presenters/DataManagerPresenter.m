@@ -55,12 +55,12 @@ classdef DataManagerPresenter < appbox.Presenter
             bind@appbox.Presenter(obj);
             
             v = obj.view;
-            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
-            obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
-            obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
             obj.addListener(v, 'SelectedNodes', @obj.onViewSelectedNodes);
+            obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'SetSourceLabel', @obj.onViewSetSourceLabel);
             obj.addListener(v, 'SetExperimentPurpose', @obj.onViewSetExperimentPurpose);
+            obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
+            obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
             obj.addListener(v, 'SelectedEpochSignal', @obj.onViewSelectedEpochSignal);
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
@@ -234,7 +234,21 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.documentationService);
+            initialParent = [];
+            initialSource = [];
+            nodes = obj.view.getSelectedNodes();
+            if numel(nodes) == 1
+                entity = obj.view.getNodeEntity(nodes(1));
+                type = obj.view.getNodeType(nodes(1));
+                switch type
+                    case symphonyui.ui.views.EntityNodeType.EPOCH_GROUP
+                        initialParent = entity;
+                    case symphonyui.ui.views.EntityNodeType.SOURCE
+                        initialSource = entity;
+                end
+            end
+            
+            presenter = symphonyui.ui.presenters.BeginEpochGroupPresenter(obj.documentationService, initialParent, initialSource);
             presenter.goWaitStop();
         end
 
@@ -701,10 +715,9 @@ classdef DataManagerPresenter < appbox.Presenter
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             controllerState = obj.acquisitionService.getControllerState();
             isStopped = controllerState.isStopped();
-
-            obj.view.enableAddSource(isStopped);
-            obj.view.enableBeginEpochGroup(hasSource && isStopped);
-            obj.view.enableEndEpochGroup(hasEpochGroup && isStopped);
+            
+            %obj.view.enableBeginEpochGroup(hasSource && isStopped);
+            %obj.view.enableEndEpochGroup(hasEpochGroup && isStopped);
         end
 
         function loadSettings(obj)

@@ -80,6 +80,10 @@ classdef AddSourceView < appbox.View
         function enableAdd(obj, tf)
             set(obj.addButton, 'Enable', appbox.onOff(tf));
         end
+        
+        function tf = getEnableAdd(obj)
+            tf = appbox.onOff(get(obj.addButton, 'Enable'));
+        end
 
         function enableSelectParent(obj, tf)
             set(obj.parentPopupMenu, 'Enable', appbox.onOff(tf));

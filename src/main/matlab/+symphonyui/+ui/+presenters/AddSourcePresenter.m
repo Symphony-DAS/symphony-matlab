@@ -38,6 +38,7 @@ classdef AddSourcePresenter < appbox.Presenter
             catch x
                 obj.log.debug(['Failed to load presenter settings: ' x.message], x);
             end
+            obj.updateStateOfControls();
         end
 
         function bind(obj)
@@ -88,14 +89,15 @@ classdef AddSourcePresenter < appbox.Presenter
             else
                 obj.view.setDescriptionList({'(None)'}, {[]});
             end
-            obj.view.enableAdd(numel(classNames) > 0);
             obj.view.enableSelectDescription(numel(classNames) > 0);
         end
 
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
                 case 'return'
-                    obj.onViewSelectedAdd();
+                    if obj.view.getEnableAdd()
+                        obj.onViewSelectedAdd();
+                    end
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
@@ -131,7 +133,14 @@ classdef AddSourcePresenter < appbox.Presenter
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
         end
-
+        
+        function updateStateOfControls(obj)
+            descriptionList = obj.view.getDescriptionList();
+            hasDescription = ~isempty(descriptionList{1});
+            
+            obj.view.enableAdd(hasDescription);
+        end
+        
         function loadSettings(obj)
             if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
                 obj.view.setSelectedDescription(obj.settings.selectedDescription);

@@ -33,6 +33,7 @@ classdef NewFilePresenter < appbox.Presenter
             catch x
                 obj.log.debug(['Failed to load presenter settings: ' x.message], x);
             end
+            obj.updateStateOfControls();
         end
 
         function didGo(obj)
@@ -85,14 +86,15 @@ classdef NewFilePresenter < appbox.Presenter
             else
                 obj.view.setDescriptionList({'(None)'}, {[]});
             end
-            obj.view.enableOk(numel(classNames) > 0);
             obj.view.enableSelectDescription(numel(classNames) > 0);
         end
 
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
                 case 'return'
-                    obj.onViewSelectedOk();
+                    if obj.view.getEnableOk()
+                        obj.onViewSelectedOk();
+                    end
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
@@ -161,6 +163,13 @@ classdef NewFilePresenter < appbox.Presenter
             obj.view.enableSelectDescription(tf);
             obj.view.enableOk(tf);
             obj.view.enableCancel(tf);
+        end
+        
+        function updateStateOfControls(obj)
+            descriptionList = obj.view.getDescriptionList();
+            hasDescription = ~isempty(descriptionList{1});
+            
+            obj.view.enableOk(hasDescription);
         end
 
         function loadSettings(obj)

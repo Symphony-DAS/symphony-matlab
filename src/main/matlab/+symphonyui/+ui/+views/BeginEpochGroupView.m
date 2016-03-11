@@ -6,7 +6,7 @@ classdef BeginEpochGroupView < appbox.View
     end
 
     properties (Access = private)
-        parentField
+        parentPopupMenu
         sourcePopupMenu
         descriptionPopupMenu
         beginButton
@@ -39,10 +39,9 @@ classdef BeginEpochGroupView < appbox.View
             Label( ...
                 'Parent', groupLayout, ...
                 'String', 'Description:');
-            obj.parentField = uicontrol( ...
+            obj.parentPopupMenu = MappedPopupMenu( ...
                 'Parent', groupLayout, ...
-                'Style', 'edit', ...
-                'Enable', 'off', ...
+                'String', {' '}, ...
                 'HorizontalAlignment', 'left');
             obj.sourcePopupMenu = MappedPopupMenu( ...
                 'Parent', groupLayout, ...
@@ -87,9 +86,34 @@ classdef BeginEpochGroupView < appbox.View
         function enableBegin(obj, tf)
             set(obj.beginButton, 'Enable', appbox.onOff(tf));
         end
+        
+        function tf = getEnableBegin(obj)
+            tf = appbox.onOff(get(obj.beginButton, 'Enable'));
+        end
+        
+        function enableSelectParent(obj, tf)
+            set(obj.parentPopupMenu, 'Enable', appbox.onOff(tf));
+        end
 
-        function setParent(obj, p)
-            set(obj.parentField, 'String', p);
+        function p = getSelectedParent(obj)
+            p = get(obj.parentPopupMenu, 'Value');
+        end
+
+        function setSelectedParent(obj, p)
+            set(obj.parentPopupMenu, 'Value', p);
+        end
+
+        function l = getParentList(obj)
+            l = get(obj.parentPopupMenu, 'Values');
+        end
+
+        function setParentList(obj, names, values)
+            set(obj.parentPopupMenu, 'String', names);
+            set(obj.parentPopupMenu, 'Values', values);
+        end
+        
+        function enableSelectSource(obj, tf)
+            set(obj.sourcePopupMenu, 'Enable', appbox.onOff(tf));
         end
 
         function s = getSelectedSource(obj)

@@ -4,12 +4,25 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
         log
         settings
         documentationService
+        initialParent
+        initialSource
     end
 
     methods
 
-        function obj = BeginEpochGroupPresenter(documentationService, view)
+        function obj = BeginEpochGroupPresenter(documentationService, initialParent, initialSource, view)
             if nargin < 2
+                initialParent = [];
+            end
+            if nargin < 3 || isempty(initialSource)
+                sources = documentationService.getExperiment().allSources();
+                if isempty(sources)
+                    initialSource = [];
+                else
+                    initialSource = sources{1};
+                end
+            end
+            if nargin < 4
                 view = symphonyui.ui.views.BeginEpochGroupView();
             end
             obj = obj@appbox.Presenter(view);
@@ -18,6 +31,8 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.BeginEpochGroupSettings();
             obj.documentationService = documentationService;
+            obj.initialParent = initialParent;
+            obj.initialSource = initialSource;
         end
 
     end
@@ -25,14 +40,17 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
     methods (Access = protected)
 
         function willGo(obj, ~, ~)
-            obj.populateParent();
+            obj.populateParentList();
+            obj.view.setSelectedParent(obj.initialParent);
             obj.populateSourceList();
+            obj.view.setSelectedSource(obj.initialSource);
             obj.populateDescriptionList();
             try
                 obj.loadSettings();
             catch x
                 obj.log.debug(['Failed to load presenter settings: ' x.message], x);
             end
+            obj.updateStateOfControls();
         end
 
         function bind(obj)
@@ -48,16 +66,26 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
     methods (Access = private)
 
-        function populateParent(obj)
-            group = obj.documentationService.getCurrentEpochGroup();
-            if isempty(group)
-                parent = '(None)';
-            else
-                parent = group.label;
+        function populateParentList(obj)
+            groups = {};
+            currentGroup = obj.documentationService.getCurrentEpochGroup();
+            while ~isempty(currentGroup)
+                groups{end + 1} = currentGroup; %#ok<AGROW>
+                currentGroup = currentGroup.parent;
             end
-            obj.view.setParent(parent);
+            groups = flip(groups);
+            
+            names = cell(1, numel(groups));
+            for i = 1:numel(groups)
+                names{i} = groups{i}.label;
+            end
+            names = [{'(None)'}, names];
+            values = [{[]}, groups];
+            
+            obj.view.setParentList(names, values);
+            obj.view.enableSelectParent(numel(groups) > 0);
         end
-
+        
         function populateSourceList(obj)
             sources = obj.documentationService.getExperiment().allSources();
 
@@ -65,8 +93,13 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             for i = 1:numel(sources)
                 names{i} = sources{i}.label;
             end
-
-            obj.view.setSourceList(names, sources);
+            
+            if numel(sources) > 0
+                obj.view.setSourceList(names, sources);
+            else
+                obj.view.setSourceList({'(None)'}, {[]});
+            end
+            obj.view.enableSelectSource(numel(sources) > 0);
         end
 
         function populateDescriptionList(obj)
@@ -89,14 +122,15 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             else
                 obj.view.setDescriptionList({'(None)'}, {[]});
             end
-            obj.view.enableBegin(numel(classNames) > 0);
             obj.view.enableSelectDescription(numel(classNames) > 0);
         end
 
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
                 case 'return'
-                    obj.onViewSelectedBegin();
+                    if obj.view.getEnableBegin()
+                        obj.onViewSelectedBegin();
+                    end
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
@@ -128,19 +162,23 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
         end
+        
+        function updateStateOfControls(obj)
+            sourceList = obj.view.getSourceList();
+            hasSource = ~isempty(sourceList{1});
+            descriptionList = obj.view.getDescriptionList();
+            hasDescription = ~isempty(descriptionList{1});
+            
+            obj.view.enableBegin(hasSource && hasDescription);
+        end
 
         function loadSettings(obj)
-            s = find(cellfun(@(s)strcmp(obj.settings.selectedSourceUuid, s.uuid), obj.view.getSourceList()), 1);
-            if ~isempty(s)
-                obj.view.setSelectedSource(obj.view.getSourceList{s});
-            end
             if any(strcmp(obj.settings.selectedDescription, obj.view.getDescriptionList()))
                 obj.view.setSelectedDescription(obj.settings.selectedDescription);
             end
         end
 
         function saveSettings(obj)
-            obj.settings.selectedSourceUuid = obj.view.getSelectedSource().uuid;
             obj.settings.selectedDescription = obj.view.getSelectedDescription();
             obj.settings.save();
         end

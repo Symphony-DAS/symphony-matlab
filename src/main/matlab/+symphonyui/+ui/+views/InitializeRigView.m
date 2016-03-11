@@ -67,6 +67,10 @@ classdef InitializeRigView < appbox.View
         function enableInitialize(obj, tf)
             set(obj.initializeButton, 'Enable', appbox.onOff(tf));
         end
+        
+        function tf = getEnableInitialize(obj)
+            tf = appbox.onOff(get(obj.initializeButton, 'Enable'));
+        end
 
         function enableSelectDescription(obj, tf)
             set(obj.descriptionPopupMenu, 'Enable', appbox.onOff(tf));

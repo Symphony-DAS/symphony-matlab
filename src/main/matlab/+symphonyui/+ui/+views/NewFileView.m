@@ -103,6 +103,10 @@ classdef NewFileView < appbox.View
             set(obj.okButton, 'Enable', appbox.onOff(tf));
         end
         
+        function tf = getEnableOk(obj)
+            tf = appbox.onOff(get(obj.okButton, 'Enable'));
+        end
+        
         function enableCancel(obj, tf)
             set(obj.cancelButton, 'Enable', appbox.onOff(tf));
         end

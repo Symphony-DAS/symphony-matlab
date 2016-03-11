@@ -31,6 +31,7 @@ classdef InitializeRigPresenter < appbox.Presenter
             catch x
                 obj.log.debug(['Failed to load presenter settings: ' x.message], x);
             end
+            obj.updateStateOfControls();
         end
 
         function bind(obj)
@@ -60,14 +61,15 @@ classdef InitializeRigPresenter < appbox.Presenter
             else
                 obj.view.setDescriptionList({'(None)'}, {[]});
             end
-            obj.view.enableInitialize(numel(classNames) > 0);
             obj.view.enableSelectDescription(numel(classNames) > 0);
         end
 
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
                 case 'return'
-                    obj.onViewSelectedInitialize();
+                    if obj.view.getEnableInitialize()
+                        obj.onViewSelectedInitialize();
+                    end
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
@@ -98,6 +100,13 @@ classdef InitializeRigPresenter < appbox.Presenter
 
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
+        end
+        
+        function updateStateOfControls(obj)
+            descriptionList = obj.view.getDescriptionList();
+            hasDescription = ~isempty(descriptionList{1});
+            
+            obj.view.enableInitialize(hasDescription);
         end
 
         function loadSettings(obj)

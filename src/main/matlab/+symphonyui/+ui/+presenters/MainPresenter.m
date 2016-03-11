@@ -82,7 +82,6 @@ classdef MainPresenter < appbox.Presenter
             obj.addListener(v, 'Exit', @obj.onViewSelectedExit);
             obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
-            obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(v, 'SetProtocolProperty', @obj.onViewSetProtocolProperty);
             obj.addListener(v, 'MinimizeProtocolPreview', @obj.onViewSelectedMinimizeProtocolPreview);
@@ -223,16 +222,6 @@ classdef MainPresenter < appbox.Presenter
 
         function onServiceBeganEpochGroup(obj, ~, ~)
             obj.updateStateOfControls();
-        end
-
-        function onViewSelectedEndEpochGroup(obj, ~, ~)
-            try
-                obj.documentationService.endEpochGroup();
-            catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-                return;
-            end
         end
 
         function onServiceEndedEpochGroup(obj, ~, ~)
@@ -459,7 +448,6 @@ classdef MainPresenter < appbox.Presenter
             enableCloseFile = hasOpenFile && isStopped;
             enableAddSource = hasOpenFile && isStopped;
             enableBeginEpochGroup = hasSource && isStopped;
-            enableEndEpochGroup = hasEpochGroup && isStopped;
             enableSelectProtocol = hasAvailableProtocol && isStopped;
             enableProtocolProperties = isStopped;
             enableViewOnly = isValid && (isViewingPaused || isStopped);
@@ -482,7 +470,6 @@ classdef MainPresenter < appbox.Presenter
             obj.view.enableCloseFile(enableCloseFile);
             obj.view.enableAddSource(enableAddSource);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
-            obj.view.enableEndEpochGroup(enableEndEpochGroup);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolProperties(enableProtocolProperties);
             obj.view.enableViewOnly(enableViewOnly);
