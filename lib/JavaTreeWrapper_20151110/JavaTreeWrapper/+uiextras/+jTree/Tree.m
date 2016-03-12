@@ -613,7 +613,8 @@ classdef Tree < hgsetget
                         
                         % If the node was not previously selected, do it
                         if ~any(tObj.SelectedNodes == nObj)
-                            tObj.SelectedNodes = nObj;
+                            %tObj.SelectedNodes = nObj;
+                            tObj.jTree.setSelectionPath(nObj.jNode.getTreePath());
                         end
                         
                         % Get the custom context menus for selected nodes
