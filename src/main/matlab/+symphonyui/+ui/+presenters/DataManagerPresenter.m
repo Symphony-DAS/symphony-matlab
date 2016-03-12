@@ -722,14 +722,14 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function updateStateOfControls(obj)
-            hasOpenFile = obj.documentationService.hasOpenFile();
-            hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
-            hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
+            hasSource = ~isempty(obj.documentationService.getExperiment().sources);
             controllerState = obj.acquisitionService.getControllerState();
             isStopped = controllerState.isStopped();
             
-            %obj.view.enableBeginEpochGroup(hasSource && isStopped);
-            %obj.view.enableEndEpochGroup(hasEpochGroup && isStopped);
+            enableBeginEpochGroup = hasSource && isStopped;
+            
+            obj.view.enableBeginEpochGroupMenu(obj.view.getExperimentNode(), enableBeginEpochGroup);
+            obj.view.enableBeginEpochGroupMenu(obj.view.getEpochGroupsFolderNode(), enableBeginEpochGroup);
         end
 
         function loadSettings(obj)

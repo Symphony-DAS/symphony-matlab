@@ -619,6 +619,13 @@ classdef DataManagerView < appbox.View
             menu = obj.addEntityContextMenus(menu);
             set(node, 'UIContextMenu', menu);
         end
+        
+        function enableBeginEpochGroupMenu(obj, node, tf) %#ok<INUSL>
+            menu = get(node, 'UIContextMenu');
+            children = get(menu, 'Children');
+            index = arrayfun(@(c)isequal(get(c, 'Label'), 'Begin Epoch Group...'), children);
+            set(children(index), 'Enable', appbox.onOff(tf));
+        end
 
         function n = addEpochBlockNode(obj, parent, name, entity)
             value.entity = entity;
