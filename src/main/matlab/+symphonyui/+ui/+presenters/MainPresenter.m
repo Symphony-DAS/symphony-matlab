@@ -83,6 +83,7 @@ classdef MainPresenter < appbox.Presenter
             obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
+            obj.addListener(v, 'AddNoteToExperiment', @obj.onViewSelectedAddNoteToExperiment);
             obj.addListener(v, 'SelectedProtocol', @obj.onViewSelectedProtocol);
             obj.addListener(v, 'SetProtocolProperty', @obj.onViewSetProtocolProperty);
             obj.addListener(v, 'MinimizeProtocolPreview', @obj.onViewSelectedMinimizeProtocolPreview);
@@ -237,6 +238,13 @@ classdef MainPresenter < appbox.Presenter
 
         function onServiceEndedEpochGroup(obj, ~, ~)
             obj.updateStateOfControls();
+        end
+        
+        function onViewSelectedAddNoteToExperiment(obj, ~, ~)
+            experiment = obj.documentationService.getExperiment();
+            experimentSet = symphonyui.core.persistent.collections.EntitySet(experiment);
+            presenter = symphonyui.ui.presenters.AddNotePresenter(experimentSet);
+            presenter.goWaitStop();
         end
 
         function onServiceDeletedEntity(obj, ~, ~)
@@ -460,6 +468,7 @@ classdef MainPresenter < appbox.Presenter
             enableAddSource = hasOpenFile && isStopped;
             enableBeginEpochGroup = hasSource && isStopped;
             enableEndEpochGroup = hasEpochGroup && isStopped;
+            enableAddNoteToExperiment = hasOpenFile && isStopped;
             enableSelectProtocol = hasAvailableProtocol && isStopped;
             enableProtocolProperties = isStopped;
             enableViewOnly = isValid && (isViewingPaused || isStopped);
@@ -483,6 +492,7 @@ classdef MainPresenter < appbox.Presenter
             obj.view.enableAddSource(enableAddSource);
             obj.view.enableBeginEpochGroup(enableBeginEpochGroup);
             obj.view.enableEndEpochGroup(enableEndEpochGroup);
+            obj.view.enableAddNoteToExperiment(enableAddNoteToExperiment);
             obj.view.enableSelectProtocol(enableSelectProtocol);
             obj.view.enableProtocolProperties(enableProtocolProperties);
             obj.view.enableViewOnly(enableViewOnly);

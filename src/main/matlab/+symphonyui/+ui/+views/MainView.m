@@ -8,6 +8,7 @@ classdef MainView < appbox.View
         AddSource
         BeginEpochGroup
         EndEpochGroup
+        AddNoteToExperiment
         SelectedProtocol
         SetProtocolProperty
         MinimizeProtocolPreview
@@ -84,6 +85,11 @@ classdef MainView < appbox.View
             obj.documentMenu.endEpochGroup = uimenu(obj.documentMenu.root, ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
+            obj.documentMenu.addNoteToExperiment = uimenu(obj.documentMenu.root, ...
+                'Label', 'Add Note to Experiment...', ...
+                'Accelerator', 'N', ...
+                'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'AddNoteToExperiment'));
 
             % Acquire menu.
             obj.acquireMenu.root = uimenu(obj.figureHandle, ...
@@ -267,6 +273,10 @@ classdef MainView < appbox.View
         
         function enableEndEpochGroup(obj, tf)
             set(obj.documentMenu.endEpochGroup, 'Enable', appbox.onOff(tf));
+        end
+        
+        function enableAddNoteToExperiment(obj, tf)
+            set(obj.documentMenu.addNoteToExperiment, 'Enable', appbox.onOff(tf));
         end
 
         function enableSelectProtocol(obj, tf)
