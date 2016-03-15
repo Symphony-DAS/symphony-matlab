@@ -14,7 +14,7 @@
     <param.summary>Electrophysiology Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB-based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.0.1.4</param.version>
+    <param.version>2.0.1.5</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -330,6 +330,8 @@
       <file>${PROJECT_ROOT}\lib\appbox\lib\GUI Layout Toolbox\license.txt</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\BusyPresenter.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\BusyView.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Button.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\capitalize.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\EventData.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\firstNonEmpty.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\humanize.m</file>
@@ -567,7 +569,6 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\MainPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\NewFilePresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\OptionsPresenter.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\AddSourceSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\BeginEpochGroupSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\DataManagerSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\InitializeRigSettings.m</file>
@@ -680,6 +681,14 @@
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-29.1-->
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-02-29.2-->
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-01-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-02-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-04-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-08-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-08.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-09-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-10-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-10.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-10.2-->
       <file>${PROJECT_ROOT}\src\main\resources\icons\block.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\close.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\device.png</file>
