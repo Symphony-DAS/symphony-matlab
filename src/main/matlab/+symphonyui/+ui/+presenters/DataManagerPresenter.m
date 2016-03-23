@@ -114,8 +114,9 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.addEpochGroupNode(groups{i});
             end
             obj.view.expandNode(obj.view.getEpochGroupsFolderNode());
-
+            
             obj.view.setSelectedNodes(obj.uuidToNode(experiment.uuid));
+            obj.populateToolbarForExperiments(experiment);
             obj.populateDetailsForExperiments(experiment);
         end
 
@@ -137,7 +138,8 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.stopEditingProperties();
             obj.view.update();
             obj.view.setSelectedNodes(node);
-
+            
+            obj.populateToolbarForSources(source);
             obj.populateDetailsForSources(source);
             obj.updateStateOfControls();
         end
@@ -156,6 +158,14 @@ classdef DataManagerPresenter < appbox.Presenter
             for i = 1:numel(children)
                 obj.addSourceNode(children{i});
             end
+        end
+        
+        function populateToolbarForSources(obj, sources)
+            sourceSet = symphonyui.core.persistent.collections.SourceSet(sources);
+            
+            obj.view.setAddSourceToolVisible(sourceSet.size == 1);
+            obj.view.setBeginEpochGroupToolVisible(false);
+            obj.view.setEndEpochGroupToolVisible(false);
         end
 
         function populateDetailsForSources(obj, sources)
@@ -193,6 +203,14 @@ classdef DataManagerPresenter < appbox.Presenter
                     obj.view.setNodeName(gnode, [g.label ' (' g.source.label ')']);
                 end
             end
+        end
+        
+        function populateToolbarForExperiments(obj, experiments)
+            experimentSet = symphonyui.core.persistent.collections.ExperimentSet(experiments);
+            
+            obj.view.setAddSourceToolVisible(experimentSet.size == 1);
+            obj.view.setBeginEpochGroupToolVisible(experimentSet.size == 1);
+            obj.view.setEndEpochGroupToolVisible(false);
         end
 
         function populateDetailsForExperiments(obj, experiments)
@@ -258,7 +276,8 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.update();
             obj.view.setSelectedNodes(node);
             obj.view.setEpochGroupNodeCurrent(node);
-
+            
+            obj.populateToolbarForEpochGroups(group);
             obj.populateDetailsForEpochGroups(group);
             obj.updateStateOfControls();
         end
@@ -296,7 +315,8 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setSelectedNodes(node);
             obj.view.collapseNode(node);
             obj.view.setEpochGroupNodeNormal(node);
-
+            
+            obj.populateToolbarForNodes(node);
             obj.populateDetailsForEpochGroups(group);
             obj.updateStateOfControls();
         end
@@ -342,6 +362,14 @@ classdef DataManagerPresenter < appbox.Presenter
                     obj.updateEpochGroupNode(c);
                 end
             end
+        end
+        
+        function populateToolbarForEpochGroups(obj, groups)
+            groupSet = symphonyui.core.persistent.collections.EpochGroupSet(groups);
+            
+            obj.view.setAddSourceToolVisible(false);
+            obj.view.setBeginEpochGroupToolVisible(groupSet.size == 1);
+            obj.view.setEndEpochGroupToolVisible(groupSet.size == 1);
         end
 
         function populateDetailsForEpochGroups(obj, groups)
@@ -400,6 +428,14 @@ classdef DataManagerPresenter < appbox.Presenter
                 end
             end
         end
+        
+        function populateToolbarForEpochBlocks(obj, blocks)
+            blockSet = symphonyui.core.persistent.collections.EpochBlockSet(blocks); %#ok<NASGU>
+            
+            obj.view.setAddSourceToolVisible(false);
+            obj.view.setBeginEpochGroupToolVisible(false);
+            obj.view.setEndEpochGroupToolVisible(false);
+        end
 
         function populateDetailsForEpochBlocks(obj, blocks)
             blockSet = symphonyui.core.persistent.collections.EpochBlockSet(blocks);
@@ -429,6 +465,14 @@ classdef DataManagerPresenter < appbox.Presenter
             parent = obj.uuidToNode(epoch.epochBlock.uuid);
             n = obj.view.addEpochNode(parent, datestr(epoch.startTime, 'HH:MM:SS:FFF'), epoch);
             obj.uuidToNode(epoch.uuid) = n;
+        end
+        
+        function populateToolbarForEpochs(obj, epochs)
+            epochSet = symphonyui.core.persistent.collections.EpochSet(epochs); %#ok<NASGU>
+            
+            obj.view.setAddSourceToolVisible(false);
+            obj.view.setBeginEpochGroupToolVisible(false);
+            obj.view.setEndEpochGroupToolVisible(false);
         end
 
         function populateDetailsForEpochs(obj, epochs)
@@ -491,6 +535,12 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.addEpochDataLegend(llabels);
             end
         end
+        
+        function populateToolbarForEmpty(obj)
+            obj.view.setAddSourceToolVisible(false);
+            obj.view.setBeginEpochGroupToolVisible(false);
+            obj.view.setEndEpochGroupToolVisible(false);
+        end
 
         function populateDetailsForEmpty(obj, text)
             emptySet = symphonyui.core.persistent.collections.EntitySet();
@@ -505,7 +555,42 @@ classdef DataManagerPresenter < appbox.Presenter
         function onViewSelectedNodes(obj, ~, ~)
             obj.view.stopEditingProperties();
             obj.view.update();
-            obj.populateDetailsForNodes(obj.view.getSelectedNodes());
+            
+            nodes = obj.view.getSelectedNodes();
+            obj.populateToolbarForNodes(nodes);
+            obj.populateDetailsForNodes(nodes);
+        end
+        
+        function populateToolbarForNodes(obj, nodes)
+            import symphonyui.ui.views.EntityNodeType;
+            
+            entities = cell(1, numel(nodes));
+            types = symphonyui.ui.views.EntityNodeType.empty(0, numel(nodes));
+            for i = 1:numel(nodes)
+                entities{i} = obj.view.getNodeEntity(nodes(i));
+                types(i) = obj.view.getNodeType(nodes(i));
+            end
+            
+            if isempty(types) || numel(types) > 1
+                obj.populateToolbarForEmpty();
+                return;
+            end
+            type = types(1);
+            
+            switch type
+                case EntityNodeType.SOURCE
+                    obj.populateToolbarForSources(entities);
+                case EntityNodeType.EXPERIMENT
+                    obj.populateToolbarForExperiments(entities);
+                case EntityNodeType.EPOCH_GROUP
+                    obj.populateToolbarForEpochGroups(entities);
+                case EntityNodeType.EPOCH_BLOCK
+                    obj.populateToolbarForEpochBlocks(entities);
+                case EntityNodeType.EPOCH
+                    obj.populateToolbarForEpochs(entities);
+                otherwise
+                    obj.populateToolbarForEmpty();
+            end
         end
 
         function populateDetailsForNodes(obj, nodes)
@@ -523,8 +608,9 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.populateDetailsForEmpty(strjoin(arrayfun(@(t)char(t), types, 'UniformOutput', false), ', '));
                 return;
             end
+            type = types(1);
 
-            switch types
+            switch type
                 case EntityNodeType.SOURCE
                     obj.populateDetailsForSources(entities);
                 case EntityNodeType.EXPERIMENT
@@ -536,7 +622,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 case EntityNodeType.EPOCH
                     obj.populateDetailsForEpochs(entities);
                 otherwise
-                    obj.populateDetailsForEmpty(strjoin(arrayfun(@(t)char(t), types, 'UniformOutput', false), ', '));
+                    obj.populateDetailsForEmpty(strjoin(arrayfun(@(t)char(t), type, 'UniformOutput', false), ', '));
             end
         end
 
@@ -699,8 +785,10 @@ classdef DataManagerPresenter < appbox.Presenter
 
             obj.view.removeNode(node);
             obj.uuidToNode.remove(uuid);
-
-            obj.populateDetailsForNodes(obj.view.getSelectedNodes());
+            
+            nodes = obj.view.getSelectedNodes();
+            obj.populateToolbarForNodes(nodes);
+            obj.populateDetailsForNodes(nodes);
             obj.updateStateOfControls();
         end
 
@@ -727,7 +815,8 @@ classdef DataManagerPresenter < appbox.Presenter
             isStopped = controllerState.isStopped();
 
             enableBeginEpochGroup = hasSource && isStopped;
-
+            
+            obj.view.enableBeginEpochGroupTool(enableBeginEpochGroup);
             obj.view.enableBeginEpochGroupMenu(obj.view.getExperimentNode(), enableBeginEpochGroup);
             obj.view.enableBeginEpochGroupMenu(obj.view.getEpochGroupsFolderNode(), enableBeginEpochGroup);
         end
