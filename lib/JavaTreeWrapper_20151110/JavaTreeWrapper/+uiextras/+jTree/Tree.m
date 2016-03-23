@@ -136,6 +136,7 @@ classdef Tree < hgsetget
         FontName
         FontSize
         FontWeight
+        BorderType
         Parent %parent container
         Position %position of the tree within the parent container
         RootVisible %whether the root is visible or not
@@ -225,6 +226,7 @@ classdef Tree < hgsetget
             p.addParamValue('FontName','MS Sans Serif');
             p.addParamValue('FontSize',10);
             p.addParamValue('FontWeight','normal');
+            p.addParamValue('BorderType','line');
             p.addParamValue('Parent',[]);
             p.addParamValue('Units','normalized');
             p.addParamValue('Position',[0 0 1 1]);
@@ -1126,6 +1128,14 @@ classdef Tree < hgsetget
                 jFont.getName(), jStyle, jFont.getSize()));
             
         end % set.FontWeight
+        
+        function value = get.BorderType(tObj)
+            value = get(tObj.hPanel, 'BorderType');
+        end % get.BorderType
+        
+        function set.BorderType(tObj, value)
+            set(tObj.hPanel, 'BorderType', value);
+        end % set.BorderType
         
         
         % Parent
