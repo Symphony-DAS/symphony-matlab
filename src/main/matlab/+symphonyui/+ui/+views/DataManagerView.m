@@ -21,6 +21,9 @@ classdef DataManagerView < appbox.View
     end
 
     properties (Access = private)
+        addSourceTool
+        beginEpochGroupTool
+        endEpochGroupTool
         entityTree
         sourcesFolderNode
         epochGroupsFolderNode
@@ -56,6 +59,24 @@ classdef DataManagerView < appbox.View
             set(obj.figureHandle, ...
                 'Name', 'Data Manager', ...
                 'Position', screenCenter(611, 450));
+            
+            [img,map] = imread(fullfile(matlabroot, 'toolbox', 'matlab', 'icons', 'matlabicon.gif'));
+            icon = ind2rgb(img,map);
+            
+            toolbar = uitoolbar( ...
+                'Parent', obj.figureHandle);
+            obj.addSourceTool = uipushtool( ...
+                'Parent', toolbar, ...
+                'CData', icon, ...
+                'ClickedCallback', @(h,d)notify(obj, 'AddSource'));
+            obj.beginEpochGroupTool = uipushtool( ...
+                'Parent', toolbar, ...
+                'CData', icon, ...
+                'ClickedCallback', @(h,d)notify(obj, 'BeginEpochGroup'));
+            obj.endEpochGroupTool = uipushtool( ...
+                'Parent', toolbar, ...
+                'CData', icon, ...
+                'ClickedCallback', @(h,d)notify(obj, 'EndEpochGroup'));
             
             mainLayout = uix.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
@@ -461,6 +482,22 @@ classdef DataManagerView < appbox.View
             close@appbox.View(obj);
             obj.propertiesTab.grid.Close();
             obj.parametersTab.grid.Close();
+        end
+        
+        function setAddSourceToolVisible(obj, tf)
+            set(obj.addSourceTool, 'Visible', appbox.onOff(tf));
+        end
+
+        function setBeginEpochGroupToolVisible(obj, tf)
+            set(obj.beginEpochGroupTool, 'Visible', appbox.onOff(tf));
+        end
+        
+        function enableBeginEpochGroupTool(obj, tf)
+            set(obj.beginEpochGroupTool, 'Enable', appbox.onOff(tf));
+        end
+
+        function setEndEpochGroupToolVisible(obj, tf)
+            set(obj.endEpochGroupTool, 'Visible', appbox.onOff(tf));
         end
 
         function setCardSelection(obj, index)
