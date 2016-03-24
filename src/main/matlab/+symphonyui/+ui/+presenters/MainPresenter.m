@@ -7,6 +7,7 @@ classdef MainPresenter < appbox.Presenter
         acquisitionService
         configurationService
         moduleService
+        protocolPresetsPresenter
         dataManagerPresenter
         protocolPreview
     end
@@ -91,6 +92,7 @@ classdef MainPresenter < appbox.Presenter
             obj.addListener(v, 'Record', @obj.onViewSelectedRecord);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
+            obj.addListener(v, 'ShowProtocolPresets', @obj.onViewSelectedShowProtocolPresets);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
             obj.addListener(v, 'ConfigureDevices', @obj.onViewSelectedConfigureDevices);
             obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
@@ -502,6 +504,15 @@ classdef MainPresenter < appbox.Presenter
             obj.view.enableInitializeRig(enableInitializeRig);
             obj.view.enableConfigureDevices(enableConfigureDevices);
             obj.view.setStatus(status);
+        end
+        
+        function onViewSelectedShowProtocolPresets(obj, ~, ~)
+            if isempty(obj.protocolPresetsPresenter) || obj.protocolPresetsPresenter.isStopped()
+                obj.protocolPresetsPresenter = symphonyui.ui.presenters.ProtocolPresetsPresenter(obj.acquisitionService);
+                obj.protocolPresetsPresenter.go();
+            else
+                obj.protocolPresetsPresenter.show();
+            end
         end
 
         function onViewSelectedInitializeRig(obj, ~, ~)
