@@ -1,6 +1,7 @@
 classdef ProtocolPresetsView < appbox.View
     
     events
+        ApplyPreset
         AddPreset
         RemovePreset
     end
@@ -26,7 +27,7 @@ classdef ProtocolPresetsView < appbox.View
             
             obj.presetsTable = appbox.Table( ...
                 'Parent', mainLayout, ...
-                'ColumnName', {'Presets'}, ...
+                'ColumnName', {'Preset'}, ...
                 'BorderType', 'none', ...
                 'Editable', false);
             
@@ -49,8 +50,23 @@ classdef ProtocolPresetsView < appbox.View
         
         function show(obj)
             show@appbox.View(obj);
-            drawnow();
             set(obj.presetsTable, 'ColumnHeaderVisible', false);
+            set(obj.presetsTable, 'RowHeight', 40);
+        end
+        
+        function addPreset(obj, preset)
+            obj.presetsTable.addRow(preset);
+        end
+        
+        function removePreset(obj, preset)
+            presets = obj.presetsTable.getColumnData(1);
+            index = find(cellfun(@(c)strcmp(c, preset), presets));
+            obj.presetsTable.removeRow(index); %#ok<FNDSB>
+        end
+        
+        function p = getSelectedPreset(obj)
+            row = get(obj.presetsTable, 'SelectedRow');
+            p = obj.presetsTable.getValueAt(row, 1);
         end
         
     end

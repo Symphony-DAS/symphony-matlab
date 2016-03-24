@@ -453,7 +453,6 @@ classdef DataManagerView < appbox.View
 
         function show(obj)
             show@appbox.View(obj);
-            drawnow();
             set(obj.keywordsTab.table, 'ColumnHeaderVisible', false);
             set(obj.notesTab.table, 'ColumnHeaderVisible', false);
         end
