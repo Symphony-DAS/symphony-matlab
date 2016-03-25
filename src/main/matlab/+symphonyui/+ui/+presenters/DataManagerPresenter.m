@@ -44,6 +44,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function willStop(obj)
+            obj.viewSelectedCloseFcn = [];
             try
                 obj.saveSettings();
             catch x

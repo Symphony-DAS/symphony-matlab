@@ -21,6 +21,7 @@ classdef DataManagerView < appbox.View
     end
 
     properties (Access = private)
+        toolbar
         addSourceTool
         beginEpochGroupTool
         endEpochGroupTool
@@ -60,14 +61,14 @@ classdef DataManagerView < appbox.View
                 'Name', 'Data Manager', ...
                 'Position', screenCenter(611, 450));
             
-            menu = Menu(obj.figureHandle);
-            obj.addSourceTool = menu.addPushTool( ...
+            obj.toolbar = Menu(obj.figureHandle);
+            obj.addSourceTool = obj.toolbar.addPushTool( ...
                 'Label', 'Add Source', ...
                 'Callback', @(h,d)notify(obj, 'AddSource'));
-            obj.beginEpochGroupTool = menu.addPushTool( ...
+            obj.beginEpochGroupTool = obj.toolbar.addPushTool( ...
                 'Label', 'Begin Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
-            obj.endEpochGroupTool = menu.addPushTool( ...
+            obj.endEpochGroupTool = obj.toolbar.addPushTool( ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
             
@@ -458,6 +459,7 @@ classdef DataManagerView < appbox.View
 
         function close(obj)
             close@appbox.View(obj);
+            obj.toolbar.close();
             obj.propertiesTab.grid.Close();
             obj.parametersTab.grid.Close();
         end
