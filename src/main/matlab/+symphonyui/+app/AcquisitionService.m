@@ -38,14 +38,14 @@ classdef AcquisitionService < handle
                 constructor = str2func(className);
                 protocol = constructor();
             end
+            protocol.setRig(obj.session.rig);
+            protocol.setPersistor(obj.session.persistor);
             try %#ok<TRYNC>
                 obj.presetMap(class(obj.session.protocol)) = symphonyui.core.ProtocolPreset([], obj.session.protocol.getPropertyDescriptors().toMap());
             end
             try %#ok<TRYNC>
                 protocol.applyPreset(obj.presetMap(className));
             end
-            protocol.setRig(obj.session.rig);
-            protocol.setPersistor(obj.session.persistor);
             obj.session.protocol.close();
             obj.session.protocol = protocol;
             notify(obj, 'SelectedProtocol');
