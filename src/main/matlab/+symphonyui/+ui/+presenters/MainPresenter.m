@@ -97,8 +97,8 @@ classdef MainPresenter < appbox.Presenter
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
             obj.addListener(v, 'ShowProtocolPresets', @obj.onViewSelectedShowProtocolPresets);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
-            obj.addListener(v, 'ConfigureDevices', @obj.onViewSelectedConfigureDevices);
-            obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
+            obj.addListener(v, 'ShowDevices', @obj.onViewSelectedShowDevices);
+            obj.addListener(v, 'ShowOptions', @obj.onViewSelectedShowOptions);
             obj.addListener(v, 'SelectedModule', @obj.onViewSelectedModule);
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
             obj.addListener(v, 'ShowUserGroup', @obj.onViewSelectedShowUserGroup);
@@ -484,7 +484,7 @@ classdef MainPresenter < appbox.Presenter
             enablePause = ~isPausing && ~isViewingPaused && ~isRecordingPaused && ~isStopping && ~isStopped;
             enableStop = ~isStopping && ~isStopped;
             enableInitializeRig = isStopped;
-            enableConfigureDevices = isStopped;
+            enableShowDevices = isStopped;
 
             if ~isValid
                 status = validationMessage;
@@ -508,7 +508,7 @@ classdef MainPresenter < appbox.Presenter
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
             obj.view.enableInitializeRig(enableInitializeRig);
-            obj.view.enableConfigureDevices(enableConfigureDevices);
+            obj.view.enableShowDevices(enableShowDevices);
             obj.view.setStatus(status);
         end
         
@@ -538,12 +538,12 @@ classdef MainPresenter < appbox.Presenter
             obj.updateStateOfControls();
         end
 
-        function onViewSelectedConfigureDevices(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.ConfigureDevicesPresenter(obj.configurationService);
+        function onViewSelectedShowDevices(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.DevicesPresenter(obj.configurationService);
             presenter.goWaitStop();
         end
 
-        function onViewSelectedConfigureOptions(obj, ~, ~) %#ok<INUSD>
+        function onViewSelectedShowOptions(obj, ~, ~) %#ok<INUSD>
             presenter = symphonyui.ui.presenters.OptionsPresenter(symphonyui.app.Options.getDefault());
             presenter.goWaitStop();
         end

@@ -1,4 +1,4 @@
-classdef ConfigureDevicesView < appbox.View
+classdef DevicesView < appbox.View
 
     events
         SelectedDevices
@@ -27,8 +27,8 @@ classdef ConfigureDevicesView < appbox.View
             import appbox.*;
 
             set(obj.figureHandle, ...
-                'Name', 'Configure Devices', ...
-                'Position', screenCenter(450, 300));
+                'Name', 'Devices', ...
+                'Position', screenCenter(500, 300));
 
             mainLayout = uix.HBox( ...
                 'Parent', obj.figureHandle, ...

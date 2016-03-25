@@ -1,4 +1,4 @@
-classdef ConfigureDevicesPresenter < appbox.Presenter
+classdef DevicesPresenter < appbox.Presenter
 
     properties (Access = private)
         log
@@ -8,9 +8,9 @@ classdef ConfigureDevicesPresenter < appbox.Presenter
 
     methods
 
-        function obj = ConfigureDevicesPresenter(configurationService, view)
+        function obj = DevicesPresenter(configurationService, view)
             if nargin < 2
-                view = symphonyui.ui.views.ConfigureDevicesView();
+                view = symphonyui.ui.views.DevicesView();
             end
             obj = obj@appbox.Presenter(view);
             obj.view.setWindowStyle('modal');

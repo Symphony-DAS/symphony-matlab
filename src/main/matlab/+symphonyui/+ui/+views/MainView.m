@@ -18,8 +18,8 @@ classdef MainView < appbox.View
         Stop
         ShowProtocolPresets
         InitializeRig
-        ConfigureDevices
-        ConfigureOptions
+        ShowDevices
+        ShowOptions
         SelectedModule
         ShowDocumentation
         ShowUserGroup
@@ -121,14 +121,14 @@ classdef MainView < appbox.View
             obj.configureMenu.initializeRig = uimenu(obj.configureMenu.root, ...
                 'Label', 'Initialize Rig...', ...
                 'Callback', @(h,d)notify(obj, 'InitializeRig'));
-            obj.configureMenu.configureDevices = uimenu(obj.configureMenu.root, ...
-                'Label', 'Devices...', ...
+            obj.configureMenu.showDevices = uimenu(obj.configureMenu.root, ...
+                'Label', 'Devices', ...
                 'Accelerator', 'D', ...
-                'Callback', @(h,d)notify(obj, 'ConfigureDevices'));
-            obj.configureMenu.configureOptions = uimenu(obj.configureMenu.root, ...
-                'Label', 'Options...', ...
+                'Callback', @(h,d)notify(obj, 'ShowDevices'));
+            obj.configureMenu.showOptions = uimenu(obj.configureMenu.root, ...
+                'Label', 'Options', ...
                 'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'ConfigureOptions'));
+                'Callback', @(h,d)notify(obj, 'ShowOptions'));
 
             % Modules menu.
             obj.modulesMenu.root = uimenu(obj.figureHandle, ...
@@ -389,12 +389,12 @@ classdef MainView < appbox.View
             set(obj.configureMenu.initializeRig, 'Enable', appbox.onOff(tf));
         end
 
-        function enableConfigureDevices(obj, tf)
-            set(obj.configureMenu.configureDevices, 'Enable', appbox.onOff(tf));
+        function enableShowDevices(obj, tf)
+            set(obj.configureMenu.showDevices, 'Enable', appbox.onOff(tf));
         end
 
-        function enableConfigureOptions(obj, tf)
-            set(obj.configureMenu.configureOptions, 'Enable', appbox.onOff(tf));
+        function enableShowOptions(obj, tf)
+            set(obj.configureMenu.showOptions, 'Enable', appbox.onOff(tf));
         end
 
         function addModule(obj, name, value)
