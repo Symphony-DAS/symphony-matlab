@@ -478,6 +478,10 @@ classdef DataManagerView < appbox.View
         function setEndEpochGroupToolVisible(obj, tf)
             set(obj.endEpochGroupTool, 'Visible', appbox.onOff(tf));
         end
+        
+        function enableEndEpochGroupTool(obj, tf)
+            set(obj.endEpochGroupTool, 'Enable', appbox.onOff(tf));
+        end
 
         function setCardSelection(obj, index)
             set(obj.detailCardPanel, 'Selection', index);
@@ -643,6 +647,13 @@ classdef DataManagerView < appbox.View
             menu = get(node, 'UIContextMenu');
             children = get(menu, 'Children');
             index = arrayfun(@(c)isequal(get(c, 'Label'), 'Begin Epoch Group...'), children);
+            set(children(index), 'Enable', appbox.onOff(tf));
+        end
+        
+        function enableEndEpochGroupMenu(obj, node, tf) %#ok<INUSL>
+            menu = get(node, 'UIContextMenu');
+            children = get(menu, 'Children');
+            index = arrayfun(@(c)isequal(get(c, 'Label'), 'End Epoch Group'), children);
             set(children(index), 'Enable', appbox.onOff(tf));
         end
 

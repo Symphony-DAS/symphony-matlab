@@ -754,12 +754,19 @@ classdef DataManagerPresenter < appbox.Presenter
             hasSource = ~isempty(obj.documentationService.getExperiment().sources);
             controllerState = obj.acquisitionService.getControllerState();
             isStopped = controllerState.isStopped();
+            currentGroup = obj.documentationService.getCurrentEpochGroup();
 
             enableBeginEpochGroup = hasSource && isStopped;
+            enableEndEpochGroup = isStopped;
             
             obj.view.enableBeginEpochGroupTool(enableBeginEpochGroup);
             obj.view.enableBeginEpochGroupMenu(obj.view.getExperimentNode(), enableBeginEpochGroup);
             obj.view.enableBeginEpochGroupMenu(obj.view.getEpochGroupsFolderNode(), enableBeginEpochGroup);
+            obj.view.enableEndEpochGroupTool(enableEndEpochGroup);
+            if ~isempty(currentGroup)
+                obj.view.enableBeginEpochGroupMenu(obj.uuidToNode(currentGroup.uuid), enableBeginEpochGroup);
+                obj.view.enableEndEpochGroupMenu(obj.uuidToNode(currentGroup.uuid), enableEndEpochGroup);
+            end
         end
 
         function loadSettings(obj)
