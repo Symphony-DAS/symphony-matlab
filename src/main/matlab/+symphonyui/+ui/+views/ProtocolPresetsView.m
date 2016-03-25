@@ -90,10 +90,6 @@ classdef ProtocolPresetsView < appbox.View
             obj.presetsTable.addRow(preset);
         end
         
-        function enableRemovePreset(obj, tf)
-            set(obj.removeButton, 'Enable', appbox.onOff(tf));
-        end
-        
         function removePreset(obj, preset)
             presets = obj.presetsTable.getColumnData(1);
             index = find(cellfun(@(c)strcmp(c, preset), presets));

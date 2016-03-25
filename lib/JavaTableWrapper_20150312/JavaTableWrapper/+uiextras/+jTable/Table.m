@@ -1599,9 +1599,9 @@ classdef Table < hgsetget
                 
                 try %#ok<TRYNC>
                     pp = getpixelposition(obj.hPanel);
-                    w = max(5, pp(3)-5);
-                    h = max(5, pp(4)-5);
-                    set(obj.Container,'Units','pixels','Position',[5 5 w h])
+                    w = max(1, pp(3));
+                    h = max(1, pp(4));
+                    set(obj.Container,'Units','pixels','Position',[1 1 w h])
                 end
                 
             end

@@ -47,6 +47,7 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             bind@appbox.Presenter(obj);
             
             v = obj.view;
+            obj.addListener(v, 'SelectedPreset', @obj.onViewSelectedPreset);
             obj.addListener(v, 'AddPreset', @obj.onViewSelectedAddPreset);
             obj.addListener(v, 'RemovePreset', @obj.onViewSelectedRemovePreset);
             
@@ -59,6 +60,10 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         
         function populatePresetList(obj)
             
+        end
+        
+        function onViewSelectedPreset(obj, ~, ~)
+            obj.updateStateOfControls();
         end
         
         function onViewSelectedAddPreset(obj, ~, ~)
