@@ -63,6 +63,9 @@ classdef MainPresenter < appbox.Presenter
         end
 
         function willStop(obj)
+            if ~isempty(obj.protocolPresetsPresenter)
+                obj.closeProtocolPresets();
+            end
             if ~isempty(obj.dataManagerPresenter)
                 obj.closeDataManager();
             end
@@ -254,10 +257,13 @@ classdef MainPresenter < appbox.Presenter
         end
 
         function showDataManager(obj)
-            presenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.acquisitionService);
-            presenter.viewSelectedCloseFcn = @obj.closeFile;
-            presenter.go();
-            obj.dataManagerPresenter = presenter;
+            if isempty(obj.dataManagerPresenter) || obj.dataManagerPresenter.isStopped()
+                obj.dataManagerPresenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.acquisitionService);
+                obj.dataManagerPresenter.viewSelectedCloseFcn = @obj.closeFile;
+                obj.dataManagerPresenter.go();
+            else
+                obj.dataManagerPresenter.show();
+            end
         end
 
         function closeDataManager(obj)
@@ -507,12 +513,21 @@ classdef MainPresenter < appbox.Presenter
         end
         
         function onViewSelectedShowProtocolPresets(obj, ~, ~)
+            obj.showProtocolPresets();
+        end
+        
+        function showProtocolPresets(obj)
             if isempty(obj.protocolPresetsPresenter) || obj.protocolPresetsPresenter.isStopped()
                 obj.protocolPresetsPresenter = symphonyui.ui.presenters.ProtocolPresetsPresenter(obj.acquisitionService);
                 obj.protocolPresetsPresenter.go();
             else
                 obj.protocolPresetsPresenter.show();
             end
+        end
+
+        function closeProtocolPresets(obj)
+            obj.protocolPresetsPresenter.stop();
+            obj.protocolPresetsPresenter = [];
         end
 
         function onViewSelectedInitializeRig(obj, ~, ~)
