@@ -70,9 +70,6 @@ classdef DataManagerView < appbox.View
             obj.endEpochGroupTool = menu.addPushTool( ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
-            menu.addPushTool( ...
-                'Label', ' ', ...
-                'Enable', 'off');
             
             mainLayout = uix.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
@@ -463,20 +460,8 @@ classdef DataManagerView < appbox.View
             obj.parametersTab.grid.Close();
         end
         
-        function setAddSourceToolVisible(obj, tf)
-            set(obj.addSourceTool, 'Visible', appbox.onOff(tf));
-        end
-
-        function setBeginEpochGroupToolVisible(obj, tf)
-            set(obj.beginEpochGroupTool, 'Visible', appbox.onOff(tf));
-        end
-        
         function enableBeginEpochGroupTool(obj, tf)
             set(obj.beginEpochGroupTool, 'Enable', appbox.onOff(tf));
-        end
-
-        function setEndEpochGroupToolVisible(obj, tf)
-            set(obj.endEpochGroupTool, 'Visible', appbox.onOff(tf));
         end
         
         function enableEndEpochGroupTool(obj, tf)

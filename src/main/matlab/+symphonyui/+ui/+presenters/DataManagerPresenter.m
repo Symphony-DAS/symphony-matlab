@@ -115,9 +115,7 @@ classdef DataManagerPresenter < appbox.Presenter
             end
             obj.view.expandNode(obj.view.getEpochGroupsFolderNode());
             
-            node = obj.uuidToNode(experiment.uuid);
-            obj.view.setSelectedNodes(node);
-            obj.populateToolbarForNodes(node);
+            obj.view.setSelectedNodes(obj.uuidToNode(experiment.uuid));
             obj.populateDetailsForExperiments(experiment);
         end
 
@@ -140,7 +138,6 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.update();
             obj.view.setSelectedNodes(node);
             
-            obj.populateToolbarForNodes(node);
             obj.populateDetailsForSources(source);
             obj.updateStateOfControls();
         end
@@ -237,14 +234,10 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSelectedBeginEpochGroup(obj, ~, ~)
-            initialParent = [];
-            nodes = obj.view.getSelectedNodes();
-            if numel(nodes) == 1 && obj.view.getNodeType(nodes(1)) == symphonyui.ui.views.EntityNodeType.EPOCH_GROUP
-                initialParent = obj.view.getNodeEntity(nodes(1));
-            end
+            currentGroup = obj.documentationService.getCurrentEpochGroup();
+            initialParent = currentGroup;
 
             initialSource = [];
-            currentGroup = obj.documentationService.getCurrentEpochGroup();
             if ~isempty(currentGroup)
                 initialSource = currentGroup.source;
             end
@@ -262,28 +255,13 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setSelectedNodes(node);
             obj.view.setEpochGroupNodeCurrent(node);
             
-            obj.populateToolbarForNodes(node);
             obj.populateDetailsForEpochGroups(group);
             obj.updateStateOfControls();
         end
 
         function onViewSelectedEndEpochGroup(obj, ~, ~)
-            nodes = obj.view.getSelectedNodes();
-            assert(numel(nodes) == 1 && obj.view.getNodeType(nodes(1)) == symphonyui.ui.views.EntityNodeType.EPOCH_GROUP, ...
-                'Expected a single epoch group to be selected');
-
-            currentGroup = obj.documentationService.getCurrentEpochGroup();
-            assert(~isempty(currentGroup), 'Expected current group not to be empty');
-
-            group = obj.view.getNodeEntity(nodes(1));
-            assert(any(cellfun(@(g)g == group, [{currentGroup} currentGroup.getAncestors()])), ...
-                'Expected selected group to be the current epoch group or an ancestor');
-
             try
-                while currentGroup ~= group.parent
-                    obj.documentationService.endEpochGroup();
-                    currentGroup = obj.documentationService.getCurrentEpochGroup();
-                end
+                obj.documentationService.endEpochGroup();
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -301,7 +279,6 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.collapseNode(node);
             obj.view.setEpochGroupNodeNormal(node);
             
-            obj.populateToolbarForNodes(node);
             obj.populateDetailsForEpochGroups(group);
             obj.updateStateOfControls();
         end
@@ -511,27 +488,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.stopEditingProperties();
             obj.view.update();
             
-            nodes = obj.view.getSelectedNodes();
-            obj.populateToolbarForNodes(nodes);
-            obj.populateDetailsForNodes(nodes);
-        end
-        
-        function populateToolbarForNodes(obj, nodes)
-            if numel(nodes) ~= 1
-                obj.view.setAddSourceToolVisible(false);
-                obj.view.setBeginEpochGroupToolVisible(false);
-                obj.view.setEndEpochGroupToolVisible(false);
-                return;
-            end
-            
-            type = obj.view.getNodeType(nodes(1));
-            
-            currentGroup = obj.documentationService.getCurrentEpochGroup();
-            isCurrentEpochGroup = ~isempty(currentGroup) && obj.view.getNodeEntity(nodes(1)) == currentGroup;
-            
-            obj.view.setAddSourceToolVisible(type.isExperiment() || type.isSourcesFolder() || type.isSource());
-            obj.view.setBeginEpochGroupToolVisible(type.isExperiment() || type.isEpochGroupFolder() || isCurrentEpochGroup);
-            obj.view.setEndEpochGroupToolVisible(isCurrentEpochGroup);
+            obj.populateDetailsForNodes(obj.view.getSelectedNodes());
         end
 
         function populateDetailsForNodes(obj, nodes)
@@ -727,9 +684,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.removeNode(node);
             obj.uuidToNode.remove(uuid);
             
-            nodes = obj.view.getSelectedNodes();
-            obj.populateToolbarForNodes(nodes);
-            obj.populateDetailsForNodes(nodes);
+            obj.populateDetailsForNodes(obj.view.getSelectedNodes());
             obj.updateStateOfControls();
         end
 
@@ -752,12 +707,13 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function updateStateOfControls(obj)
             hasSource = ~isempty(obj.documentationService.getExperiment().sources);
+            hasEpochGroup = ~isempty(obj.documentationService.getCurrentEpochGroup());
             controllerState = obj.acquisitionService.getControllerState();
             isStopped = controllerState.isStopped();
             currentGroup = obj.documentationService.getCurrentEpochGroup();
 
             enableBeginEpochGroup = hasSource && isStopped;
-            enableEndEpochGroup = isStopped;
+            enableEndEpochGroup = hasEpochGroup && isStopped;
             
             obj.view.enableBeginEpochGroupTool(enableBeginEpochGroup);
             obj.view.enableBeginEpochGroupMenu(obj.view.getExperimentNode(), enableBeginEpochGroup);
