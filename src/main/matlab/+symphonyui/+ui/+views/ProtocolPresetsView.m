@@ -31,11 +31,14 @@ classdef ProtocolPresetsView < appbox.View
                 'Parent', obj.figureHandle, ...
                 'Spacing', 1);
             
-            obj.presetsTable = appbox.Table( ...
+            obj.presetsTable = uiextras.jTable.Table( ...
                 'Parent', mainLayout, ...
                 'ColumnName', {'Preset'}, ...
+                'Data', {'a'; 'b'; 'c'}, ...
+                'RowHeight', 40, ...
                 'BorderType', 'none', ...
-                'Editable', false);
+                'Editable', 'off', ...
+                'CellSelectionCallback', @(h,d)notify(obj, 'SelectedPreset'));
             
             % Presets toolbar.
             presetsToolbarLayout = uix.HBox( ...
@@ -69,7 +72,6 @@ classdef ProtocolPresetsView < appbox.View
         function show(obj)
             show@appbox.View(obj);
             set(obj.presetsTable, 'ColumnHeaderVisible', false);
-            set(obj.presetsTable, 'RowHeight', 40);
         end
         
         function enableViewOnlyPreset(obj, tf)
@@ -99,8 +101,12 @@ classdef ProtocolPresetsView < appbox.View
         end
         
         function p = getSelectedPreset(obj)
-            row = get(obj.presetsTable, 'SelectedRow');
-            p = obj.presetsTable.getValueAt(row, 1);
+            rows = get(obj.presetsTable, 'SelectedRows');
+            if isempty(rows)
+                p = [];
+            else
+                p = obj.presetsTable.getValueAt(rows(1), 1);
+            end
         end
         
     end

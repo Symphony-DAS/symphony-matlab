@@ -591,7 +591,13 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function populateKeywordsForEntitySet(obj, entitySet)
-            obj.view.setKeywords(entitySet.keywords);
+            keywords = entitySet.keywords;
+            
+            data = cell(numel(keywords), 1);
+            for i = 1:numel(keywords)
+                data{i, 1} = keywords{i};
+            end            
+            obj.view.setKeywords(data);
         end
 
         function onViewSelectedAddKeyword(obj, ~, ~)
@@ -623,9 +629,10 @@ classdef DataManagerPresenter < appbox.Presenter
         function populateNotesForEntitySet(obj, entitySet)
             notes = entitySet.notes;
 
-            data = cell(1, numel(notes));
+            data = cell(numel(notes), 2);
             for i = 1:numel(notes)
-                data{i} = {strtrim(datestr(notes{i}.time, 14)), notes{i}.text};
+                data{i, 1} = strtrim(datestr(notes{i}.time, 14));
+                data{i, 2} = notes{i}.text;
             end
             obj.view.setNotes(data);
         end
