@@ -51,7 +51,12 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             obj.addListener(v, 'AddPreset', @obj.onViewSelectedAddPreset);
             obj.addListener(v, 'RemovePreset', @obj.onViewSelectedRemovePreset);
             
+            d = obj.documentationService;
+            obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
+            obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
             
+            a = obj.acquisitionService;
+            obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
         end
         
     end
@@ -76,6 +81,18 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
                 return;
             end
             obj.view.removePreset(preset);
+        end
+        
+        function onServiceBeganEpochGroup(obj, ~, ~)
+            obj.updateStateOfControls();
+        end
+        
+        function onServiceEndedEpochGroup(obj, ~, ~)
+            obj.updateStateOfControls();
+        end
+        
+        function onServiceChangedControllerState(obj, ~, ~)
+            obj.updateStateOfControls();
         end
         
         function updateStateOfControls(obj)

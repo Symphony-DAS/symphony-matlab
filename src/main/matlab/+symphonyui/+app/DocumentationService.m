@@ -55,6 +55,11 @@ classdef DocumentationService < handle
         end
 
         function closeFile(obj)
+            group = obj.getCurrentEpochGroup();
+            while ~isempty(group)
+                obj.endEpochGroup();
+                group = obj.getCurrentEpochGroup();
+            end
             obj.session.getPersistor().close();
             obj.session.persistor = [];
             notify(obj, 'ClosedFile');
