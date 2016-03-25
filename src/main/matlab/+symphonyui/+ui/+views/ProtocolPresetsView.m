@@ -1,6 +1,8 @@
 classdef ProtocolPresetsView < appbox.View
     
     events
+        ViewOnlyPreset
+        RecordPreset
         ApplyPreset
         AddPreset
         RemovePreset
@@ -8,6 +10,9 @@ classdef ProtocolPresetsView < appbox.View
     
     properties (Access = private)
         presetsTable
+        viewOnlyButton
+        recordButton
+        applyButton
         addButton
         removeButton
     end
@@ -34,6 +39,19 @@ classdef ProtocolPresetsView < appbox.View
             % Presets toolbar.
             presetsToolbarLayout = uix.HBox( ...
                 'Parent', mainLayout);
+            obj.viewOnlyButton = Button( ...
+                'Parent', presetsToolbarLayout, ...
+                'Icon', symphonyui.app.App.getResource('icons/view_only.png'), ...
+                'Callback', @(h,d)notify(obj, 'ViewOnlyPreset'));
+            obj.recordButton = Button( ...
+                'Parent', presetsToolbarLayout, ...
+                'Icon', symphonyui.app.App.getResource('icons/record.png'), ...
+                'Callback', @(h,d)notify(obj, 'RecordPreset'));
+            obj.applyButton = Button( ...
+                'Parent', presetsToolbarLayout, ...
+                'Icon', symphonyui.app.App.getResource('icons/apply.png'), ...
+                'Callback', @(h,d)notify(obj, 'ApplyPreset'));
+            uix.Empty('Parent', presetsToolbarLayout);
             obj.addButton = Button( ...
                 'Parent', presetsToolbarLayout, ...
                 'Icon', symphonyui.app.App.getResource('icons/add.png'), ...
@@ -42,8 +60,7 @@ classdef ProtocolPresetsView < appbox.View
                 'Parent', presetsToolbarLayout, ...
                 'Icon', symphonyui.app.App.getResource('icons/remove.png'), ...
                 'Callback', @(h,d)notify(obj, 'RemovePreset'));
-            uix.Empty('Parent', presetsToolbarLayout);
-            set(presetsToolbarLayout, 'Widths', [22 22 -1]);
+            set(presetsToolbarLayout, 'Widths', [22 22 22 -1 22 22]);
             
             set(mainLayout, 'Heights', [-1 22]);
         end
@@ -54,8 +71,24 @@ classdef ProtocolPresetsView < appbox.View
             set(obj.presetsTable, 'RowHeight', 40);
         end
         
+        function enableViewOnlyPreset(obj, tf)
+            set(obj.viewOnlyButton, 'Enable', appbox.onOff(tf));
+        end
+        
+        function enableRecordPreset(obj, tf)
+            set(obj.recordButton, 'Enable', appbox.onOff(tf));
+        end
+        
+        function enableApplyPreset(obj, tf)
+            set(obj.applyButton, 'Enable', appbox.onOff(tf));
+        end
+        
         function addPreset(obj, preset)
             obj.presetsTable.addRow(preset);
+        end
+        
+        function enableRemovePreset(obj, tf)
+            set(obj.removeButton, 'Enable', appbox.onOff(tf));
         end
         
         function removePreset(obj, preset)

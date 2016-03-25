@@ -19,6 +19,11 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
     
     methods (Access = protected)
         
+        function willGo(obj)
+            obj.populatePresetList();
+            obj.updateStateOfControls();
+        end
+        
         function bind(obj)
             bind@appbox.Presenter(obj);
             
@@ -31,6 +36,10 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
     
     methods (Access = private)
         
+        function populatePresetList(obj)
+            
+        end
+        
         function onViewSelectedAddPreset(obj, ~, ~)
             obj.view.addPreset(['<html>' num2str(rand()) '<br><font color="gray">io.github.symphony_das.protocols.Pulse</font></html>']);
         end
@@ -41,6 +50,12 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
                 return;
             end
             obj.view.removePreset(preset);
+        end
+        
+        function updateStateOfControls(obj)
+            obj.view.enableViewOnlyPreset(false);
+            obj.view.enableRecordPreset(false);
+            obj.view.enableApplyPreset(false);
         end
         
     end
