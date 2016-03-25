@@ -518,7 +518,7 @@ classdef MainPresenter < appbox.Presenter
         
         function showProtocolPresets(obj)
             if isempty(obj.protocolPresetsPresenter) || obj.protocolPresetsPresenter.isStopped()
-                obj.protocolPresetsPresenter = symphonyui.ui.presenters.ProtocolPresetsPresenter(obj.acquisitionService);
+                obj.protocolPresetsPresenter = symphonyui.ui.presenters.ProtocolPresetsPresenter(obj.documentationService, obj.acquisitionService);
                 obj.protocolPresetsPresenter.go();
             else
                 obj.protocolPresetsPresenter.show();

@@ -1,17 +1,23 @@
 classdef ProtocolPresetsPresenter < appbox.Presenter
     
     properties (Access = private)
+        log
+        settings
+        documentationService
         acquisitionService
     end
     
     methods
         
-        function obj = ProtocolPresetsPresenter(acquisitionService, view)
-            if nargin < 2
+        function obj = ProtocolPresetsPresenter(documentationService, acquisitionService, view)
+            if nargin < 3
                 view = symphonyui.ui.views.ProtocolPresetsView();
             end
             obj = obj@appbox.Presenter(view);
-
+            
+            obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.settings = symphonyui.ui.settings.ProtocolPresetsSettings();
+            obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
         end
         
@@ -21,7 +27,20 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         
         function willGo(obj)
             obj.populatePresetList();
+            try
+                obj.loadSettings();
+            catch x
+                obj.log.debug(['Failed to load presenter settings: ' x.message], x);
+            end
             obj.updateStateOfControls();
+        end
+        
+        function willStop(obj)
+            try
+                obj.saveSettings();
+            catch x
+                obj.log.debug(['Failed to save presenter settings: ' x.message], x);
+            end
         end
         
         function bind(obj)
@@ -30,6 +49,8 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             v = obj.view;
             obj.addListener(v, 'AddPreset', @obj.onViewSelectedAddPreset);
             obj.addListener(v, 'RemovePreset', @obj.onViewSelectedRemovePreset);
+            
+            
         end
         
     end
@@ -53,9 +74,32 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         end
         
         function updateStateOfControls(obj)
-            obj.view.enableViewOnlyPreset(false);
-            obj.view.enableRecordPreset(false);
-            obj.view.enableApplyPreset(false);
+            import symphonyui.core.ControllerState;
+            
+            hasSelectedPreset = ~isempty(obj.view.getSelectedPreset());
+            hasOpenFile = obj.documentationService.hasOpenFile();
+            hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
+            controllerState = obj.acquisitionService.getControllerState();
+            isStopped = controllerState.isStopped();
+            
+            enableViewOnlyPreset = hasSelectedPreset && isStopped;
+            enableRecordPreset = hasSelectedPreset && hasEpochGroup && isStopped;
+            enableApplyPreset = hasSelectedPreset && isStopped;
+            
+            obj.view.enableViewOnlyPreset(enableViewOnlyPreset);
+            obj.view.enableRecordPreset(enableRecordPreset);
+            obj.view.enableApplyPreset(enableApplyPreset);
+        end
+        
+        function loadSettings(obj)
+            if ~isempty(obj.settings.viewPosition)
+                obj.view.position = obj.settings.viewPosition;
+            end
+        end
+
+        function saveSettings(obj)
+            obj.settings.viewPosition = obj.view.position;
+            %obj.settings.save();
         end
         
     end

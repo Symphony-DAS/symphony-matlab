@@ -1,6 +1,7 @@
 classdef ProtocolPresetsView < appbox.View
     
     events
+        SelectedPreset
         ViewOnlyPreset
         RecordPreset
         ApplyPreset
