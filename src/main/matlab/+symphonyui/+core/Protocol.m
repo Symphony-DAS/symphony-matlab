@@ -58,6 +58,10 @@ classdef Protocol < handle
         function didSetPersistor(obj) %#ok<MANU>
 
         end
+        
+        function p = createPreset(obj, name)
+            p = symphonyui.core.ProtocolPreset(name, class(obj), obj.getPropertyDescriptors().toMap());
+        end
 
         function applyPreset(obj, preset)
             descriptors = obj.getPropertyDescriptors();

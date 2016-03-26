@@ -47,9 +47,9 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             bind@appbox.Presenter(obj);
             
             v = obj.view;
-            obj.addListener(v, 'SelectedPreset', @obj.onViewSelectedPreset);
-            obj.addListener(v, 'AddPreset', @obj.onViewSelectedAddPreset);
-            obj.addListener(v, 'RemovePreset', @obj.onViewSelectedRemovePreset);
+            obj.addListener(v, 'SelectedProtocolPreset', @obj.onViewSelectedProtocolPreset);
+            obj.addListener(v, 'AddProtocolPreset', @obj.onViewSelectedAddProtocolPreset);
+            obj.addListener(v, 'RemoveProtocolPreset', @obj.onViewSelectedRemoveProtocolPreset);
             
             d = obj.documentationService;
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
@@ -57,6 +57,8 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             
             a = obj.acquisitionService;
             obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
+            obj.addListener(a, 'AddedProtocolPreset', @obj.onServiceAddedProtocolPreset);
+            obj.addListener(a, 'RemovedProtocolPreset', @obj.onServiceRemovedProtocolPreset);
         end
         
     end
@@ -64,23 +66,49 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
     methods (Access = private)
         
         function populatePresetList(obj)
+            names = obj.acquisitionService.getAvailableProtocolPresets();
             
+            data = cell(numel(names), 2);
+            for i = 1:numel(names)
+                preset = obj.acquisitionService.getProtocolPreset(names{i});
+                data{i, 1} = preset.name;
+                data{i, 2} = preset.protocolId;
+            end
+            
+            obj.view.setProtocolPresets(data);
         end
         
-        function onViewSelectedPreset(obj, ~, ~)
+        function onViewSelectedProtocolPreset(obj, ~, ~)
             obj.updateStateOfControls();
         end
         
-        function onViewSelectedAddPreset(obj, ~, ~)
-            obj.view.addPreset(['<html>' num2str(rand()) '<br><font color="gray">io.github.symphony_das.protocols.Pulse</font></html>']);
+        function onViewSelectedAddProtocolPreset(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.AddProtocolPresetPresenter(obj.acquisitionService);
+            presenter.goWaitStop();
         end
         
-        function onViewSelectedRemovePreset(obj, ~, ~)
-            preset = obj.view.getSelectedPreset();
-            if isempty(preset)
+        function onServiceAddedProtocolPreset(obj, ~, event)
+            preset = event.data;
+            obj.view.addProtocolPreset(preset.name, preset.protocolId);
+        end
+        
+        function onViewSelectedRemoveProtocolPreset(obj, ~, ~)
+            name = obj.view.getSelectedProtocolPreset();
+            if isempty(name)
                 return;
             end
-            obj.view.removePreset(preset);
+            try
+                obj.acquisitionService.removeProtocolPreset(name);
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+        end
+        
+        function onServiceRemovedProtocolPreset(obj, ~, event)
+            preset = event.data;
+            obj.view.removeProtocolPreset(preset.name);
         end
         
         function onServiceBeganEpochGroup(obj, ~, ~)
@@ -98,19 +126,19 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         function updateStateOfControls(obj)
             import symphonyui.core.ControllerState;
             
-            hasSelectedPreset = ~isempty(obj.view.getSelectedPreset());
+            hasSelectedProtocolPreset = ~isempty(obj.view.getSelectedProtocolPreset());
             hasOpenFile = obj.documentationService.hasOpenFile();
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             controllerState = obj.acquisitionService.getControllerState();
             isStopped = controllerState.isStopped();
             
-            enableViewOnlyPreset = hasSelectedPreset && isStopped;
-            enableRecordPreset = hasSelectedPreset && hasEpochGroup && isStopped;
-            enableApplyPreset = hasSelectedPreset && isStopped;
+            enableViewOnlyProtocolPreset = hasSelectedProtocolPreset && isStopped;
+            enableRecordProtocolPreset = hasSelectedProtocolPreset && hasEpochGroup && isStopped;
+            enableApplyProtocolPreset = hasSelectedProtocolPreset && isStopped;
             
-            obj.view.enableViewOnlyPreset(enableViewOnlyPreset);
-            obj.view.enableRecordPreset(enableRecordPreset);
-            obj.view.enableApplyPreset(enableApplyPreset);
+            obj.view.enableViewOnlyProtocolPreset(enableViewOnlyProtocolPreset);
+            obj.view.enableRecordProtocolPreset(enableRecordProtocolPreset);
+            obj.view.enableApplyProtocolPreset(enableApplyProtocolPreset);
         end
         
         function loadSettings(obj)

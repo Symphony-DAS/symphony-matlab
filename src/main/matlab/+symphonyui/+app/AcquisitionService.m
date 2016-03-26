@@ -4,9 +4,12 @@ classdef AcquisitionService < handle
         SelectedProtocol
         SetProtocolProperty
         ChangedControllerState
+        AddedProtocolPreset
+        RemovedProtocolPreset
     end
 
     properties (Access = private)
+        log
         session
         classRepository
         presetMap
@@ -15,6 +18,7 @@ classdef AcquisitionService < handle
     methods
 
         function obj = AcquisitionService(session, classRepository)
+            obj.log = log4m.LogManager.getLogger(class(obj));
             obj.session = session;
             obj.classRepository = classRepository;
             obj.presetMap = containers.Map();
@@ -40,11 +44,18 @@ classdef AcquisitionService < handle
             end
             protocol.setRig(obj.session.rig);
             protocol.setPersistor(obj.session.persistor);
-            try %#ok<TRYNC>
-                obj.presetMap(class(obj.session.protocol)) = symphonyui.core.ProtocolPreset([], obj.session.protocol.getPropertyDescriptors().toMap());
+            try
+                preset = obj.session.protocol.createPreset('');
+                obj.presetMap(preset.protocolId) = preset;
+            catch x
+                obj.log.debug(x.message, x);
             end
-            try %#ok<TRYNC>
-                protocol.applyPreset(obj.presetMap(className));
+            try
+                if obj.presetMap.isKey(className)
+                    protocol.applyPreset(obj.presetMap(className));
+                end
+            catch x
+                obj.log.debug(x.message, x);
             end
             obj.session.protocol.close();
             obj.session.protocol = protocol;
@@ -99,6 +110,33 @@ classdef AcquisitionService < handle
 
         function s = getControllerState(obj)
             s = obj.session.controller.state;
+        end
+        
+        function p = getAvailableProtocolPresets(obj)
+            p = {'one', 'two', 'three'};
+        end
+        
+        function p = getProtocolPreset(obj, name)
+            switch name
+                case 'one'
+                    p = symphonyui.core.ProtocolPreset('one', 'edu.washington.rieke.protocols.Pulse', containers.Map());
+                case 'two'
+                    p = symphonyui.core.ProtocolPreset('two', 'edu.washington.rieke.protocols.PulseFamily', containers.Map());
+                case 'three'
+                    p = symphonyui.core.ProtocolPreset('three', 'edu.washington.rieke.protocols.SealAndLeak', containers.Map());
+                otherwise
+                    error('Unknown');
+            end
+        end
+        
+        function p = addProtocolPreset(obj, name)
+            p = [];
+            notify(obj, 'AddedProtocolPreset');
+        end
+        
+        function removeProtocolPreset(obj, name)
+            
+            notify(obj, 'RemovedProtocolPreset');
         end
 
         function [tf, msg] = isValid(obj)
