@@ -160,6 +160,9 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
 
         function obj = fromProperty(handle, property)
             mpo = findprop(handle, property);
+            if isempty(mpo)
+                error([property ' not found on handle']);
+            end
 
             comment = uiextras.jide.helptext([class(handle) '.' mpo.Name]);
             if ~isempty(comment)

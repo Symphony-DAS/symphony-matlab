@@ -89,15 +89,17 @@ classdef ProtocolPresetsView < appbox.View
         function setProtocolPresets(obj, data)
             d = cell(size(data, 1), 1);
             for i = 1:numel(d)
-                d{i} = ['<html>' data{i, 1} '<br>' ...
-                    '<font color="gray">' data{i, 2} '</font></html>'];
+                d{i} = data{i, 1};
+%                 d{i} = ['<html>' data{i, 1} '<br>' ...
+%                     '<font color="gray">' data{i, 2} '</font></html>'];
             end
             set(obj.presetsTable, 'Data', d);
         end
         
         function addProtocolPreset(obj, name, protocolId)
-            obj.presetsTable.addRow(['<html>' name '<br>' ...
-                '<font color="gray">' protocolId '</font></html>']);
+            obj.presetsTable.addRow(name);
+%             obj.presetsTable.addRow(['<html>' name '<br>' ...
+%                 '<font color="gray">' protocolId '</font></html>']);
         end
         
         function removeProtocolPreset(obj, name)

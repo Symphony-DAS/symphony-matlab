@@ -8,6 +8,8 @@ classdef Session < handle
     
     properties (SetAccess = private)
         controller
+        options
+        presets
     end
     
     properties (Constant)
@@ -17,13 +19,12 @@ classdef Session < handle
     
     methods
         
-        function obj = Session(controller)
-            if nargin < 1
-                controller = symphonyui.core.Controller();
-            end
+        function obj = Session(options, presets)
             obj.rig = obj.NULL_RIG;
             obj.protocol = obj.NULL_PROTOCOL;
-            obj.controller = controller;
+            obj.controller = symphonyui.core.Controller();
+            obj.options = options;
+            obj.presets = presets;
         end
         
         function close(obj)

@@ -115,7 +115,7 @@ classdef MainPresenter < appbox.Presenter
 
             a = obj.acquisitionService;
             obj.addListener(a, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
-            obj.addListener(a, 'SetProtocolProperty', @obj.onServiceSetProtocolProperty);
+            obj.addListener(a, 'SetProtocolProperties', @obj.onServiceSetProtocolProperties);
             obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
 
             c = obj.configurationService;
@@ -341,7 +341,7 @@ classdef MainPresenter < appbox.Presenter
             end
         end
 
-        function onServiceSetProtocolProperty(obj, ~, ~)
+        function onServiceSetProtocolProperties(obj, ~, ~)
             obj.updateStateOfControls();
             obj.updateProtocolProperties();
             if ~obj.view.isProtocolPreviewMinimized()
@@ -543,8 +543,9 @@ classdef MainPresenter < appbox.Presenter
             presenter.goWaitStop();
         end
 
-        function onViewSelectedShowOptions(obj, ~, ~) %#ok<INUSD>
-            presenter = symphonyui.ui.presenters.OptionsPresenter(symphonyui.app.Options.getDefault());
+        function onViewSelectedShowOptions(obj, ~, ~)
+            options = obj.configurationService.getOptions();
+            presenter = symphonyui.ui.presenters.OptionsPresenter(options);
             presenter.goWaitStop();
         end
 

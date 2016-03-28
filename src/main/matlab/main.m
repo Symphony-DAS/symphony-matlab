@@ -6,6 +6,7 @@ function main()
     addJavaJars({'UIExtrasTable.jar', 'UIExtrasTree.jar', 'UIExtrasPropertyGrid.jar'});
     
     options = symphonyui.app.Options.getDefault();
+    presets = symphonyui.app.Presets.getDefault();
     
     try
         run(options.startupFile());
@@ -15,7 +16,7 @@ function main()
         
     Symphony.Core.Logging.ConfigureLogging(options.loggingConfigurationFile(), options.loggingLogDirectory());
     
-    session = Session();
+    session = Session(options, presets);
     persistorFactory = PersistorFactory();
     classRepository = ClassRepository(options.searchPath);
     

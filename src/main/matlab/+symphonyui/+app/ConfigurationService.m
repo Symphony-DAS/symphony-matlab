@@ -54,6 +54,10 @@ classdef ConfigurationService < handle
         function d = getInputDevices(obj)
             d = obj.session.rig.getInputDevices();
         end
+        
+        function o = getOptions(obj)
+            o = obj.session.options;
+        end
 
     end
 

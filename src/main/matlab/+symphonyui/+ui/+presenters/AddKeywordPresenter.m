@@ -32,7 +32,7 @@ classdef AddKeywordPresenter < appbox.Presenter
 
         function bind(obj)
             bind@appbox.Presenter(obj);
-            
+
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Add', @obj.onViewSelectedAdd);
@@ -43,7 +43,7 @@ classdef AddKeywordPresenter < appbox.Presenter
     methods (Access = private)
 
         function populateTextCompletionList(obj)
-%             list = symphonyui.app.Options.getDefault().keywordList;
+%             list = ?;
 %             try
 %                 obj.view.setTextCompletionList(list());
 %             catch x

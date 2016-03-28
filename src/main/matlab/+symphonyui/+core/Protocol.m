@@ -62,17 +62,24 @@ classdef Protocol < handle
         function p = createPreset(obj, name)
             p = symphonyui.core.ProtocolPreset(name, class(obj), obj.getPropertyDescriptors().toMap());
         end
-
-        function applyPreset(obj, preset)
-            descriptors = obj.getPropertyDescriptors();
-            names = preset.propertyMap.keys;
+        
+        function setProperties(obj, map)
+            names = map.keys;
             for i = 1:numel(names)
-                d = descriptors.findByName(names{i});
-                v = preset.propertyMap(names{i});
-                if ~isempty(d) && d.type.canAccept(v)
-                    obj.(names{i}) = v;
-                end
+                obj.setProperty(names{i}, map(names{i}));
             end
+        end
+        
+        function setProperty(obj, name, value)
+            mpo = findprop(obj, name);
+            if isempty(mpo) || ~strcmp(mpo.SetAccess, 'public')
+                error([name ' is not a property with public set access']);
+            end
+            descriptor = obj.getPropertyDescriptor(name);
+            if ~descriptor.type.canAccept(value)
+                error([value ' does not conform to property type restrictions for ' name]);
+            end
+            obj.(name) = value;
         end
 
         function d = getPropertyDescriptors(obj)
