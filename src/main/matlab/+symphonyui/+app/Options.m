@@ -71,10 +71,10 @@ classdef Options < appbox.Settings
         
         function o = getDefault()
             persistent default;
-             if isempty(default) || ~isvalid(default)
+            if isempty(default) || ~isvalid(default)
                 default = symphonyui.app.Options();
-             end
-             o = default;
+            end
+            o = default;
         end
         
     end

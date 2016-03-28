@@ -12,7 +12,7 @@ classdef AcquisitionService < handle
         log
         session
         classRepository
-        presetMap
+        protocolPropertyMap
     end
 
     methods
@@ -21,7 +21,7 @@ classdef AcquisitionService < handle
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.session = session;
             obj.classRepository = classRepository;
-            obj.presetMap = containers.Map();
+            obj.protocolPropertyMap = containers.Map();
 
             addlistener(obj.session, 'rig', 'PostSet', @(h,d)obj.selectProtocol(obj.getSelectedProtocol()));
             addlistener(obj.session, 'persistor', 'PostSet', @(h,d)obj.selectProtocol(obj.getSelectedProtocol()));
@@ -38,6 +38,7 @@ classdef AcquisitionService < handle
             end
             if isempty(className)
                 protocol = symphonyui.app.Session.NULL_PROTOCOL;
+                className = class(protocol);
             else
                 constructor = str2func(className);
                 protocol = constructor();
@@ -45,18 +46,16 @@ classdef AcquisitionService < handle
             protocol.setRig(obj.session.rig);
             protocol.setPersistor(obj.session.persistor);
             try
-                preset = obj.session.protocol.createPreset('default');
-                obj.presetMap(preset.protocolId) = preset;
+                obj.protocolPropertyMap(class(obj.session.protocol)) =  obj.session.protocol.getPropertyDescriptors().toMap();
             catch x
                 obj.log.debug(x.message, x);
             end
-            try
-                if obj.presetMap.isKey(className)
-                    preset = obj.presetMap(className);
-                    protocol.setProperties(preset.propertyMap);
+            if obj.protocolPropertyMap.isKey(className)
+                try
+                    protocol.setProperties(obj.protocolPropertyMap(className));
+                catch x
+                    obj.log.debug(x.message, x);
                 end
-            catch x
-                obj.log.debug(x.message, x);
             end
             obj.session.protocol.close();
             obj.session.protocol = protocol;

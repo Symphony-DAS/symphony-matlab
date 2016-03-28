@@ -21,10 +21,10 @@ classdef Presets < appbox.Settings
         
         function o = getDefault()
             persistent default;
-             if isempty(default) || ~isvalid(default)
+            if isempty(default) || ~isvalid(default)
                 default = symphonyui.app.Presets();
-             end
-             o = default;
+            end
+            o = default;
         end
         
     end
