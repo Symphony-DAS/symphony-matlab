@@ -131,7 +131,8 @@ classdef MainPresenter < appbox.Presenter
     methods (Access = private)
 
         function onViewSelectedNewFile(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.NewFilePresenter(obj.documentationService);
+            options = obj.configurationService.getOptions();
+            presenter = symphonyui.ui.presenters.NewFilePresenter(obj.documentationService, options);
             presenter.goWaitStop();
         end
 

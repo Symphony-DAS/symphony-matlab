@@ -2,13 +2,14 @@ classdef NewFilePresenter < appbox.Presenter
 
     properties (Access = private)
         log
+        options
         settings
         documentationService
     end
 
     methods
 
-        function obj = NewFilePresenter(documentationService, view)
+        function obj = NewFilePresenter(documentationService, options, view)
             if nargin < 3
                 view = symphonyui.ui.views.NewFileView();
             end
@@ -16,6 +17,7 @@ classdef NewFilePresenter < appbox.Presenter
             obj.view.setWindowStyle('modal');
 
             obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.options = options;
             obj.settings = symphonyui.ui.settings.NewFileSettings();
             obj.documentationService = documentationService;
         end
@@ -55,7 +57,7 @@ classdef NewFilePresenter < appbox.Presenter
     methods (Access = private)
 
         function populateName(obj)
-            name = symphonyui.app.Options.getDefault().fileDefaultName;
+            name = obj.options.fileDefaultName;
             try
                 obj.view.setName(name());
             catch x
@@ -64,7 +66,7 @@ classdef NewFilePresenter < appbox.Presenter
         end
 
         function populateLocation(obj)
-            location = symphonyui.app.Options.getDefault().fileDefaultLocation;
+            location = obj.options.fileDefaultLocation;
             try
                 obj.view.setLocation(location());
             catch x
