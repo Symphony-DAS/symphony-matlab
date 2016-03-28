@@ -48,6 +48,8 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             
             v = obj.view;
             obj.addListener(v, 'SelectedProtocolPreset', @obj.onViewSelectedProtocolPreset);
+            obj.addListener(v, 'ViewOnlyProtocolPreset', @obj.onViewSelectedViewOnlyProtocolPreset);
+            obj.addListener(v, 'RecordProtocolPreset', @obj.onViewSelectedRecordProtocolPreset);
             obj.addListener(v, 'ApplyProtocolPreset', @obj.onViewSelectedApplyProtocolPreset);
             obj.addListener(v, 'AddProtocolPreset', @obj.onViewSelectedAddProtocolPreset);
             obj.addListener(v, 'RemoveProtocolPreset', @obj.onViewSelectedRemoveProtocolPreset);
@@ -80,6 +82,30 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         
         function onViewSelectedProtocolPreset(obj, ~, ~)
             obj.updateStateOfControls();
+        end
+        
+        function onViewSelectedViewOnlyProtocolPreset(obj, ~, ~)
+            name = obj.view.getSelectedProtocolPreset();
+            try
+                obj.acquisitionService.applyProtocolPreset(name);
+                obj.acquisitionService.viewOnly();
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+        end
+        
+        function onViewSelectedRecordProtocolPreset(obj, ~, ~)
+            name = obj.view.getSelectedProtocolPreset();
+            try
+                obj.acquisitionService.applyProtocolPreset(name);
+                obj.acquisitionService.record();
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
         end
         
         function onViewSelectedApplyProtocolPreset(obj, ~, ~)
@@ -160,7 +186,7 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
 
         function saveSettings(obj)
             obj.settings.viewPosition = obj.view.position;
-            %obj.settings.save();
+            obj.settings.save();
         end
         
     end
