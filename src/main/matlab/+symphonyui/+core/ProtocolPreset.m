@@ -14,6 +14,20 @@ classdef ProtocolPreset < handle
             obj.propertyMap = propertyMap;
         end
         
+        function s = toStruct(obj)
+            s.name = obj.name;
+            s.protocolId = obj.protocolId;
+            s.propertyMap = obj.propertyMap;
+        end
+        
+    end
+    
+    methods (Static)
+        
+        function obj = fromStruct(s)
+            obj = symphonyui.core.ProtocolPreset(s.name, s.protocolId, s.propertyMap);
+        end
+        
     end
     
 end
