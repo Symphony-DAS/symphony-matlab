@@ -22,6 +22,7 @@ classdef ProtocolPresetsView < appbox.View
         
         function createUi(obj)
             import appbox.*;
+            import symphonyui.app.App;
             
             set(obj.figureHandle, ...
                 'Name', 'Protocol Presets', ...
@@ -33,10 +34,15 @@ classdef ProtocolPresetsView < appbox.View
             
             obj.presetsTable = uiextras.jTable.Table( ...
                 'Parent', mainLayout, ...
-                'ColumnName', {'Preset'}, ...
+                'ColumnName', {'Preset', 'Apply', 'View Only', 'Record'}, ...
+                'ColumnFormat', {'', 'button', 'button', 'button'}, ...
+                'ColumnMinWidth', [0 40 40 40], ...
+                'ColumnMaxWidth', [java.lang.Integer.MAX_VALUE 40 40 40], ...
                 'Data', {}, ...
                 'RowHeight', 40, ...
                 'BorderType', 'none', ...
+                'ShowVerticalLines', 'off', ...
+                'Focusable', 'off', ...
                 'Editable', 'off', ...
                 'CellSelectionCallback', @(h,d)notify(obj, 'SelectedProtocolPreset'));
             
@@ -87,24 +93,31 @@ classdef ProtocolPresetsView < appbox.View
         end
         
         function setProtocolPresets(obj, data)
-            d = cell(size(data, 1), 1);
-            for i = 1:numel(d)
-                d{i} = data{i, 1};
-%                 d{i} = ['<html>' data{i, 1} '<br>' ...
-%                     '<font color="gray">' data{i, 2} '</font></html>'];
+            import symphonyui.app.App;
+            
+            d = cell(size(data, 1), 4);
+            for i = 1:size(d, 1)
+                d{i, 1} = ['<html>' data{i, 1} '<br>' ...
+                    '<font color="gray">' data{i, 2} '</font></html>'];
+                d{i, 2} = App.getResource('icons/apply.png');
+                d{i, 3} = App.getResource('icons/view_only.png');
+                d{i, 4} = App.getResource('icons/record.png');
             end
             set(obj.presetsTable, 'Data', d);
         end
         
         function addProtocolPreset(obj, name, protocolId)
-            obj.presetsTable.addRow(name);
-%             obj.presetsTable.addRow(['<html>' name '<br>' ...
-%                 '<font color="gray">' protocolId '</font></html>']);
+            import symphonyui.app.App;
+            
+            obj.presetsTable.addRow({toHtml(name, protocolId), ...
+                App.getResource('icons/apply.png'), ...
+                App.getResource('icons/view_only.png'), ...
+                App.getResource('icons/record.png')});
         end
         
         function removeProtocolPreset(obj, name)
             presets = obj.presetsTable.getColumnData(1);
-            index = find(cellfun(@(c)strcmp(c, name), presets));
+            index = find(cellfun(@(c)strcmp(fromHtml(c), name), presets));
             obj.presetsTable.removeRow(index); %#ok<FNDSB>
         end
         
@@ -113,11 +126,21 @@ classdef ProtocolPresetsView < appbox.View
             if isempty(rows)
                 n = [];
             else
-                n = obj.presetsTable.getValueAt(rows(1), 1);
+                n = fromHtml(obj.presetsTable.getValueAt(rows(1), 1));
             end
         end
         
     end
     
+end
+
+function html = toHtml(name, protocolId)
+    html = ['<html>' name '<br><font color="gray">' protocolId '</font></html>'];
+end
+
+function [name, protocolId] = fromHtml(html)
+    split = strsplit(html, {'<', '>'});
+    name = split{3};
+    protocolId = split{6};
 end
 

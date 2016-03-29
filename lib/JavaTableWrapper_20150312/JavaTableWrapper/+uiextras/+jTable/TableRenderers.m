@@ -42,6 +42,7 @@ classdef TableRenderers < handle
             obj.Formats = {
                 ''          javax.swing.table.DefaultTableCellRenderer                          []
                 'boolean'   com.jidesoft.grid.BooleanCheckBoxCellRenderer                       com.jidesoft.grid.BooleanCheckBoxCellEditor
+                'button'    UIExtrasTable.MButtonTableCellEditorRenderer                        UIExtrasTable.MButtonTableCellEditorRenderer
                 'integer'   com.mathworks.consulting.swing.table.NumberCellRenderer('#,##0')    com.jidesoft.grid.DoubleCellEditor
                 'float'     com.jidesoft.grid.NumberCellRenderer                                com.jidesoft.grid.DoubleCellEditor
                 'bank'      com.mathworks.consulting.swing.table.NumberCellRenderer('#,##0.00') com.jidesoft.grid.DoubleCellEditor
@@ -124,6 +125,9 @@ classdef TableRenderers < handle
             % Recreate the editor with a list of possible values
             if ~isempty(data)
                 switch type
+                    
+                    case 'button'
+                        disp(data);
                     
                     case 'popup'
                         try

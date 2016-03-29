@@ -184,6 +184,7 @@ classdef Table < hgsetget
         Data
         Editable
         Enabled
+        Focusable
         FontAngle
         FontName
         FontSize
@@ -201,6 +202,7 @@ classdef Table < hgsetget
         %RowName %RAJ - not implemented
         SelectedRows
         SelectionMode
+        ShowVerticalLines
     end
     properties
         Tag = ''
@@ -310,6 +312,7 @@ classdef Table < hgsetget
             p.addParamValue('Data',cell(0,0));
             p.addParamValue('Editable','on');
             p.addParamValue('Enabled','on');
+            p.addParamValue('Focusable','on');
             p.addParamValue('FontAngle','normal');
             p.addParamValue('FontName','MS Sans Serif');
             p.addParamValue('FontSize',10);
@@ -322,6 +325,7 @@ classdef Table < hgsetget
             p.addParamValue('RowHeight',20);
             p.addParamValue('SelectedRows',zeros(0,1));
             p.addParamValue('SelectionMode','single');
+            p.addParamValue('ShowVerticalLines','on');
             p.addParamValue('Tag','');
             p.addParamValue('UserData',[]);
             p.addParamValue('Units','normalized');
@@ -390,7 +394,8 @@ classdef Table < hgsetget
             jTable = javaObjectEDT('com.mathworks.consulting.swing.table.Table', jTableModel);
             jTable.setFillsViewportHeight(true);
             jTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION)
-            jTable.getTableHeader().setReorderingAllowed(false)
+            jTable.getTableHeader().setReorderingAllowed(false);
+            com.jidesoft.grid.RolloverTableUtils.install(jTable);
             jTable = handle(jTable, 'callbackproperties');
             
             % Get selection model
@@ -1242,6 +1247,23 @@ classdef Table < hgsetget
             setEnabled(sb2,Enabled);
         end
         
+        % Focusable
+        function value = get.Focusable(obj)
+            if obj.JTable.isFocusable()
+                value = 'on';
+            else
+                value = 'off';
+            end
+        end
+        
+        function set.Focusable(obj, value)
+            if strcmpi(value, 'on')
+                obj.JTable.setFocusable(true);
+            else
+                obj.JTable.setFocusable(false);
+            end
+        end
+        
         
         % FontAngle
         function value = get.FontAngle(obj)
@@ -1506,6 +1528,25 @@ classdef Table < hgsetget
             
         end
         
+        
+        % ShowVerticalLines
+        function value = get.ShowVerticalLines(obj)
+            if obj.JTable.getShowVerticalLines()
+                value = 'on';
+            else
+                value = 'off';
+            end
+        end
+        
+        function set.ShowVerticalLines(obj, value)
+            if strcmpi(value, 'on')
+                obj.JTable.setShowVerticalLines(true);
+                obj.JTable.setIntercellSpacing(java.awt.Dimension(1, 1));
+            else
+                obj.JTable.setShowVerticalLines(false);
+                obj.JTable.setIntercellSpacing(java.awt.Dimension(0, 0));
+            end
+        end
         
         % Tag
         function set.Tag(obj, value)
