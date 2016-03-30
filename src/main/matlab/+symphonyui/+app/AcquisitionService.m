@@ -117,6 +117,15 @@ classdef AcquisitionService < handle
             p = presets.keys;
         end
         
+        function i = getProtocolPresetProtocolId(obj, name)
+            presets = obj.session.presets.protocolPresets;
+            if ~presets.isKey(name)
+                error([name ' is not an available protocol preset']);
+            end
+            p = presets(name);
+            i = p.protocolId;
+        end
+        
         function applyProtocolPreset(obj, name)
             presets = obj.session.presets.protocolPresets;
             if ~presets.isKey(name)

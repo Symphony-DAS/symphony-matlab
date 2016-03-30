@@ -677,7 +677,11 @@ classdef Table < hgsetget
                 if ischar(value{aIdx})
                     jArray(aIdx) = javaObject('java.lang.String',value{aIdx});
                 elseif isnumeric(value{aIdx})
-                    jArray(aIdx) = javaObject('java.lang.Double',value{aIdx});
+                    if isempty(value{aIdx})
+                        jArray(aIdx) = javaObject('java.lang.String','');
+                    else
+                        jArray(aIdx) = javaObject('java.lang.Double',value{aIdx});
+                    end
                 elseif islogical(value{aIdx})
                     jArray(aIdx) = javaObject('java.lang.Boolean',value{aIdx});
                 else

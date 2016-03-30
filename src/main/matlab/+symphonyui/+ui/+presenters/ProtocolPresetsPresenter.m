@@ -47,7 +47,6 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             bind@appbox.Presenter(obj);
             
             v = obj.view;
-            obj.addListener(v, 'SelectedProtocolPreset', @obj.onViewSelectedProtocolPreset);
             obj.addListener(v, 'ApplyProtocolPreset', @obj.onViewSelectedApplyProtocolPreset);
             obj.addListener(v, 'ViewOnlyProtocolPreset', @obj.onViewSelectedViewOnlyProtocolPreset);
             obj.addListener(v, 'RecordProtocolPreset', @obj.onViewSelectedRecordProtocolPreset);
@@ -74,14 +73,10 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             data = cell(numel(names), 2);
             for i = 1:numel(names)
                 data{i, 1} = names{i};
-                data{i, 2} = 'fix me!';
+                data{i, 2} = obj.acquisitionService.getProtocolPresetProtocolId(names{i});
             end
             
             obj.view.setProtocolPresets(data);
-        end
-        
-        function onViewSelectedProtocolPreset(obj, ~, ~)
-            obj.updateStateOfControls();
         end
         
         function onViewSelectedApplyProtocolPreset(obj, ~, event)

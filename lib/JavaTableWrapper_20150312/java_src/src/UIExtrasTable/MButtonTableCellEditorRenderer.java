@@ -41,17 +41,27 @@ public class MButtonTableCellEditorRenderer extends ButtonTableCellEditorRendere
                                                           final int row,
                                                           final int column) {
         super.configureTableCellEditorRendererComponent(table, editorRendererComponent, forRenderer, "", isSelected, hasFocus, row, column);
-        Object[] values = (Object[])value;
+        String icon;
+        Boolean enabled;
+        try {
+            Object[] values = (Object[])value;
+            icon = (String) values[0];
+            enabled = (Boolean) values[1];
+        } catch (Exception x) {
+            return;
+        }
         MJButton button = (MJButton)editorRendererComponent;
-        button.setIcon(new ImageIcon("" + values[0]));
-        button.setEnabled((Boolean) values[1]);
+        button.setIcon(new ImageIcon(icon));
+        button.setEnabled(enabled);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // HACK: Need to use an existing event so we don't need to add this class to the MATLAB java static classpath.
                 editingRow = row;
                 editingColumn = column;
-                fireEditingCanceled();
+                synchronized (this) {
+                    fireEditingCanceled();
+                }
             }
         });
     }
