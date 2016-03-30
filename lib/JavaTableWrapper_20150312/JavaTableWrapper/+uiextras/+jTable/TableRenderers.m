@@ -42,7 +42,7 @@ classdef TableRenderers < handle
             obj.Formats = {
                 ''          javax.swing.table.DefaultTableCellRenderer                          []
                 'boolean'   com.jidesoft.grid.BooleanCheckBoxCellRenderer                       com.jidesoft.grid.BooleanCheckBoxCellEditor
-                'button'    UIExtrasTable.MButtonTableCellEditorRenderer                        UIExtrasTable.MButtonTableCellEditorRenderer
+                'button'    []                                                                  []
                 'integer'   com.mathworks.consulting.swing.table.NumberCellRenderer('#,##0')    com.jidesoft.grid.DoubleCellEditor
                 'float'     com.jidesoft.grid.NumberCellRenderer                                com.jidesoft.grid.DoubleCellEditor
                 'bank'      com.mathworks.consulting.swing.table.NumberCellRenderer('#,##0.00') com.jidesoft.grid.DoubleCellEditor
@@ -127,8 +127,12 @@ classdef TableRenderers < handle
                 switch type
                     
                     case 'button'
-                        disp(data);
-                    
+                        EditorType = 'UIExtrasTable.MButtonTableCellEditorRenderer';
+                        Editor = javaObject(EditorType);
+                        Editor = handle(Editor, 'CallbackProperties');
+                        set(Editor, 'EditingCanceledCallback', data);
+                        Renderer = Editor;
+                        
                     case 'popup'
                         try
                             % Works on newer releases, fails on R2011b

@@ -2,18 +2,15 @@ classdef ProtocolPresetsView < appbox.View
     
     events
         SelectedProtocolPreset
+        ApplyProtocolPreset
         ViewOnlyProtocolPreset
         RecordProtocolPreset
-        ApplyProtocolPreset
         AddProtocolPreset
         RemoveProtocolPreset
     end
     
     properties (Access = private)
         presetsTable
-        viewOnlyButton
-        recordButton
-        applyButton
         addButton
         removeButton
     end
@@ -22,7 +19,6 @@ classdef ProtocolPresetsView < appbox.View
         
         function createUi(obj)
             import appbox.*;
-            import symphonyui.app.App;
             
             set(obj.figureHandle, ...
                 'Name', 'Protocol Presets', ...
@@ -36,6 +32,11 @@ classdef ProtocolPresetsView < appbox.View
                 'Parent', mainLayout, ...
                 'ColumnName', {'Preset', 'Apply', 'View Only', 'Record'}, ...
                 'ColumnFormat', {'', 'button', 'button', 'button'}, ...
+                'ColumnFormatData', ...
+                    {{}, ...
+                    @(h,d)notify(obj, 'ApplyProtocolPreset', symphonyui.ui.UiEventData(d.getSource())), ...
+                    @(h,d)notify(obj, 'ViewOnlyProtocolPreset', symphonyui.ui.UiEventData(d.getSource())), ...
+                    @(h,d)notify(obj, 'RecordProtocolPreset', symphonyui.ui.UiEventData(d.getSource()))}, ...
                 'ColumnMinWidth', [0 40 40 40], ...
                 'ColumnMaxWidth', [java.lang.Integer.MAX_VALUE 40 40 40], ...
                 'Data', {}, ...
@@ -49,18 +50,6 @@ classdef ProtocolPresetsView < appbox.View
             % Presets toolbar.
             presetsToolbarLayout = uix.HBox( ...
                 'Parent', mainLayout);
-            obj.viewOnlyButton = Button( ...
-                'Parent', presetsToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/view_only.png'), ...
-                'Callback', @(h,d)notify(obj, 'ViewOnlyProtocolPreset'));
-            obj.recordButton = Button( ...
-                'Parent', presetsToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/record.png'), ...
-                'Callback', @(h,d)notify(obj, 'RecordProtocolPreset'));
-            obj.applyButton = Button( ...
-                'Parent', presetsToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/apply.png'), ...
-                'Callback', @(h,d)notify(obj, 'ApplyProtocolPreset'));
             uix.Empty('Parent', presetsToolbarLayout);
             obj.addButton = Button( ...
                 'Parent', presetsToolbarLayout, ...
@@ -70,7 +59,7 @@ classdef ProtocolPresetsView < appbox.View
                 'Parent', presetsToolbarLayout, ...
                 'Icon', symphonyui.app.App.getResource('icons/remove.png'), ...
                 'Callback', @(h,d)notify(obj, 'RemoveProtocolPreset'));
-            set(presetsToolbarLayout, 'Widths', [22 22 22 -1 22 22]);
+            set(presetsToolbarLayout, 'Widths', [-1 22 22]);
             
             set(mainLayout, 'Heights', [-1 22]);
         end
@@ -80,16 +69,34 @@ classdef ProtocolPresetsView < appbox.View
             set(obj.presetsTable, 'ColumnHeaderVisible', false);
         end
         
+        function enableApplyProtocolPreset(obj, tf)
+            data = get(obj.presetsTable, 'Data');
+            for i = 1:size(data, 1)
+                d = data{i, 2};
+                d{2} = tf;
+                data{i, 2} = d;
+            end
+            set(obj.presetsTable, 'Data', data);
+        end
+        
         function enableViewOnlyProtocolPreset(obj, tf)
-            set(obj.viewOnlyButton, 'Enable', appbox.onOff(tf));
+            data = get(obj.presetsTable, 'Data');
+            for i = 1:size(data, 1)
+                d = data{i, 3};
+                d{2} = tf;
+                data{i, 3} = d;
+            end
+            set(obj.presetsTable, 'Data', data);
         end
         
         function enableRecordProtocolPreset(obj, tf)
-            set(obj.recordButton, 'Enable', appbox.onOff(tf));
-        end
-        
-        function enableApplyProtocolPreset(obj, tf)
-            set(obj.applyButton, 'Enable', appbox.onOff(tf));
+            data = get(obj.presetsTable, 'Data');
+            for i = 1:size(data, 1)
+                d = data{i, 4};
+                d{2} = tf;
+                data{i, 4} = d;
+            end
+            set(obj.presetsTable, 'Data', data);
         end
         
         function setProtocolPresets(obj, data)
@@ -97,22 +104,31 @@ classdef ProtocolPresetsView < appbox.View
             
             d = cell(size(data, 1), 4);
             for i = 1:size(d, 1)
-                d{i, 1} = ['<html>' data{i, 1} '<br>' ...
-                    '<font color="gray">' data{i, 2} '</font></html>'];
-                d{i, 2} = App.getResource('icons/apply.png');
-                d{i, 3} = App.getResource('icons/view_only.png');
-                d{i, 4} = App.getResource('icons/record.png');
+                d{i, 1} = toHtml(data{i, 1}, data{i, 2});
+                d{i, 2} = {App.getResource('icons/apply.png'), true};
+                d{i, 3} = {App.getResource('icons/view_only.png'), true};
+                d{i, 4} = {App.getResource('icons/record.png'), false};
             end
             set(obj.presetsTable, 'Data', d);
+        end
+        
+        function d = getProtocolPresets(obj)
+            presets = obj.presetsTable.getColumnData(1);
+            d = cell(numel(presets), 2);
+            for i = 1:size(d, 1)
+                [name, protocolId] = fromHtml(presets{i});
+                d{i, 1} = name;
+                d{i, 2} = protocolId;
+            end
         end
         
         function addProtocolPreset(obj, name, protocolId)
             import symphonyui.app.App;
             
             obj.presetsTable.addRow({toHtml(name, protocolId), ...
-                App.getResource('icons/apply.png'), ...
-                App.getResource('icons/view_only.png'), ...
-                App.getResource('icons/record.png')});
+                {App.getResource('icons/apply.png'), false}, ...
+                {App.getResource('icons/view_only.png'), false}, ...
+                {App.getResource('icons/record.png'), false}});
         end
         
         function removeProtocolPreset(obj, name)
@@ -128,6 +144,12 @@ classdef ProtocolPresetsView < appbox.View
             else
                 n = fromHtml(obj.presetsTable.getValueAt(rows(1), 1));
             end
+        end
+        
+        function setSelectedProtocolPreset(obj, name)
+            presets = obj.presetsTable.getColumnData(1);
+            index = find(cellfun(@(c)strcmp(fromHtml(c), name), presets));
+            set(obj.presetsTable, 'SelectedRows', index);
         end
         
     end

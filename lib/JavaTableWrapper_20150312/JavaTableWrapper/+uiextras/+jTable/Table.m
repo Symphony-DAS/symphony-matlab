@@ -678,6 +678,8 @@ classdef Table < hgsetget
                     jArray(aIdx) = javaObject('java.lang.String',value{aIdx});
                 elseif isnumeric(value{aIdx})
                     jArray(aIdx) = javaObject('java.lang.Double',value{aIdx});
+                elseif islogical(value{aIdx})
+                    jArray(aIdx) = javaObject('java.lang.Boolean',value{aIdx});
                 else
                     jArray(aIdx) = '<Unsupported Type>';
                 end
@@ -852,9 +854,10 @@ classdef Table < hgsetget
             
             % Check that all cells are empty or cellstr arrays
             idxEmpty = cellfun(@isempty,value);
-            idxCellStr = cellfun(@iscellstr,value(~idxEmpty));
+            idxFunctionHandle = cellfun(@(c)isa(c, 'function_handle'),value(~idxEmpty)); 
+            idxCellStr = cellfun(@iscellstr,value(~idxFunctionHandle));
             if ~all(idxCellStr)
-                error('Invalid ColumnFormatData. A cell array of empty values or cellstr arrays is required.');
+                error('Invalid ColumnFormatData. A cell array of empty values, function handles, or cellstr arrays is required.');
             end
             
             % Update the value
@@ -1544,7 +1547,7 @@ classdef Table < hgsetget
                 obj.JTable.setIntercellSpacing(java.awt.Dimension(1, 1));
             else
                 obj.JTable.setShowVerticalLines(false);
-                obj.JTable.setIntercellSpacing(java.awt.Dimension(0, 0));
+                obj.JTable.setIntercellSpacing(java.awt.Dimension(0, 1));
             end
         end
         

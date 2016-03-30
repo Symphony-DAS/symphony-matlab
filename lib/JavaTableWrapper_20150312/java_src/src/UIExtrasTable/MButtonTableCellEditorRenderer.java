@@ -1,14 +1,19 @@
 package UIExtrasTable;
 
 import com.jidesoft.converter.ConverterContext;
-import com.jidesoft.converter.ObjectConverter;
 import com.jidesoft.grid.ButtonTableCellEditorRenderer;
 import com.mathworks.mwswing.MJButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
 
 public class MButtonTableCellEditorRenderer extends ButtonTableCellEditorRenderer {
+
+    private int editingRow;
+    private int editingColumn;
 
     public MButtonTableCellEditorRenderer() {
     }
@@ -33,16 +38,77 @@ public class MButtonTableCellEditorRenderer extends ButtonTableCellEditorRendere
                                                           Object value,
                                                           boolean isSelected,
                                                           boolean hasFocus,
-                                                          int row,
-                                                          int column) {
-        super.configureTableCellEditorRendererComponent(table, editorRendererComponent, forRenderer, value, isSelected, hasFocus, row, column);
+                                                          final int row,
+                                                          final int column) {
+        super.configureTableCellEditorRendererComponent(table, editorRendererComponent, forRenderer, "", isSelected, hasFocus, row, column);
+        Object[] values = (Object[])value;
         MJButton button = (MJButton)editorRendererComponent;
-        button.setText("");
-        button.setIcon(new ImageIcon("" + value));
+        button.setIcon(new ImageIcon("" + values[0]));
+        button.setEnabled((Boolean) values[1]);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // HACK: Need to use an existing event so we don't need to add this class to the MATLAB java static classpath.
+                editingRow = row;
+                editingColumn = column;
+                fireEditingCanceled();
+            }
+        });
     }
 
-    public MJButton getButton() {
-        return (MJButton)this._editorComponent;
+    public int getEditingRow() {
+        return editingRow;
     }
+
+    public int getEditingColumn() {
+        return editingColumn;
+    }
+
+//    public synchronized void addCellActionListener(CellActionListener listener) {
+//        data.addElement(listener);
+//    }
+//
+//    public synchronized void removeCellActionListener(CellActionListener listener) {
+//        data.removeElement(listener);
+//    }
+//
+//    protected void fireCellActionPerformed(CellActionEvent event) {
+//        Vector dataCopy;
+//        synchronized (this) {
+//            dataCopy = (Vector) data.clone();
+//        }
+//        for (int i = 0; i < dataCopy.size(); i++) {
+//            ((CellActionListener)dataCopy.elementAt(i)).cellActionPerformed(event);
+//        }
+//    }
+//
+//    public interface CellActionListener extends EventListener {
+//        void cellActionPerformed(CellActionEvent e);
+//    }
+//
+//    public class CellActionEvent extends EventObject {
+//        private static final long serialVersionUID = 1L;
+//        private int id;
+//        private String command;
+//        private int row;
+//        private int column;
+//
+//        public CellActionEvent(Object source, int id, String command, int row, int column) {
+//            super(source);
+//            this.id = id;
+//            this.command = command;
+//            this.row = row;
+//            this.column = column;
+//        }
+//
+//        public int getRow() {
+//            return row;
+//        }
+//
+//        public int getColumn() {
+//            return column;
+//        }
+//
+//    }
 
 }
