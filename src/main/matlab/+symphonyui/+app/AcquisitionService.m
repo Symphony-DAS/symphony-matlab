@@ -46,7 +46,7 @@ classdef AcquisitionService < handle
             protocol.setRig(obj.session.rig);
             protocol.setPersistor(obj.session.persistor);
             try
-                obj.protocolPropertyMap(class(obj.session.protocol)) =  obj.session.protocol.getPropertyDescriptors().toMap();
+                obj.protocolPropertyMap(class(obj.session.protocol)) =  obj.session.protocol.getProperties();
             catch x
                 obj.log.debug(x.message, x);
             end
@@ -76,6 +76,12 @@ classdef AcquisitionService < handle
 
         function setProtocolProperty(obj, name, value)
             obj.session.protocol.setProperty(name, value);
+            obj.session.protocol.closeFigures();
+            notify(obj, 'SetProtocolProperties');
+        end
+        
+        function setProtocolProperties(obj, map)
+            obj.session.protocol.setProperties(map);
             obj.session.protocol.closeFigures();
             notify(obj, 'SetProtocolProperties');
         end
@@ -131,10 +137,13 @@ classdef AcquisitionService < handle
             if ~presets.isKey(name)
                 error([name ' is not an available protocol preset']);
             end
-            p = presets(name);
-            obj.selectProtocol(p.protocolId);
-            obj.session.protocol.setProperties(p.propertyMap);
-            notify(obj, 'SetProtocolProperties');
+            preset = presets(name);
+            if ~strcmp(preset.protocolId, class(obj.session.protocol))
+                obj.selectProtocol(preset.protocolId);
+            end
+            if ~isequal(preset.propertyMap, obj.session.protocol.getProperties())
+                obj.setProtocolProperties(preset.propertyMap);
+            end
         end
         
         function p = addProtocolPreset(obj, name)
