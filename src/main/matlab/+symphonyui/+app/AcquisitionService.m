@@ -33,6 +33,9 @@ classdef AcquisitionService < handle
         end
 
         function selectProtocol(obj, className)
+            if strcmp(className, class(obj.session.protocol))
+                return;
+            end
             if ~isempty(className) && ~any(strcmp(className, obj.getAvailableProtocols()))
                 error([className ' is not an available protocol']);
             end
@@ -75,12 +78,18 @@ classdef AcquisitionService < handle
         end
 
         function setProtocolProperty(obj, name, value)
+            if isequal(value, obj.session.protocol.getProperty(name))
+                return;
+            end
             obj.session.protocol.setProperty(name, value);
             obj.session.protocol.closeFigures();
             notify(obj, 'SetProtocolProperties');
         end
         
         function setProtocolProperties(obj, map)
+            if isequal(map, obj.session.protocol.getProperties())
+                return;
+            end
             obj.session.protocol.setProperties(map);
             obj.session.protocol.closeFigures();
             notify(obj, 'SetProtocolProperties');
@@ -138,12 +147,8 @@ classdef AcquisitionService < handle
                 error([name ' is not an available protocol preset']);
             end
             preset = presets(name);
-            if ~strcmp(preset.protocolId, class(obj.session.protocol))
-                obj.selectProtocol(preset.protocolId);
-            end
-            if ~isequal(preset.propertyMap, obj.session.protocol.getProperties())
-                obj.setProtocolProperties(preset.propertyMap);
-            end
+            obj.selectProtocol(preset.protocolId);
+            obj.setProtocolProperties(preset.propertyMap);
         end
         
         function p = addProtocolPreset(obj, name)

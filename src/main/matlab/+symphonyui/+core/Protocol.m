@@ -74,6 +74,11 @@ classdef Protocol < handle
             end
         end
         
+        function v = getProperty(obj, name)
+            descriptor = obj.getPropertyDescriptor(name);
+            v = descriptor.value;
+        end
+        
         function setProperty(obj, name, value)
             mpo = findprop(obj, name);
             if isempty(mpo) || ~strcmp(mpo.SetAccess, 'public')
