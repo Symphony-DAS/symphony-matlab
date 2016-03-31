@@ -363,6 +363,17 @@ classdef Table < hgsetget
                 delete(obj.Container)
             end
             
+            % Loop on each column
+            NumCol = obj.JTableModel.getColumnCount();
+            for idx = 1:NumCol
+                jColumn = obj.JTable.getColumnModel().getColumn(idx-1);
+                editor = jColumn.getCellEditor();
+                if ~isempty(editor)
+                    editor = handle(editor, 'CallbackProperties');
+                    set(editor, 'EditingCanceledCallback', []);
+                end
+            end
+            
             % Remove references to the java objects
             obj.JTable = [];
             obj.JTableModel = [];
