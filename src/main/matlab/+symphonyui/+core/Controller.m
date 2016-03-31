@@ -48,21 +48,37 @@ classdef Controller < symphonyui.core.CoreObject
             if obj.state.isPaused()
                 error('Controller is paused');
             end
-
-            onRunCompleted = onCleanup(@()obj.completeRun());
-            obj.prepareRun(protocol, persistor);
-
-            obj.run();
+            
+            try
+                obj.prepareRun(protocol, persistor);
+                obj.run();
+            catch x
+                obj.completeRun();
+                rethrow(x);
+            end
+            
+            obj.completeRun();
         end
 
         function resume(obj)
             if ~obj.state.isPaused()
                 error('Controller not paused');
             end
-
-            onRunCompleted = onCleanup(@()obj.completeRun());
-
-            obj.run();
+            
+            if isempty(obj.state.isViewingPaused())
+                obj.state = symphonyui.core.ControllerState.VIEWING;
+            else
+                obj.state = symphonyui.core.ControllerState.RECORDING;
+            end
+            
+            try
+                obj.run();
+            catch x
+                obj.completeRun();
+                rethrow(x);
+            end
+            
+            obj.completeRun();
         end
 
         function requestPause(obj)
@@ -100,15 +116,23 @@ classdef Controller < symphonyui.core.CoreObject
     methods (Access = protected)
 
         function prepareRun(obj, protocol, persistor)
+            import symphonyui.core.ControllerState;
+            
             obj.currentProtocol = protocol;
             obj.currentPersistor = persistor;
+            
+            if isempty(persistor)
+                obj.state = ControllerState.VIEWING;
+            else
+                obj.state = ControllerState.RECORDING;
+            end
 
             obj.clearEpochQueue();
 
             protocol.prepareRun();
 
             if ~isempty(persistor)
-                map = protocol.getPropertyDescriptors().toMap();
+                map = protocol.getProperties();
                 keys = map.keys;
                 for i = 1:numel(keys)
                     map(keys{i}) = obj.propertyValueFromValue(map(keys{i}));
@@ -117,21 +141,37 @@ classdef Controller < symphonyui.core.CoreObject
             end
         end
 
-        function completeRun(obj)
-            if obj.state.isPaused()
-                return;
-            end
-
+        function completeRun(obj)    
+            import symphonyui.core.ControllerState;
+            
             protocol = obj.currentProtocol;
             persistor = obj.currentPersistor;
-            obj.currentProtocol = [];
-            obj.currentPersistor = [];
-
+            
+            if obj.state.isPausing()
+                if isempty(persistor)
+                    obj.state = ControllerState.VIEWING_PAUSED;
+                else
+                    obj.state = ControllerState.RECORDING_PAUSED;
+                end
+                return;
+            end
+            
             if ~isempty(persistor) && ~isempty(persistor.currentEpochBlock)
                 persistor.endEpochBlock();
             end
-
-            protocol.completeRun();
+            
+            try
+                protocol.completeRun();
+            catch x
+                obj.state = ControllerState.STOPPED;
+                obj.currentProtocol = [];
+                obj.currentPersistor = [];
+                rethrow(x);
+            end
+            
+            obj.state = ControllerState.STOPPED;
+            obj.currentProtocol = [];
+            obj.currentPersistor = [];
         end
 
     end
@@ -140,7 +180,6 @@ classdef Controller < symphonyui.core.CoreObject
 
         function run(obj)
             import symphonyui.core.util.NetListener;
-            import symphonyui.core.ControllerState;
 
             listeners = NetListener.empty(0, 1);
 
@@ -192,31 +231,15 @@ classdef Controller < symphonyui.core.CoreObject
             function onDiscardedEpoch(obj, ~, ~)
                 obj.requestStop();
             end
-
-            if isempty(obj.currentPersistor)
-                obj.state = ControllerState.VIEWING;
-            else
-                obj.state = ControllerState.RECORDING;
-            end
-
+            
             try
                 obj.process();
             catch x
                 delete(listeners);
-                obj.state = ControllerState.STOPPED;
                 rethrow(x);
             end
-
+            
             delete(listeners);
-            if obj.state.isPausing()
-                if isempty(obj.currentPersistor)
-                    obj.state = ControllerState.VIEWING_PAUSED;
-                else
-                    obj.state = ControllerState.RECORDING_PAUSED;
-                end
-            else
-                obj.state = ControllerState.STOPPED;
-            end
         end
 
         function process(obj)
