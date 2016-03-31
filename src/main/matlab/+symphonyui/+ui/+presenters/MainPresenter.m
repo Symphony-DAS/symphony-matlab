@@ -95,6 +95,7 @@ classdef MainPresenter < appbox.Presenter
             obj.addListener(v, 'Record', @obj.onViewSelectedRecord);
             obj.addListener(v, 'Pause', @obj.onViewSelectedPause);
             obj.addListener(v, 'Stop', @obj.onViewSelectedStop);
+            obj.addListener(v, 'ResetProtocol', @obj.onViewSelectedResetProtocol);
             obj.addListener(v, 'ShowProtocolPresets', @obj.onViewSelectedShowProtocolPresets);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
             obj.addListener(v, 'ShowDevices', @obj.onViewSelectedShowDevices);
@@ -484,6 +485,7 @@ classdef MainPresenter < appbox.Presenter
             enableRecord = isValid && hasEpochGroup && (isRecordingPaused || isStopped);
             enablePause = ~isPausing && ~isViewingPaused && ~isRecordingPaused && ~isStopping && ~isStopped;
             enableStop = ~isStopping && ~isStopped;
+            enableResetProtocol = isStopped;
             enableInitializeRig = isStopped;
             enableShowDevices = isStopped;
 
@@ -508,9 +510,20 @@ classdef MainPresenter < appbox.Presenter
             obj.view.enableRecord(enableRecord);
             obj.view.enablePause(enablePause);
             obj.view.enableStop(enableStop);
+            obj.view.enableResetProtocol(enableResetProtocol);
             obj.view.enableInitializeRig(enableInitializeRig);
             obj.view.enableShowDevices(enableShowDevices);
             obj.view.setStatus(status);
+        end
+        
+        function onViewSelectedResetProtocol(obj, ~, ~)
+            try
+                obj.acquisitionService.resetProtocol();
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
         end
         
         function onViewSelectedShowProtocolPresets(obj, ~, ~)

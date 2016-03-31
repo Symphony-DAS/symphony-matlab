@@ -16,6 +16,7 @@ classdef MainView < appbox.View
         Record
         Pause
         Stop
+        ResetProtocol
         ShowProtocolPresets
         InitializeRig
         ShowDevices
@@ -109,10 +110,13 @@ classdef MainView < appbox.View
             obj.acquireMenu.stop = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
+            obj.acquireMenu.resetProtocol = uimenu(obj.acquireMenu.root, ...
+                'Label', 'Reset Protocol', ...
+                'Separator', 'on', ...
+                'Callback', @(h,d)notify(obj, 'ResetProtocol'));
             obj.acquireMenu.protocolPresets = uimenu(obj.acquireMenu.root, ...
                 'Label', 'Protocol Presets', ...
                 'Accelerator', 'P', ...
-                'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'ShowProtocolPresets'));
 
             % Configure menu.
@@ -383,6 +387,10 @@ classdef MainView < appbox.View
             enable = appbox.onOff(tf);
             set(obj.acquireMenu.stop, 'Enable', enable);
             set(obj.stopButton, 'Enable', enable);
+        end
+        
+        function enableResetProtocol(obj, tf)
+            set(obj.acquireMenu.resetProtocol, 'Enable', appbox.onOff(tf));
         end
 
         function enableInitializeRig(obj, tf)

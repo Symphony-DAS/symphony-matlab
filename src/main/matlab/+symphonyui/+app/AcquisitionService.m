@@ -127,6 +127,16 @@ classdef AcquisitionService < handle
             s = obj.session.controller.state;
         end
         
+        function resetProtocol(obj)
+            constructor = str2func(class(obj.session.protocol));
+            protocol = constructor();
+            protocol.setRig(obj.session.rig);
+            protocol.setPersistor(obj.session.persistor);
+            obj.session.protocol.close();
+            obj.session.protocol = protocol;
+            notify(obj, 'SelectedProtocol');
+        end
+        
         function p = getAvailableProtocolPresets(obj)
             presets = obj.session.presets.protocolPresets;
             p = presets.keys;
