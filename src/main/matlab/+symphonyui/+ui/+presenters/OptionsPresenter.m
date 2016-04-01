@@ -171,12 +171,24 @@ classdef OptionsPresenter < appbox.Presenter
                 return;
             end
             
-            obj.options.startupFile = startupFile;
-            obj.options.fileDefaultName = fileDefaultName;
-            obj.options.fileDefaultLocation = fileDefaultLocation;
-            obj.options.searchPath = searchPath;
-            obj.options.loggingConfigurationFile = loggingConfigurationFile;
-            obj.options.loggingLogDirectory = loggingLogDirectory;
+            if ~isequal(startupFile, obj.options.startupFile)
+                obj.options.startupFile = startupFile;
+            end
+            if ~isequal(fileDefaultName, obj.options.fileDefaultName)
+                obj.options.fileDefaultName = fileDefaultName;
+            end
+            if ~isequal(fileDefaultLocation, obj.options.fileDefaultLocation)
+                obj.options.fileDefaultLocation = fileDefaultLocation;
+            end
+            if ~isequal(searchPath, obj.options.searchPath)
+                obj.options.searchPath = searchPath;
+            end
+            if ~isequal(loggingConfigurationFile, obj.options.loggingConfigurationFile)
+                obj.options.loggingConfigurationFile = loggingConfigurationFile;
+            end
+            if ~isequal(loggingLogDirectory, obj.options.loggingLogDirectory)
+                obj.options.loggingLogDirectory = loggingLogDirectory;
+            end
             
             try
                 obj.options.save();
