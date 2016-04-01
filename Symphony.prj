@@ -14,7 +14,7 @@
     <param.summary>Electrophysiology Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB-based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.0.1.5</param.version>
+    <param.version>2.0.1.6</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -22,7 +22,7 @@
       <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>8.6</item>
+      <item>9.0</item>
     </param.products.version>
     <param.platforms/>
     <param.output>C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2</param.output>
@@ -332,6 +332,7 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\BusyView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Button.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\capitalize.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\ComponentWrapper.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\EventData.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\firstNonEmpty.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\humanize.m</file>
@@ -341,6 +342,7 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\ListBox.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MappedListBox.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MappedPopupMenu.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Menu.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessagePresenter.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessageView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\onOff.m</file>
@@ -369,6 +371,30 @@
       <file>${PROJECT_ROOT}\lib\Core Framework\zlib.dll</file>
       <file>${PROJECT_ROOT}\lib\findjobj\findjobj.m</file>
       <file>${PROJECT_ROOT}\lib\findjobj\license.txt</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\.idea\artifacts\UIExtrasTable2.xml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\.idea\compiler.xml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\.idea\copyright\profiles_settings.xml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\.idea\libraries\jide.xml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\.idea\libraries\mwswing.xml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\.idea\misc.xml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\.idea\modules.xml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\.idea\vcs.xml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\.idea\workspace.xml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\src\UIExtrasTable\MButtonTableCellEditorRenderer.java</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\java_src\UIExtrasTable.iml</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\+uiextras\+jTable\loadJavaCustomizations.m</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\+uiextras\+jTable\Table.asv</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\+uiextras\+jTable\Table.m</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\+uiextras\+jTable\TableRenderers.m</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\Example1.m</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\Example2.m</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\Example3.m</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\ExampleEditCallback.m</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\ExampleSelectionCallback.m</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\Readme.pdf</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\UIExtrasTable.jar</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\JavaTableWrapper\UIExtrasTable2.jar</file>
+      <file>${PROJECT_ROOT}\lib\JavaTableWrapper_20150312\license.txt</file>
       <file>${PROJECT_ROOT}\lib\JavaTreeWrapper_20151110\JavaTreeWrapper\+uiextras\+jTree\CheckboxTree.m</file>
       <file>${PROJECT_ROOT}\lib\JavaTreeWrapper_20151110\JavaTreeWrapper\+uiextras\+jTree\CheckboxTreeNode.m</file>
       <file>${PROJECT_ROOT}\lib\JavaTreeWrapper_20151110\JavaTreeWrapper\+uiextras\+jTree\loadJavaCustomizations.m</file>
@@ -477,6 +503,7 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+app\NullProtocol.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+app\NullRig.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+app\Options.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+app\Presets.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+app\Session.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\HekaDaqController.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\HekaDeviceType.m</file>
@@ -561,34 +588,39 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\AddKeywordPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\AddNotePresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\AddPropertyPresenter.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\AddProtocolPresetPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\AddSourcePresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\BeginEpochGroupPresenter.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\ConfigureDevicesPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\DataManagerPresenter.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\DevicesPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\InitializeRigPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\MainPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\NewFilePresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\OptionsPresenter.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+presenters\ProtocolPresetsPresenter.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\BeginEpochGroupSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\DataManagerSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\InitializeRigSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\MainSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\NewFileSettings.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\ProtocolPresetsSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\desc2field.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddConfigurationSettingView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddKeywordView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddNoteView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddPropertyView.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddProtocolPresetView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddSourceView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\BeginEpochGroupView.m</file>
-      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\ConfigureDevicesView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\DataManagerView.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\DevicesView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\EntityNodeType.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\FigureView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\InitializeRigView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\MainView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\NewFileView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\OptionsView.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\ProtocolPresetsView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\Module.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\UiEventData.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\Contents.m</file>
@@ -614,6 +646,8 @@
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Subject.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\log.xml</file>
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2-->
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-21-->
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-23-->
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2015-10-30-->
@@ -689,6 +723,16 @@
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-10-->
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-10.1-->
       <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-10.2-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-11-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-14-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-14.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-16-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-24-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-28-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-28.1-->
+      <!--${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\logs\debug.log.2016-03-28.2-->
+      <file>${PROJECT_ROOT}\src\main\resources\icons\add.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\icons\apply.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\block.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\close.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\device.png</file>
@@ -714,6 +758,7 @@
       <file>${PROJECT_ROOT}\src\main\resources\icons\record.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\record_big.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\record_bigger.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\icons\remove.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\settings.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\source.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\source_add.png</file>
@@ -752,7 +797,7 @@
     </build-deliverables>
     <workflow/>
     <matlab>
-      <root>C:\Program Files\MATLAB\R2015b</root>
+      <root>C:\Program Files\MATLAB\R2016a</root>
       <toolboxes/>
     </matlab>
     <platform>
