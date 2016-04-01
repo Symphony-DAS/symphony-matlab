@@ -9,14 +9,15 @@ classdef DataManagerPresenter < appbox.Presenter
         settings
         documentationService
         acquisitionService
+        configurationService
         uuidToNode
         detailedEntitySet
     end
 
     methods
 
-        function obj = DataManagerPresenter(documentationService, acquisitionService, view)
-            if nargin < 3
+        function obj = DataManagerPresenter(documentationService, acquisitionService, configurationService, view)
+            if nargin < 4
                 view = symphonyui.ui.views.DataManagerView();
             end
             obj = obj@appbox.Presenter(view);
@@ -25,6 +26,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.settings = symphonyui.ui.settings.DataManagerSettings();
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
+            obj.configurationService = configurationService;
             obj.detailedEntitySet = symphonyui.core.persistent.collections.EntitySet();
             obj.uuidToNode = containers.Map();
         end
@@ -57,6 +59,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
             v = obj.view;
             obj.addListener(v, 'SelectedNodes', @obj.onViewSelectedNodes);
+            obj.addListener(v, 'ConfigureDevices', @obj.onViewSelectedConfigureDevices);
             obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'SetSourceLabel', @obj.onViewSetSourceLabel);
             obj.addListener(v, 'SetExperimentPurpose', @obj.onViewSetExperimentPurpose);
@@ -118,6 +121,11 @@ classdef DataManagerPresenter < appbox.Presenter
             
             obj.view.setSelectedNodes(obj.uuidToNode(experiment.uuid));
             obj.populateDetailsForExperiments(experiment);
+        end
+        
+        function onViewSelectedConfigureDevices(obj, ~, ~)
+            presenter = symphonyui.ui.presenters.DevicesPresenter(obj.configurationService);
+            presenter.goWaitStop();
         end
 
         function onViewSelectedAddSource(obj, ~, ~)
@@ -714,15 +722,23 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function updateStateOfControls(obj)
-            hasSource = ~isempty(obj.documentationService.getExperiment().sources);
+            sources = obj.documentationService.getExperiment().allSources;
+            hasSource = ~isempty(sources);
             hasEpochGroup = ~isempty(obj.documentationService.getCurrentEpochGroup());
             controllerState = obj.acquisitionService.getControllerState();
             isStopped = controllerState.isStopped();
             currentGroup = obj.documentationService.getCurrentEpochGroup();
-
+            
+            enableConfigureDevices = isStopped;
+            enableAddSource = isStopped;
             enableBeginEpochGroup = hasSource && isStopped;
             enableEndEpochGroup = hasEpochGroup && isStopped;
             
+            obj.view.enableConfigureDevicesTool(enableConfigureDevices);
+            obj.view.enableAddSourceTool(enableAddSource);
+            for i = 1:numel(sources)
+                obj.view.enableAddSourceMenu(obj.uuidToNode(sources{i}.uuid), enableAddSource);
+            end
             obj.view.enableBeginEpochGroupTool(enableBeginEpochGroup);
             obj.view.enableBeginEpochGroupMenu(obj.view.getExperimentNode(), enableBeginEpochGroup);
             obj.view.enableBeginEpochGroupMenu(obj.view.getEpochGroupsFolderNode(), enableBeginEpochGroup);

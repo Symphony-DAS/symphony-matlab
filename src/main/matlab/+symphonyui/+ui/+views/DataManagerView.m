@@ -2,6 +2,7 @@ classdef DataManagerView < appbox.View
 
     events
         SelectedNodes
+        ConfigureDevices
         AddSource
         SetSourceLabel
         SetExperimentPurpose
@@ -22,6 +23,7 @@ classdef DataManagerView < appbox.View
 
     properties (Access = private)
         toolbar
+        configureDevicesTool
         addSourceTool
         beginEpochGroupTool
         endEpochGroupTool
@@ -62,6 +64,9 @@ classdef DataManagerView < appbox.View
                 'Position', screenCenter(611, 450));
             
             obj.toolbar = Menu(obj.figureHandle);
+            obj.configureDevicesTool = obj.toolbar.addPushTool( ...
+                'Label', 'Configure Devices', ...
+                'Callback', @(h,d)notify(obj, 'ConfigureDevices'));
             obj.addSourceTool = obj.toolbar.addPushTool( ...
                 'Label', 'Add Source', ...
                 'Callback', @(h,d)notify(obj, 'AddSource'));
@@ -465,6 +470,14 @@ classdef DataManagerView < appbox.View
             obj.parametersTab.grid.Close();
         end
         
+        function enableConfigureDevicesTool(obj, tf)
+            set(obj.configureDevicesTool, 'Enable', appbox.onOff(tf));
+        end
+        
+        function enableAddSourceTool(obj, tf)
+            set(obj.addSourceTool, 'Enable', appbox.onOff(tf));
+        end
+        
         function enableBeginEpochGroupTool(obj, tf)
             set(obj.beginEpochGroupTool, 'Enable', appbox.onOff(tf));
         end
@@ -502,6 +515,13 @@ classdef DataManagerView < appbox.View
 
         function n = getSourcesFolderNode(obj)
             n = obj.sourcesFolderNode;
+        end
+        
+        function enableAddSourceMenu(obj, node, tf) %#ok<INUSL>
+            menu = get(node, 'UIContextMenu');
+            children = get(menu, 'Children');
+            index = arrayfun(@(c)isequal(get(c, 'Label'), 'Add Source...'), children);
+            set(children(index), 'Enable', appbox.onOff(tf));
         end
 
         function n = addSourceNode(obj, parent, name, entity)

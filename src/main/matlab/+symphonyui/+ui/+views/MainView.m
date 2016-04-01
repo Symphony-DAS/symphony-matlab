@@ -19,8 +19,8 @@ classdef MainView < appbox.View
         ResetProtocol
         ShowProtocolPresets
         InitializeRig
-        ShowDevices
-        ShowOptions
+        ConfigureDevices
+        ConfigureOptions
         SelectedModule
         ShowDocumentation
         ShowUserGroup
@@ -125,14 +125,14 @@ classdef MainView < appbox.View
             obj.configureMenu.initializeRig = uimenu(obj.configureMenu.root, ...
                 'Label', 'Initialize Rig...', ...
                 'Callback', @(h,d)notify(obj, 'InitializeRig'));
-            obj.configureMenu.showDevices = uimenu(obj.configureMenu.root, ...
+            obj.configureMenu.configureDevices = uimenu(obj.configureMenu.root, ...
                 'Label', 'Devices', ...
                 'Accelerator', 'D', ...
-                'Callback', @(h,d)notify(obj, 'ShowDevices'));
-            obj.configureMenu.showOptions = uimenu(obj.configureMenu.root, ...
+                'Callback', @(h,d)notify(obj, 'ConfigureDevices'));
+            obj.configureMenu.configureOptions = uimenu(obj.configureMenu.root, ...
                 'Label', 'Options', ...
                 'Separator', 'on', ...
-                'Callback', @(h,d)notify(obj, 'ShowOptions'));
+                'Callback', @(h,d)notify(obj, 'ConfigureOptions'));
 
             % Modules menu.
             obj.modulesMenu.root = uimenu(obj.figureHandle, ...
@@ -397,12 +397,12 @@ classdef MainView < appbox.View
             set(obj.configureMenu.initializeRig, 'Enable', appbox.onOff(tf));
         end
 
-        function enableShowDevices(obj, tf)
-            set(obj.configureMenu.showDevices, 'Enable', appbox.onOff(tf));
+        function enableConfigureDevices(obj, tf)
+            set(obj.configureMenu.configureDevices, 'Enable', appbox.onOff(tf));
         end
 
-        function enableShowOptions(obj, tf)
-            set(obj.configureMenu.showOptions, 'Enable', appbox.onOff(tf));
+        function enableConfigureOptions(obj, tf)
+            set(obj.configureMenu.configureOptions, 'Enable', appbox.onOff(tf));
         end
 
         function addModule(obj, name, value)

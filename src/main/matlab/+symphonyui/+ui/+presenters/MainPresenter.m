@@ -98,8 +98,8 @@ classdef MainPresenter < appbox.Presenter
             obj.addListener(v, 'ResetProtocol', @obj.onViewSelectedResetProtocol);
             obj.addListener(v, 'ShowProtocolPresets', @obj.onViewSelectedShowProtocolPresets);
             obj.addListener(v, 'InitializeRig', @obj.onViewSelectedInitializeRig);
-            obj.addListener(v, 'ShowDevices', @obj.onViewSelectedShowDevices);
-            obj.addListener(v, 'ShowOptions', @obj.onViewSelectedShowOptions);
+            obj.addListener(v, 'ConfigureDevices', @obj.onViewSelectedConfigureDevices);
+            obj.addListener(v, 'ConfigureOptions', @obj.onViewSelectedConfigureOptions);
             obj.addListener(v, 'SelectedModule', @obj.onViewSelectedModule);
             obj.addListener(v, 'ShowDocumentation', @obj.onViewSelectedShowDocumentation);
             obj.addListener(v, 'ShowUserGroup', @obj.onViewSelectedShowUserGroup);
@@ -260,7 +260,7 @@ classdef MainPresenter < appbox.Presenter
 
         function showDataManager(obj)
             if isempty(obj.dataManagerPresenter) || obj.dataManagerPresenter.isStopped()
-                obj.dataManagerPresenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.acquisitionService);
+                obj.dataManagerPresenter = symphonyui.ui.presenters.DataManagerPresenter(obj.documentationService, obj.acquisitionService, obj.configurationService);
                 obj.dataManagerPresenter.viewSelectedCloseFcn = @obj.closeFile;
                 obj.dataManagerPresenter.go();
             else
@@ -487,7 +487,7 @@ classdef MainPresenter < appbox.Presenter
             enableStop = ~isStopping && ~isStopped;
             enableResetProtocol = isStopped;
             enableInitializeRig = isStopped;
-            enableShowDevices = isStopped;
+            enableConfigureDevices = isStopped;
 
             if ~isValid
                 status = validationMessage;
@@ -512,7 +512,7 @@ classdef MainPresenter < appbox.Presenter
             obj.view.enableStop(enableStop);
             obj.view.enableResetProtocol(enableResetProtocol);
             obj.view.enableInitializeRig(enableInitializeRig);
-            obj.view.enableShowDevices(enableShowDevices);
+            obj.view.enableConfigureDevices(enableConfigureDevices);
             obj.view.setStatus(status);
         end
         
@@ -552,12 +552,12 @@ classdef MainPresenter < appbox.Presenter
             obj.updateStateOfControls();
         end
 
-        function onViewSelectedShowDevices(obj, ~, ~)
+        function onViewSelectedConfigureDevices(obj, ~, ~)
             presenter = symphonyui.ui.presenters.DevicesPresenter(obj.configurationService);
             presenter.goWaitStop();
         end
 
-        function onViewSelectedShowOptions(obj, ~, ~)
+        function onViewSelectedConfigureOptions(obj, ~, ~)
             options = obj.configurationService.getOptions();
             presenter = symphonyui.ui.presenters.OptionsPresenter(options);
             presenter.goWaitStop();
