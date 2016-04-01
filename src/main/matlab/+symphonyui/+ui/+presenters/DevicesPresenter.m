@@ -33,11 +33,13 @@ classdef DevicesPresenter < appbox.Presenter
             bind@appbox.Presenter(obj);
 
             v = obj.view;
+            obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'SelectedDevices', @obj.onViewSelectedDevices);
             obj.addListener(v, 'SetBackground', @obj.onViewSetBackground);
             obj.addListener(v, 'SetConfigurationSetting', @obj.onViewSetConfigurationSetting);
             obj.addListener(v, 'AddConfigurationSetting', @obj.onViewSelectedAddConfigurationSetting);
             obj.addListener(v, 'RemoveConfigurationSetting', @obj.onViewSelectedRemoveConfigurationSetting);
+            obj.addListener(v, 'Ok', @obj.onViewSelectedOk);
         end
 
     end
@@ -51,6 +53,13 @@ classdef DevicesPresenter < appbox.Presenter
 
             devices = obj.view.getSelectedDevices();
             obj.populateDetailsForDevices(devices);
+        end
+
+        function onViewKeyPress(obj, ~, event)
+            switch event.data.Key
+                case {'return', 'escape'}
+                    obj.onViewSelectedOk();
+            end
         end
 
         function onViewSelectedDevices(obj, ~, ~)
@@ -154,6 +163,10 @@ classdef DevicesPresenter < appbox.Presenter
             if tf
                 obj.populateConfigurationForDeviceSet(obj.detailedDeviceSet);
             end
+        end
+        
+        function onViewSelectedOk(obj, ~, ~)
+            obj.stop();
         end
 
         function updateStateOfControls(obj)
