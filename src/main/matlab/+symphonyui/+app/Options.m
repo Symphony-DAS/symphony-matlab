@@ -57,7 +57,7 @@ classdef Options < appbox.Settings
         end
         
         function f = get.loggingLogDirectory(obj)
-            f = obj.get('loggingLogDirectory', symphonyui.app.App.getResource('examples/+io/+github/+symphony_das/logs'));
+            f = obj.get('loggingLogDirectory', fullfile(char(java.lang.System.getProperty('user.home')), '.symphony', 'logs'));
         end
         
         function set.loggingLogDirectory(obj, f)
