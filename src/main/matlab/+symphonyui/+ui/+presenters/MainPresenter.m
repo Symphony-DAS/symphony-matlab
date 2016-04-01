@@ -298,6 +298,10 @@ classdef MainPresenter < appbox.Presenter
         end
 
         function onViewSelectedProtocol(obj, ~, ~)
+            protocol = obj.view.getSelectedProtocol();
+            if strcmp(protocol, obj.acquisitionService.getSelectedProtocol())
+                return;
+            end
             obj.selectProtocol(obj.view.getSelectedProtocol());
         end
 

@@ -68,9 +68,20 @@ classdef Protocol < handle
         end
         
         function setProperties(obj, map)
+            exception = [];
             names = map.keys;
             for i = 1:numel(names)
-                obj.setProperty(names{i}, map(names{i}));
+                try
+                    obj.setProperty(names{i}, map(names{i}));
+                catch x
+                    if isempty(exception)
+                        exception = MException('symphonyui:core:Protocol', 'Failed to set one or more property values');
+                    end
+                    exception.addCause(x);
+                end
+            end
+            if ~isempty(exception)
+                throw(exception);
             end
         end
         
