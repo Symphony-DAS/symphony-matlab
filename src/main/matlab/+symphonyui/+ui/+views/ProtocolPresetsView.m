@@ -4,6 +4,7 @@ classdef ProtocolPresetsView < appbox.View
         ApplyProtocolPreset
         ViewOnlyProtocolPreset
         RecordProtocolPreset
+        StopProtocolPreset
         AddProtocolPreset
         RemoveProtocolPreset
     end
@@ -13,6 +14,7 @@ classdef ProtocolPresetsView < appbox.View
         applyIcon
         viewOnlyIcon
         recordIcon
+        stopButton
         addButton
         removeButton
     end
@@ -57,6 +59,10 @@ classdef ProtocolPresetsView < appbox.View
             % Presets toolbar.
             presetsToolbarLayout = uix.HBox( ...
                 'Parent', mainLayout);
+            obj.stopButton = Button( ...
+                'Parent', presetsToolbarLayout, ...
+                'Icon', symphonyui.app.App.getResource('icons/stop_small.png'), ...
+                'Callback', @(h,d)notify(obj, 'StopProtocolPreset'));
             uix.Empty('Parent', presetsToolbarLayout);
             obj.addButton = Button( ...
                 'Parent', presetsToolbarLayout, ...
@@ -66,7 +72,7 @@ classdef ProtocolPresetsView < appbox.View
                 'Parent', presetsToolbarLayout, ...
                 'Icon', symphonyui.app.App.getResource('icons/remove.png'), ...
                 'Callback', @(h,d)notify(obj, 'RemoveProtocolPreset'));
-            set(presetsToolbarLayout, 'Widths', [-1 22 22]);
+            set(presetsToolbarLayout, 'Widths', [22 -1 22 22]);
             
             set(mainLayout, 'Heights', [-1 22]);
         end
@@ -110,6 +116,10 @@ classdef ProtocolPresetsView < appbox.View
             enables = get(obj.presetsTable, 'UserData');
             enables.recordEnabled = tf;
             set(obj.presetsTable, 'UserData', enables);
+        end
+        
+        function enableStopProtocolPreset(obj, tf)
+            set(obj.stopButton, 'Enable', appbox.onOff(tf));
         end
         
         function setProtocolPresets(obj, data)

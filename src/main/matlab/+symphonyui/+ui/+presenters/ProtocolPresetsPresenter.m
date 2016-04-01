@@ -50,6 +50,7 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             obj.addListener(v, 'ApplyProtocolPreset', @obj.onViewSelectedApplyProtocolPreset);
             obj.addListener(v, 'ViewOnlyProtocolPreset', @obj.onViewSelectedViewOnlyProtocolPreset);
             obj.addListener(v, 'RecordProtocolPreset', @obj.onViewSelectedRecordProtocolPreset);
+            obj.addListener(v, 'StopProtocolPreset', @obj.onViewSelectedStopProtocolPreset);
             obj.addListener(v, 'AddProtocolPreset', @obj.onViewSelectedAddProtocolPreset);
             obj.addListener(v, 'RemoveProtocolPreset', @obj.onViewSelectedRemoveProtocolPreset);
             
@@ -120,6 +121,16 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             end
         end
         
+        function onViewSelectedStopProtocolPreset(obj, ~, ~)
+            try
+                obj.acquisitionService.requestStop();
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+        end
+        
         function onViewSelectedAddProtocolPreset(obj, ~, ~)
             presenter = symphonyui.ui.presenters.AddProtocolPresetPresenter(obj.acquisitionService);
             presenter.goWaitStop();
@@ -167,15 +178,18 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             hasOpenFile = obj.documentationService.hasOpenFile();
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             controllerState = obj.acquisitionService.getControllerState();
+            isStopping = controllerState.isStopping();
             isStopped = controllerState.isStopped();
             
             enableApplyProtocolPreset = isStopped;
             enableViewOnlyProtocolPreset = isStopped;
             enableRecordProtocolPreset = hasEpochGroup && isStopped;
+            enableStopProtocolPreset = ~isStopping && ~isStopped;
             
             obj.view.enableApplyProtocolPreset(enableApplyProtocolPreset);
             obj.view.enableViewOnlyProtocolPreset(enableViewOnlyProtocolPreset);
             obj.view.enableRecordProtocolPreset(enableRecordProtocolPreset);
+            obj.view.enableStopProtocolPreset(enableStopProtocolPreset);
         end
         
         function loadSettings(obj)
