@@ -73,6 +73,9 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(v, 'AddKeyword', @obj.onViewSelectedAddKeyword);
             obj.addListener(v, 'RemoveKeyword', @obj.onViewSelectedRemoveKeyword);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
+            obj.addListener(v, 'SelectedPreset', @obj.onViewSelectedPreset);
+            obj.addListener(v, 'AddPreset', @obj.onViewSelectedAddPreset);
+            obj.addListener(v, 'ManagePresets', @obj.onViewSelectedManagePresets);
             obj.addListener(v, 'SendEntityToWorkspace', @obj.onViewSelectedSendEntityToWorkspace);
             obj.addListener(v, 'DeleteEntity', @obj.onViewSelectedDeleteEntity);
             obj.addListener(v, 'OpenAxesInNewWindow', @obj.onViewSelectedOpenAxesInNewWindow);
@@ -174,8 +177,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setSourceLabel(sourceSet.label);
             obj.view.setCardSelection(obj.view.SOURCE_CARD);
 
-            obj.populateAnnotationsForEntitySet(sourceSet);
-            obj.detailedEntitySet = sourceSet;
+            obj.populateCommonDetailsForEntitySet(sourceSet);
         end
 
         function onViewSetSourceLabel(obj, ~, ~)
@@ -213,8 +215,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setExperimentEndTime(strtrim(datestr(experimentSet.endTime, 14)));
             obj.view.setCardSelection(obj.view.EXPERIMENT_CARD);
 
-            obj.populateAnnotationsForEntitySet(experimentSet);
-            obj.detailedEntitySet = experimentSet;
+            obj.populateCommonDetailsForEntitySet(experimentSet);
         end
 
         function onViewSetExperimentPurpose(obj, ~, ~)
@@ -346,8 +347,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setEpochGroupSource(sourceSet.label);
             obj.view.setCardSelection(obj.view.EPOCH_GROUP_CARD);
 
-            obj.populateAnnotationsForEntitySet(groupSet);
-            obj.detailedEntitySet = groupSet;
+            obj.populateCommonDetailsForEntitySet(groupSet);
         end
 
         function onViewSetEpochGroupLabel(obj, ~, ~)
@@ -412,8 +412,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
             obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
 
-            obj.populateAnnotationsForEntitySet(blockSet);
-            obj.detailedEntitySet = blockSet;
+            obj.populateCommonDetailsForEntitySet(blockSet);
         end
 
         function n = addEpochNode(obj, epoch)
@@ -451,8 +450,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
             obj.view.setCardSelection(obj.view.EPOCH_CARD);
 
-            obj.populateAnnotationsForEntitySet(epochSet);
-            obj.detailedEntitySet = epochSet;
+            obj.populateCommonDetailsForEntitySet(epochSet);
         end
 
         function onViewSelectedEpochSignal(obj, ~, ~)
@@ -489,8 +487,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setEmptyText(text);
             obj.view.setCardSelection(obj.view.EMPTY_CARD);
 
-            obj.populateAnnotationsForEntitySet(emptySet);
-            obj.detailedEntitySet = emptySet;
+            obj.populateCommonDetailsForEntitySet(emptySet);
         end
 
         function onViewSelectedNodes(obj, ~, ~)
@@ -533,10 +530,12 @@ classdef DataManagerPresenter < appbox.Presenter
             end
         end
 
-        function populateAnnotationsForEntitySet(obj, entitySet)
+        function populateCommonDetailsForEntitySet(obj, entitySet)
             obj.populatePropertiesForEntitySet(entitySet);
             obj.populateKeywordsForEntitySet(entitySet);
             obj.populateNotesForEntitySet(entitySet);
+            obj.populatePresetsForEntitySet(entitySet);
+            obj.detailedEntitySet = entitySet;
         end
 
         function populatePropertiesForEntitySet(obj, entitySet)
@@ -654,6 +653,22 @@ classdef DataManagerPresenter < appbox.Presenter
                 note = presenter.result;
                 obj.view.addNote(strtrim(datestr(note.time, 14)), note.text);
             end
+        end
+        
+        function populatePresetsForEntitySet(obj, entitySet)
+            obj.view.setPresets({});
+        end
+        
+        function onViewSelectedPreset(obj, ~, ~)
+            disp('Selected preset');
+        end
+        
+        function onViewSelectedAddPreset(obj, ~, ~)
+            disp('Selected add preset');
+        end
+        
+        function onViewSelectedManagePresets(obj, ~, ~)
+            disp('Selected manage presets');
         end
 
         function onViewSelectedSendEntityToWorkspace(obj, ~, ~)

@@ -16,6 +16,9 @@ classdef DataManagerView < appbox.View
         AddKeyword
         RemoveKeyword
         AddNote
+        SelectedPreset
+        AddPreset
+        ManagePresets
         SendEntityToWorkspace
         DeleteEntity
         OpenAxesInNewWindow
@@ -42,6 +45,7 @@ classdef DataManagerView < appbox.View
         keywordsTab
         notesTab
         parametersTab
+        presetPopupMenu
     end
 
     properties (Constant)
@@ -175,8 +179,10 @@ classdef DataManagerView < appbox.View
                 'Heights', 23);
             obj.sourceCard.annotationsLayout = uix.VBox( ...
                 'Parent', sourceLayout);
+            obj.sourceCard.presetLayout = uix.VBox( ...
+                'Parent', sourceLayout);
             set(sourceLayout, ...
-                'Heights', [layoutHeight(sourceGrid) -1]);
+                'Heights', [layoutHeight(sourceGrid) -1 23]);
 
             % Experiment card.
             experimentLayout = uix.VBox( ...
@@ -214,8 +220,10 @@ classdef DataManagerView < appbox.View
                 'Heights', [23 23 23]);
             obj.experimentCard.annotationsLayout = uix.VBox( ...
                 'Parent', experimentLayout);
+            obj.experimentCard.presetLayout = uix.VBox( ...
+                'Parent', experimentLayout);
             set(experimentLayout, ...
-                'Heights', [layoutHeight(experimentGrid) -1]);
+                'Heights', [layoutHeight(experimentGrid) -1 23]);
 
             % Epoch group card.
             epochGroupLayout = uix.VBox( ...
@@ -261,8 +269,10 @@ classdef DataManagerView < appbox.View
                 'Heights', [23 23 23 23]);
             obj.epochGroupCard.annotationsLayout = uix.VBox( ...
                 'Parent', epochGroupLayout);
+            obj.epochGroupCard.presetLayout = uix.VBox( ...
+                'Parent', epochGroupLayout);
             set(epochGroupLayout, ...
-                'Heights', [layoutHeight(epochGroupGrid) -1]);
+                'Heights', [layoutHeight(epochGroupGrid) -1 23]);
 
             % Epoch block card.
             epochBlockLayout = uix.VBox( ...
@@ -300,8 +310,10 @@ classdef DataManagerView < appbox.View
                 'Heights', [23 23 23]);
             obj.epochBlockCard.annotationsLayout = uix.VBox( ...
                 'Parent', epochBlockLayout);
+            obj.epochBlockCard.presetLayout = uix.VBox( ...
+                'Parent', epochBlockLayout);
             set(epochBlockLayout, ...
-                'Heights', [layoutHeight(epochBlockGrid) -1]);
+                'Heights', [layoutHeight(epochBlockGrid) -1 23]);
 
             % Epoch card.
             epochLayout = uix.VBox( ...
@@ -339,8 +351,10 @@ classdef DataManagerView < appbox.View
             set(obj.epochCard.panel, 'UIContextMenu', axesMenu);
             obj.epochCard.annotationsLayout = uix.VBox( ...
                 'Parent', epochLayout);
+            obj.epochCard.presetLayout = uix.VBox( ...
+                'Parent', epochLayout);
             set(epochLayout, ...
-                'Heights', [layoutHeight(epochGrid) -1 -1]);
+                'Heights', [layoutHeight(epochGrid) -1 -1 23]);
 
             % Tab group.
             obj.tabGroup = TabGroup( ...
@@ -453,6 +467,14 @@ classdef DataManagerView < appbox.View
             obj.parametersTab.grid = uiextras.jide.PropertyGrid(parametersLayout, ...
                 'BorderType', 'none', ...
                 'EditorStyle', 'readonly');
+            
+            % Preset popupmenu.
+            obj.presetPopupMenu = uicontrol( ...
+                'Parent', obj.experimentCard.presetLayout, ...
+                'Style', 'popupmenu', ...
+                'String', {' '}, ...
+                'HorizontalAlignment', 'left', ...
+                'Callback', @obj.onSelectedPreset);
 
             set(mainLayout, 'Widths', [-1 -2]);
         end
@@ -492,14 +514,19 @@ classdef DataManagerView < appbox.View
             switch index
                 case obj.SOURCE_CARD
                     set(obj.tabGroup, 'Parent', obj.sourceCard.annotationsLayout);
+                    set(obj.presetPopupMenu, 'Parent', obj.sourceCard.presetLayout);
                 case obj.EXPERIMENT_CARD
                     set(obj.tabGroup, 'Parent', obj.experimentCard.annotationsLayout);
+                    set(obj.presetPopupMenu, 'Parent', obj.experimentCard.presetLayout);
                 case obj.EPOCH_GROUP_CARD
                     set(obj.tabGroup, 'Parent', obj.epochGroupCard.annotationsLayout);
+                    set(obj.presetPopupMenu, 'Parent', obj.epochGroupCard.presetLayout);
                 case obj.EPOCH_BLOCK_CARD
                     set(obj.tabGroup, 'Parent', obj.epochBlockCard.annotationsLayout);
+                    set(obj.presetPopupMenu, 'Parent', obj.epochBlockCard.presetLayout);
                 case obj.EPOCH_CARD
                     set(obj.tabGroup, 'Parent', obj.epochCard.annotationsLayout);
+                    set(obj.presetPopupMenu, 'Parent', obj.epochCard.presetLayout);
             end
 
             if index == obj.EPOCH_CARD || index == obj.EPOCH_BLOCK_CARD
@@ -858,11 +885,33 @@ classdef DataManagerView < appbox.View
         function addNote(obj, date, text)
             obj.notesTab.table.addRow({date, text});
         end
+        
+        function setPresets(obj, names)
+            set(obj.presetPopupMenu, 'String', [{'Presets...'} names {'Add...', 'Manage...'}]);
+        end
 
     end
 
     methods (Access = private)
 
+        function onSelectedPreset(obj, control, ~)
+            value = get(control, 'Value');
+            string = get(control, 'String');
+            selection = string{value};
+            switch selection
+                case 'Presets...'
+                    % Do nothing.
+                case 'Add...'
+                    notify(obj, 'AddPreset');
+                    set(control, 'Value', 1);
+                case 'Manage...'
+                    notify(obj, 'ManagePresets');
+                    set(control, 'Value', 1);
+                otherwise
+                    notify(obj, 'SelectedPreset');
+            end
+        end
+        
         function menu = addEntityContextMenus(obj, menu)
             uimenu( ...
                 'Parent', menu, ...
