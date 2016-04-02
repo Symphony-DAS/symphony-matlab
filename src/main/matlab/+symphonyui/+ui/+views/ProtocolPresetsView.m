@@ -11,9 +11,9 @@ classdef ProtocolPresetsView < appbox.View
     
     properties (Access = private)
         presetsTable
-        applyIcon
-        viewOnlyIcon
-        recordIcon
+        applyButton
+        viewOnlyButton
+        recordButton
         stopButton
         addButton
         removeButton
@@ -52,9 +52,14 @@ classdef ProtocolPresetsView < appbox.View
                 'Focusable', 'off', ...
                 'Editable', 'off');
             
-            obj.applyIcon = App.getResource('icons/apply.png');
-            obj.viewOnlyIcon = App.getResource('icons/view_only.png');
-            obj.recordIcon = App.getResource('icons/record.png');
+            obj.applyButton.icon = App.getResource('icons/apply.png');
+            obj.applyButton.tooltip = 'Apply Protocol Preset';
+            
+            obj.viewOnlyButton.icon = App.getResource('icons/view_only.png');
+            obj.viewOnlyButton.tooltip = 'View Only Protocol Preset';
+            
+            obj.recordButton.icon = App.getResource('icons/record.png');
+            obj.recordButton.tooltip = 'Record Protocol Preset';
             
             % Presets toolbar.
             presetsToolbarLayout = uix.HBox( ...
@@ -88,7 +93,7 @@ classdef ProtocolPresetsView < appbox.View
         function enableApplyProtocolPreset(obj, tf)            
             data = get(obj.presetsTable, 'Data');
             for i = 1:size(data, 1)
-                data{i, 2} = {obj.applyIcon, tf};
+                data{i, 2} = {obj.applyButton.icon, obj.applyButton.tooltip, tf};
             end
             set(obj.presetsTable, 'Data', data);
             
@@ -100,7 +105,7 @@ classdef ProtocolPresetsView < appbox.View
         function enableViewOnlyProtocolPreset(obj, tf)
             data = get(obj.presetsTable, 'Data');
             for i = 1:size(data, 1)
-                data{i, 3} = {obj.viewOnlyIcon, tf};
+                data{i, 3} = {obj.viewOnlyButton.icon, obj.viewOnlyButton.tooltip, tf};
             end
             set(obj.presetsTable, 'Data', data);
             
@@ -112,7 +117,7 @@ classdef ProtocolPresetsView < appbox.View
         function enableRecordProtocolPreset(obj, tf)
             data = get(obj.presetsTable, 'Data');
             for i = 1:size(data, 1)
-                data{i, 4} = {obj.recordIcon, tf};
+                data{i, 4} = {obj.recordButton.icon, obj.recordButton.tooltip, tf};
             end
             set(obj.presetsTable, 'Data', data);
             
@@ -130,9 +135,9 @@ classdef ProtocolPresetsView < appbox.View
             d = cell(size(data, 1), 4);
             for i = 1:size(d, 1)
                 d{i, 1} = toDisplayName(data{i, 1}, data{i, 2});
-                d{i, 2} = {obj.applyIcon, enables.applyEnabled};
-                d{i, 3} = {obj.viewOnlyIcon, enables.viewOnlyEnabled};
-                d{i, 4} = {obj.recordIcon, enables.recordEnabled};
+                d{i, 2} = {obj.applyButton.icon, obj.applyButton.tooltip, enables.applyEnabled};
+                d{i, 3} = {obj.viewOnlyButton.icon, obj.viewOnlyButton.tooltip, enables.viewOnlyEnabled};
+                d{i, 4} = {obj.recordButton.icon, obj.recordButton.tooltip, enables.recordEnabled};
             end
             set(obj.presetsTable, 'Data', d);
         end
@@ -150,9 +155,9 @@ classdef ProtocolPresetsView < appbox.View
         function addProtocolPreset(obj, name, protocolId)
             enables = get(obj.presetsTable, 'UserData');
             obj.presetsTable.addRow({toDisplayName(name, protocolId), ...
-                {obj.applyIcon, enables.applyEnabled}, ...
-                {obj.viewOnlyIcon, enables.viewOnlyEnabled}, ...
-                {obj.recordIcon, enables.recordEnabled}});
+                {obj.applyButton.icon, obj.applyButton.tooltip, enables.applyEnabled}, ...
+                {obj.viewOnlyButton.icon, obj.viewOnlyButton.tooltip, enables.viewOnlyEnabled}, ...
+                {obj.recordButton.icon, obj.recordButton.tooltip, enables.recordEnabled}});
         end
         
         function removeProtocolPreset(obj, name)

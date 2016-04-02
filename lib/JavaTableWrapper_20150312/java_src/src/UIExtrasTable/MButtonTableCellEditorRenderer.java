@@ -42,16 +42,19 @@ public class MButtonTableCellEditorRenderer extends ButtonTableCellEditorRendere
                                                           final int column) {
         super.configureTableCellEditorRendererComponent(table, editorRendererComponent, forRenderer, "", isSelected, hasFocus, row, column);
         String icon;
+        String tooltip;
         Boolean enabled;
         try {
             Object[] values = (Object[])value;
             icon = (String) values[0];
-            enabled = (Boolean) values[1];
+            tooltip = (String) values[1];
+            enabled = (Boolean) values[2];
         } catch (Exception x) {
             return;
         }
         MJButton button = (MJButton)editorRendererComponent;
         button.setIcon(new ImageIcon(icon));
+        button.setToolTipText(tooltip);
         button.setEnabled(enabled);
         button.addActionListener(new ActionListener() {
             @Override
