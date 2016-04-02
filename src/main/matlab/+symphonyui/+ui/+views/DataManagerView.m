@@ -13,6 +13,7 @@ classdef DataManagerView < appbox.View
         SetProperty
         AddProperty
         RemoveProperty
+        ShowHidePropertyDescription
         AddKeyword
         RemoveKeyword
         AddNote
@@ -377,6 +378,10 @@ classdef DataManagerView < appbox.View
             % Properties toolbar.
             propertiesToolbarLayout = uix.HBox( ...
                 'Parent', propertiesLayout);
+            obj.propertiesTab.showHideDescriptionButton = Button( ...
+                'Parent', propertiesToolbarLayout, ...
+                'Icon', symphonyui.app.App.getResource('icons/show_description.png'), ...
+                'Callback', @(h,d)notify(obj, 'ShowHidePropertyDescription'));
             uix.Empty('Parent', propertiesToolbarLayout);
             obj.propertiesTab.addButton = Button( ...
                 'Parent', propertiesToolbarLayout, ...
@@ -387,7 +392,7 @@ classdef DataManagerView < appbox.View
                 'Icon', symphonyui.app.App.getResource('icons/remove.png'), ...
                 'Callback', @(h,d)notify(obj, 'RemoveProperty'));
             uix.Empty('Parent', propertiesToolbarLayout);
-            set(propertiesToolbarLayout, 'Widths', [-1 22 22 1]);
+            set(propertiesToolbarLayout, 'Widths', [22 -1 22 22 1]);
 
             set(propertiesLayout, 'Heights', [-1 22]);
 
@@ -833,6 +838,14 @@ classdef DataManagerView < appbox.View
 
         function setPropertiesEditorStyle(obj, s)
             set(obj.propertiesTab.grid, 'EditorStyle', s);
+        end
+        
+        function setShowPropertyDescription(obj, tf)
+            set(obj.propertiesTab.grid, 'ShowDescription', tf);
+        end
+        
+        function tf = getShowPropertyDescription(obj)
+            tf = get(obj.propertiesTab.grid, 'ShowDescription');
         end
 
         function p = getSelectedProperty(obj)

@@ -70,6 +70,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
+            obj.addListener(v, 'ShowHidePropertyDescription', @obj.onViewSelectedShowHidePropertyDescription);
             obj.addListener(v, 'AddKeyword', @obj.onViewSelectedAddKeyword);
             obj.addListener(v, 'RemoveKeyword', @obj.onViewSelectedRemoveKeyword);
             obj.addListener(v, 'AddNote', @obj.onViewSelectedAddNote);
@@ -596,6 +597,11 @@ classdef DataManagerPresenter < appbox.Presenter
             if tf
                 obj.populatePropertiesForEntitySet(obj.detailedEntitySet);
             end
+        end
+        
+        function onViewSelectedShowHidePropertyDescription(obj, ~, ~)
+            tf = obj.view.getShowPropertyDescription();
+            obj.view.setShowPropertyDescription(~tf);
         end
 
         function populateKeywordsForEntitySet(obj, entitySet)
