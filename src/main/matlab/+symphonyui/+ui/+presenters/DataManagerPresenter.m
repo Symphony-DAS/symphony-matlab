@@ -670,7 +670,8 @@ classdef DataManagerPresenter < appbox.Presenter
         end
         
         function onViewSelectedAddPreset(obj, ~, ~)
-            disp('Selected add preset');
+            presenter = symphonyui.ui.presenters.AddEntityPresetPresenter();
+            presenter.goWaitStop();
         end
         
         function onViewSelectedManagePresets(obj, ~, ~)
