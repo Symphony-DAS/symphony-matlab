@@ -20,6 +20,20 @@ classdef Entity < symphonyui.core.CoreObject
         function i = get.uuid(obj)
             i = char(obj.cobj.UUID.ToString());
         end
+        
+        function p = createPreset(obj, name)
+            p = symphonyui.core.persistent.EntityPreset(name, obj.getType(), obj.getDescriptionType(), obj.getProperties());
+        end
+        
+        function applyPreset(obj, preset)
+            if ~isempty(preset.entityType) && ~strcmp(preset.entityType, class(obj))
+                error('Entity type mismatch');                
+            end
+            if ~isempty(preset.descriptionType) && ~strcmp(preset.descriptionType, obj.getDescriptionType())
+                error('Description type mismatch');
+            end
+            obj.setProperties(preset.propertyMap);
+        end
 
         function addProperty(obj, name, value, varargin)
             descriptors = obj.getPropertyDescriptors();
@@ -30,12 +44,31 @@ classdef Entity < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
             obj.updatePropertyDescriptorsResource(descriptors);
         end
+        
+        function setProperties(obj, map)
+            exception = [];
+            names = map.keys;
+            for i = 1:numel(names)
+                try
+                    obj.setProperty(names{i}, map(names{i}));
+                catch x
+                    if isempty(exception)
+                        exception = MException('symphonyui:core:persistent:Entity', 'Failed to set one or more property values');
+                    end
+                    exception.addCause(x);
+                end
+            end
+            if ~isempty(exception)
+                throw(exception);
+            end
+        end
 
         function setProperty(obj, name, value)
             descriptors = obj.getPropertyDescriptors();
             d = descriptors.findByName(name);
             if isempty(d)
-                error([name ' does not exist']);
+                d = symphonyui.core.PropertyDescriptor(name, value, 'isRemovable', true);
+                descriptors(end + 1) = d;
             end
             if d.isReadOnly
                 error([name ' is read only']);
@@ -43,6 +76,10 @@ classdef Entity < symphonyui.core.CoreObject
             d.value = value;
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
             obj.updatePropertyDescriptorsResource(descriptors);
+        end
+        
+        function m = getProperties(obj)
+            m = obj.getPropertyDescriptors().toMap();
         end
         
         function v = getProperty(obj, name)

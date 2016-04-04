@@ -2,18 +2,22 @@ classdef AddEntityPresetPresenter < appbox.Presenter
 
     properties (Access = private)
         log
+        documentationService
+        entitySet
     end
 
     methods
 
-        function obj = AddEntityPresetPresenter(view)
-            if nargin < 1
+        function obj = AddEntityPresetPresenter(documentationService, entitySet, view)
+            if nargin < 3
                 view = symphonyui.ui.views.AddEntityPresetView();
             end
             obj = obj@appbox.Presenter(view);
             obj.view.setWindowStyle('modal');
 
             obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.documentationService = documentationService;
+            obj.entitySet = entitySet;
         end
 
     end
@@ -21,7 +25,8 @@ classdef AddEntityPresetPresenter < appbox.Presenter
     methods (Access = protected)
         
         function willGo(obj)
-            
+            obj.populateEntityType();
+            obj.populateDescriptionType();
         end
 
         function didGo(obj)
@@ -40,6 +45,16 @@ classdef AddEntityPresetPresenter < appbox.Presenter
     end
 
     methods (Access = private)
+        
+        function populateEntityType(obj)
+            type = obj.entitySet.getType();
+            obj.view.setEntityType(type);
+        end
+        
+        function populateDescriptionType(obj)
+            type = obj.entitySet.getDescriptionType();
+            obj.view.setDescriptionType(type);
+        end
 
         function onViewKeyPress(obj, ~, event)
             switch event.data.Key
@@ -53,8 +68,17 @@ classdef AddEntityPresetPresenter < appbox.Presenter
         function onViewSelectedAdd(obj, ~, ~)
             obj.view.update();
             
+            name = obj.view.getName();
+            try
+                preset = obj.entitySet.createPreset(name);
+                obj.documentationService.addEntityPreset(preset);
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
             
-            
+            obj.result = preset;
             obj.stop();
         end
 

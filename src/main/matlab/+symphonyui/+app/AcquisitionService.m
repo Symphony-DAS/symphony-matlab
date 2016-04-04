@@ -71,7 +71,7 @@ classdef AcquisitionService < handle
             obj.session.protocol.closeFigures();
             notify(obj, 'SetProtocolProperties');
         end
-        
+
         function setProtocolProperties(obj, map)
             obj.session.protocol.setProperties(map);
             obj.session.protocol.closeFigures();
@@ -109,7 +109,7 @@ classdef AcquisitionService < handle
         function s = getControllerState(obj)
             s = obj.session.controller.state;
         end
-        
+
         function resetProtocol(obj)
             constructor = str2func(class(obj.session.protocol));
             protocol = constructor();
@@ -119,21 +119,20 @@ classdef AcquisitionService < handle
             obj.session.protocol = protocol;
             notify(obj, 'SelectedProtocol');
         end
-        
+
         function p = getAvailableProtocolPresets(obj)
             presets = obj.session.presets.protocolPresets;
             p = presets.keys;
         end
-        
-        function i = getProtocolPresetProtocolId(obj, name)
+
+        function p = getProtocolPreset(obj, name)
             presets = obj.session.presets.protocolPresets;
             if ~presets.isKey(name)
                 error([name ' is not an available protocol preset']);
             end
             p = presets(name);
-            i = p.protocolId;
         end
-        
+
         function applyProtocolPreset(obj, name)
             presets = obj.session.presets.protocolPresets;
             if ~presets.isKey(name)
@@ -147,7 +146,7 @@ classdef AcquisitionService < handle
                 obj.setProtocolProperties(preset.propertyMap);
             end
         end
-        
+
         function p = addProtocolPreset(obj, name)
             presets = obj.session.presets.protocolPresets;
             if presets.isKey(name)
@@ -159,7 +158,7 @@ classdef AcquisitionService < handle
             obj.session.presets.save();
             notify(obj, 'AddedProtocolPreset', symphonyui.app.AppEventData(p));
         end
-        
+
         function removeProtocolPreset(obj, name)
             presets = obj.session.presets.protocolPresets;
             if ~presets.isKey(name)

@@ -85,6 +85,8 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
+            obj.addListener(d, 'AddedEntityPreset', @obj.onServiceAddedEntityPreset);
+            obj.addListener(d, 'RemovedEntityPreset', @obj.onServiceRemovedEntityPreset);
             obj.addListener(d, 'DeletedEntity', @obj.onServiceDeletedEntity);
 
             a = obj.acquisitionService;
@@ -662,21 +664,40 @@ classdef DataManagerPresenter < appbox.Presenter
         end
         
         function populatePresetsForEntitySet(obj, entitySet)
-            obj.view.setPresets({});
+            presets = obj.documentationService.getAvailableEntityPresets(entitySet.getType(), entitySet.getDescriptionType());
+            obj.view.setPresetList(presets, presets);
         end
         
         function onViewSelectedPreset(obj, ~, ~)
-            disp('Selected preset');
+            name = obj.view.getSelectedPreset();
+            try
+                preset = obj.documentationService.getEntityPreset(name, obj.detailedEntitySet.getType(), obj.detailedEntitySet.getDescriptionType());
+                obj.detailedEntitySet.applyPreset(preset);
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+            
+            obj.populateDetailsForNodes(obj.view.getSelectedNodes());
         end
         
         function onViewSelectedAddPreset(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.AddEntityPresetPresenter();
+            presenter = symphonyui.ui.presenters.AddEntityPresetPresenter(obj.documentationService, obj.detailedEntitySet);
             presenter.goWaitStop();
+        end
+        
+        function onServiceAddedEntityPreset(obj, ~, ~)
+            obj.populatePresetsForEntitySet(obj.detailedEntitySet);
         end
         
         function onViewSelectedManagePresets(obj, ~, ~)
             presenter = symphonyui.ui.presenters.EntityPresetsPresenter();
             presenter.goWaitStop();
+        end
+        
+        function onServiceRemovedEntityPreset(obj, ~, ~)
+            obj.populatePresetsForEntitySet(obj.detailedEntitySet);
         end
 
         function onViewSelectedSendEntityToWorkspace(obj, ~, ~)

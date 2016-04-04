@@ -20,7 +20,7 @@ classdef AddEntityPresetView < appbox.View
 
             set(obj.figureHandle, ...
                 'Name', 'Add Entity Preset', ...
-                'Position', screenCenter(360, 139));
+                'Position', screenCenter(450, 139));
 
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
@@ -92,6 +92,14 @@ classdef AddEntityPresetView < appbox.View
         function requestNameFocus(obj)
             obj.update();
             uicontrol(obj.nameField);
+        end
+        
+        function setEntityType(obj, t)
+            set(obj.entityTypeField, 'String', t);
+        end
+        
+        function setDescriptionType(obj, t)
+            set(obj.descriptionTypeField, 'String', t);
         end
 
     end

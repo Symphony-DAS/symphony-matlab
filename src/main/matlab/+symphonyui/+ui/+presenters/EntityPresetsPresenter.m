@@ -21,7 +21,7 @@ classdef EntityPresetsPresenter < appbox.Presenter
     methods (Access = protected)
         
         function willGo(obj)
-            
+
         end
         
         function bind(obj)

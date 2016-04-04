@@ -481,9 +481,8 @@ classdef DataManagerView < appbox.View
                 'EditorStyle', 'readonly');
             
             % Preset popupmenu.
-            obj.presetPopupMenu = uicontrol( ...
+            obj.presetPopupMenu = MappedPopupMenu( ...
                 'Parent', obj.experimentCard.presetLayout, ...
-                'Style', 'popupmenu', ...
                 'String', {' '}, ...
                 'HorizontalAlignment', 'left', ...
                 'Callback', @obj.onSelectedPreset);
@@ -906,8 +905,13 @@ classdef DataManagerView < appbox.View
             obj.notesTab.table.addRow({date, text});
         end
         
-        function setPresets(obj, names)
+        function setPresetList(obj, names, values)
             set(obj.presetPopupMenu, 'String', [{'Presets...'} names {'Add...', 'Manage...'}]);
+            set(obj.presetPopupMenu, 'Values', [{'Presets...'} values {'Add...', 'Manage...'}]);
+        end
+        
+        function p = getSelectedPreset(obj)
+            p = get(obj.presetPopupMenu, 'Value');
         end
 
     end

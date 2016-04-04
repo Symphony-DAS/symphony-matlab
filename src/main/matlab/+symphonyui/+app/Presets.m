@@ -2,6 +2,7 @@ classdef Presets < appbox.Settings
     
     properties
         protocolPresets
+        entityPresets
     end
     
     methods
@@ -24,6 +25,15 @@ classdef Presets < appbox.Settings
                 structs(keys{i}) = preset.toStruct();
             end
             obj.put('protocolPresets', structs);
+        end
+        
+        function p = get.entityPresets(obj)
+            p = obj.get('entityPresets', containers.Map);
+        end
+        
+        function set.entityPresets(obj, p)
+            validateattributes(p, {'containers.Map'}, {'2d'});
+            obj.put('entityPresets', p);
         end
         
     end

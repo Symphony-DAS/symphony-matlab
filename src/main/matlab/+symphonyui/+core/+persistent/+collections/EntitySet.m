@@ -14,15 +14,42 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             obj@symphonyui.core.collections.ObjectSet(entities);
         end
         
+        function p = createPreset(obj, name)
+            p = symphonyui.core.persistent.EntityPreset(name, obj.getType(), obj.getDescriptionType(), obj.getProperties());
+        end
+        
+        function applyPreset(obj, preset)
+            for i = 1:numel(obj.objects)
+                obj.objects{i}.applyPreset(preset);
+            end
+        end
+        
         function addProperty(obj, key, value, varargin)
             for i = 1:numel(obj.objects)
                 obj.objects{i}.addProperty(key, value, varargin{:});
             end
         end
         
+        function setProperties(obj, map)
+            for i = 1:numel(obj.objects)
+                obj.objects{i}.setProperties(map);
+            end
+        end
+        
         function setProperty(obj, key, value)
             for i = 1:numel(obj.objects)
                 obj.objects{i}.setProperty(key, value);
+            end
+        end
+        
+        function m = getProperties(obj)
+            if isempty(obj.objects)
+                m = containers.Map();
+                return;
+            end
+            m = obj.objects{1}.getProperties();
+            for i = 2:numel(obj.objects)
+                m = obj.intersectMaps(m, obj.objects{i}.getProperties());
             end
         end
         
@@ -87,6 +114,20 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             n = [];
             for i = 1:numel(obj.objects)
                 n = obj.objects{i}.addNote(text, time);
+            end
+        end
+        
+        function t = getType(obj)
+            t = [];
+            if ~isempty(obj.objects) && all(cellfun(@(e)isequal(class(e), class(obj.objects{1})), obj.objects))
+                t = class(obj.objects{1});
+            end
+        end
+        
+        function t = getDescriptionType(obj)
+            t = [];
+            if ~isempty(obj.objects) && all(cellfun(@(e)isequal(e.getDescriptionType(), obj.objects{1}.getDescriptionType()), obj.objects))
+                t = obj.objects{1}.getDescriptionType();
             end
         end
         

@@ -7,6 +7,8 @@ classdef DocumentationService < handle
         AddedSource
         BeganEpochGroup
         EndedEpochGroup
+        AddedEntityPreset
+        RemovedEntityPreset
         DeletedEntity
     end
 
@@ -149,6 +151,42 @@ classdef DocumentationService < handle
 
         function b = getCurrentEpochBlock(obj)
             b = obj.session.getPersistor().currentEpochBlock;
+        end
+        
+        function p = getAvailableEntityPresets(obj, entityType, descriptionType)
+            presets = obj.session.presets.entityPresets;
+            p = presets.keys;
+        end
+        
+        function p = getEntityPreset(obj, name, entityType, descriptionType)
+            presets = obj.session.presets.entityPresets;
+            if ~presets.isKey(name)
+                error([name ' is not an available entity preset']);
+            end
+            p = presets(name);
+        end
+        
+        function addEntityPreset(obj, preset)
+            presets = obj.session.presets.entityPresets;
+            if presets.isKey(preset.name)
+                error([name ' is already an entity preset']);
+            end
+            presets(preset.name) = preset;
+            obj.session.presets.entityPresets = presets;
+            %obj.session.presets.save();
+            notify(obj, 'AddedEntityPreset', symphonyui.app.AppEventData(preset));
+        end
+        
+        function removeEntityPreset(obj, name, entityType, descriptionType)
+            presets = obj.session.presets.entityPresets;
+            if ~presets.isKey(name)
+                error([name ' is not an available entity preset']);
+            end
+            p = presets(name);
+            presets.remove(name);
+            obj.session.presets.entityPresets = presets;
+            %obj.session.presets.save();
+            notify(obj, 'RemovedEntityPreset', symphonyui.app.AppEventData(p));
         end
 
         function deleteEntity(obj, entity)
