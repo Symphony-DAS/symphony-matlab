@@ -18,6 +18,15 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         function obj = EpochGroup(cobj)
             obj@symphonyui.core.persistent.TimelineEntity(cobj);
         end
+        
+        function p = createPreset(obj, name)
+            p = symphonyui.core.persistent.EpochGroupPreset(name,  obj.getDescriptionType(), obj.getProperties(), obj.label);
+        end
+        
+        function applyPreset(obj, preset)
+            applyPreset@symphonyui.core.persistent.TimelineEntity(obj, preset);
+            obj.label = preset.label;
+        end
 
         function p = get.label(obj)
             p = char(obj.cobj.Label);

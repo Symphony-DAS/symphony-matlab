@@ -10,6 +10,10 @@ classdef SourceSet < symphonyui.core.persistent.collections.EntitySet
             obj@symphonyui.core.persistent.collections.EntitySet(sources);
         end
         
+        function p = createPreset(obj, name)
+            p = symphonyui.core.persistent.SourcePreset(name, obj.getType(), obj.getDescriptionType(), obj.getProperties(), obj.label);
+        end
+        
         function l = get.label(obj)
             l = '';
             if ~isempty(obj.objects) && all(cellfun(@(s)isequal(s.label, obj.objects{1}.label), obj.objects))

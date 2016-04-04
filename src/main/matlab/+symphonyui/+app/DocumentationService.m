@@ -154,24 +154,34 @@ classdef DocumentationService < handle
         end
         
         function p = getAvailableEntityPresets(obj, entityType, descriptionType)
+            p = {};
             presets = obj.session.presets.entityPresets;
-            p = presets.keys;
+            prefix = [entityType ':' descriptionType ':'];
+            keys = presets.keys;
+            for i = 1:numel(keys)
+                key = keys{i};
+                if strncmp(prefix, key, length(prefix))
+                    p{end + 1} = key(length(prefix)+1:end); %#ok<AGROW>
+                end
+            end
         end
         
         function p = getEntityPreset(obj, name, entityType, descriptionType)
             presets = obj.session.presets.entityPresets;
-            if ~presets.isKey(name)
+            key = [entityType ':' descriptionType ':' name];
+            if ~presets.isKey(key)
                 error([name ' is not an available entity preset']);
             end
-            p = presets(name);
+            p = presets(key);
         end
         
         function addEntityPreset(obj, preset)
             presets = obj.session.presets.entityPresets;
-            if presets.isKey(preset.name)
-                error([name ' is already an entity preset']);
+            key = [preset.entityType ':' preset.descriptionType ':' preset.name];
+            if presets.isKey(key)
+                error([preset.name ' is already an entity preset']);
             end
-            presets(preset.name) = preset;
+            presets(key) = preset;
             obj.session.presets.entityPresets = presets;
             %obj.session.presets.save();
             notify(obj, 'AddedEntityPreset', symphonyui.app.AppEventData(preset));
@@ -179,11 +189,12 @@ classdef DocumentationService < handle
         
         function removeEntityPreset(obj, name, entityType, descriptionType)
             presets = obj.session.presets.entityPresets;
-            if ~presets.isKey(name)
+            key = [entityType ':' descriptionType ':' name];
+            if ~presets.isKey(key)
                 error([name ' is not an available entity preset']);
             end
-            p = presets(name);
-            presets.remove(name);
+            p = presets(key);
+            presets.remove(key);
             obj.session.presets.entityPresets = presets;
             %obj.session.presets.save();
             notify(obj, 'RemovedEntityPreset', symphonyui.app.AppEventData(p));

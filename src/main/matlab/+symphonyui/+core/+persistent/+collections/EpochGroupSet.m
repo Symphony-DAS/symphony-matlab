@@ -14,6 +14,10 @@ classdef EpochGroupSet < symphonyui.core.persistent.collections.TimelineEntitySe
             obj@symphonyui.core.persistent.collections.TimelineEntitySet(groups);
         end
         
+        function p = createPreset(obj, name)
+            p = symphonyui.core.persistent.EpochGroupPreset(name, obj.getType(), obj.getDescriptionType(), obj.getProperties(), obj.label);
+        end
+        
         function l = get.label(obj)
             l = '';
             if ~isempty(obj.objects) && all(cellfun(@(g)isequal(g.label, obj.objects{1}.label), obj.objects))

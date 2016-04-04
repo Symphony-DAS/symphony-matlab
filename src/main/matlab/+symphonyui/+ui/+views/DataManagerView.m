@@ -913,6 +913,10 @@ classdef DataManagerView < appbox.View
         function p = getSelectedPreset(obj)
             p = get(obj.presetPopupMenu, 'Value');
         end
+        
+        function resetSelectedPreset(obj)
+            set(obj.presetPopupMenu, 'Value', 'Presets...');
+        end
 
     end
 
@@ -927,10 +931,10 @@ classdef DataManagerView < appbox.View
                     % Do nothing.
                 case 'Add...'
                     notify(obj, 'AddPreset');
-                    set(control, 'Value', 1);
+                    obj.resetSelectedPreset();
                 case 'Manage...'
                     notify(obj, 'ManagePresets');
-                    set(control, 'Value', 1);
+                    obj.resetSelectedPreset();
                 otherwise
                     notify(obj, 'SelectedPreset');
             end

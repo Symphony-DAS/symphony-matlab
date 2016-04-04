@@ -150,6 +150,7 @@ classdef DataManagerPresenter < appbox.Presenter
             node = obj.addSourceNode(source);
 
             obj.view.stopEditingProperties();
+            obj.view.resetSelectedPreset();
             obj.view.update();
             obj.view.setSelectedNodes(node);
             
@@ -264,6 +265,7 @@ classdef DataManagerPresenter < appbox.Presenter
             node = obj.addEpochGroupNode(group);
 
             obj.view.stopEditingProperties();
+            obj.view.resetSelectedPreset();
             obj.view.update();
             obj.view.setSelectedNodes(node);
             obj.view.setEpochGroupNodeCurrent(node);
@@ -287,6 +289,7 @@ classdef DataManagerPresenter < appbox.Presenter
             node = obj.uuidToNode(group.uuid);
 
             obj.view.stopEditingProperties();
+            obj.view.resetSelectedPreset();
             obj.view.update();
             obj.view.setSelectedNodes(node);
             obj.view.collapseNode(node);
@@ -495,6 +498,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function onViewSelectedNodes(obj, ~, ~)
             obj.view.stopEditingProperties();
+            obj.view.resetSelectedPreset();
             obj.view.update();
             
             obj.populateDetailsForNodes(obj.view.getSelectedNodes());

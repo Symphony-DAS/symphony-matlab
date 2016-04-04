@@ -10,6 +10,10 @@ classdef ExperimentSet < symphonyui.core.persistent.collections.TimelineEntitySe
             obj@symphonyui.core.persistent.collections.TimelineEntitySet(experiments);
         end
         
+        function p = createPreset(obj, name)
+            p = symphonyui.core.persistent.ExperimentPreset(name, obj.getType(), obj.getDescriptionType(), obj.getProperties(), obj.purpose);
+        end
+        
         function p = get.purpose(obj)
             p = '';
             if ~isempty(obj.objects) && all(cellfun(@(e)isequal(e.purpose, obj.objects{1}.purpose), obj.objects))
