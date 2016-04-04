@@ -675,7 +675,8 @@ classdef DataManagerPresenter < appbox.Presenter
         end
         
         function onViewSelectedManagePresets(obj, ~, ~)
-            disp('Selected manage presets');
+            presenter = symphonyui.ui.presenters.EntityPresetsPresenter();
+            presenter.goWaitStop();
         end
 
         function onViewSelectedSendEntityToWorkspace(obj, ~, ~)
