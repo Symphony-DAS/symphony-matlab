@@ -20,11 +20,11 @@ classdef Persistor < symphonyui.core.CoreObject
         function close(obj)
             obj.cobj.Close();
         end
-        
+
         function tf = get.isClosed(obj)
             tf = obj.cobj.IsClosed;
         end
-        
+
         function e = get.experiment(obj)
             e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
         end
@@ -33,7 +33,7 @@ classdef Persistor < symphonyui.core.CoreObject
             cdev = obj.tryCoreWithReturn(@()obj.cobj.AddDevice(name, manufacturer));
             d = symphonyui.core.persistent.Device(cdev);
         end
-        
+
         function d = device(obj, name, manufacturer)
             cdev = obj.tryCoreWithReturn(@()obj.cobj.Device(name, manufacturer));
             d = symphonyui.core.persistent.Device(cdev);
@@ -50,7 +50,7 @@ classdef Persistor < symphonyui.core.CoreObject
                 parentType = [];
             else
                 cparent = parent.cobj;
-                parentType = parent.getType();
+                parentType = parent.getDescriptionType();
             end
             allowableParentTypes = description.getAllowableParentTypes();
             if ~isempty(allowableParentTypes) && ~any(cellfun(@(t)isequal(t, parentType), allowableParentTypes))
@@ -75,7 +75,7 @@ classdef Persistor < symphonyui.core.CoreObject
             if isempty(parent)
                 parentType = [];
             else
-                parentType = parent.getType();
+                parentType = parent.getDescriptionType();
             end
             allowableParentTypes = description.getAllowableParentTypes();
             if ~isempty(allowableParentTypes) && ~any(cellfun(@(t)isequal(t, parentType), allowableParentTypes))
@@ -138,14 +138,14 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
     end
-    
+
     methods (Static)
-        
+
         function p = newPersistor(cobj, description)
             symphonyui.core.persistent.Experiment.newExperiment(cobj.Experiment, description);
             p = symphonyui.core.Persistor(cobj);
         end
-        
+
     end
 
 end

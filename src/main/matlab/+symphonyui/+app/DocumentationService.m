@@ -29,7 +29,7 @@ classdef DocumentationService < handle
         function d = getAvailableExperimentDescriptions(obj)
             d = obj.classRepository.get('symphonyui.core.persistent.descriptions.ExperimentDescription');
         end
-        
+
         function p = getFilePath(obj, name, location)
             p = obj.persistorFactory.getPath(name, location);
         end
@@ -95,7 +95,7 @@ classdef DocumentationService < handle
             if isempty(parent)
                 parentType = [];
             else
-                parentType = parent.getType();
+                parentType = parent.getDescriptionType();
             end
             if ~any(strcmp(description, obj.getAvailableSourceDescriptions(parentType)))
                 error([description ' is not an available source description for the current parent type']);
@@ -128,7 +128,7 @@ classdef DocumentationService < handle
             if isempty(parent)
                 parentType = [];
             else
-                parentType = parent.getType();
+                parentType = parent.getDescriptionType();
             end
             if ~any(strcmp(description, obj.getAvailableEpochGroupDescriptions(parentType)))
                 error([description ' is not an available epoch group description for the current parent type']);
@@ -146,7 +146,7 @@ classdef DocumentationService < handle
         function g = getCurrentEpochGroup(obj)
             g = obj.session.getPersistor().currentEpochGroup;
         end
-        
+
         function b = getCurrentEpochBlock(obj)
             b = obj.session.getPersistor().currentEpochBlock;
         end

@@ -35,7 +35,7 @@ classdef AddSourcePresenter < appbox.Presenter
 
         function bind(obj)
             bind@appbox.Presenter(obj);
-            
+
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'SelectedParent', @obj.onViewSelectedParent);
@@ -60,7 +60,7 @@ classdef AddSourcePresenter < appbox.Presenter
             obj.view.setParentList(names, values);
             obj.view.enableSelectParent(numel(sources) > 0);
         end
-        
+
         function selectParent(obj, parent)
             obj.view.setSelectedParent(parent);
             obj.populateDescriptionList();
@@ -72,7 +72,7 @@ classdef AddSourcePresenter < appbox.Presenter
             if isempty(parent)
                 parentType = [];
             else
-                parentType = parent.getType();
+                parentType = parent.getDescriptionType();
             end
             classNames = obj.documentationService.getAvailableSourceDescriptions(parentType);
 
@@ -125,11 +125,11 @@ classdef AddSourcePresenter < appbox.Presenter
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
         end
-        
+
         function updateStateOfControls(obj)
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
-            
+
             obj.view.enableAdd(hasDescription);
         end
 

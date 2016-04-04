@@ -49,7 +49,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
         function bind(obj)
             bind@appbox.Presenter(obj);
-            
+
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Begin', @obj.onViewSelectedBegin);
@@ -67,24 +67,24 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             else
                 parents = flip([{currentGroup} currentGroup.getAncestors()]);
             end
-            
+
             names = cell(1, numel(parents));
             for i = 1:numel(parents)
                 names{i} = parents{i}.label;
             end
             names = [{'(None)'}, names];
             values = [{[]}, parents];
-            
+
             obj.view.setParentList(names, values);
             obj.view.enableSelectParent(numel(parents) > 0);
         end
-        
+
         function selectParent(obj, parent)
             obj.view.setSelectedParent(parent);
             obj.populateDescriptionList();
             obj.updateStateOfControls();
         end
-        
+
         function populateSourceList(obj)
             sources = obj.documentationService.getExperiment().allSources();
 
@@ -92,7 +92,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             for i = 1:numel(sources)
                 names{i} = sources{i}.label;
             end
-            
+
             if numel(sources) > 0
                 obj.view.setSourceList(names, sources);
             else
@@ -100,7 +100,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             end
             obj.view.enableSelectSource(numel(sources) > 0);
         end
-        
+
         function selectSource(obj, source)
             obj.view.setSelectedSource(source);
         end
@@ -110,7 +110,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             if isempty(parent)
                 parentType = [];
             else
-                parentType = parent.getType();
+                parentType = parent.getDescriptionType();
             end
             classNames = obj.documentationService.getAvailableEpochGroupDescriptions(parentType);
 
@@ -141,7 +141,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
         function onViewSelectedBegin(obj, ~, ~)
             obj.view.update();
-            
+
             parent = obj.view.getSelectedParent();
             source = obj.view.getSelectedSource();
             description = obj.view.getSelectedDescription();
@@ -163,13 +163,13 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
         end
-        
+
         function updateStateOfControls(obj)
             sourceList = obj.view.getSourceList();
             hasSource = ~isempty(sourceList{1});
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
-            
+
             obj.view.enableBegin(hasSource && hasDescription);
         end
 

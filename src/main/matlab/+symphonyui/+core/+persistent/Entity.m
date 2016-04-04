@@ -7,7 +7,7 @@ classdef Entity < symphonyui.core.CoreObject
     end
 
     properties (Constant)
-        TYPE_RESOURCE_NAME = 'type'
+        DESCRIPTION_TYPE_RESOURCE_NAME = 'descriptionType'
         PROPERTY_DESCRIPTORS_RESOURCE_NAME = 'propertyDescriptors'
     end
 
@@ -100,7 +100,7 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function tf = removeResource(obj, name)
-            if strcmp(name, obj.TYPE_RESOURCE_NAME)
+            if strcmp(name, obj.DESCRIPTION_TYPE_RESOURCE_NAME)
                 error('Cannot remove type resource');
             end
             if strcmp(name, obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME)
@@ -126,9 +126,9 @@ classdef Entity < symphonyui.core.CoreObject
             n = symphonyui.core.persistent.Note(cnote);
         end
         
-        function t = getType(obj)
-            if any(strcmp(obj.getResourceNames(), obj.TYPE_RESOURCE_NAME))
-                t = obj.getResource(obj.TYPE_RESOURCE_NAME);
+        function t = getDescriptionType(obj)
+            if any(strcmp(obj.getResourceNames(), obj.DESCRIPTION_TYPE_RESOURCE_NAME))
+                t = obj.getResource(obj.DESCRIPTION_TYPE_RESOURCE_NAME);
             else
                 t = [];
             end
@@ -150,7 +150,7 @@ classdef Entity < symphonyui.core.CoreObject
         function e = newEntity(cobj, description)
             e = symphonyui.core.persistent.Entity(cobj);
 
-            e.addResource(e.TYPE_RESOURCE_NAME, description.getType());
+            e.addResource(e.DESCRIPTION_TYPE_RESOURCE_NAME, description.getType());
 
             descriptors = description.getPropertyDescriptors();
             for i = 1:numel(descriptors)
