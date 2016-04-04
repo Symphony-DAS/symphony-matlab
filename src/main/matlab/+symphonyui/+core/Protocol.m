@@ -63,6 +63,13 @@ classdef Protocol < handle
             p = symphonyui.core.ProtocolPreset(name, class(obj), obj.getProperties());
         end
         
+        function applyPreset(obj, preset)
+            if ~isempty(preset.protocolId) && ~strcmp(preset.protocolId, class(obj))
+                error('Protocol ID mismatch');                
+            end
+            obj.setProperties(preset.propertyMap);
+        end
+        
         function m = getProperties(obj)
             m = obj.getPropertyDescriptors().toMap();
         end

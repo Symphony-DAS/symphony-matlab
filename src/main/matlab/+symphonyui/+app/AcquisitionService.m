@@ -143,7 +143,9 @@ classdef AcquisitionService < handle
                 obj.selectProtocol(preset.protocolId);
             end
             if ~isequal(preset.propertyMap, obj.session.protocol.getProperties())
-                obj.setProtocolProperties(preset.propertyMap);
+                obj.session.protocol.applyPreset(preset);
+                obj.session.protocol.closeFigures();
+                notify(obj, 'SetProtocolProperties');
             end
         end
 
