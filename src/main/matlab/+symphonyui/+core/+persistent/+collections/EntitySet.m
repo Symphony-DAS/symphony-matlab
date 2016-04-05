@@ -1,47 +1,47 @@
 classdef EntitySet < symphonyui.core.collections.ObjectSet
-    
+
     properties (SetAccess = private)
         keywords
         notes
     end
-    
+
     methods
-        
+
         function obj = EntitySet(entities)
             if nargin < 1 || isempty(entities)
                 entities = {};
             end
             obj@symphonyui.core.collections.ObjectSet(entities);
         end
-        
+
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.EntityPreset(name, obj.getType(), obj.getDescriptionType(), obj.getProperties());
+            p = symphonyui.core.persistent.EntityPreset(name, obj.getEntityType(), obj.getDescriptionType(), obj.getProperties());
         end
-        
+
         function applyPreset(obj, preset)
             for i = 1:numel(obj.objects)
                 obj.objects{i}.applyPreset(preset);
             end
         end
-        
+
         function addProperty(obj, key, value, varargin)
             for i = 1:numel(obj.objects)
                 obj.objects{i}.addProperty(key, value, varargin{:});
             end
         end
-        
+
         function setProperties(obj, map)
             for i = 1:numel(obj.objects)
                 obj.objects{i}.setProperties(map);
             end
         end
-        
+
         function setProperty(obj, key, value)
             for i = 1:numel(obj.objects)
                 obj.objects{i}.setProperty(key, value);
             end
         end
-        
+
         function m = getProperties(obj)
             if isempty(obj.objects)
                 m = containers.Map();
@@ -52,7 +52,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 m = obj.intersectMaps(m, obj.objects{i}.getProperties());
             end
         end
-        
+
         function tf = removeProperty(obj, key)
             tf = false;
             for i = 1:numel(obj.objects)
@@ -60,7 +60,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 tf = tf || removed;
             end
         end
-        
+
         function d = getPropertyDescriptors(obj)
             if isempty(obj.objects)
                 d = symphonyui.core.PropertyDescriptor.empty();
@@ -71,7 +71,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 d = obj.intersect(d, obj.objects{i}.getPropertyDescriptors());
             end
         end
-        
+
         function k = get.keywords(obj)
             if isempty(obj.objects)
                 k = {};
@@ -82,7 +82,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 k = obj.intersect(k, obj.objects{i}.keywords);
             end
         end
-        
+
         function tf = addKeyword(obj, keyword)
             tf = false;
             for i = 1:numel(obj.objects)
@@ -90,7 +90,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 tf = tf || added;
             end
         end
-        
+
         function tf = removeKeyword(obj, keyword)
             tf = false;
             for i = 1:numel(obj.objects)
@@ -98,7 +98,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 tf = tf || removed;
             end
         end
-        
+
         function n = get.notes(obj)
             if isempty(obj.objects)
                 n = {};
@@ -109,29 +109,28 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 n = obj.intersect(n, obj.objects{i}.notes);
             end
         end
-        
+
         function n = addNote(obj, text, time)
             n = [];
             for i = 1:numel(obj.objects)
                 n = obj.objects{i}.addNote(text, time);
             end
         end
-        
-        function t = getType(obj)
+
+        function t = getEntityType(obj)
             t = [];
             if ~isempty(obj.objects) && all(cellfun(@(e)isequal(class(e), class(obj.objects{1})), obj.objects))
                 t = class(obj.objects{1});
             end
         end
-        
+
         function t = getDescriptionType(obj)
             t = [];
             if ~isempty(obj.objects) && all(cellfun(@(e)isequal(e.getDescriptionType(), obj.objects{1}.getDescriptionType()), obj.objects))
                 t = obj.objects{1}.getDescriptionType();
             end
         end
-        
-    end
-    
-end
 
+    end
+
+end

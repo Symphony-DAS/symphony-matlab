@@ -23,7 +23,7 @@ classdef AddEntityPresetPresenter < appbox.Presenter
     end
 
     methods (Access = protected)
-        
+
         function willGo(obj)
             obj.populateEntityType();
             obj.populateDescriptionType();
@@ -35,22 +35,22 @@ classdef AddEntityPresetPresenter < appbox.Presenter
 
         function bind(obj)
             bind@appbox.Presenter(obj);
-            
+
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Add', @obj.onViewSelectedAdd);
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
-        
+
     end
 
     methods (Access = private)
-        
+
         function populateEntityType(obj)
-            type = obj.entitySet.getType();
+            type = obj.entitySet.getEntityType();
             obj.view.setEntityType(type);
         end
-        
+
         function populateDescriptionType(obj)
             type = obj.entitySet.getDescriptionType();
             obj.view.setDescriptionType(type);
@@ -67,7 +67,7 @@ classdef AddEntityPresetPresenter < appbox.Presenter
 
         function onViewSelectedAdd(obj, ~, ~)
             obj.view.update();
-            
+
             name = obj.view.getName();
             try
                 preset = obj.entitySet.createPreset(name);
@@ -77,7 +77,7 @@ classdef AddEntityPresetPresenter < appbox.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-            
+
             obj.result = preset;
             obj.stop();
         end

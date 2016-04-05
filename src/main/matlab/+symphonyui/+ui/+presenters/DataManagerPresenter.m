@@ -124,11 +124,11 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.addEpochGroupNode(groups{i});
             end
             obj.view.expandNode(obj.view.getEpochGroupsFolderNode());
-            
+
             obj.view.setSelectedNodes(obj.uuidToNode(experiment.uuid));
             obj.populateDetailsForExperiments(experiment);
         end
-        
+
         function onViewSelectedConfigureDevices(obj, ~, ~)
             presenter = symphonyui.ui.presenters.DevicesPresenter(obj.configurationService);
             presenter.goWaitStop();
@@ -153,7 +153,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.resetSelectedPreset();
             obj.view.update();
             obj.view.setSelectedNodes(node);
-            
+
             obj.populateDetailsForSources(source);
             obj.updateStateOfControls();
         end
@@ -182,6 +182,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setCardSelection(obj.view.SOURCE_CARD);
 
             obj.populateCommonDetailsForEntitySet(sourceSet);
+            obj.detailedEntitySet = sourceSet;
         end
 
         function onViewSetSourceLabel(obj, ~, ~)
@@ -195,10 +196,10 @@ classdef DataManagerPresenter < appbox.Presenter
                 return;
             end
         end
-        
+
         function setSourceLabel(obj, sourceSet, label)
             sourceSet.label = label;
-            
+
             for i = 1:sourceSet.size
                 source = sourceSet.get(i);
 
@@ -224,11 +225,12 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setCardSelection(obj.view.EXPERIMENT_CARD);
 
             obj.populateCommonDetailsForEntitySet(experimentSet);
+            obj.detailedEntitySet = experimentSet;
         end
 
         function onViewSetExperimentPurpose(obj, ~, ~)
             experimentSet = obj.detailedEntitySet;
-            
+
             try
                 obj.setExperimentPurpose(experimentSet, obj.view.getExperimentPurpose());
             catch x
@@ -237,10 +239,10 @@ classdef DataManagerPresenter < appbox.Presenter
                 return;
             end
         end
-        
+
         function setExperimentPurpose(obj, experimentSet, purpose)
             experimentSet.purpose = purpose;
-            
+
             for i = 1:experimentSet.size
                 experiment = experimentSet.get(i);
 
@@ -276,7 +278,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.update();
             obj.view.setSelectedNodes(node);
             obj.view.setEpochGroupNodeCurrent(node);
-            
+
             obj.populateDetailsForEpochGroups(group);
             obj.updateStateOfControls();
         end
@@ -301,7 +303,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setSelectedNodes(node);
             obj.view.collapseNode(node);
             obj.view.setEpochGroupNodeNormal(node);
-            
+
             obj.populateDetailsForEpochGroups(group);
             obj.updateStateOfControls();
         end
@@ -361,19 +363,23 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setCardSelection(obj.view.EPOCH_GROUP_CARD);
 
             obj.populateCommonDetailsForEntitySet(groupSet);
+            obj.detailedEntitySet = groupSet;
         end
 
         function onViewSetEpochGroupLabel(obj, ~, ~)
             groupSet = obj.detailedEntitySet;
 
-            label = obj.view.getEpochGroupLabel();
             try
-                groupSet.label = label;
+                obj.setEpochGroupLabel(groupSet, obj.view.getEpochGroupLabel());
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
+        end
+
+        function setEpochGroupLabel(obj, groupSet, label)
+            groupSet.label = label;
 
             for i = 1:groupSet.size
                 group = groupSet.get(i);
@@ -426,6 +432,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
 
             obj.populateCommonDetailsForEntitySet(blockSet);
+            obj.detailedEntitySet = blockSet;
         end
 
         function n = addEpochNode(obj, epoch)
@@ -464,6 +471,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setCardSelection(obj.view.EPOCH_CARD);
 
             obj.populateCommonDetailsForEntitySet(epochSet);
+            obj.detailedEntitySet = epochSet;
         end
 
         function onViewSelectedEpochSignal(obj, ~, ~)
@@ -501,13 +509,14 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.setCardSelection(obj.view.EMPTY_CARD);
 
             obj.populateCommonDetailsForEntitySet(emptySet);
+            obj.detailedEntitySet = emptySet;
         end
 
         function onViewSelectedNodes(obj, ~, ~)
             obj.view.stopEditingProperties();
             obj.view.resetSelectedPreset();
             obj.view.update();
-            
+
             obj.populateDetailsForNodes(obj.view.getSelectedNodes());
         end
 
@@ -549,7 +558,6 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.populateKeywordsForEntitySet(entitySet);
             obj.populateNotesForEntitySet(entitySet);
             obj.populatePresetsForEntitySet(entitySet);
-            obj.detailedEntitySet = entitySet;
         end
 
         function populatePropertiesForEntitySet(obj, entitySet)
@@ -611,7 +619,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.populatePropertiesForEntitySet(obj.detailedEntitySet);
             end
         end
-        
+
         function onViewSelectedShowHidePropertyDescription(obj, ~, ~)
             tf = obj.view.getShowPropertyDescription();
             obj.view.setShowPropertyDescription(~tf);
@@ -619,11 +627,11 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function populateKeywordsForEntitySet(obj, entitySet)
             keywords = entitySet.keywords;
-            
+
             data = cell(numel(keywords), 1);
             for i = 1:numel(keywords)
                 data{i, 1} = keywords{i};
-            end            
+            end
             obj.view.setKeywords(data);
         end
 
@@ -673,42 +681,42 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.addNote(strtrim(datestr(note.time, 14)), note.text);
             end
         end
-        
+
         function populatePresetsForEntitySet(obj, entitySet)
-            presets = obj.documentationService.getAvailableEntityPresets(entitySet.getType(), entitySet.getDescriptionType());
+            presets = obj.documentationService.getAvailableEntityPresets(entitySet.getEntityType(), entitySet.getDescriptionType());
             obj.view.setPresetList(presets, presets);
         end
-        
+
         function onViewSelectedPreset(obj, ~, ~)
             entitySet = obj.detailedEntitySet;
-            
+
             name = obj.view.getSelectedPreset();
             try
-                preset = obj.documentationService.getEntityPreset(name, entitySet.getType(), entitySet.getDescriptionType());
+                preset = obj.documentationService.getEntityPreset(name, entitySet.getEntityType(), entitySet.getDescriptionType());
                 entitySet.applyPreset(preset);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
-            
+
             obj.populateDetailsForNodes(obj.view.getSelectedNodes());
         end
-        
+
         function onViewSelectedAddPreset(obj, ~, ~)
             presenter = symphonyui.ui.presenters.AddEntityPresetPresenter(obj.documentationService, obj.detailedEntitySet);
             presenter.goWaitStop();
         end
-        
+
         function onServiceAddedEntityPreset(obj, ~, ~)
             obj.populatePresetsForEntitySet(obj.detailedEntitySet);
         end
-        
+
         function onViewSelectedManagePresets(obj, ~, ~)
             presenter = symphonyui.ui.presenters.EntityPresetsPresenter(obj.documentationService, obj.detailedEntitySet);
             presenter.goWaitStop();
         end
-        
+
         function onServiceRemovedEntityPreset(obj, ~, ~)
             obj.populatePresetsForEntitySet(obj.detailedEntitySet);
         end
@@ -756,7 +764,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
             obj.view.removeNode(node);
             obj.uuidToNode.remove(uuid);
-            
+
             obj.populateDetailsForNodes(obj.view.getSelectedNodes());
             obj.updateStateOfControls();
         end
@@ -785,12 +793,12 @@ classdef DataManagerPresenter < appbox.Presenter
             controllerState = obj.acquisitionService.getControllerState();
             isStopped = controllerState.isStopped();
             currentGroup = obj.documentationService.getCurrentEpochGroup();
-            
+
             enableConfigureDevices = isStopped;
             enableAddSource = isStopped;
             enableBeginEpochGroup = hasSource && isStopped;
             enableEndEpochGroup = hasEpochGroup && isStopped;
-            
+
             obj.view.enableConfigureDevicesTool(enableConfigureDevices);
             obj.view.enableAddSourceTool(enableAddSource);
             for i = 1:numel(sources)

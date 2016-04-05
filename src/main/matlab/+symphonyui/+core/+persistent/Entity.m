@@ -20,14 +20,14 @@ classdef Entity < symphonyui.core.CoreObject
         function i = get.uuid(obj)
             i = char(obj.cobj.UUID.ToString());
         end
-        
+
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.EntityPreset(name, obj.getType(), obj.getDescriptionType(), obj.getProperties());
+            p = symphonyui.core.persistent.EntityPreset(name, obj.getEntityType(), obj.getDescriptionType(), obj.getProperties());
         end
-        
+
         function applyPreset(obj, preset)
             if ~isempty(preset.entityType) && ~strcmp(preset.entityType, class(obj))
-                error('Entity type mismatch');                
+                error('Entity type mismatch');
             end
             if ~isempty(preset.descriptionType) && ~strcmp(preset.descriptionType, obj.getDescriptionType())
                 error('Description type mismatch');
@@ -44,7 +44,7 @@ classdef Entity < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
             obj.updatePropertyDescriptorsResource(descriptors);
         end
-        
+
         function setProperties(obj, map)
             exception = [];
             names = map.keys;
@@ -77,11 +77,11 @@ classdef Entity < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
             obj.updatePropertyDescriptorsResource(descriptors);
         end
-        
+
         function m = getProperties(obj)
             m = obj.getPropertyDescriptors().toMap();
         end
-        
+
         function v = getProperty(obj, name)
             descriptors = obj.getPropertyDescriptors();
             d = descriptors.findByName(name);
@@ -162,7 +162,7 @@ classdef Entity < symphonyui.core.CoreObject
             cnote = obj.tryCoreWithReturn(@()obj.cobj.AddNote(dto, text));
             n = symphonyui.core.persistent.Note(cnote);
         end
-        
+
         function t = getDescriptionType(obj)
             if any(strcmp(obj.getResourceNames(), obj.DESCRIPTION_TYPE_RESOURCE_NAME))
                 t = obj.getResource(obj.DESCRIPTION_TYPE_RESOURCE_NAME);
@@ -172,14 +172,14 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
     end
-    
+
     methods (Access = private)
-        
+
         function updatePropertyDescriptorsResource(obj, descriptors)
             obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME));
             obj.addResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
         end
-        
+
     end
 
     methods (Static)
