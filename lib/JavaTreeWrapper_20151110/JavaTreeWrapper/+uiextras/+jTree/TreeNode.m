@@ -396,6 +396,8 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
                 % Add this node to the parent node
                 nObj.Tree.insertNode(nObj, newParent, ChildIdx);
                 
+                
+                
             end %if isempty(newParent)
             
             % This internal function updates the tree reference in the

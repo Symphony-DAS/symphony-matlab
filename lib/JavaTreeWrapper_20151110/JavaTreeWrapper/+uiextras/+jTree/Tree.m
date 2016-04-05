@@ -334,6 +334,10 @@ classdef Tree < hgsetget
             tObj.CBEnabled = true;
         end
         
+        function repaint(tObj)
+            tObj.jScrollPane.repaint();
+        end
+        
         function reload(tObj,nObj)
             if ~isempty([tObj.jModel]) && ishandle(nObj.jNode)
                 tObj.CBEnabled = false;
@@ -346,6 +350,7 @@ classdef Tree < hgsetget
             if ~isempty([tObj.jModel]) && ishandle(nObj.jNode)
                 tObj.CBEnabled = false;
                 tObj.jModel.nodeChanged(nObj.jNode);
+                tObj.repaint();
                 tObj.CBEnabled = true;
             end
         end
