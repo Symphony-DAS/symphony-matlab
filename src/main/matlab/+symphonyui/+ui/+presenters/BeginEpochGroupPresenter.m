@@ -52,6 +52,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
+            obj.addListener(v, 'SelectedParent', @obj.onViewSelectedParent);
             obj.addListener(v, 'Begin', @obj.onViewSelectedBegin);
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
@@ -106,7 +107,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
         end
 
         function populateDescriptionList(obj)
-            parent = obj.documentationService.getCurrentEpochGroup();
+            parent = obj.view.getSelectedParent();
             if isempty(parent)
                 parentType = [];
             else
@@ -137,6 +138,10 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
                 case 'escape'
                     obj.onViewSelectedCancel();
             end
+        end
+        
+        function onViewSelectedParent(obj, ~, ~)
+            obj.selectParent(obj.view.getSelectedParent());
         end
 
         function onViewSelectedBegin(obj, ~, ~)
