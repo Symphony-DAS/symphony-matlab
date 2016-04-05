@@ -696,7 +696,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
         
         function onViewSelectedManagePresets(obj, ~, ~)
-            presenter = symphonyui.ui.presenters.EntityPresetsPresenter();
+            presenter = symphonyui.ui.presenters.EntityPresetsPresenter(obj.documentationService, obj.detailedEntitySet);
             presenter.goWaitStop();
         end
         
