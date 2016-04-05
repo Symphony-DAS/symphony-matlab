@@ -188,13 +188,17 @@ classdef DataManagerPresenter < appbox.Presenter
             sourceSet = obj.detailedEntitySet;
 
             try
-                sourceSet.label = obj.view.getSourceLabel();
+                obj.setSourceLabel(sourceSet, obj.view.getSourceLabel());
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
-
+        end
+        
+        function setSourceLabel(obj, sourceSet, label)
+            sourceSet.label = label;
+            
             for i = 1:sourceSet.size
                 source = sourceSet.get(i);
 
@@ -224,16 +228,19 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function onViewSetExperimentPurpose(obj, ~, ~)
             experimentSet = obj.detailedEntitySet;
-
-            purpose = obj.view.getExperimentPurpose();
+            
             try
-                experimentSet.purpose = purpose;
+                obj.setExperimentPurpose(experimentSet, obj.view.getExperimentPurpose());
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
             end
-
+        end
+        
+        function setExperimentPurpose(obj, experimentSet, purpose)
+            experimentSet.purpose = purpose;
+            
             for i = 1:experimentSet.size
                 experiment = experimentSet.get(i);
 
@@ -533,7 +540,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 case EntityNodeType.EPOCH
                     obj.populateDetailsForEpochs(entities);
                 otherwise
-                    obj.populateDetailsForEmpty(strjoin(arrayfun(@(t)char(t), type, 'UniformOutput', false), ', '));
+                    obj.populateDetailsForEmpty(char(type));
             end
         end
 
@@ -673,10 +680,12 @@ classdef DataManagerPresenter < appbox.Presenter
         end
         
         function onViewSelectedPreset(obj, ~, ~)
+            entitySet = obj.detailedEntitySet;
+            
             name = obj.view.getSelectedPreset();
             try
-                preset = obj.documentationService.getEntityPreset(name, obj.detailedEntitySet.getType(), obj.detailedEntitySet.getDescriptionType());
-                obj.detailedEntitySet.applyPreset(preset);
+                preset = obj.documentationService.getEntityPreset(name, entitySet.getType(), entitySet.getDescriptionType());
+                entitySet.applyPreset(preset);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
