@@ -905,6 +905,10 @@ classdef DataManagerView < appbox.View
             obj.notesTab.table.addRow({date, text});
         end
         
+        function enableSelectPreset(obj, tf)
+            set(obj.presetPopupMenu, 'Enable', appbox.onOff(tf));
+        end
+        
         function setPresetList(obj, names, values)
             set(obj.presetPopupMenu, 'String', [{'Presets...'} names {'Add...', 'Manage...'}]);
             set(obj.presetPopupMenu, 'Values', [{'Presets...'} values {'Add...', 'Manage...'}]);

@@ -660,6 +660,7 @@ classdef DataManagerPresenter < appbox.Presenter
         function populatePresetsForEntitySet(obj, entitySet)
             presets = obj.documentationService.getAvailableEntityPresets(entitySet.getEntityType(), entitySet.getDescriptionType());
             obj.view.setPresetList(presets, presets);
+            obj.view.enableSelectPreset(entitySet.size == 1);
         end
 
         function onViewSelectedPreset(obj, ~, ~)
