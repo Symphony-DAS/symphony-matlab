@@ -1,11 +1,42 @@
 classdef Presets < appbox.Settings
     
-    properties
+    properties (SetAccess = private)
         protocolPresets
         entityPresets
     end
     
     methods
+        
+        function addProtocolPreset(obj, preset)
+            presets = obj.protocolPresets;
+            if presets.isKey(preset.name)
+                error([preset.name ' is already a protocol preset']);
+            end
+            presets(preset.name) = preset;
+            obj.protocolPresets = presets;
+        end
+        
+        function removeProtocolPreset(obj, name)
+            presets = obj.protocolPresets;
+            if ~presets.isKey(name)
+                error([name ' is not an available protocol preset']);
+            end
+            presets.remove(name);
+            obj.protocolPresets = presets;
+        end
+        
+        function p = getProtocolPreset(obj, name)
+            presets = obj.protocolPresets;
+            if ~presets.isKey(name)
+                error([name ' is not an available protocol preset']);
+            end
+            p = presets(name);
+        end
+        
+        function n = getAvailableProtocolPresetNames(obj)
+            presets = obj.protocolPresets;
+            n = presets.keys;
+        end
         
         function p = get.protocolPresets(obj)
             p = containers.Map();
@@ -25,6 +56,48 @@ classdef Presets < appbox.Settings
                 structs(keys{i}) = preset.toStruct();
             end
             obj.put('protocolPresets', structs);
+        end
+        
+        function addEntityPreset(obj, preset)
+            presets = obj.entityPresets;
+            key = [char(preset.entityType) ':' char(preset.descriptionType) ':' preset.name];
+            if presets.isKey(key)
+                error([preset.name ' is already an entity preset']);
+            end
+            presets(key) = preset;
+            obj.entityPresets = presets;
+        end
+        
+        function removeEntityPreset(obj, name, entityType, descriptionType)
+            presets = obj.entityPresets;
+            key = [char(entityType) ':' char(descriptionType) ':' name];
+            if ~presets.isKey(key)
+                error([name ' is not an available entity preset']);
+            end
+            presets.remove(key);
+            obj.entityPresets = presets;
+        end
+        
+        function p = getEntityPreset(obj, name, entityType, descriptionType)
+            presets = obj.entityPresets;
+            key = [char(entityType) ':' char(descriptionType) ':' name];
+            if ~presets.isKey(key)
+                error([name ' is not an available entity preset']);
+            end
+            p = presets(key);
+        end
+        
+        function n = getAvailableEntityPresetNames(obj, entityType, descriptionType)
+            n = {};
+            presets = obj.entityPresets;
+            prefix = [char(entityType) ':' char(descriptionType) ':'];
+            keys = presets.keys;
+            for i = 1:numel(keys)
+                key = keys{i};
+                if strncmp(prefix, key, length(prefix))
+                    n{end + 1} = key(length(prefix)+1:end); %#ok<AGROW>
+                end
+            end
         end
         
         function p = get.entityPresets(obj)

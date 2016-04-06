@@ -121,24 +121,15 @@ classdef AcquisitionService < handle
         end
 
         function p = getAvailableProtocolPresets(obj)
-            presets = obj.session.presets.protocolPresets;
-            p = presets.keys;
+            p = obj.session.presets.getAvailableProtocolPresetNames();
         end
 
         function p = getProtocolPreset(obj, name)
-            presets = obj.session.presets.protocolPresets;
-            if ~presets.isKey(name)
-                error([name ' is not an available protocol preset']);
-            end
-            p = presets(name);
+            p = obj.session.presets.getProtocolPreset(name);
         end
 
         function applyProtocolPreset(obj, name)
-            presets = obj.session.presets.protocolPresets;
-            if ~presets.isKey(name)
-                error([name ' is not an available protocol preset']);
-            end
-            preset = presets(name);
+            preset = obj.session.presets.getProtocolPreset(name);
             if ~strcmp(preset.protocolId, class(obj.session.protocol))
                 obj.selectProtocol(preset.protocolId);
             end
@@ -150,25 +141,15 @@ classdef AcquisitionService < handle
         end
 
         function p = addProtocolPreset(obj, name)
-            presets = obj.session.presets.protocolPresets;
-            if presets.isKey(name)
-                error([name ' is already a protocol preset']);
-            end
             p = obj.session.protocol.createPreset(name);
-            presets(name) = p;
-            obj.session.presets.protocolPresets = presets;
+            obj.session.presets.addProtocolPreset(p);
             obj.session.presets.save();
             notify(obj, 'AddedProtocolPreset', symphonyui.app.AppEventData(p));
         end
 
         function removeProtocolPreset(obj, name)
-            presets = obj.session.presets.protocolPresets;
-            if ~presets.isKey(name)
-                error([name ' is not an available protocol preset']);
-            end
-            p = presets(name);
-            presets.remove(name);
-            obj.session.presets.protocolPresets = presets;
+            p = obj.session.presets.getProtocolPreset(name);
+            obj.session.presets.removeProtocolPreset(name);
             obj.session.presets.save();
             notify(obj, 'RemovedProtocolPreset', symphonyui.app.AppEventData(p));
         end
