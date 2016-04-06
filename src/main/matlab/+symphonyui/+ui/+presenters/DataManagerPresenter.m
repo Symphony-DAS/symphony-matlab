@@ -573,7 +573,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function onViewSelectedRemoveProperty(obj, ~, ~)
             key = obj.view.getSelectedProperty();
-            if isempty(key)
+            if ~ischar(key)
                 return;
             end
             
@@ -619,7 +619,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function onViewSelectedRemoveKeyword(obj, ~, ~)
             keyword = obj.view.getSelectedKeyword();
-            if isempty(keyword)
+            if ~ischar(keyword)
                 return;
             end
             
