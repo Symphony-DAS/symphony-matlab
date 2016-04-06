@@ -727,24 +727,33 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function onViewSelectedDeleteEntity(obj, ~, ~)
             nodes = obj.view.getSelectedNodes();
-            assert(numel(nodes) == 1, 'Expected a single entity');
-
-            name = obj.view.getNodeName(nodes(1));
+            
+            names = cell(1, numel(nodes));
+            entities = cell(1, numel(nodes));
+            for i = 1:numel(nodes)
+                names{i} = obj.view.getNodeName(nodes(i));
+                entities{i} = obj.view.getNodeEntity(nodes(i));
+            end
+            
             result = obj.view.showMessage( ...
-                ['Are you sure you want to delete ''' name '''?'], ...
+                ['Are you sure you want to delete ''' strjoin(names, ',') '''?'], ...
                 'Delete Entity', ...
                 'Cancel', 'Delete');
             if ~strcmp(result, 'Delete')
                 return;
             end
 
-            entity = obj.view.getNodeEntity(nodes(1));
-            try
-                obj.documentationService.deleteEntity(entity);
-            catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-                return;
+            for i = 1:numel(entities)
+                try
+                    if isequal(entities{i}, obj.documentationService.getCurrentEpochGroup())
+                        obj.documentationService.endEpochGroup();
+                    end
+                    obj.documentationService.deleteEntity(entities{i});
+                catch x
+                    obj.log.debug(x.message, x);
+                    obj.view.showError(x.message);
+                    return;
+                end
             end
         end
 
