@@ -144,7 +144,7 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
 
         function onViewSelectedRemoveProtocolPreset(obj, ~, ~)
             name = obj.view.getSelectedProtocolPreset();
-            if isempty(name)
+            if ~ischar(name)
                 return;
             end
             try

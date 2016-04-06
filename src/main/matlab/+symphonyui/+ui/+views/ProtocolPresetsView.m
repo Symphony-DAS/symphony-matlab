@@ -190,8 +190,10 @@ function html = toDisplayName(name, protocolId)
 end
 
 function [name, protocolId] = fromDisplayName(html)
-    split = strsplit(html, {'<', '>'});
-    name = split{3};
-    protocolId = split{6};
+    split = regexprep(html, '<br>', '\n');
+    split = regexprep(split, '<.*?>', '');
+    split = strsplit(split, '\n');
+    name = split{1};
+    protocolId = split{2};
 end
 
