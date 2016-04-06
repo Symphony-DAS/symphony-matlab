@@ -47,12 +47,12 @@ classdef AddEntityPresetPresenter < appbox.Presenter
     methods (Access = private)
 
         function populateEntityType(obj)
-            type = obj.entitySet.getEntityType();
+            type = char(obj.entitySet.getEntityType());
             obj.view.setEntityType(type);
         end
 
         function populateDescriptionType(obj)
-            type = obj.entitySet.getDescriptionType();
+            type = char(obj.entitySet.getDescriptionType());
             obj.view.setDescriptionType(type);
         end
 

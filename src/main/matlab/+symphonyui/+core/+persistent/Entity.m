@@ -26,10 +26,10 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function applyPreset(obj, preset)
-            if ~isempty(preset.entityType) && ~strcmp(preset.entityType, class(obj))
+            if ~isempty(preset.entityType) && ~isequal(preset.entityType, obj.getEntityType())
                 error('Entity type mismatch');
             end
-            if ~isempty(preset.descriptionType) && ~strcmp(preset.descriptionType, obj.getDescriptionType())
+            if ~isempty(preset.descriptionType) && ~isequal(preset.descriptionType, obj.getDescriptionType())
                 error('Description type mismatch');
             end
             obj.setProperties(preset.propertyMap);
@@ -161,6 +161,10 @@ classdef Entity < symphonyui.core.CoreObject
             dto = obj.dateTimeOffsetFromDatetime(time);
             cnote = obj.tryCoreWithReturn(@()obj.cobj.AddNote(dto, text));
             n = symphonyui.core.persistent.Note(cnote);
+        end
+        
+        function t = getEntityType(obj) %#ok<MANU>
+            t = symphonyui.core.persistent.EntityType.ENTITY;
         end
 
         function t = getDescriptionType(obj)

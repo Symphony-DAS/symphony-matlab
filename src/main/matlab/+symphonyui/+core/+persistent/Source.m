@@ -20,7 +20,7 @@ classdef Source < symphonyui.core.persistent.Entity
         end
         
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.SourcePreset(name,  obj.getDescriptionType(), obj.getProperties(), obj.label);
+            p = symphonyui.core.persistent.SourcePreset(name, obj.getDescriptionType(), obj.getProperties(), obj.label);
         end
         
         function applyPreset(obj, preset)
@@ -63,6 +63,10 @@ classdef Source < symphonyui.core.persistent.Entity
 
         function e = get.experiment(obj)
             e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
+        end
+        
+        function t = getEntityType(obj) %#ok<MANU>
+            t = symphonyui.core.persistent.EntityType.SOURCE;
         end
 
     end

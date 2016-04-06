@@ -20,7 +20,7 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         end
         
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.EpochGroupPreset(name,  obj.getDescriptionType(), obj.getProperties(), obj.label);
+            p = symphonyui.core.persistent.EpochGroupPreset(name, obj.getDescriptionType(), obj.getProperties(), obj.label);
         end
         
         function applyPreset(obj, preset)
@@ -72,6 +72,10 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
 
         function e = get.experiment(obj)
             e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
+        end
+        
+        function t = getEntityType(obj) %#ok<MANU>
+            t = symphonyui.core.persistent.EntityType.EPOCH_GROUP;
         end
 
     end

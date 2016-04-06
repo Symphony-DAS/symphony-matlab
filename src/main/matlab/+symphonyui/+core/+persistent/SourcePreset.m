@@ -6,7 +6,8 @@ classdef SourcePreset < symphonyui.core.persistent.EntityPreset
     
     methods
         
-        function obj = SourcePreset(name, entityType, descriptionType, propertyMap, label)
+        function obj = SourcePreset(name, descriptionType, propertyMap, label)
+            entityType = symphonyui.core.persistent.EntityType.SOURCE;
             obj@symphonyui.core.persistent.EntityPreset(name, entityType, descriptionType, propertyMap);
             obj.label = label;
         end

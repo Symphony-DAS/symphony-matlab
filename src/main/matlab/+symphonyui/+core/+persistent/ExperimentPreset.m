@@ -6,7 +6,8 @@ classdef ExperimentPreset < symphonyui.core.persistent.EntityPreset
     
     methods
         
-        function obj = ExperimentPreset(name, entityType, descriptionType, propertyMap, purpose)
+        function obj = ExperimentPreset(name, descriptionType, propertyMap, purpose)
+            entityType = symphonyui.core.persistent.EntityType.EXPERIMENT;
             obj@symphonyui.core.persistent.EntityPreset(name, entityType, descriptionType, propertyMap);
             obj.purpose = purpose;
         end

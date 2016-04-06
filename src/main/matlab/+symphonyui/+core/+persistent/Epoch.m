@@ -49,6 +49,10 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
         function b = get.epochBlock(obj)
             b = symphonyui.core.persistent.EpochBlock(obj.cobj.EpochBlock);
         end
+        
+        function t = getEntityType(obj) %#ok<MANU>
+            t = symphonyui.core.persistent.EntityType.EPOCH;
+        end
 
     end
 

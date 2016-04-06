@@ -54,6 +54,10 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         function g = get.allEpochGroups(obj)
             g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.AllEpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
         end
+        
+        function t = getEntityType(obj) %#ok<MANU>
+            t = symphonyui.core.persistent.EntityType.EXPERIMENT;
+        end
 
     end
 

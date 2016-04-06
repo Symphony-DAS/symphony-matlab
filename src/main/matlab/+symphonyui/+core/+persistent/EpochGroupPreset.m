@@ -6,7 +6,8 @@ classdef EpochGroupPreset < symphonyui.core.persistent.EntityPreset
     
     methods
         
-        function obj = EpochGroupPreset(name, entityType, descriptionType, propertyMap, label)
+        function obj = EpochGroupPreset(name, descriptionType, propertyMap, label)
+            entityType = symphonyui.core.persistent.EntityType.EPOCH_GROUP;
             obj@symphonyui.core.persistent.EntityPreset(name, entityType, descriptionType, propertyMap);
             obj.label = label;
         end

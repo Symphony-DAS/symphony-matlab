@@ -119,8 +119,8 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
 
         function t = getEntityType(obj)
             t = [];
-            if ~isempty(obj.objects) && all(cellfun(@(e)isequal(class(e), class(obj.objects{1})), obj.objects))
-                t = class(obj.objects{1});
+            if ~isempty(obj.objects) && all(cellfun(@(e)isequal(e.getEntityType(), obj.objects{1}.getEntityType()), obj.objects))
+                t = obj.objects{1}.getEntityType();
             end
         end
 

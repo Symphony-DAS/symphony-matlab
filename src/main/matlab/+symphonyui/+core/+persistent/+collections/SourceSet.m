@@ -11,7 +11,7 @@ classdef SourceSet < symphonyui.core.persistent.collections.EntitySet
         end
 
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.SourcePreset(name, obj.getEntityType(), obj.getDescriptionType(), obj.getProperties(), obj.label);
+            p = symphonyui.core.persistent.SourcePreset(name, obj.getDescriptionType(), obj.getProperties(), obj.label);
         end
 
         function l = get.label(obj)

@@ -156,7 +156,7 @@ classdef DocumentationService < handle
         function p = getAvailableEntityPresets(obj, entityType, descriptionType)
             p = {};
             presets = obj.session.presets.entityPresets;
-            prefix = [entityType ':' descriptionType ':'];
+            prefix = [char(entityType) ':' char(descriptionType) ':'];
             keys = presets.keys;
             for i = 1:numel(keys)
                 key = keys{i};
@@ -168,7 +168,7 @@ classdef DocumentationService < handle
         
         function p = getEntityPreset(obj, name, entityType, descriptionType)
             presets = obj.session.presets.entityPresets;
-            key = [entityType ':' descriptionType ':' name];
+            key = [char(entityType) ':' char(descriptionType) ':' name];
             if ~presets.isKey(key)
                 error([name ' is not an available entity preset']);
             end
@@ -177,7 +177,7 @@ classdef DocumentationService < handle
         
         function addEntityPreset(obj, preset)
             presets = obj.session.presets.entityPresets;
-            key = [preset.entityType ':' preset.descriptionType ':' preset.name];
+            key = [char(preset.entityType) ':' char(preset.descriptionType) ':' preset.name];
             if presets.isKey(key)
                 error([preset.name ' is already an entity preset']);
             end
@@ -189,7 +189,7 @@ classdef DocumentationService < handle
         
         function removeEntityPreset(obj, name, entityType, descriptionType)
             presets = obj.session.presets.entityPresets;
-            key = [entityType ':' descriptionType ':' name];
+            key = [char(entityType) ':' char(descriptionType) ':' name];
             if ~presets.isKey(key)
                 error([name ' is not an available entity preset']);
             end
