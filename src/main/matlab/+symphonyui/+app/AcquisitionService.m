@@ -45,9 +45,9 @@ classdef AcquisitionService < handle
             end
             protocol.setRig(obj.session.rig);
             protocol.setPersistor(obj.session.persistor);
-            obj.protocolPropertyMap(class(obj.session.protocol)) =  obj.session.protocol.getProperties();
+            obj.protocolPropertyMap(class(obj.session.protocol)) =  obj.session.protocol.getPropertyMap();
             try %#ok<TRYNC>
-                protocol.setProperties(obj.protocolPropertyMap(className));
+                protocol.setPropertyMap(obj.protocolPropertyMap(className));
             end
             obj.session.protocol.close();
             obj.session.protocol = protocol;
@@ -72,8 +72,8 @@ classdef AcquisitionService < handle
             notify(obj, 'SetProtocolProperties');
         end
 
-        function setProtocolProperties(obj, map)
-            obj.session.protocol.setProperties(map);
+        function setProtocolPropertyMap(obj, map)
+            obj.session.protocol.setPropertyMap(map);
             obj.session.protocol.closeFigures();
             notify(obj, 'SetProtocolProperties');
         end
@@ -133,7 +133,7 @@ classdef AcquisitionService < handle
             if ~strcmp(preset.protocolId, class(obj.session.protocol))
                 obj.selectProtocol(preset.protocolId);
             end
-            if ~isequal(preset.propertyMap, obj.session.protocol.getProperties())
+            if ~isequal(preset.propertyMap, obj.session.protocol.getPropertyMap())
                 obj.session.protocol.applyPreset(preset);
                 obj.session.protocol.closeFigures();
                 notify(obj, 'SetProtocolProperties');

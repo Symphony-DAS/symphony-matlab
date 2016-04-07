@@ -58,23 +58,23 @@ classdef Protocol < handle
         function didSetPersistor(obj) %#ok<MANU>
 
         end
-        
+
         function p = createPreset(obj, name)
-            p = symphonyui.core.ProtocolPreset(name, class(obj), obj.getProperties());
+            p = symphonyui.core.ProtocolPreset(name, class(obj), obj.getPropertyMap());
         end
-        
+
         function applyPreset(obj, preset)
             if ~isempty(preset.protocolId) && ~strcmp(preset.protocolId, class(obj))
-                error('Protocol ID mismatch');                
+                error('Protocol ID mismatch');
             end
-            obj.setProperties(preset.propertyMap);
+            obj.setPropertyMap(preset.propertyMap);
         end
-        
-        function m = getProperties(obj)
+
+        function m = getPropertyMap(obj)
             m = obj.getPropertyDescriptors().toMap();
         end
-        
-        function setProperties(obj, map)
+
+        function setPropertyMap(obj, map)
             exception = [];
             names = map.keys;
             for i = 1:numel(names)
@@ -91,12 +91,12 @@ classdef Protocol < handle
                 throw(exception);
             end
         end
-        
+
         function v = getProperty(obj, name)
             descriptor = obj.getPropertyDescriptor(name);
             v = descriptor.value;
         end
-        
+
         function setProperty(obj, name, value)
             mpo = findprop(obj, name);
             if isempty(mpo) || ~strcmp(mpo.SetAccess, 'public')

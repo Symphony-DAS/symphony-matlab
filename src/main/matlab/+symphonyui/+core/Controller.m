@@ -40,7 +40,7 @@ classdef Controller < symphonyui.core.CoreObject
             for i = 1:numel(devs)
                 obj.tryCore(@()obj.cobj.AddDevice(devs{i}.cobj));
             end
-            
+
             obj.rig = rig;
         end
 
@@ -48,7 +48,7 @@ classdef Controller < symphonyui.core.CoreObject
             if obj.state.isPaused()
                 error('Controller is paused');
             end
-            
+
             try
                 obj.prepareRun(protocol, persistor);
                 obj.run();
@@ -56,7 +56,7 @@ classdef Controller < symphonyui.core.CoreObject
                 obj.completeRun();
                 rethrow(x);
             end
-            
+
             obj.completeRun();
         end
 
@@ -64,20 +64,20 @@ classdef Controller < symphonyui.core.CoreObject
             if ~obj.state.isPaused()
                 error('Controller not paused');
             end
-            
+
             if isempty(obj.state.isViewingPaused())
                 obj.state = symphonyui.core.ControllerState.VIEWING;
             else
                 obj.state = symphonyui.core.ControllerState.RECORDING;
             end
-            
+
             try
                 obj.run();
             catch x
                 obj.completeRun();
                 rethrow(x);
             end
-            
+
             obj.completeRun();
         end
 
@@ -117,10 +117,10 @@ classdef Controller < symphonyui.core.CoreObject
 
         function prepareRun(obj, protocol, persistor)
             import symphonyui.core.ControllerState;
-            
+
             obj.currentProtocol = protocol;
             obj.currentPersistor = persistor;
-            
+
             if isempty(persistor)
                 obj.state = ControllerState.VIEWING;
             else
@@ -132,7 +132,7 @@ classdef Controller < symphonyui.core.CoreObject
             protocol.prepareRun();
 
             if ~isempty(persistor)
-                map = protocol.getProperties();
+                map = protocol.getPropertyMap();
                 keys = map.keys;
                 for i = 1:numel(keys)
                     map(keys{i}) = obj.propertyValueFromValue(map(keys{i}));
@@ -141,12 +141,12 @@ classdef Controller < symphonyui.core.CoreObject
             end
         end
 
-        function completeRun(obj)    
+        function completeRun(obj)
             import symphonyui.core.ControllerState;
-            
+
             protocol = obj.currentProtocol;
             persistor = obj.currentPersistor;
-            
+
             if obj.state.isPausing()
                 if isempty(persistor)
                     obj.state = ControllerState.VIEWING_PAUSED;
@@ -155,11 +155,11 @@ classdef Controller < symphonyui.core.CoreObject
                 end
                 return;
             end
-            
+
             if ~isempty(persistor) && ~isempty(persistor.currentEpochBlock)
                 persistor.endEpochBlock();
             end
-            
+
             try
                 protocol.completeRun();
             catch x
@@ -168,7 +168,7 @@ classdef Controller < symphonyui.core.CoreObject
                 obj.currentPersistor = [];
                 rethrow(x);
             end
-            
+
             obj.state = ControllerState.STOPPED;
             obj.currentProtocol = [];
             obj.currentPersistor = [];
@@ -191,14 +191,14 @@ classdef Controller < symphonyui.core.CoreObject
                     obj.tryCore(@()obj.cobj.RequestStop());
                 end
             end
-            
+
             listeners(end + 1) = NetListener(obj.cobj, 'Stopped', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onStopped(obj,h,d));
             function onStopped(obj, ~, ~)
                 if obj.state.isRunning()
                     obj.state = symphonyui.core.ControllerState.STOPPING;
                 end
             end
-            
+
             listeners(end + 1) = NetListener(obj.cobj.DAQController, 'StartedHardware', 'Symphony.Core.TimeStampedEventArgs', @(h,d)onDaqControllerStartedHardware(obj, h, d));
             function onDaqControllerStartedHardware(obj, ~, ~)
                 try
@@ -231,14 +231,14 @@ classdef Controller < symphonyui.core.CoreObject
             function onDiscardedEpoch(obj, ~, ~)
                 obj.requestStop();
             end
-            
+
             try
                 obj.process();
             catch x
                 delete(listeners);
                 rethrow(x);
             end
-            
+
             delete(listeners);
         end
 

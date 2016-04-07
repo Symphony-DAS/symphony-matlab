@@ -269,7 +269,9 @@ classdef MainPresenter < appbox.Presenter
         end
 
         function closeDataManager(obj)
-            obj.dataManagerPresenter.stop();
+            if ~obj.dataManagerPresenter.isStopped()
+                obj.dataManagerPresenter.stop();
+            end
             obj.dataManagerPresenter = [];
         end
 
@@ -544,7 +546,9 @@ classdef MainPresenter < appbox.Presenter
         end
 
         function closeProtocolPresets(obj)
-            obj.protocolPresetsPresenter.stop();
+            if ~obj.protocolPresetsPresenter.isStopped()
+                obj.protocolPresetsPresenter.stop();
+            end
             obj.protocolPresetsPresenter = [];
         end
 

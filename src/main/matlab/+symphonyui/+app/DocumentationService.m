@@ -143,7 +143,7 @@ classdef DocumentationService < handle
             if carryForwardProperties
                 allGroups = obj.getExperiment().allEpochGroups;
                 if ~isempty(allGroups)
-                    propertyMap = allGroups{end}.getProperties();
+                    propertyMap = allGroups{end}.getPropertyMap();
                 end
             end
             g = obj.session.getPersistor().beginEpochGroup(source, constructor(), propertyMap);
@@ -162,21 +162,21 @@ classdef DocumentationService < handle
         function b = getCurrentEpochBlock(obj)
             b = obj.session.getPersistor().currentEpochBlock;
         end
-        
+
         function p = getAvailableEntityPresets(obj, entityType, descriptionType)
             p = obj.session.presets.getAvailableEntityPresetNames(entityType, descriptionType);
         end
-        
+
         function p = getEntityPreset(obj, name, entityType, descriptionType)
             p = obj.session.presets.getEntityPreset(name, entityType, descriptionType);
         end
-        
+
         function addEntityPreset(obj, preset)
             obj.session.presets.addEntityPreset(preset);
             obj.session.presets.save();
             notify(obj, 'AddedEntityPreset', symphonyui.app.AppEventData(preset));
         end
-        
+
         function removeEntityPreset(obj, name, entityType, descriptionType)
             p = obj.session.presets.getEntityPreset(name, entityType, descriptionType);
             obj.session.presets.removeEntityPreset(name, entityType, descriptionType);

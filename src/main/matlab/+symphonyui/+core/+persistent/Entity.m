@@ -22,7 +22,7 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.EntityPreset(name, obj.getEntityType(), obj.getDescriptionType(), containers.Map(), obj.getProperties());
+            p = symphonyui.core.persistent.EntityPreset(name, obj.getEntityType(), obj.getDescriptionType(), containers.Map(), obj.getPropertyMap());
         end
 
         function applyPreset(obj, preset)
@@ -32,7 +32,7 @@ classdef Entity < symphonyui.core.CoreObject
             if ~isempty(preset.descriptionType) && ~isequal(preset.descriptionType, obj.getDescriptionType())
                 error('Description type mismatch');
             end
-            obj.setProperties(preset.propertyMap);
+            obj.setPropertyMap(preset.propertyMap);
         end
 
         function addProperty(obj, name, value, varargin)
@@ -45,7 +45,7 @@ classdef Entity < symphonyui.core.CoreObject
             obj.updatePropertyDescriptorsResource(descriptors);
         end
 
-        function setProperties(obj, map)
+        function setPropertyMap(obj, map)
             exception = [];
             names = map.keys;
             for i = 1:numel(names)
@@ -78,7 +78,7 @@ classdef Entity < symphonyui.core.CoreObject
             obj.updatePropertyDescriptorsResource(descriptors);
         end
 
-        function m = getProperties(obj)
+        function m = getPropertyMap(obj)
             m = obj.getPropertyDescriptors().toMap();
         end
 
@@ -162,7 +162,7 @@ classdef Entity < symphonyui.core.CoreObject
             cnote = obj.tryCoreWithReturn(@()obj.cobj.AddNote(dto, text));
             n = symphonyui.core.persistent.Note(cnote);
         end
-        
+
         function t = getEntityType(obj) %#ok<MANU>
             t = symphonyui.core.persistent.EntityType.ENTITY;
         end

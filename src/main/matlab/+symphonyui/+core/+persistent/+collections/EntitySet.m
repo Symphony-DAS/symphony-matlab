@@ -15,7 +15,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
         end
 
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.EntityPreset(name, obj.getEntityType(), obj.getDescriptionType(), containers.Map(), obj.getProperties());
+            p = symphonyui.core.persistent.EntityPreset(name, obj.getEntityType(), obj.getDescriptionType(), containers.Map(), obj.getPropertyMap());
         end
 
         function applyPreset(obj, preset)
@@ -30,9 +30,9 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             end
         end
 
-        function setProperties(obj, map)
+        function setPropertyMap(obj, map)
             for i = 1:numel(obj.objects)
-                obj.objects{i}.setProperties(map);
+                obj.objects{i}.setPropertyMap(map);
             end
         end
 
@@ -42,14 +42,14 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             end
         end
 
-        function m = getProperties(obj)
+        function m = getPropertyMap(obj)
             if isempty(obj.objects)
                 m = containers.Map();
                 return;
             end
-            m = obj.objects{1}.getProperties();
+            m = obj.objects{1}.getPropertyMap();
             for i = 2:numel(obj.objects)
-                m = obj.intersectMaps(m, obj.objects{i}.getProperties());
+                m = obj.intersectMaps(m, obj.objects{i}.getPropertyMap());
             end
         end
 
