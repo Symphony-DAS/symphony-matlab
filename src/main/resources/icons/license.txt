@@ -4,20 +4,23 @@ Parts of the work are based on the Tango icons, which are released under the
 public domain.
 
 Icons from the Humanity icon theme:
+- apply.png
 - pause.png
 - pause_big.png
-- preview.png
-- preview_big.png
+- pause_bigger.png
 - record.png
 - record_big.png
+- record_bigger.png
+- stop_small.png
 - stop.png
 - stop_big.png
-- warning.png
-- progress_indicator.gif
+- stop_bigger.png
+- view_only.png
+- view_only_big.png
+- view_only_bigger.png
 
 
 The Farm-Fresh icon set is licensed under Creative Commons Attribution 3.0
 License. http://www.fatcow.com/free-icons
 
 All other icons are from the Farm-Fresh icon set.
-
