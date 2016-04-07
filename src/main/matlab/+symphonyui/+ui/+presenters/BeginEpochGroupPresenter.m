@@ -43,6 +43,11 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             obj.populateParentList();
             obj.populateSourceList();
             obj.populateDescriptionList();
+            try
+                obj.loadSettings();
+            catch x
+                obj.log.debug(['Failed to load presenter settings: ' x.message], x);
+            end
             obj.selectParent(obj.initialParent);
             obj.selectSource(obj.initialSource);
         end
@@ -150,15 +155,22 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             parent = obj.view.getSelectedParent();
             source = obj.view.getSelectedSource();
             description = obj.view.getSelectedDescription();
+            carryForwardProperties = obj.view.getCarryForwardProperties();
             try
                 while obj.documentationService.getCurrentEpochGroup() ~= parent
                     obj.documentationService.endEpochGroup();
                 end
-                group = obj.documentationService.beginEpochGroup(source, description);
+                group = obj.documentationService.beginEpochGroup(source, description, carryForwardProperties);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 return;
+            end
+            
+            try
+                obj.saveSettings();
+            catch x
+                obj.log.debug(['Failed to save presenter settings: ' x.message], x);
             end
 
             obj.result = group;
@@ -174,8 +186,19 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             hasSource = ~isempty(sourceList{1});
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
-
+            hasEpochGroup = ~isempty(obj.documentationService.getExperiment().epochGroups);
+            
+            obj.view.enableCarryForwardProperties(hasEpochGroup);
             obj.view.enableBegin(hasSource && hasDescription);
+        end
+        
+        function loadSettings(obj)
+            obj.view.setCarryForwardProperties(obj.settings.carryForwardProperties);
+        end
+
+        function saveSettings(obj)
+            obj.settings.carryForwardProperties = obj.view.getCarryForwardProperties();
+            obj.settings.save();
         end
 
     end

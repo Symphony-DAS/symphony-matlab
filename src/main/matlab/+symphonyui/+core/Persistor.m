@@ -65,7 +65,10 @@ classdef Persistor < symphonyui.core.CoreObject
             end
         end
 
-        function g = beginEpochGroup(obj, source, description)
+        function g = beginEpochGroup(obj, source, description, propertyMap)
+            if nargin < 4
+                propertyMap = containers.Map();
+            end
             if ischar(description)
                 label = description;
                 description = symphonyui.core.persistent.descriptions.EpochGroupDescription();
@@ -84,6 +87,7 @@ classdef Persistor < symphonyui.core.CoreObject
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochGroup(description.label, source.cobj));
             try
                 g = symphonyui.core.persistent.EpochGroup.newEpochGroup(cgrp, description);
+                g.setProperties(propertyMap);
             catch x
                 obj.endEpochGroup();
                 obj.tryCore(@()obj.cobj.Delete(cgrp));

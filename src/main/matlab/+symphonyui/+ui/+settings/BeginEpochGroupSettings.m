@@ -1,18 +1,18 @@
 classdef BeginEpochGroupSettings < appbox.Settings
     
     properties
-        selectedDescription
+        carryForwardProperties
     end
     
     methods
         
-        function d = get.selectedDescription(obj)
-            d = obj.get('selectedDescription');
+        function tf = get.carryForwardProperties(obj)
+            tf = obj.get('enableCarryForwardProperties', true);
         end
         
-        function set.selectedDescription(obj, d)
-            validateattributes(d, {'char'}, {'2d'});
-            obj.put('selectedDescription', d);
+        function set.carryForwardProperties(obj, tf)
+            validateattributes(tf, {'double', 'logical'}, {'scalar'});
+            obj.put('enableCarryForwardProperties', tf);
         end
         
     end

@@ -125,7 +125,10 @@ classdef DocumentationService < handle
             end
         end
 
-        function g = beginEpochGroup(obj, source, description)
+        function g = beginEpochGroup(obj, source, description, carryForwardProperties)
+            if nargin < 4
+                carryForwardProperties = false;
+            end
             parent = obj.getCurrentEpochGroup();
             if isempty(parent)
                 parentType = [];
@@ -136,7 +139,14 @@ classdef DocumentationService < handle
                 error([description ' is not an available epoch group description for the current parent type']);
             end
             constructor = str2func(description);
-            g = obj.session.getPersistor().beginEpochGroup(source, constructor());
+            propertyMap = containers.Map();
+            if carryForwardProperties
+                allGroups = obj.getExperiment().allEpochGroups;
+                if ~isempty(allGroups)
+                    propertyMap = allGroups{end}.getProperties();
+                end
+            end
+            g = obj.session.getPersistor().beginEpochGroup(source, constructor(), propertyMap);
             notify(obj, 'BeganEpochGroup', symphonyui.app.AppEventData(g));
         end
 
