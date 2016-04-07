@@ -52,8 +52,8 @@ classdef AddPropertyPresenter < appbox.Presenter
 
             key = obj.view.getKey();
             valueStr = obj.view.getValue();
-            value = str2num(valueStr); %#ok<ST2NM>
-            if isempty(value)
+            value = str2double(valueStr);
+            if isnan(value)
                 value = valueStr;
             end
             try

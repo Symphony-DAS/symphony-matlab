@@ -28,7 +28,7 @@ classdef AddConfigurationSettingPresenter < appbox.Presenter
 
         function bind(obj)
             bind@appbox.Presenter(obj);
-            
+
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Add', @obj.onViewSelectedAdd);
@@ -52,8 +52,8 @@ classdef AddConfigurationSettingPresenter < appbox.Presenter
 
             key = obj.view.getKey();
             valueStr = obj.view.getValue();
-            value = str2num(valueStr); %#ok<ST2NM>
-            if isempty(value)
+            value = str2double(valueStr);
+            if isnan(value)
                 value = valueStr;
             end
             try
