@@ -1,0 +1,1676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="UIExtrasTable2" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" readonly="true" id="6e69c489-f594-418a-8bea-f066f3627ebd" name="Default" comment="" />
+    <ignored path="java_src.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path="$PROJECT_DIR$/out/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="java_src" />
+  </component>
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.50573885">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file leaf-file-name="MButtonTableCellEditorRenderer.java" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/UIExtrasTable/MButtonTableCellEditorRenderer.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="527">
+                  <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="ContextSensitiveCellEditor.class" pinned="false" current-in-tab="false">
+            <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/ContextSensitiveCellEditor.class">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="102">
+                  <caret line="19" column="68" selection-start-line="19" selection-start-column="68" selection-end-line="19" selection-end-column="68" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="AbstractJideCellEditor.class" pinned="false" current-in-tab="false">
+            <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/AbstractJideCellEditor.class">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="102">
+                  <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="MJButton.class" pinned="false" current-in-tab="false">
+            <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jar/mwswing.jar!/com/mathworks/mwswing/MJButton.class">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="102">
+                  <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="JButton.java" pinned="false" current-in-tab="false">
+            <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/JButton.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="714">
+                  <caret line="77" column="36" selection-start-line="77" selection-start-column="36" selection-end-line="77" selection-end-column="36" />
+                  <folding>
+                    <element signature="e#0#9940#0" expanded="false" />
+                    <element signature="imports" expanded="false" />
+                    <element signature="e#2399#2400#0" expanded="false" />
+                    <element signature="e#2431#2432#0" expanded="false" />
+                    <element signature="e#2585#2586#0" expanded="false" />
+                    <element signature="e#2617#2618#0" expanded="false" />
+                    <element signature="e#2790#2791#0" expanded="false" />
+                    <element signature="e#2822#2823#0" expanded="false" />
+                    <element signature="e#3633#3634#0" expanded="false" />
+                    <element signature="e#3687#3688#0" expanded="false" />
+                    <element signature="e#4067#4068#0" expanded="false" />
+                    <element signature="e#4099#4100#0" expanded="false" />
+                    <element signature="e#5202#5203#0" expanded="false" />
+                    <element signature="e#5239#5240#0" expanded="false" />
+                    <element signature="e#9840#9841#0" expanded="false" />
+                    <element signature="e#9897#9898#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file leaf-file-name="AbstractButton.java" pinned="false" current-in-tab="false">
+            <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/AbstractButton.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="32028">
+                  <caret line="1997" column="56" selection-start-line="1997" selection-start-column="51" selection-end-line="1997" selection-end-column="56" />
+                  <folding>
+                    <element signature="e#0#110847#0" expanded="false" />
+                    <element signature="imports" expanded="false" />
+                    <element signature="e#10024#10025#0" expanded="false" />
+                    <element signature="e#10061#10062#0" expanded="false" />
+                    <element signature="e#10195#10196#0" expanded="false" />
+                    <element signature="e#10222#10223#0" expanded="false" />
+                    <element signature="e#11287#11288#0" expanded="false" />
+                    <element signature="e#11328#11329#0" expanded="false" />
+                    <element signature="e#12249#12250#0" expanded="false" />
+                    <element signature="e#12276#12277#0" expanded="false" />
+                    <element signature="e#14692#14693#0" expanded="false" />
+                    <element signature="e#14764#14765#0" expanded="false" />
+                    <element signature="e#14908#14909#0" expanded="false" />
+                    <element signature="e#14942#14943#0" expanded="false" />
+                    <element signature="e#16645#16646#0" expanded="false" />
+                    <element signature="e#16679#16680#0" expanded="false" />
+                    <element signature="e#17715#17716#0" expanded="false" />
+                    <element signature="e#17750#17751#0" expanded="false" />
+                    <element signature="e#19207#19208#0" expanded="false" />
+                    <element signature="e#19242#19243#0" expanded="false" />
+                    <element signature="e#20419#20420#0" expanded="false" />
+                    <element signature="e#20462#20463#0" expanded="false" />
+                    <element signature="e#26064#26065#0" expanded="false" />
+                    <element signature="e#26104#26105#0" expanded="false" />
+                    <element signature="e#27776#27777#0" expanded="false" />
+                    <element signature="e#27818#27819#0" expanded="false" />
+                    <element signature="e#29715#29716#0" expanded="false" />
+                    <element signature="e#29758#29759#0" expanded="false" />
+                    <element signature="e#31252#31253#0" expanded="false" />
+                    <element signature="e#31297#31298#0" expanded="false" />
+                    <element signature="e#33057#33058#0" expanded="false" />
+                    <element signature="e#33091#33092#0" expanded="false" />
+                    <element signature="e#36336#36337#0" expanded="false" />
+                    <element signature="e#36394#36395#0" expanded="false" />
+                    <element signature="e#40316#40317#0" expanded="false" />
+                    <element signature="e#40345#40346#0" expanded="false" />
+                    <element signature="e#41979#41980#0" expanded="false" />
+                    <element signature="e#42007#42008#0" expanded="false" />
+                    <element signature="e#45774#45775#0" expanded="false" />
+                    <element signature="e#45810#45811#0" expanded="false" />
+                    <element signature="e#48066#48067#0" expanded="false" />
+                    <element signature="e#48101#48102#0" expanded="false" />
+                    <element signature="e#48756#48757#0" expanded="false" />
+                    <element signature="e#48790#48791#0" expanded="false" />
+                    <element signature="e#50360#50361#0" expanded="false" />
+                    <element signature="e#50393#50394#0" expanded="false" />
+                    <element signature="e#51485#51486#0" expanded="false" />
+                    <element signature="e#51525#51526#0" expanded="false" />
+                    <element signature="e#53102#53103#0" expanded="false" />
+                    <element signature="e#53140#53141#0" expanded="false" />
+                    <element signature="e#54224#54225#0" expanded="false" />
+                    <element signature="e#54255#54256#0" expanded="false" />
+                    <element signature="e#58866#58867#0" expanded="false" />
+                    <element signature="e#58902#58903#0" expanded="false" />
+                    <element signature="e#61637#61638#0" expanded="false" />
+                    <element signature="e#61680#61681#0" expanded="false" />
+                    <element signature="e#61856#61857#0" expanded="false" />
+                    <element signature="e#61884#61885#0" expanded="false" />
+                    <element signature="e#63632#63633#0" expanded="false" />
+                    <element signature="e#63668#63669#0" expanded="false" />
+                    <element signature="e#66391#66392#0" expanded="false" />
+                    <element signature="e#66448#66449#0" expanded="false" />
+                    <element signature="e#66614#66615#0" expanded="false" />
+                    <element signature="e#66674#66675#0" expanded="false" />
+                    <element signature="e#67019#67020#0" expanded="false" />
+                    <element signature="e#67089#67090#0" expanded="false" />
+                    <element signature="e#68091#68092#0" expanded="false" />
+                    <element signature="e#68148#68149#0" expanded="false" />
+                    <element signature="e#69001#69002#0" expanded="false" />
+                    <element signature="e#69071#69072#0" expanded="false" />
+                    <element signature="e#69370#69371#0" expanded="false" />
+                    <element signature="e#69405#69406#0" expanded="false" />
+                    <element signature="e#70271#70272#0" expanded="false" />
+                    <element signature="e#70323#70324#0" expanded="false" />
+                    <element signature="e#73834#73835#0" expanded="false" />
+                    <element signature="e#73869#73870#0" expanded="false" />
+                    <element signature="e#73921#73922#0" expanded="false" />
+                    <element signature="e#73956#73957#0" expanded="false" />
+                    <element signature="e#74538#74539#0" expanded="false" />
+                    <element signature="e#74570#74571#0" expanded="false" />
+                    <element signature="e#74891#74892#0" expanded="false" />
+                    <element signature="e#74921#74922#0" expanded="false" />
+                    <element signature="e#75118#75119#0" expanded="false" />
+                    <element signature="e#75173#75174#0" expanded="false" />
+                    <element signature="e#75364#75365#0" expanded="false" />
+                    <element signature="e#75422#75423#0" expanded="false" />
+                    <element signature="e#75757#75758#0" expanded="false" />
+                    <element signature="e#75825#75826#0" expanded="false" />
+                    <element signature="e#83248#83249#0" expanded="false" />
+                    <element signature="e#83298#83299#0" expanded="false" />
+                    <element signature="e#89314#89315#0" expanded="false" />
+                    <element signature="e#89349#89350#0" expanded="false" />
+                    <element signature="e#89745#89746#0" expanded="false" />
+                    <element signature="e#89780#89781#0" expanded="false" />
+                    <element signature="e#90089#90090#0" expanded="false" />
+                    <element signature="e#90121#90122#0" expanded="false" />
+                    <element signature="e#92070#92071#0" expanded="false" />
+                    <element signature="e#92119#92120#0" expanded="false" />
+                    <element signature="e#92304#92305#0" expanded="false" />
+                    <element signature="e#92353#92354#0" expanded="false" />
+                    <element signature="e#107610#107611#0" expanded="false" />
+                    <element signature="e#107645#107646#0" expanded="false" />
+                    <element signature="e#107875#107876#0" expanded="false" />
+                    <element signature="e#107942#107943#0" expanded="false" />
+                    <element signature="e#108187#108188#0" expanded="false" />
+                    <element signature="e#108245#108246#0" expanded="false" />
+                    <element signature="e#108894#108895#0" expanded="false" />
+                    <element signature="e#108950#108951#0" expanded="false" />
+                    <element signature="e#109197#109198#0" expanded="false" />
+                    <element signature="e#109237#109238#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="ActionListener.java" pinned="false" current-in-tab="false">
+            <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionListener.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="102">
+                  <caret line="29" column="3" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
+                  <folding>
+                    <element signature="e#0#1010#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="ActionEvent.java" pinned="false" current-in-tab="true">
+            <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionEvent.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="799">
+                  <caret line="126" column="6" selection-start-line="126" selection-start-column="6" selection-end-line="126" selection-end-column="6" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="HyperlinkTableCellEditorRenderer.class" pinned="false" current-in-tab="false">
+            <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/HyperlinkTableCellEditorRenderer.class">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="136">
+                  <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/UIExtrasTable.iml" />
+        <option value="$PROJECT_DIR$/src/UIExtrasTable/TableActionListener.java" />
+        <option value="$PROJECT_DIR$/src/UIExtrasTable/CellActionEvent.java" />
+        <option value="$PROJECT_DIR$/src/UIExtrasTable/CellActionListener.java" />
+        <option value="$PROJECT_DIR$/src/UIExtrasTable/MButtonTableCellEditorRenderer.java" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="90" />
+    <option name="y" value="259" />
+    <option name="width" value="1669" />
+    <option name="height" value="970" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="PackagesPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane />
+      </pane>
+      <pane id="PackagesPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java_src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UIExtrasTable" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java_src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UIExtrasTable" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UIExtrasTable" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="java_src">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
+    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
+    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
+    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="java_src" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
+      <module name="" />
+      <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
+      <module name="" />
+      <option name="TESTING_TYPE" value="0" />
+      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="EXTRA_OPTIONS" value="" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnitTestDiscovery" factoryName="JUnit Test Discovery" changeList="All">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="JarApplication" factoryName="JAR Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="Java Scratch" factoryName="Java Scratch">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="SCRATCH_FILE_ID" value="0" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="java_src" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType" factoryName="Kotlin script">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="filePath" />
+      <option name="vmParameters" />
+      <option name="alternativeJrePath" />
+      <option name="programParameters" />
+      <option name="passParentEnvs" value="true" />
+      <option name="workingDirectory" />
+      <option name="isAlternativeJrePathEnabled" value="false" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNGTestDiscovery" factoryName="TestNG Test Discovery" changeList="All">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Client Admin\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6e69c489-f594-418a-8bea-f066f3627ebd" name="Default" comment="" />
+      <created>1459282924139</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1459282924139</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="90" y="259" width="1669" height="970" extended-state="1" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13300186" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24983692" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32816228" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jar/mwswing.jar!/com/mathworks/mwswing/MJButton.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/JButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="77" column="36" selection-start-line="77" selection-start-column="36" selection-end-line="77" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#9940#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2399#2400#0" expanded="false" />
+            <element signature="e#2431#2432#0" expanded="false" />
+            <element signature="e#2585#2586#0" expanded="false" />
+            <element signature="e#2617#2618#0" expanded="false" />
+            <element signature="e#2790#2791#0" expanded="false" />
+            <element signature="e#2822#2823#0" expanded="false" />
+            <element signature="e#3633#3634#0" expanded="false" />
+            <element signature="e#3687#3688#0" expanded="false" />
+            <element signature="e#4067#4068#0" expanded="false" />
+            <element signature="e#4099#4100#0" expanded="false" />
+            <element signature="e#5202#5203#0" expanded="false" />
+            <element signature="e#5239#5240#0" expanded="false" />
+            <element signature="e#9840#9841#0" expanded="false" />
+            <element signature="e#9897#9898#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/AbstractButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32028">
+          <caret line="1997" column="56" selection-start-line="1997" selection-start-column="51" selection-end-line="1997" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#110847#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#10024#10025#0" expanded="false" />
+            <element signature="e#10061#10062#0" expanded="false" />
+            <element signature="e#10195#10196#0" expanded="false" />
+            <element signature="e#10222#10223#0" expanded="false" />
+            <element signature="e#11287#11288#0" expanded="false" />
+            <element signature="e#11328#11329#0" expanded="false" />
+            <element signature="e#12249#12250#0" expanded="false" />
+            <element signature="e#12276#12277#0" expanded="false" />
+            <element signature="e#14692#14693#0" expanded="false" />
+            <element signature="e#14764#14765#0" expanded="false" />
+            <element signature="e#14908#14909#0" expanded="false" />
+            <element signature="e#14942#14943#0" expanded="false" />
+            <element signature="e#16645#16646#0" expanded="false" />
+            <element signature="e#16679#16680#0" expanded="false" />
+            <element signature="e#17715#17716#0" expanded="false" />
+            <element signature="e#17750#17751#0" expanded="false" />
+            <element signature="e#19207#19208#0" expanded="false" />
+            <element signature="e#19242#19243#0" expanded="false" />
+            <element signature="e#20419#20420#0" expanded="false" />
+            <element signature="e#20462#20463#0" expanded="false" />
+            <element signature="e#26064#26065#0" expanded="false" />
+            <element signature="e#26104#26105#0" expanded="false" />
+            <element signature="e#27776#27777#0" expanded="false" />
+            <element signature="e#27818#27819#0" expanded="false" />
+            <element signature="e#29715#29716#0" expanded="false" />
+            <element signature="e#29758#29759#0" expanded="false" />
+            <element signature="e#31252#31253#0" expanded="false" />
+            <element signature="e#31297#31298#0" expanded="false" />
+            <element signature="e#33057#33058#0" expanded="false" />
+            <element signature="e#33091#33092#0" expanded="false" />
+            <element signature="e#36336#36337#0" expanded="false" />
+            <element signature="e#36394#36395#0" expanded="false" />
+            <element signature="e#40316#40317#0" expanded="false" />
+            <element signature="e#40345#40346#0" expanded="false" />
+            <element signature="e#41979#41980#0" expanded="false" />
+            <element signature="e#42007#42008#0" expanded="false" />
+            <element signature="e#45774#45775#0" expanded="false" />
+            <element signature="e#45810#45811#0" expanded="false" />
+            <element signature="e#48066#48067#0" expanded="false" />
+            <element signature="e#48101#48102#0" expanded="false" />
+            <element signature="e#48756#48757#0" expanded="false" />
+            <element signature="e#48790#48791#0" expanded="false" />
+            <element signature="e#50360#50361#0" expanded="false" />
+            <element signature="e#50393#50394#0" expanded="false" />
+            <element signature="e#51485#51486#0" expanded="false" />
+            <element signature="e#51525#51526#0" expanded="false" />
+            <element signature="e#53102#53103#0" expanded="false" />
+            <element signature="e#53140#53141#0" expanded="false" />
+            <element signature="e#54224#54225#0" expanded="false" />
+            <element signature="e#54255#54256#0" expanded="false" />
+            <element signature="e#58866#58867#0" expanded="false" />
+            <element signature="e#58902#58903#0" expanded="false" />
+            <element signature="e#61637#61638#0" expanded="false" />
+            <element signature="e#61680#61681#0" expanded="false" />
+            <element signature="e#61856#61857#0" expanded="false" />
+            <element signature="e#61884#61885#0" expanded="false" />
+            <element signature="e#63632#63633#0" expanded="false" />
+            <element signature="e#63668#63669#0" expanded="false" />
+            <element signature="e#66391#66392#0" expanded="false" />
+            <element signature="e#66448#66449#0" expanded="false" />
+            <element signature="e#66614#66615#0" expanded="false" />
+            <element signature="e#66674#66675#0" expanded="false" />
+            <element signature="e#67019#67020#0" expanded="false" />
+            <element signature="e#67089#67090#0" expanded="false" />
+            <element signature="e#68091#68092#0" expanded="false" />
+            <element signature="e#68148#68149#0" expanded="false" />
+            <element signature="e#69001#69002#0" expanded="false" />
+            <element signature="e#69071#69072#0" expanded="false" />
+            <element signature="e#69370#69371#0" expanded="false" />
+            <element signature="e#69405#69406#0" expanded="false" />
+            <element signature="e#70271#70272#0" expanded="false" />
+            <element signature="e#70323#70324#0" expanded="false" />
+            <element signature="e#73834#73835#0" expanded="false" />
+            <element signature="e#73869#73870#0" expanded="false" />
+            <element signature="e#73921#73922#0" expanded="false" />
+            <element signature="e#73956#73957#0" expanded="false" />
+            <element signature="e#74538#74539#0" expanded="false" />
+            <element signature="e#74570#74571#0" expanded="false" />
+            <element signature="e#74891#74892#0" expanded="false" />
+            <element signature="e#74921#74922#0" expanded="false" />
+            <element signature="e#75118#75119#0" expanded="false" />
+            <element signature="e#75173#75174#0" expanded="false" />
+            <element signature="e#75364#75365#0" expanded="false" />
+            <element signature="e#75422#75423#0" expanded="false" />
+            <element signature="e#75757#75758#0" expanded="false" />
+            <element signature="e#75825#75826#0" expanded="false" />
+            <element signature="e#83248#83249#0" expanded="false" />
+            <element signature="e#83298#83299#0" expanded="false" />
+            <element signature="e#89314#89315#0" expanded="false" />
+            <element signature="e#89349#89350#0" expanded="false" />
+            <element signature="e#89745#89746#0" expanded="false" />
+            <element signature="e#89780#89781#0" expanded="false" />
+            <element signature="e#90089#90090#0" expanded="false" />
+            <element signature="e#90121#90122#0" expanded="false" />
+            <element signature="e#92070#92071#0" expanded="false" />
+            <element signature="e#92119#92120#0" expanded="false" />
+            <element signature="e#92304#92305#0" expanded="false" />
+            <element signature="e#92353#92354#0" expanded="false" />
+            <element signature="e#107610#107611#0" expanded="false" />
+            <element signature="e#107645#107646#0" expanded="false" />
+            <element signature="e#107875#107876#0" expanded="false" />
+            <element signature="e#107942#107943#0" expanded="false" />
+            <element signature="e#108187#108188#0" expanded="false" />
+            <element signature="e#108245#108246#0" expanded="false" />
+            <element signature="e#108894#108895#0" expanded="false" />
+            <element signature="e#108950#108951#0" expanded="false" />
+            <element signature="e#109197#109198#0" expanded="false" />
+            <element signature="e#109237#109238#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="29" column="3" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
+          <folding>
+            <element signature="e#0#1010#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/HyperlinkTableCellEditorRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UIExtrasTable/MButtonTableCellEditorRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/ContextSensitiveCellEditor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="19" column="68" selection-start-line="19" selection-start-column="68" selection-end-line="19" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/AbstractJideCellEditor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jar/mwswing.jar!/com/mathworks/mwswing/MJButton.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/JButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="77" column="36" selection-start-line="77" selection-start-column="36" selection-end-line="77" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#9940#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2399#2400#0" expanded="false" />
+            <element signature="e#2431#2432#0" expanded="false" />
+            <element signature="e#2585#2586#0" expanded="false" />
+            <element signature="e#2617#2618#0" expanded="false" />
+            <element signature="e#2790#2791#0" expanded="false" />
+            <element signature="e#2822#2823#0" expanded="false" />
+            <element signature="e#3633#3634#0" expanded="false" />
+            <element signature="e#3687#3688#0" expanded="false" />
+            <element signature="e#4067#4068#0" expanded="false" />
+            <element signature="e#4099#4100#0" expanded="false" />
+            <element signature="e#5202#5203#0" expanded="false" />
+            <element signature="e#5239#5240#0" expanded="false" />
+            <element signature="e#9840#9841#0" expanded="false" />
+            <element signature="e#9897#9898#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/AbstractButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32028">
+          <caret line="1997" column="56" selection-start-line="1997" selection-start-column="51" selection-end-line="1997" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#110847#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#10024#10025#0" expanded="false" />
+            <element signature="e#10061#10062#0" expanded="false" />
+            <element signature="e#10195#10196#0" expanded="false" />
+            <element signature="e#10222#10223#0" expanded="false" />
+            <element signature="e#11287#11288#0" expanded="false" />
+            <element signature="e#11328#11329#0" expanded="false" />
+            <element signature="e#12249#12250#0" expanded="false" />
+            <element signature="e#12276#12277#0" expanded="false" />
+            <element signature="e#14692#14693#0" expanded="false" />
+            <element signature="e#14764#14765#0" expanded="false" />
+            <element signature="e#14908#14909#0" expanded="false" />
+            <element signature="e#14942#14943#0" expanded="false" />
+            <element signature="e#16645#16646#0" expanded="false" />
+            <element signature="e#16679#16680#0" expanded="false" />
+            <element signature="e#17715#17716#0" expanded="false" />
+            <element signature="e#17750#17751#0" expanded="false" />
+            <element signature="e#19207#19208#0" expanded="false" />
+            <element signature="e#19242#19243#0" expanded="false" />
+            <element signature="e#20419#20420#0" expanded="false" />
+            <element signature="e#20462#20463#0" expanded="false" />
+            <element signature="e#26064#26065#0" expanded="false" />
+            <element signature="e#26104#26105#0" expanded="false" />
+            <element signature="e#27776#27777#0" expanded="false" />
+            <element signature="e#27818#27819#0" expanded="false" />
+            <element signature="e#29715#29716#0" expanded="false" />
+            <element signature="e#29758#29759#0" expanded="false" />
+            <element signature="e#31252#31253#0" expanded="false" />
+            <element signature="e#31297#31298#0" expanded="false" />
+            <element signature="e#33057#33058#0" expanded="false" />
+            <element signature="e#33091#33092#0" expanded="false" />
+            <element signature="e#36336#36337#0" expanded="false" />
+            <element signature="e#36394#36395#0" expanded="false" />
+            <element signature="e#40316#40317#0" expanded="false" />
+            <element signature="e#40345#40346#0" expanded="false" />
+            <element signature="e#41979#41980#0" expanded="false" />
+            <element signature="e#42007#42008#0" expanded="false" />
+            <element signature="e#45774#45775#0" expanded="false" />
+            <element signature="e#45810#45811#0" expanded="false" />
+            <element signature="e#48066#48067#0" expanded="false" />
+            <element signature="e#48101#48102#0" expanded="false" />
+            <element signature="e#48756#48757#0" expanded="false" />
+            <element signature="e#48790#48791#0" expanded="false" />
+            <element signature="e#50360#50361#0" expanded="false" />
+            <element signature="e#50393#50394#0" expanded="false" />
+            <element signature="e#51485#51486#0" expanded="false" />
+            <element signature="e#51525#51526#0" expanded="false" />
+            <element signature="e#53102#53103#0" expanded="false" />
+            <element signature="e#53140#53141#0" expanded="false" />
+            <element signature="e#54224#54225#0" expanded="false" />
+            <element signature="e#54255#54256#0" expanded="false" />
+            <element signature="e#58866#58867#0" expanded="false" />
+            <element signature="e#58902#58903#0" expanded="false" />
+            <element signature="e#61637#61638#0" expanded="false" />
+            <element signature="e#61680#61681#0" expanded="false" />
+            <element signature="e#61856#61857#0" expanded="false" />
+            <element signature="e#61884#61885#0" expanded="false" />
+            <element signature="e#63632#63633#0" expanded="false" />
+            <element signature="e#63668#63669#0" expanded="false" />
+            <element signature="e#66391#66392#0" expanded="false" />
+            <element signature="e#66448#66449#0" expanded="false" />
+            <element signature="e#66614#66615#0" expanded="false" />
+            <element signature="e#66674#66675#0" expanded="false" />
+            <element signature="e#67019#67020#0" expanded="false" />
+            <element signature="e#67089#67090#0" expanded="false" />
+            <element signature="e#68091#68092#0" expanded="false" />
+            <element signature="e#68148#68149#0" expanded="false" />
+            <element signature="e#69001#69002#0" expanded="false" />
+            <element signature="e#69071#69072#0" expanded="false" />
+            <element signature="e#69370#69371#0" expanded="false" />
+            <element signature="e#69405#69406#0" expanded="false" />
+            <element signature="e#70271#70272#0" expanded="false" />
+            <element signature="e#70323#70324#0" expanded="false" />
+            <element signature="e#73834#73835#0" expanded="false" />
+            <element signature="e#73869#73870#0" expanded="false" />
+            <element signature="e#73921#73922#0" expanded="false" />
+            <element signature="e#73956#73957#0" expanded="false" />
+            <element signature="e#74538#74539#0" expanded="false" />
+            <element signature="e#74570#74571#0" expanded="false" />
+            <element signature="e#74891#74892#0" expanded="false" />
+            <element signature="e#74921#74922#0" expanded="false" />
+            <element signature="e#75118#75119#0" expanded="false" />
+            <element signature="e#75173#75174#0" expanded="false" />
+            <element signature="e#75364#75365#0" expanded="false" />
+            <element signature="e#75422#75423#0" expanded="false" />
+            <element signature="e#75757#75758#0" expanded="false" />
+            <element signature="e#75825#75826#0" expanded="false" />
+            <element signature="e#83248#83249#0" expanded="false" />
+            <element signature="e#83298#83299#0" expanded="false" />
+            <element signature="e#89314#89315#0" expanded="false" />
+            <element signature="e#89349#89350#0" expanded="false" />
+            <element signature="e#89745#89746#0" expanded="false" />
+            <element signature="e#89780#89781#0" expanded="false" />
+            <element signature="e#90089#90090#0" expanded="false" />
+            <element signature="e#90121#90122#0" expanded="false" />
+            <element signature="e#92070#92071#0" expanded="false" />
+            <element signature="e#92119#92120#0" expanded="false" />
+            <element signature="e#92304#92305#0" expanded="false" />
+            <element signature="e#92353#92354#0" expanded="false" />
+            <element signature="e#107610#107611#0" expanded="false" />
+            <element signature="e#107645#107646#0" expanded="false" />
+            <element signature="e#107875#107876#0" expanded="false" />
+            <element signature="e#107942#107943#0" expanded="false" />
+            <element signature="e#108187#108188#0" expanded="false" />
+            <element signature="e#108245#108246#0" expanded="false" />
+            <element signature="e#108894#108895#0" expanded="false" />
+            <element signature="e#108950#108951#0" expanded="false" />
+            <element signature="e#109197#109198#0" expanded="false" />
+            <element signature="e#109237#109238#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="29" column="3" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
+          <folding>
+            <element signature="e#0#1010#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/HyperlinkTableCellEditorRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UIExtrasTable/MButtonTableCellEditorRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="54" column="33" selection-start-line="54" selection-start-column="33" selection-end-line="54" selection-end-column="33" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/ContextSensitiveCellEditor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="19" column="68" selection-start-line="19" selection-start-column="68" selection-end-line="19" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/AbstractJideCellEditor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jar/mwswing.jar!/com/mathworks/mwswing/MJButton.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/JButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="77" column="36" selection-start-line="77" selection-start-column="36" selection-end-line="77" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#9940#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2399#2400#0" expanded="false" />
+            <element signature="e#2431#2432#0" expanded="false" />
+            <element signature="e#2585#2586#0" expanded="false" />
+            <element signature="e#2617#2618#0" expanded="false" />
+            <element signature="e#2790#2791#0" expanded="false" />
+            <element signature="e#2822#2823#0" expanded="false" />
+            <element signature="e#3633#3634#0" expanded="false" />
+            <element signature="e#3687#3688#0" expanded="false" />
+            <element signature="e#4067#4068#0" expanded="false" />
+            <element signature="e#4099#4100#0" expanded="false" />
+            <element signature="e#5202#5203#0" expanded="false" />
+            <element signature="e#5239#5240#0" expanded="false" />
+            <element signature="e#9840#9841#0" expanded="false" />
+            <element signature="e#9897#9898#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/AbstractButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32028">
+          <caret line="1997" column="56" selection-start-line="1997" selection-start-column="51" selection-end-line="1997" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#110847#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#10024#10025#0" expanded="false" />
+            <element signature="e#10061#10062#0" expanded="false" />
+            <element signature="e#10195#10196#0" expanded="false" />
+            <element signature="e#10222#10223#0" expanded="false" />
+            <element signature="e#11287#11288#0" expanded="false" />
+            <element signature="e#11328#11329#0" expanded="false" />
+            <element signature="e#12249#12250#0" expanded="false" />
+            <element signature="e#12276#12277#0" expanded="false" />
+            <element signature="e#14692#14693#0" expanded="false" />
+            <element signature="e#14764#14765#0" expanded="false" />
+            <element signature="e#14908#14909#0" expanded="false" />
+            <element signature="e#14942#14943#0" expanded="false" />
+            <element signature="e#16645#16646#0" expanded="false" />
+            <element signature="e#16679#16680#0" expanded="false" />
+            <element signature="e#17715#17716#0" expanded="false" />
+            <element signature="e#17750#17751#0" expanded="false" />
+            <element signature="e#19207#19208#0" expanded="false" />
+            <element signature="e#19242#19243#0" expanded="false" />
+            <element signature="e#20419#20420#0" expanded="false" />
+            <element signature="e#20462#20463#0" expanded="false" />
+            <element signature="e#26064#26065#0" expanded="false" />
+            <element signature="e#26104#26105#0" expanded="false" />
+            <element signature="e#27776#27777#0" expanded="false" />
+            <element signature="e#27818#27819#0" expanded="false" />
+            <element signature="e#29715#29716#0" expanded="false" />
+            <element signature="e#29758#29759#0" expanded="false" />
+            <element signature="e#31252#31253#0" expanded="false" />
+            <element signature="e#31297#31298#0" expanded="false" />
+            <element signature="e#33057#33058#0" expanded="false" />
+            <element signature="e#33091#33092#0" expanded="false" />
+            <element signature="e#36336#36337#0" expanded="false" />
+            <element signature="e#36394#36395#0" expanded="false" />
+            <element signature="e#40316#40317#0" expanded="false" />
+            <element signature="e#40345#40346#0" expanded="false" />
+            <element signature="e#41979#41980#0" expanded="false" />
+            <element signature="e#42007#42008#0" expanded="false" />
+            <element signature="e#45774#45775#0" expanded="false" />
+            <element signature="e#45810#45811#0" expanded="false" />
+            <element signature="e#48066#48067#0" expanded="false" />
+            <element signature="e#48101#48102#0" expanded="false" />
+            <element signature="e#48756#48757#0" expanded="false" />
+            <element signature="e#48790#48791#0" expanded="false" />
+            <element signature="e#50360#50361#0" expanded="false" />
+            <element signature="e#50393#50394#0" expanded="false" />
+            <element signature="e#51485#51486#0" expanded="false" />
+            <element signature="e#51525#51526#0" expanded="false" />
+            <element signature="e#53102#53103#0" expanded="false" />
+            <element signature="e#53140#53141#0" expanded="false" />
+            <element signature="e#54224#54225#0" expanded="false" />
+            <element signature="e#54255#54256#0" expanded="false" />
+            <element signature="e#58866#58867#0" expanded="false" />
+            <element signature="e#58902#58903#0" expanded="false" />
+            <element signature="e#61637#61638#0" expanded="false" />
+            <element signature="e#61680#61681#0" expanded="false" />
+            <element signature="e#61856#61857#0" expanded="false" />
+            <element signature="e#61884#61885#0" expanded="false" />
+            <element signature="e#63632#63633#0" expanded="false" />
+            <element signature="e#63668#63669#0" expanded="false" />
+            <element signature="e#66391#66392#0" expanded="false" />
+            <element signature="e#66448#66449#0" expanded="false" />
+            <element signature="e#66614#66615#0" expanded="false" />
+            <element signature="e#66674#66675#0" expanded="false" />
+            <element signature="e#67019#67020#0" expanded="false" />
+            <element signature="e#67089#67090#0" expanded="false" />
+            <element signature="e#68091#68092#0" expanded="false" />
+            <element signature="e#68148#68149#0" expanded="false" />
+            <element signature="e#69001#69002#0" expanded="false" />
+            <element signature="e#69071#69072#0" expanded="false" />
+            <element signature="e#69370#69371#0" expanded="false" />
+            <element signature="e#69405#69406#0" expanded="false" />
+            <element signature="e#70271#70272#0" expanded="false" />
+            <element signature="e#70323#70324#0" expanded="false" />
+            <element signature="e#73834#73835#0" expanded="false" />
+            <element signature="e#73869#73870#0" expanded="false" />
+            <element signature="e#73921#73922#0" expanded="false" />
+            <element signature="e#73956#73957#0" expanded="false" />
+            <element signature="e#74538#74539#0" expanded="false" />
+            <element signature="e#74570#74571#0" expanded="false" />
+            <element signature="e#74891#74892#0" expanded="false" />
+            <element signature="e#74921#74922#0" expanded="false" />
+            <element signature="e#75118#75119#0" expanded="false" />
+            <element signature="e#75173#75174#0" expanded="false" />
+            <element signature="e#75364#75365#0" expanded="false" />
+            <element signature="e#75422#75423#0" expanded="false" />
+            <element signature="e#75757#75758#0" expanded="false" />
+            <element signature="e#75825#75826#0" expanded="false" />
+            <element signature="e#83248#83249#0" expanded="false" />
+            <element signature="e#83298#83299#0" expanded="false" />
+            <element signature="e#89314#89315#0" expanded="false" />
+            <element signature="e#89349#89350#0" expanded="false" />
+            <element signature="e#89745#89746#0" expanded="false" />
+            <element signature="e#89780#89781#0" expanded="false" />
+            <element signature="e#90089#90090#0" expanded="false" />
+            <element signature="e#90121#90122#0" expanded="false" />
+            <element signature="e#92070#92071#0" expanded="false" />
+            <element signature="e#92119#92120#0" expanded="false" />
+            <element signature="e#92304#92305#0" expanded="false" />
+            <element signature="e#92353#92354#0" expanded="false" />
+            <element signature="e#107610#107611#0" expanded="false" />
+            <element signature="e#107645#107646#0" expanded="false" />
+            <element signature="e#107875#107876#0" expanded="false" />
+            <element signature="e#107942#107943#0" expanded="false" />
+            <element signature="e#108187#108188#0" expanded="false" />
+            <element signature="e#108245#108246#0" expanded="false" />
+            <element signature="e#108894#108895#0" expanded="false" />
+            <element signature="e#108950#108951#0" expanded="false" />
+            <element signature="e#109197#109198#0" expanded="false" />
+            <element signature="e#109237#109238#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="29" column="3" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
+          <folding>
+            <element signature="e#0#1010#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/HyperlinkTableCellEditorRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UIExtrasTable/MButtonTableCellEditorRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UIExtrasTable/MButtonTableCellEditorRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="10" selection-start-line="23" selection-start-column="10" selection-end-line="23" selection-end-column="10" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/ButtonTableCellEditorRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/HyperlinkTableCellEditorRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/UIExtrasTable.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="9" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/JLabel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="511">
+          <caret line="375" column="16" selection-start-line="375" selection-start-column="16" selection-end-line="375" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/TableCellEditorRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="15" column="9" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/IconCellRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="16" column="4" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/ContextSensitiveCellRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="59" column="19" selection-start-line="59" selection-start-column="19" selection-end-line="59" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/ExComboBoxCellEditor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="12" column="11" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/ListComboBoxCellEditor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="36" column="11" selection-start-line="36" selection-start-column="11" selection-end-line="36" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/HyperlinkTableCellEditorRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UIExtrasTable/TableActionListener.java" />
+    <entry file="file://$PROJECT_DIR$/src/UIExtrasTable/CellActionListener.java" />
+    <entry file="file://$PROJECT_DIR$/src/UIExtrasTable/CellActionEvent.java" />
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="29" column="3" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
+          <folding>
+            <element signature="e#0#1010#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jar/mwswing.jar!/com/mathworks/mwswing/ExtendedButton.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jar/mwswing.jar!/com/mathworks/mwswing/MJButton.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/JButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="77" column="36" selection-start-line="77" selection-start-column="36" selection-end-line="77" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#9940#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2399#2400#0" expanded="false" />
+            <element signature="e#2431#2432#0" expanded="false" />
+            <element signature="e#2585#2586#0" expanded="false" />
+            <element signature="e#2617#2618#0" expanded="false" />
+            <element signature="e#2790#2791#0" expanded="false" />
+            <element signature="e#2822#2823#0" expanded="false" />
+            <element signature="e#3633#3634#0" expanded="false" />
+            <element signature="e#3687#3688#0" expanded="false" />
+            <element signature="e#4067#4068#0" expanded="false" />
+            <element signature="e#4099#4100#0" expanded="false" />
+            <element signature="e#5202#5203#0" expanded="false" />
+            <element signature="e#5239#5240#0" expanded="false" />
+            <element signature="e#9840#9841#0" expanded="false" />
+            <element signature="e#9897#9898#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/ContextSensitiveCellEditor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="19" column="68" selection-start-line="19" selection-start-column="68" selection-end-line="19" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/AbstractButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32028">
+          <caret line="1997" column="56" selection-start-line="1997" selection-start-column="51" selection-end-line="1997" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#110847#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#10024#10025#0" expanded="false" />
+            <element signature="e#10061#10062#0" expanded="false" />
+            <element signature="e#10195#10196#0" expanded="false" />
+            <element signature="e#10222#10223#0" expanded="false" />
+            <element signature="e#11287#11288#0" expanded="false" />
+            <element signature="e#11328#11329#0" expanded="false" />
+            <element signature="e#12249#12250#0" expanded="false" />
+            <element signature="e#12276#12277#0" expanded="false" />
+            <element signature="e#14692#14693#0" expanded="false" />
+            <element signature="e#14764#14765#0" expanded="false" />
+            <element signature="e#14908#14909#0" expanded="false" />
+            <element signature="e#14942#14943#0" expanded="false" />
+            <element signature="e#16645#16646#0" expanded="false" />
+            <element signature="e#16679#16680#0" expanded="false" />
+            <element signature="e#17715#17716#0" expanded="false" />
+            <element signature="e#17750#17751#0" expanded="false" />
+            <element signature="e#19207#19208#0" expanded="false" />
+            <element signature="e#19242#19243#0" expanded="false" />
+            <element signature="e#20419#20420#0" expanded="false" />
+            <element signature="e#20462#20463#0" expanded="false" />
+            <element signature="e#26064#26065#0" expanded="false" />
+            <element signature="e#26104#26105#0" expanded="false" />
+            <element signature="e#27776#27777#0" expanded="false" />
+            <element signature="e#27818#27819#0" expanded="false" />
+            <element signature="e#29715#29716#0" expanded="false" />
+            <element signature="e#29758#29759#0" expanded="false" />
+            <element signature="e#31252#31253#0" expanded="false" />
+            <element signature="e#31297#31298#0" expanded="false" />
+            <element signature="e#33057#33058#0" expanded="false" />
+            <element signature="e#33091#33092#0" expanded="false" />
+            <element signature="e#36336#36337#0" expanded="false" />
+            <element signature="e#36394#36395#0" expanded="false" />
+            <element signature="e#40316#40317#0" expanded="false" />
+            <element signature="e#40345#40346#0" expanded="false" />
+            <element signature="e#41979#41980#0" expanded="false" />
+            <element signature="e#42007#42008#0" expanded="false" />
+            <element signature="e#45774#45775#0" expanded="false" />
+            <element signature="e#45810#45811#0" expanded="false" />
+            <element signature="e#48066#48067#0" expanded="false" />
+            <element signature="e#48101#48102#0" expanded="false" />
+            <element signature="e#48756#48757#0" expanded="false" />
+            <element signature="e#48790#48791#0" expanded="false" />
+            <element signature="e#50360#50361#0" expanded="false" />
+            <element signature="e#50393#50394#0" expanded="false" />
+            <element signature="e#51485#51486#0" expanded="false" />
+            <element signature="e#51525#51526#0" expanded="false" />
+            <element signature="e#53102#53103#0" expanded="false" />
+            <element signature="e#53140#53141#0" expanded="false" />
+            <element signature="e#54224#54225#0" expanded="false" />
+            <element signature="e#54255#54256#0" expanded="false" />
+            <element signature="e#58866#58867#0" expanded="false" />
+            <element signature="e#58902#58903#0" expanded="false" />
+            <element signature="e#61637#61638#0" expanded="false" />
+            <element signature="e#61680#61681#0" expanded="false" />
+            <element signature="e#61856#61857#0" expanded="false" />
+            <element signature="e#61884#61885#0" expanded="false" />
+            <element signature="e#63632#63633#0" expanded="false" />
+            <element signature="e#63668#63669#0" expanded="false" />
+            <element signature="e#66391#66392#0" expanded="false" />
+            <element signature="e#66448#66449#0" expanded="false" />
+            <element signature="e#66614#66615#0" expanded="false" />
+            <element signature="e#66674#66675#0" expanded="false" />
+            <element signature="e#67019#67020#0" expanded="false" />
+            <element signature="e#67089#67090#0" expanded="false" />
+            <element signature="e#68091#68092#0" expanded="false" />
+            <element signature="e#68148#68149#0" expanded="false" />
+            <element signature="e#69001#69002#0" expanded="false" />
+            <element signature="e#69071#69072#0" expanded="false" />
+            <element signature="e#69370#69371#0" expanded="false" />
+            <element signature="e#69405#69406#0" expanded="false" />
+            <element signature="e#70271#70272#0" expanded="false" />
+            <element signature="e#70323#70324#0" expanded="false" />
+            <element signature="e#73834#73835#0" expanded="false" />
+            <element signature="e#73869#73870#0" expanded="false" />
+            <element signature="e#73921#73922#0" expanded="false" />
+            <element signature="e#73956#73957#0" expanded="false" />
+            <element signature="e#74538#74539#0" expanded="false" />
+            <element signature="e#74570#74571#0" expanded="false" />
+            <element signature="e#74891#74892#0" expanded="false" />
+            <element signature="e#74921#74922#0" expanded="false" />
+            <element signature="e#75118#75119#0" expanded="false" />
+            <element signature="e#75173#75174#0" expanded="false" />
+            <element signature="e#75364#75365#0" expanded="false" />
+            <element signature="e#75422#75423#0" expanded="false" />
+            <element signature="e#75757#75758#0" expanded="false" />
+            <element signature="e#75825#75826#0" expanded="false" />
+            <element signature="e#83248#83249#0" expanded="false" />
+            <element signature="e#83298#83299#0" expanded="false" />
+            <element signature="e#89314#89315#0" expanded="false" />
+            <element signature="e#89349#89350#0" expanded="false" />
+            <element signature="e#89745#89746#0" expanded="false" />
+            <element signature="e#89780#89781#0" expanded="false" />
+            <element signature="e#90089#90090#0" expanded="false" />
+            <element signature="e#90121#90122#0" expanded="false" />
+            <element signature="e#92070#92071#0" expanded="false" />
+            <element signature="e#92119#92120#0" expanded="false" />
+            <element signature="e#92304#92305#0" expanded="false" />
+            <element signature="e#92353#92354#0" expanded="false" />
+            <element signature="e#107610#107611#0" expanded="false" />
+            <element signature="e#107645#107646#0" expanded="false" />
+            <element signature="e#107875#107876#0" expanded="false" />
+            <element signature="e#107942#107943#0" expanded="false" />
+            <element signature="e#108187#108188#0" expanded="false" />
+            <element signature="e#108245#108246#0" expanded="false" />
+            <element signature="e#108894#108895#0" expanded="false" />
+            <element signature="e#108950#108951#0" expanded="false" />
+            <element signature="e#109197#109198#0" expanded="false" />
+            <element signature="e#109237#109238#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/ButtonTableCellEditorRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="302">
+          <caret line="59" column="57" selection-start-line="59" selection-start-column="53" selection-end-line="59" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/AbstractJideCellEditor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/MATLAB/R2016a/java/jarext/jide/jide-grids.jar!/com/jidesoft/grid/AbstractTableCellEditorRenderer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="14" column="77" selection-start-line="14" selection-start-column="77" selection-end-line="14" selection-end-column="77" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/javax/swing/AbstractCellEditor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="439">
+          <caret line="152" column="19" selection-start-line="152" selection-start-column="19" selection-end-line="152" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_75/src.zip!/java/awt/event/ActionEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="799">
+          <caret line="126" column="6" selection-start-line="126" selection-start-column="6" selection-end-line="126" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UIExtrasTable/MButtonTableCellEditorRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <last-edited>UIExtrasTable2</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>UIExtrasTable</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>mwswing</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

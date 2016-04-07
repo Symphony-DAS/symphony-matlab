@@ -3,7 +3,7 @@ function main()
     import symphonyui.infra.*;
     
     addDotNetAssemblies({'Symphony.Core.dll'});
-    addJavaJars({'UIExtrasTable.jar', 'UIExtrasTable2.jar', 'UIExtrasTree.jar', 'UIExtrasPropertyGrid.jar'});
+    addJavaJars({'UIExtrasComboBox.jar', 'UIExtrasTable.jar', 'UIExtrasTable2.jar', 'UIExtrasTree.jar', 'UIExtrasPropertyGrid.jar'});
     
     options = symphonyui.app.Options.getDefault();
     presets = symphonyui.app.Presets.getDefault();
