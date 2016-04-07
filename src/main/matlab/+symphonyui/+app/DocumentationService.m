@@ -163,14 +163,14 @@ classdef DocumentationService < handle
         
         function addEntityPreset(obj, preset)
             obj.session.presets.addEntityPreset(preset);
-            %obj.session.presets.save();
+            obj.session.presets.save();
             notify(obj, 'AddedEntityPreset', symphonyui.app.AppEventData(preset));
         end
         
         function removeEntityPreset(obj, name, entityType, descriptionType)
             p = obj.session.presets.getEntityPreset(name, entityType, descriptionType);
             obj.session.presets.removeEntityPreset(name, entityType, descriptionType);
-            %obj.session.presets.save();
+            obj.session.presets.save();
             notify(obj, 'RemovedEntityPreset', symphonyui.app.AppEventData(p));
         end
 

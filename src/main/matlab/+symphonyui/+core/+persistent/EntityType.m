@@ -34,5 +34,30 @@ classdef EntityType
         
     end
     
+    methods (Static)
+        
+        function obj = fromChar(c)
+            import symphonyui.core.persistent.EntityType;
+            
+            switch c
+                case 'Entity'
+                    obj = EntityType.ENTITY;
+                case 'Source'
+                    obj = EntityType.SOURCE;
+                case 'Experiment'
+                    obj = EntityType.EXPERIMENT;
+                case 'Epoch Group';
+                    obj = EntityType.EPOCH_GROUP;
+                case 'Epoch Block';
+                    obj = EntityType.EPOCH_BLOCK;
+                case 'Epoch'
+                    obj = EntityType.EPOCH;
+                otherwise
+                    error('Unknown type');
+            end
+        end
+        
+    end
+    
 end
 

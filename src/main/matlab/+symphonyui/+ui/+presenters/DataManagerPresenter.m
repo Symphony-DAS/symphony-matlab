@@ -691,6 +691,9 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSelectedAddPreset(obj, ~, ~)
+            obj.view.stopEditingProperties();
+            obj.view.update();
+            
             entitySet = obj.getSelectedEntitySet();
             presenter = symphonyui.ui.presenters.AddEntityPresetPresenter(obj.documentationService, entitySet);
             presenter.goWaitStop();

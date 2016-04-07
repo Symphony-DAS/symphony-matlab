@@ -20,12 +20,13 @@ classdef Source < symphonyui.core.persistent.Entity
         end
         
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.SourcePreset(name, obj.getDescriptionType(), obj.getProperties(), obj.label);
+            p = createPreset@symphonyui.core.persistent.Entity(obj, name);
+            p.classProperties('label') = obj.label;
         end
         
         function applyPreset(obj, preset)
             applyPreset@symphonyui.core.persistent.Entity(obj, preset);
-            obj.label = preset.label;
+            obj.label = preset.classProperties('label');
         end
 
         function l = get.label(obj)

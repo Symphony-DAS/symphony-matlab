@@ -15,7 +15,8 @@ classdef EpochGroupSet < symphonyui.core.persistent.collections.TimelineEntitySe
         end
 
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.EpochGroupPreset(name, obj.getDescriptionType(), obj.getProperties(), obj.label);
+            p = createPreset@symphonyui.core.persistent.collections.TimelineEntitySet(obj, name);
+            p.classProperties('label') = obj.label;
         end
 
         function l = get.label(obj)

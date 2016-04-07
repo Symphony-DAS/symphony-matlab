@@ -19,12 +19,13 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
         
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.ExperimentPreset(name,  obj.getDescriptionType(), obj.getProperties(), obj.purpose);
+            p = createPreset@symphonyui.core.persistent.TimelineEntity(obj, name);
+            p.classProperties('purpose') = obj.purpose;
         end
         
         function applyPreset(obj, preset)
             applyPreset@symphonyui.core.persistent.TimelineEntity(obj, preset);
-            obj.purpose = preset.purpose;
+            obj.purpose = preset.classProperties('purpose');
         end
 
         function p = get.purpose(obj)

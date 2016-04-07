@@ -22,7 +22,7 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function p = createPreset(obj, name)
-            p = symphonyui.core.persistent.EntityPreset(name, obj.getEntityType(), obj.getDescriptionType(), obj.getProperties());
+            p = symphonyui.core.persistent.EntityPreset(name, obj.getEntityType(), obj.getDescriptionType(), containers.Map(), obj.getProperties());
         end
 
         function applyPreset(obj, preset)

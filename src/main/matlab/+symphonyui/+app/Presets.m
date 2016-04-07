@@ -101,12 +101,27 @@ classdef Presets < appbox.Settings
         end
         
         function p = get.entityPresets(obj)
-            p = obj.get('entityPresets', containers.Map);
+            p = containers.Map();
+            structs = obj.get('entityPresets', containers.Map);
+            keys = structs.keys;
+            for i = 1:numel(keys)
+                s = structs(keys{i});
+                s.entityType = symphonyui.core.persistent.EntityType.fromChar(s.entityType);
+                p(keys{i}) = symphonyui.core.persistent.EntityPreset.fromStruct(s);
+            end
         end
         
         function set.entityPresets(obj, p)
             validateattributes(p, {'containers.Map'}, {'2d'});
-            obj.put('entityPresets', p);
+            structs = containers.Map();
+            keys = p.keys;
+            for i = 1:numel(keys)
+                preset = p(keys{i});
+                s = preset.toStruct();
+                s.entityType = char(s.entityType);
+                structs(keys{i}) = s;
+            end
+            obj.put('entityPresets', structs);
         end
         
     end
