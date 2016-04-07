@@ -486,6 +486,14 @@ classdef DataManagerView < appbox.View
                 'String', {' '}, ...
                 'HorizontalAlignment', 'left', ...
                 'Callback', @obj.onSelectedPreset);
+            
+            % The default GetJControlFcn is far too slow because it uses findjobj. This is much faster but also very
+            % fragile. The tradeoff is worth it here. 
+            function jcontrol = getPresetMenuJControl(control)
+                parent = control.Parent.JavaFrame.getPrintableComponent();
+                jcontrol = parent.getComponent(0).getComponent(0);
+            end
+            set(obj.presetPopupMenu, 'GetJControlFcn', @getPresetMenuJControl);
 
             set(mainLayout, 'Widths', [-1 -2]);
         end
@@ -910,8 +918,9 @@ classdef DataManagerView < appbox.View
         end
         
         function setPresetList(obj, names, values)
-            set(obj.presetPopupMenu, 'String', [{'Presets...'} names {'Add...', 'Manage...'}]);
-            set(obj.presetPopupMenu, 'Values', [{'Presets...'} values {'Add...', 'Manage...'}]);
+            set(obj.presetPopupMenu, 'String', [{'Presets...', 'Add...', 'Manage...'} names]);
+            set(obj.presetPopupMenu, 'Values', [{'Presets...', 'Add...', 'Manage...'} values]);
+            obj.presetPopupMenu.setSeparatorIndices([3]);
         end
         
         function p = getSelectedPreset(obj)
