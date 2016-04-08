@@ -26,6 +26,11 @@ classdef Epoch < symphonyui.core.CoreObject
         function addStimulus(obj, device, stimulus)
             obj.tryCore(@()obj.cobj.Stimuli.Add(device.cobj, stimulus.cobj));
         end
+        
+        function s = getStimulus(obj, device)
+            cstim = obj.tryCoreWithReturn(@()obj.cobj.Stimuli.Item(device.cobj));
+            s = symphonyui.core.Stimulus(cstim);
+        end
 
         function addDirectCurrentStimulus(obj, device, measurement, duration, sampleRate)
             g = symphonyui.builtin.stimuli.DirectCurrentGenerator();
