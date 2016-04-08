@@ -2,10 +2,10 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
 
     properties
         label
+        source
     end
 
     properties (SetAccess = private)
-        source
         epochGroups
         allEpochGroups
         epochBlocks
@@ -39,6 +39,10 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
 
         function s = get.source(obj)
             s = symphonyui.core.persistent.Source(obj.cobj.Source);
+        end
+        
+        function set.source(obj, s)
+            obj.cobj.Source = s.cobj;
         end
 
         function g = get.epochGroups(obj)

@@ -64,6 +64,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
+            obj.addListener(v, 'SelectedEpochGroupSource', @obj.onViewSelectedEpochGroupSource);
             obj.addListener(v, 'SelectedEpochSignal', @obj.onViewSelectedEpochSignal);
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
@@ -340,13 +341,15 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function populateDetailsForEpochGroupSet(obj, groupSet)
-            sourceSet = symphonyui.core.persistent.collections.SourceSet(groupSet.source);
-
+            allSources = obj.documentationService.getExperiment().allSources;
+            
             obj.view.enableEpochGroupLabel(groupSet.size == 1);
             obj.view.setEpochGroupLabel(groupSet.label);
             obj.view.setEpochGroupStartTime(strtrim(datestr(groupSet.startTime, 14)));
             obj.view.setEpochGroupEndTime(strtrim(datestr(groupSet.endTime, 14)));
-            obj.view.setEpochGroupSource(sourceSet.label);
+            obj.view.enableSelectEpochGroupSource(groupSet.size == 1);
+            obj.view.setEpochGroupSourceList(cellfun(@(s)s.label, allSources, 'UniformOutput', false), allSources);
+            obj.view.setSelectedEpochGroupSource(groupSet.source);
             obj.view.setCardSelection(obj.view.EPOCH_GROUP_CARD);
 
             obj.populateCommonDetailsForEntitySet(groupSet);
@@ -361,7 +364,19 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-            obj.updateNodeNamesForEpochGroupSet(groupSet)
+            obj.updateNodeNamesForEpochGroupSet(groupSet);
+        end
+        
+        function onViewSelectedEpochGroupSource(obj, ~, ~)
+            groupSet = obj.getSelectedEntitySet();
+            try
+                groupSet.source = obj.view.getSelectedEpochGroupSource();
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+            obj.updateNodeNamesForEpochGroupSet(groupSet);
         end
 
         function updateNodeNamesForEpochGroupSet(obj, groupSet)

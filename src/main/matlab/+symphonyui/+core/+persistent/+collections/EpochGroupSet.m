@@ -2,9 +2,6 @@ classdef EpochGroupSet < symphonyui.core.persistent.collections.TimelineEntitySe
 
     properties
         label
-    end
-
-    properties (SetAccess = private)
         source
     end
 
@@ -36,6 +33,12 @@ classdef EpochGroupSet < symphonyui.core.persistent.collections.TimelineEntitySe
             s = [];
             if ~isempty(obj.objects) && all(cellfun(@(g)isequal(g.source, obj.objects{1}.source), obj.objects))
                 s = obj.objects{1}.source;
+            end
+        end
+        
+        function set.source(obj, s)
+            for i = 1:obj.size
+                obj.get(i).source = s;
             end
         end
 

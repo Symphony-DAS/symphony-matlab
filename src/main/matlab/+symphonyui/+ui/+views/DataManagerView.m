@@ -9,6 +9,7 @@ classdef DataManagerView < appbox.View
         BeginEpochGroup
         EndEpochGroup
         SetEpochGroupLabel
+        SelectedEpochGroupSource
         SelectedEpochSignal
         SetProperty
         AddProperty
@@ -260,11 +261,11 @@ classdef DataManagerView < appbox.View
                 'Style', 'edit', ...
                 'Enable', 'off', ...
                 'HorizontalAlignment', 'left');
-            obj.epochGroupCard.sourceField = uicontrol( ...
+            obj.epochGroupCard.sourcePopupMenu = MappedPopupMenu( ...
                 'Parent', epochGroupGrid, ...
-                'Style', 'edit', ...
-                'Enable', 'off', ...
-                'HorizontalAlignment', 'left');
+                'String', {' '}, ...
+                'HorizontalAlignment', 'left', ...
+                'Callback', @(h,d)notify(obj, 'SelectedEpochGroupSource'));
             set(epochGroupGrid, ...
                 'Widths', [60 -1], ...
                 'Heights', [23 23 23 23]);
@@ -672,11 +673,24 @@ classdef DataManagerView < appbox.View
         function setEpochGroupEndTime(obj, t)
             set(obj.epochGroupCard.endTimeField, 'String', t);
         end
-
-        function setEpochGroupSource(obj, s)
-            set(obj.epochGroupCard.sourceField, 'String', s);
+        
+        function enableSelectEpochGroupSource(obj, tf)
+            set(obj.epochGroupCard.sourcePopupMenu, 'Enable', appbox.onOff(tf));
+        end
+        
+        function s = getSelectedEpochGroupSource(obj)
+            s = get(obj.epochGroupCard.sourcePopupMenu, 'Value');
         end
 
+        function setSelectedEpochGroupSource(obj, s)
+            set(obj.epochGroupCard.sourcePopupMenu, 'Value', s);
+        end 
+        
+        function setEpochGroupSourceList(obj, names, values)
+            set(obj.epochGroupCard.sourcePopupMenu, 'String', names);
+            set(obj.epochGroupCard.sourcePopupMenu, 'Values', values);
+        end
+        
         function setEpochGroupNodeCurrent(obj, node)
             node.setIcon(symphonyui.app.App.getResource('icons/group_current.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
@@ -920,7 +934,7 @@ classdef DataManagerView < appbox.View
         function setPresetList(obj, names, values)
             set(obj.presetPopupMenu, 'String', [{'Presets...', 'Add...', 'Manage...'} names]);
             set(obj.presetPopupMenu, 'Values', [{'Presets...', 'Add...', 'Manage...'} values]);
-            obj.presetPopupMenu.setSeparatorIndices([3]);
+            obj.presetPopupMenu.setSeparatorIndices(3);
         end
         
         function p = getSelectedPreset(obj)
