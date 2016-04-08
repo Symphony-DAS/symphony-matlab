@@ -341,15 +341,24 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function populateDetailsForEpochGroupSet(obj, groupSet)
-            allSources = obj.documentationService.getExperiment().allSources;
-            
             obj.view.enableEpochGroupLabel(groupSet.size == 1);
             obj.view.setEpochGroupLabel(groupSet.label);
             obj.view.setEpochGroupStartTime(strtrim(datestr(groupSet.startTime, 14)));
             obj.view.setEpochGroupEndTime(strtrim(datestr(groupSet.endTime, 14)));
+            
+            source = groupSet.source;
+            if isempty(source)
+                names = {' '};
+                values = {[]};
+            else
+                sources = obj.documentationService.getExperiment().allSources;
+                names = cellfun(@(s)s.label, sources, 'UniformOutput', false);
+                values = sources;
+            end
             obj.view.enableSelectEpochGroupSource(groupSet.size == 1);
-            obj.view.setEpochGroupSourceList(cellfun(@(s)s.label, allSources, 'UniformOutput', false), allSources);
-            obj.view.setSelectedEpochGroupSource(groupSet.source);
+            obj.view.setEpochGroupSourceList(names, values);
+            obj.view.setSelectedEpochGroupSource(source);
+            
             obj.view.setCardSelection(obj.view.EPOCH_GROUP_CARD);
 
             obj.populateCommonDetailsForEntitySet(groupSet);
