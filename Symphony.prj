@@ -24,14 +24,15 @@
     <param.products.version>
       <item>9.0</item>
     </param.products.version>
-    <param.platforms/>
-    <param.output>C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2</param.output>
+    <param.platforms>
+      <item>win64</item>
+      <item>win32</item>
+    </param.platforms>
+    <param.output>${PROJECT_ROOT}\target</param.output>
     <param.guid>e743f2b1-d1a0-42d2-94cf-75fb1d084943</param.guid>
     <unset>
       <param.authnamewatermark/>
       <param.email/>
-      <param.platforms/>
-      <param.output/>
     </unset>
     <fileset.main>
       <file>${PROJECT_ROOT}\src\main\matlab\main.m</file>
@@ -683,27 +684,14 @@
       <file>${PROJECT_ROOT}\src\main\resources\icons\view_only_big.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\view_only_bigger.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\screenshot.png</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\+stimuli\DirectCurrentGeneratorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\+stimuli\PulseGeneratorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\+stimuli\PulseTrainGeneratorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\+stimuli\RampGeneratorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\+stimuli\RepeatingPulseGeneratorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\+stimuli\SineGeneratorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\+stimuli\SquareGeneratorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\+stimuli\SumGeneratorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\+stimuli\WaveformGeneratorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+builtin\StimulusGeneratorTestBase.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+core\+persistent\+collections\EntitySetTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\+core\PersistorTest.m</file>
-      <file>${PROJECT_ROOT}\src\test\matlab\+symphonyui\TestBase.m</file>
     </fileset.depfun>
     <fileset.resources>
       <file>${PROJECT_ROOT}\lib</file>
-      <file>${PROJECT_ROOT}\src</file>
+      <file>${PROJECT_ROOT}\src\main</file>
     </fileset.resources>
     <fileset.package/>
     <build-deliverables>
-      <file location="C:\Users\Client Admin\Documents\src\Symphony-DAS" name="symphony-matlab2" optional="false">C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2</file>
+      <file location="C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2" name="target" optional="false">C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2\target</file>
     </build-deliverables>
     <workflow/>
     <matlab>

@@ -1,9 +1,9 @@
 function site()
     rootPath = fileparts(mfilename('fullpath'));
     sitePath = fullfile(rootPath, 'src', 'site');
-    targetPath = fullfile(rootPath, 'target', 'site');
-    
     markdownPath = fullfile(sitePath, 'markdown');
+    targetPath = fullfile(rootPath, 'target', 'site');
+    [~, ~] = mkdir(targetPath);
     
     markdownFiles = dir(fullfile(markdownPath, '*.md'));
     for i = 1:length(markdownFiles)
@@ -11,12 +11,16 @@ function site()
         
         [~, name] = fileparts(markdown.name);
         
-        input = fullfile(markdownPath, [name '.md']);
-        output = fullfile(targetPath, [name '.html']);
+        inputFile = fullfile(markdownPath, [name '.md']);
+        outputFile = fullfile(targetPath, [name '.html']);
         
-        command = sprintf('pandoc -c bootstrap.min.css -s -f markdown_github "%s" -o "%s"', input, output);
-        system(command);
-        replace(output, '.md', '.html'); 
+        command = sprintf('pandoc -c bootstrap.min.css -s -f markdown_github "%s" -o "%s"', inputFile, outputFile);
+        [status, out] = system(command);
+        if status ~= 0
+            error(out);
+        end
+        
+        replace(outputFile, '.md', '.html'); 
     end
     
     copyfile(fullfile(sitePath, 'info.xml'), fullfile(targetPath));
