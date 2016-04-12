@@ -2,5 +2,5 @@
 	path = lib/appbox
 	url = https://github.com/cafarm/appbox.git
 [submodule "src/site/markdown"]
-	path = src/site/markdown
+	path = src/site/wiki
 	url = https://github.com/Symphony-DAS/symphony-matlab2.wiki.git

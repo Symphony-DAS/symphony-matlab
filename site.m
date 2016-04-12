@@ -1,17 +1,15 @@
 function site()
     rootPath = fileparts(mfilename('fullpath'));
     sitePath = fullfile(rootPath, 'src', 'site');
-    markdownPath = fullfile(sitePath, 'markdown');
+    wikiPath = fullfile(sitePath, 'wiki');
     targetPath = fullfile(rootPath, 'target', 'site');
     [~, ~] = mkdir(targetPath);
     
-    markdownFiles = dir(fullfile(markdownPath, '*.md'));
+    markdownFiles = dir(fullfile(wikiPath, '*.md'));
     for i = 1:length(markdownFiles)
-        markdown = markdownFiles(i);
+        [~, name] = fileparts(markdownFiles(i).name);
         
-        [~, name] = fileparts(markdown.name);
-        
-        inputFile = fullfile(markdownPath, [name '.md']);
+        inputFile = fullfile(wikiPath, [name '.md']);
         outputFile = fullfile(targetPath, [name '.html']);
         
         command = sprintf('pandoc -c css/bootstrap.min.css -s -f markdown_github "%s" -o "%s"', inputFile, outputFile);
