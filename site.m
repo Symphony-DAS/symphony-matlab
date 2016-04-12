@@ -18,8 +18,11 @@ function site()
             error(out);
         end
         
-        replace(outputFile, '.md', '.html'); 
+        % Add html extension to links with no extension.
+        replace(outputFile, 'href="\w*\.*\"', '${$0(1:end-1)}.html\"'); 
     end
+    
+    copyfile(fullfile(wikiPath, 'images'), fullfile(targetPath, 'images'));
     
     copyfile(fullfile(sitePath, 'info.xml'), fullfile(targetPath));
     copyfile(fullfile(sitePath, 'helptoc.xml'), fullfile(targetPath));
