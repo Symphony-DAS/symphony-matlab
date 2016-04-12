@@ -7,7 +7,7 @@ classdef App < handle
         end
         
         function v = version()
-            v = '2.0.1.7'; % i.e. 2.0-b7
+            v = '2.0.2.1'; % i.e. 2.0-rc1
         end
         
         function c = copyright()
