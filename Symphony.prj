@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="4009492481" file="C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2\Symphony.prj" location="C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2" name="Symphony" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="4009492481" file="${PROJECT_ROOT}\Symphony.prj" location="${PROJECT_ROOT}" name="Symphony" target="target.mlapps" target-name="Package App">
     <param.appname>Symphony</param.appname>
-    <param.authnamewatermark/>
-    <param.email/>
+    <param.authnamewatermark>Symphony-DAS</param.authnamewatermark>
+    <param.email>symphony-das@googlegroups.com</param.email>
     <param.company>Symphony-DAS</param.company>
     <param.icon>${PROJECT_ROOT}\Symphony_resources\icon_24.png</param.icon>
     <param.icons>
@@ -14,7 +14,7 @@
     <param.summary>Electrophysiology Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB-based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.0.1.7</param.version>
+    <param.version>2.0.2.1</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -31,8 +31,7 @@
     <param.output>${PROJECT_ROOT}\target</param.output>
     <param.guid>e743f2b1-d1a0-42d2-94cf-75fb1d084943</param.guid>
     <unset>
-      <param.authnamewatermark/>
-      <param.email/>
+      
     </unset>
     <fileset.main>
       <file>${PROJECT_ROOT}\src\main\matlab\main.m</file>
@@ -621,6 +620,12 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\Module.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\UiEventData.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\Contents.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\css\bootstrap.min.css</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helptoc.xml</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Home.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\test.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\info.xml</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Installation.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+epochgroups\Control.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+epochgroups\Drug.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+epochgroups\Wash.m</file>
@@ -691,7 +696,7 @@
     </fileset.resources>
     <fileset.package/>
     <build-deliverables>
-      <file location="C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2" name="target" optional="false">C:\Users\Client Admin\Documents\src\Symphony-DAS\symphony-matlab2\target</file>
+      <file location="${PROJECT_ROOT}" name="symphony-matlab2" optional="false">${PROJECT_ROOT}\target</file>
     </build-deliverables>
     <workflow/>
     <matlab>
