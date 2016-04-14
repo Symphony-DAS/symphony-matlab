@@ -809,7 +809,15 @@ classdef DataManagerPresenter < appbox.Presenter
                 if isempty(group)
                     return;
                 end
-                obj.updateEpochGroupNode(group);
+                blocks = group.epochBlocks;
+                if ~isempty(blocks)
+                    b = blocks{end};
+                    if ~obj.uuidToNode.isKey(b.uuid)
+                        obj.addEpochBlockNode(b);
+                    else
+                        obj.updateEpochBlockNode(b);
+                    end
+                end
             end
         end
 
