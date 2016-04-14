@@ -5,12 +5,12 @@
     <param.authnamewatermark>Symphony-DAS</param.authnamewatermark>
     <param.email>symphony-das@googlegroups.com</param.email>
     <param.company>Symphony-DAS</param.company>
-    <param.icon>${PROJECT_ROOT}\Symphony_resources\icon_24.png</param.icon>
+    <param.icon>${PROJECT_ROOT}\src\main\resources\icons\app_24.png</param.icon>
     <param.icons>
-      <file>${PROJECT_ROOT}\Symphony_resources\icon_48.png</file>
-      <file>${PROJECT_ROOT}\Symphony_resources\icon_24.png</file>
-      <file>${PROJECT_ROOT}\Symphony_resources\icon_16.png</file>
-    </param.icons>
+      
+      
+      
+    <file>${PROJECT_ROOT}\src\main\resources\icons\app_16.png</file><file>${PROJECT_ROOT}\src\main\resources\icons\app_24.png</file><file>${PROJECT_ROOT}\src\main\resources\icons\app_48.png</file></param.icons>
     <param.summary>MATLAB-based electrophysiology data acquisition system</param.summary>
     <param.description>Symphony is a MATLAB-based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
@@ -646,6 +646,9 @@
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Subject.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\log.xml</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\add.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\icons\app_16.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\icons\app_24.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\icons\app_48.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\apply.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\block.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\device.png</file>
