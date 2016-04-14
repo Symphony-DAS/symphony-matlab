@@ -10,6 +10,7 @@ classdef DataManagerPresenter < appbox.Presenter
         documentationService
         acquisitionService
         configurationService
+        detailedEntitySet
         uuidToNode
     end
 
@@ -26,6 +27,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
             obj.configurationService = configurationService;
+            obj.detailedEntitySet = symphonyui.core.persistent.collections.EntitySet();
             obj.uuidToNode = containers.Map();
         end
 
@@ -135,7 +137,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function onViewSelectedAddSource(obj, ~, ~)
             selectedParent = [];
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             if entitySet.size == 1 && entitySet.getEntityType() == symphonyui.core.persistent.EntityType.SOURCE
                 selectedParent = entitySet.get(1);
             end
@@ -182,7 +184,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSetSourceLabel(obj, ~, ~)
-            sourceSet = obj.getSelectedEntitySet();
+            sourceSet = obj.detailedEntitySet;
             try
                 sourceSet.label = obj.view.getSourceLabel();
             catch x
@@ -220,7 +222,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSetExperimentPurpose(obj, ~, ~)
-            experimentSet = obj.getSelectedEntitySet();
+            experimentSet = obj.detailedEntitySet;
             try
                 experimentSet.purpose = obj.view.getExperimentPurpose();
             catch x
@@ -365,7 +367,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSetEpochGroupLabel(obj, ~, ~)
-            groupSet = obj.getSelectedEntitySet();
+            groupSet = obj.detailedEntitySet;
             try
                 groupSet.label = obj.view.getEpochGroupLabel();
             catch x
@@ -377,7 +379,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
         
         function onViewSelectedEpochGroupSource(obj, ~, ~)
-            groupSet = obj.getSelectedEntitySet();
+            groupSet = obj.detailedEntitySet;
             try
                 groupSet.source = obj.view.getSelectedEpochGroupSource();
             catch x
@@ -511,7 +513,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.populateCommonDetailsForEntitySet(entitySet);
         end
 
-        function onViewSelectedNodes(obj, ~, ~)            
+        function onViewSelectedNodes(obj, ~, ~)
             obj.view.stopEditingProperties();
             obj.view.resetSelectedPreset();
             obj.view.update();
@@ -549,6 +551,8 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.populateKeywordsForEntitySet(entitySet);
             obj.populateNotesForEntitySet(entitySet);
             obj.populatePresetsForEntitySet(entitySet);
+            
+            obj.detailedEntitySet = entitySet;
         end
 
         function populatePropertiesForEntitySet(obj, entitySet)
@@ -575,7 +579,7 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function onViewSetProperty(obj, ~, event)
             p = event.data.Property;
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             try
                 entitySet.setProperty(p.Name, p.Value);
             catch x
@@ -586,7 +590,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSelectedAddProperty(obj, ~, ~)
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             presenter = symphonyui.ui.presenters.AddPropertyPresenter(entitySet);
             presenter.goWaitStop();
             
@@ -601,7 +605,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 return;
             end
             
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             try
                 tf = entitySet.removeProperty(key);
             catch x
@@ -631,7 +635,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSelectedAddKeyword(obj, ~, ~)
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             presenter = symphonyui.ui.presenters.AddKeywordPresenter(entitySet);
             presenter.goWaitStop();
 
@@ -647,7 +651,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 return;
             end
             
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             try
                 entitySet.removeKeyword(keyword);
             catch x
@@ -671,7 +675,7 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSelectedAddNote(obj, ~, ~)
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             presenter = symphonyui.ui.presenters.AddNotePresenter(entitySet);
             presenter.goWaitStop();
 
@@ -690,7 +694,7 @@ classdef DataManagerPresenter < appbox.Presenter
         function onViewSelectedPreset(obj, ~, ~)
             import symphonyui.core.persistent.EntityType;
             
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
 
             name = obj.view.getSelectedPreset();
             try
@@ -718,29 +722,29 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.stopEditingProperties();
             obj.view.update();
             
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             presenter = symphonyui.ui.presenters.AddEntityPresetPresenter(obj.documentationService, entitySet);
             presenter.goWaitStop();
         end
 
         function onServiceAddedEntityPreset(obj, ~, ~)
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             obj.populatePresetsForEntitySet(entitySet);
         end
 
         function onViewSelectedManagePresets(obj, ~, ~)
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             presenter = symphonyui.ui.presenters.EntityPresetsPresenter(obj.documentationService, entitySet);
             presenter.goWaitStop();
         end
 
         function onServiceRemovedEntityPreset(obj, ~, ~)
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             obj.populatePresetsForEntitySet(entitySet);
         end
 
         function onViewSelectedSendEntityToWorkspace(obj, ~, ~)
-            entitySet = obj.getSelectedEntitySet();
+            entitySet = obj.detailedEntitySet;
             for i = 1:entitySet.size
                 try
                     obj.documentationService.sendEntityToWorkspace(entitySet.get(i));
