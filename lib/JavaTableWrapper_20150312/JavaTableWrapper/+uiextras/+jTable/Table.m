@@ -192,8 +192,8 @@ classdef Table < hgsetget
     end
     properties
         MouseClickedCallback = ''
-        MouseDraggedCallback = ''
-        MouseMotionFcn = ''
+        %MouseDraggedCallback = ''
+        %MouseMotionFcn = ''
     end
     properties(Dependent = true)
         Parent
@@ -318,8 +318,8 @@ classdef Table < hgsetget
             p.addParamValue('FontSize',10);
             p.addParamValue('FontWeight','normal');
             p.addParamValue('MouseClickedCallback','');
-            p.addParamValue('MouseDraggedCallback','');
-            p.addParamValue('MouseMotionFcn','');
+            %p.addParamValue('MouseDraggedCallback','');
+            %p.addParamValue('MouseMotionFcn','');
             p.addParamValue('Parent',[]);
             p.addParamValue('Position',[0 0 1 1]);
             p.addParamValue('RowHeight',20);
@@ -447,14 +447,14 @@ classdef Table < hgsetget
             set(CbProps,'MouseClickedCallback',@(src,e)onMouseClick(obj,e,'table'))
             set(CbProps,'MousePressedCallback',@(src,e)onButtonDown(obj,e,'table'))
             set(CbProps,'MouseReleasedCallback',@(src,e)onButtonUp(obj,e,'table'))
-            set(CbProps,'MouseDraggedCallback',@(src,e)onMouseDrag(obj,e,'table'))
-            set(CbProps,'MouseMovedCallback',@(src,e)onMouseMotion(obj,e,'table'))
+            %set(CbProps,'MouseDraggedCallback',@(src,e)onMouseDrag(obj,e,'table'))
+            %set(CbProps,'MouseMovedCallback',@(src,e)onMouseMotion(obj,e,'table'))
             CbProps = handle(jScrollPane,'CallbackProperties');
             set(CbProps,'MouseClickedCallback',@(src,e)onMouseClick(obj,e,'scrollpane'))
             set(CbProps,'MousePressedCallback',@(src,e)onButtonDown(obj,e,'scrollpane'))
             set(CbProps,'MouseReleasedCallback',@(src,e)onButtonUp(obj,e,'scrollpane'))
-            set(CbProps,'MouseDraggedCallback',@(src,e)onMouseDrag(obj,e,'scrollpane'))
-            set(CbProps,'MouseMovedCallback',@(src,e)onMouseMotion(obj,e,'scrollpane'))
+            %set(CbProps,'MouseDraggedCallback',@(src,e)onMouseDrag(obj,e,'scrollpane'))
+            %set(CbProps,'MouseMovedCallback',@(src,e)onMouseMotion(obj,e,'scrollpane'))
             
             % Get the column model
             jColumnModel = jTable.getColumnModel();
@@ -1776,59 +1776,59 @@ classdef Table < hgsetget
         end %function onMouseClick
         
         
-        function onMouseDrag(obj,e,location)
-            
-            if obj.Debug, disp('onMouseDrag'); end
-            
-            if callbacksEnabled(obj) && ~isempty(obj.MouseDraggedCallback)
-                
-                if obj.Debug, disp('onMouseDrag - entered'); end
-                
-                % Get the position clicked
-                x = e.getX;
-                y = e.getY;
-                
-                % Get the cell clicked
-                row = obj.JTable.rowAtPoint(e.getPoint) + 1;
-                col = obj.JTable.columnAtPoint(e.getPoint) + 1;
-                
-                % Call the custom callback
-                e1 = struct(...
-                    'Position',[x,y],...
-                    'Location',location,...
-                    'Cell',[row col]);
-                hgfeval(obj.MouseDraggedCallback,obj,e1);
-                
-            end
-            
-        end %function
+%         function onMouseDrag(obj,e,location)
+%             
+%             if obj.Debug, disp('onMouseDrag'); end
+%             
+%             if callbacksEnabled(obj) && ~isempty(obj.MouseDraggedCallback)
+%                 
+%                 if obj.Debug, disp('onMouseDrag - entered'); end
+%                 
+%                 % Get the position clicked
+%                 x = e.getX;
+%                 y = e.getY;
+%                 
+%                 % Get the cell clicked
+%                 row = obj.JTable.rowAtPoint(e.getPoint) + 1;
+%                 col = obj.JTable.columnAtPoint(e.getPoint) + 1;
+%                 
+%                 % Call the custom callback
+%                 e1 = struct(...
+%                     'Position',[x,y],...
+%                     'Location',location,...
+%                     'Cell',[row col]);
+%                 hgfeval(obj.MouseDraggedCallback,obj,e1);
+%                 
+%             end
+%             
+%         end %function
         
-        function onMouseMotion(obj,e,location)
-            
-            %if obj.Debug, disp('onMouseMotion'); end
-            
-            if callbacksEnabled(obj) && ~isempty(obj.MouseMotionFcn)
-                
-                if obj.Debug, disp('onMouseMotion - entered'); end
-                
-                % Get the position clicked
-                x = e.getX;
-                y = e.getY;
-                
-                % Get the cell clicked
-                row = obj.JTable.rowAtPoint(e.getPoint) + 1;
-                col = obj.JTable.columnAtPoint(e.getPoint) + 1;
-                
-                % Call the custom callback
-                e1 = struct(...
-                    'Position',[x,y],...
-                    'Location',location,...
-                    'Cell',[row col]);
-                hgfeval(obj.MouseMotionFcn,obj,e1);
-                
-            end
-            
-        end %function
+%         function onMouseMotion(obj,e,location)
+%             
+%             %if obj.Debug, disp('onMouseMotion'); end
+%             
+%             if callbacksEnabled(obj) && ~isempty(obj.MouseMotionFcn)
+%                 
+%                 if obj.Debug, disp('onMouseMotion - entered'); end
+%                 
+%                 % Get the position clicked
+%                 x = e.getX;
+%                 y = e.getY;
+%                 
+%                 % Get the cell clicked
+%                 row = obj.JTable.rowAtPoint(e.getPoint) + 1;
+%                 col = obj.JTable.columnAtPoint(e.getPoint) + 1;
+%                 
+%                 % Call the custom callback
+%                 e1 = struct(...
+%                     'Position',[x,y],...
+%                     'Location',location,...
+%                     'Cell',[row col]);
+%                 hgfeval(obj.MouseMotionFcn,obj,e1);
+%                 
+%             end
+%             
+%         end %function
         
         
         function onSelectionChanged(obj, ~, eventData)
