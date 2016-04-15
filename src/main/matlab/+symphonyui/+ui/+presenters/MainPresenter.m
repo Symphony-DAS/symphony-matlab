@@ -597,7 +597,7 @@ classdef MainPresenter < appbox.Presenter
         end
 
         function onViewSelectedShowDocumentation(obj, ~, ~)
-            obj.view.showWeb(symphonyui.app.App.documentationUrl);
+            obj.view.showWeb(symphonyui.app.App.documentationUrl, '-helpbrowser');
         end
 
         function onViewSelectedShowUserGroup(obj, ~, ~)

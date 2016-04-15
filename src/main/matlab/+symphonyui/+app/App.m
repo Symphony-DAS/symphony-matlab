@@ -15,7 +15,7 @@ classdef App < handle
         end
         
         function u = documentationUrl()
-            u = 'https://github.com/Symphony-DAS/symphony-matlab2/wiki';
+            u = symphonyui.app.App.getResource(fullfile('docs', 'Home.html'));
         end
         
         function u = userGroupUrl()
