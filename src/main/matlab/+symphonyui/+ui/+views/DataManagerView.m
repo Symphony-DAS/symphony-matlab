@@ -68,7 +68,7 @@ classdef DataManagerView < appbox.View
             set(obj.figureHandle, ...
                 'Name', 'Data Manager', ...
                 'Position', screenCenter(611, 450));
-            
+
             obj.toolbar = Menu(obj.figureHandle);
             obj.configureDevicesTool = obj.toolbar.addPushTool( ...
                 'Label', 'Configure Devices', ...
@@ -82,7 +82,7 @@ classdef DataManagerView < appbox.View
             obj.endEpochGroupTool = obj.toolbar.addPushTool( ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
-            
+
             mainLayout = uix.HBoxFlex( ...
                 'Parent', obj.figureHandle, ...
                 'DividerMarkings', 'off', ...
@@ -102,7 +102,7 @@ classdef DataManagerView < appbox.View
 
             root = obj.entityTree.Root;
             set(root, 'Value', struct('entity', [], 'type', EntityNodeType.EXPERIMENT));
-            root.setIcon(symphonyui.app.App.getResource('icons/experiment.png'));
+            root.setIcon(symphonyui.app.App.getResource('icons', 'experiment.png'));
             rootMenu = uicontextmenu('Parent', obj.figureHandle);
             uimenu( ...
                 'Parent', rootMenu, ...
@@ -119,7 +119,7 @@ classdef DataManagerView < appbox.View
                 'Parent', root, ...
                 'Name', 'Sources', ...
                 'Value', struct('entity', [], 'type', EntityNodeType.SOURCES_FOLDER));
-            sources.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
+            sources.setIcon(symphonyui.app.App.getResource('icons', 'folder.png'));
             sourcesMenu = uicontextmenu('Parent', obj.figureHandle);
             uimenu( ...
                 'Parent', sourcesMenu, ...
@@ -132,7 +132,7 @@ classdef DataManagerView < appbox.View
                 'Parent', root, ...
                 'Name', 'Epoch Groups', ...
                 'Value', struct('entity', [], 'type', EntityNodeType.EPOCH_GROUP_FOLDER));
-            groups.setIcon(symphonyui.app.App.getResource('icons/folder.png'));
+            groups.setIcon(symphonyui.app.App.getResource('icons', 'folder.png'));
             groupsMenu = uicontextmenu('Parent', obj.figureHandle);
             uimenu( ...
                 'Parent', groupsMenu, ...
@@ -381,18 +381,18 @@ classdef DataManagerView < appbox.View
                 'Parent', propertiesLayout);
             obj.propertiesTab.showHideDescriptionButton = Button( ...
                 'Parent', propertiesToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/show_description.png'), ...
+                'Icon', symphonyui.app.App.getResource('icons', 'show_description.png'), ...
                 'TooltipString', 'Show/Hide Property Description', ...
                 'Callback', @(h,d)notify(obj, 'ShowHidePropertyDescription'));
             uix.Empty('Parent', propertiesToolbarLayout);
             obj.propertiesTab.addButton = Button( ...
                 'Parent', propertiesToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/add.png'), ...
+                'Icon', symphonyui.app.App.getResource('icons', 'add.png'), ...
                 'TooltipString', 'Add Property...', ...
                 'Callback', @(h,d)notify(obj, 'AddProperty'));
             obj.propertiesTab.removeButton = Button( ...
                 'Parent', propertiesToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/remove.png'), ...
+                'Icon', symphonyui.app.App.getResource('icons', 'remove.png'), ...
                 'TooltipString', 'Remove Property', ...
                 'Callback', @(h,d)notify(obj, 'RemoveProperty'));
             uix.Empty('Parent', propertiesToolbarLayout);
@@ -421,12 +421,12 @@ classdef DataManagerView < appbox.View
             uix.Empty('Parent', keywordsToolbarLayout);
             obj.keywordsTab.addButton = Button( ...
                 'Parent', keywordsToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/add.png'), ...
+                'Icon', symphonyui.app.App.getResource('icons', 'add.png'), ...
                 'TooltipString', 'Add Keyword...', ...
                 'Callback', @(h,d)notify(obj, 'AddKeyword'));
             obj.keywordsTab.removeButton = Button( ...
                 'Parent', keywordsToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/remove.png'), ...
+                'Icon', symphonyui.app.App.getResource('icons', 'remove.png'), ...
                 'TooltipString', 'Remove Keyword', ...
                 'Callback', @(h,d)notify(obj, 'RemoveKeyword'));
             uix.Empty('Parent', keywordsToolbarLayout);
@@ -457,12 +457,12 @@ classdef DataManagerView < appbox.View
             uix.Empty('Parent', notesToolbarLayout);
             obj.notesTab.addButton = Button( ...
                 'Parent', notesToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/add.png'), ...
+                'Icon', symphonyui.app.App.getResource('icons', 'add.png'), ...
                 'TooltipString', 'Add Note...', ...
                 'Callback', @(h,d)notify(obj, 'AddNote'));
             obj.notesTab.removeButton = Button( ...
                 'Parent', notesToolbarLayout, ...
-                'Icon', symphonyui.app.App.getResource('icons/remove.png'), ...
+                'Icon', symphonyui.app.App.getResource('icons', 'remove.png'), ...
                 'TooltipString', 'Remove Note', ...
                 'Enable', 'off');
             uix.Empty('Parent', notesToolbarLayout);
@@ -480,16 +480,16 @@ classdef DataManagerView < appbox.View
             obj.parametersTab.grid = uiextras.jide.PropertyGrid(parametersLayout, ...
                 'BorderType', 'none', ...
                 'EditorStyle', 'readonly');
-            
+
             % Preset popupmenu.
             obj.presetPopupMenu = MappedPopupMenu( ...
                 'Parent', obj.experimentCard.presetLayout, ...
                 'String', {' '}, ...
                 'HorizontalAlignment', 'left', ...
                 'Callback', @obj.onSelectedPreset);
-            
+
             % The default GetJControlFcn is far too slow because it uses findjobj. This is much faster but also very
-            % fragile. The tradeoff is worth it here. 
+            % fragile. The tradeoff is worth it here.
             function jcontrol = getPresetMenuJControl(control)
                 parent = control.Parent.JavaFrame.getPrintableComponent();
                 jcontrol = parent.getComponent(0).getComponent(0);
@@ -511,19 +511,19 @@ classdef DataManagerView < appbox.View
             obj.propertiesTab.grid.Close();
             obj.parametersTab.grid.Close();
         end
-        
+
         function enableConfigureDevicesTool(obj, tf)
             set(obj.configureDevicesTool, 'Enable', appbox.onOff(tf));
         end
-        
+
         function enableAddSourceTool(obj, tf)
             set(obj.addSourceTool, 'Enable', appbox.onOff(tf));
         end
-        
+
         function enableBeginEpochGroupTool(obj, tf)
             set(obj.beginEpochGroupTool, 'Enable', appbox.onOff(tf));
         end
-        
+
         function enableEndEpochGroupTool(obj, tf)
             set(obj.endEpochGroupTool, 'Enable', appbox.onOff(tf));
         end
@@ -563,7 +563,7 @@ classdef DataManagerView < appbox.View
         function n = getSourcesFolderNode(obj)
             n = obj.sourcesFolderNode;
         end
-        
+
         function enableAddSourceMenu(obj, node, tf) %#ok<INUSL>
             menu = get(node, 'UIContextMenu');
             children = get(menu, 'Children');
@@ -578,7 +578,7 @@ classdef DataManagerView < appbox.View
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', value);
-            n.setIcon(symphonyui.app.App.getResource('icons/source.png'));
+            n.setIcon(symphonyui.app.App.getResource('icons', 'source.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
             uimenu( ...
                 'Parent', menu, ...
@@ -648,7 +648,7 @@ classdef DataManagerView < appbox.View
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', value);
-            n.setIcon(symphonyui.app.App.getResource('icons/group.png'));
+            n.setIcon(symphonyui.app.App.getResource('icons', 'group.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
             menu = obj.addEntityContextMenus(menu);
             set(n, 'UIContextMenu', menu);
@@ -673,26 +673,26 @@ classdef DataManagerView < appbox.View
         function setEpochGroupEndTime(obj, t)
             set(obj.epochGroupCard.endTimeField, 'String', t);
         end
-        
+
         function enableSelectEpochGroupSource(obj, tf)
             set(obj.epochGroupCard.sourcePopupMenu, 'Enable', appbox.onOff(tf));
         end
-        
+
         function s = getSelectedEpochGroupSource(obj)
             s = get(obj.epochGroupCard.sourcePopupMenu, 'Value');
         end
 
         function setSelectedEpochGroupSource(obj, s)
             set(obj.epochGroupCard.sourcePopupMenu, 'Value', s);
-        end 
-        
+        end
+
         function setEpochGroupSourceList(obj, names, values)
             set(obj.epochGroupCard.sourcePopupMenu, 'String', names);
             set(obj.epochGroupCard.sourcePopupMenu, 'Values', values);
         end
-        
+
         function setEpochGroupNodeCurrent(obj, node)
-            node.setIcon(symphonyui.app.App.getResource('icons/group_current.png'));
+            node.setIcon(symphonyui.app.App.getResource('icons', 'group_current.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
             uimenu( ...
                 'Parent', menu, ...
@@ -707,19 +707,19 @@ classdef DataManagerView < appbox.View
         end
 
         function setEpochGroupNodeNormal(obj, node)
-            node.setIcon(symphonyui.app.App.getResource('icons/group.png'));
+            node.setIcon(symphonyui.app.App.getResource('icons', 'group.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
             menu = obj.addEntityContextMenus(menu);
             set(node, 'UIContextMenu', menu);
         end
-        
+
         function enableBeginEpochGroupMenu(obj, node, tf) %#ok<INUSL>
             menu = get(node, 'UIContextMenu');
             children = get(menu, 'Children');
             index = arrayfun(@(c)isequal(get(c, 'Label'), 'Begin Epoch Group...'), children);
             set(children(index), 'Enable', appbox.onOff(tf));
         end
-        
+
         function enableEndEpochGroupMenu(obj, node, tf) %#ok<INUSL>
             menu = get(node, 'UIContextMenu');
             children = get(menu, 'Children');
@@ -734,7 +734,7 @@ classdef DataManagerView < appbox.View
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', value);
-            n.setIcon(symphonyui.app.App.getResource('icons/block.png'));
+            n.setIcon(symphonyui.app.App.getResource('icons', 'block.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
             menu = obj.addEntityContextMenus(menu);
             set(n, 'UIContextMenu', menu);
@@ -763,7 +763,7 @@ classdef DataManagerView < appbox.View
                 'Parent', parent, ...
                 'Name', name, ...
                 'Value', value);
-            n.setIcon(symphonyui.app.App.getResource('icons/epoch.png'));
+            n.setIcon(symphonyui.app.App.getResource('icons', 'epoch.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
             menu = obj.addEntityContextMenus(menu);
             set(n, 'UIContextMenu', menu);
@@ -805,7 +805,7 @@ classdef DataManagerView < appbox.View
         function addEpochDataLine(obj, x, y, color)
             line(x, y, 'Parent', obj.epochCard.axes, 'Color', color);
         end
-        
+
         function addEpochDataLegend(obj, str)
             legend(obj.epochCard.axes, str);
         end
@@ -867,11 +867,11 @@ classdef DataManagerView < appbox.View
         function setPropertiesEditorStyle(obj, s)
             set(obj.propertiesTab.grid, 'EditorStyle', s);
         end
-        
+
         function setShowPropertyDescription(obj, tf)
             set(obj.propertiesTab.grid, 'ShowDescription', tf);
         end
-        
+
         function tf = getShowPropertyDescription(obj)
             tf = get(obj.propertiesTab.grid, 'ShowDescription');
         end
@@ -926,21 +926,21 @@ classdef DataManagerView < appbox.View
         function addNote(obj, date, text)
             obj.notesTab.table.addRow({date, text});
         end
-        
+
         function enableSelectPreset(obj, tf)
             set(obj.presetPopupMenu, 'Enable', appbox.onOff(tf));
         end
-        
+
         function setPresetList(obj, names, values)
             set(obj.presetPopupMenu, 'String', [{'Presets...', 'Add...', 'Manage...'} names]);
             set(obj.presetPopupMenu, 'Values', [{'Presets...', 'Add...', 'Manage...'} values]);
             obj.presetPopupMenu.setSeparatorIndices(3);
         end
-        
+
         function p = getSelectedPreset(obj)
             p = get(obj.presetPopupMenu, 'Value');
         end
-        
+
         function resetSelectedPreset(obj)
             set(obj.presetPopupMenu, 'Value', 'Presets...');
         end
@@ -966,7 +966,7 @@ classdef DataManagerView < appbox.View
                     notify(obj, 'SelectedPreset');
             end
         end
-        
+
         function menu = addEntityContextMenus(obj, menu)
             uimenu( ...
                 'Parent', menu, ...

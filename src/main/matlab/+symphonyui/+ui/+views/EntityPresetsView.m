@@ -24,7 +24,7 @@ classdef EntityPresetsView < appbox.View
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Spacing', 1);
-            
+
             obj.presetsTable = uiextras.jTable.Table( ...
                 'Parent', mainLayout, ...
                 'ColumnName', {'Preset', 'Remove'}, ...
@@ -40,10 +40,10 @@ classdef EntityPresetsView < appbox.View
                 'ShowVerticalLines', 'off', ...
                 'Focusable', 'off', ...
                 'Editable', 'off');
-            
-            obj.removeButton.icon = App.getResource('icons/remove.png');
+
+            obj.removeButton.icon = App.getResource('icons', 'remove.png');
             obj.removeButton.tooltip = 'Remove Entity Preset';
-            
+
             % OK control.
             controlsLayout = uiextras.HBox( ...
                 'Parent', mainLayout, ...
@@ -59,19 +59,19 @@ classdef EntityPresetsView < appbox.View
             set(controlsLayout, 'Sizes', [-1 75]);
 
             set(mainLayout, 'Heights', [-1 45]);
-            
+
             % Set add button to appear as the default button.
             try %#ok<TRYNC>
                 h = handle(obj.figureHandle);
                 h.setDefaultButton(obj.okButton);
             end
         end
-        
+
         function show(obj)
             show@appbox.View(obj);
             set(obj.presetsTable, 'ColumnHeaderVisible', false);
         end
-        
+
         function setEntityPresets(obj, data)
             d = cell(size(data, 1), 2);
             for i = 1:size(d, 1)
@@ -80,7 +80,7 @@ classdef EntityPresetsView < appbox.View
             end
             set(obj.presetsTable, 'Data', d);
         end
-        
+
         function d = getEntityPresets(obj)
             presets = obj.presetsTable.getColumnData(1);
             d = cell(numel(presets), 2);
@@ -88,7 +88,7 @@ classdef EntityPresetsView < appbox.View
                 d{i, 1} = presets{i};
             end
         end
-        
+
         function removeEntityPreset(obj, name)
             presets = obj.presetsTable.getColumnData(1);
             index = find(cellfun(@(c)strcmp(c, name), presets));
@@ -98,4 +98,3 @@ classdef EntityPresetsView < appbox.View
     end
 
 end
-
