@@ -31,6 +31,10 @@ classdef Epoch < symphonyui.core.CoreObject
             cstim = obj.tryCoreWithReturn(@()obj.cobj.Stimuli.Item(device.cobj));
             s = symphonyui.core.Stimulus(cstim);
         end
+        
+        function tf = hasStimulus(obj, device)
+            tf = obj.tryCoreWithReturn(@()obj.cobj.Stimuli.ContainsKey(device.cobj));
+        end
 
         function addDirectCurrentStimulus(obj, device, measurement, duration, sampleRate)
             g = symphonyui.builtin.stimuli.DirectCurrentGenerator();
@@ -76,6 +80,10 @@ classdef Epoch < symphonyui.core.CoreObject
 
         function setBackground(obj, device, background)
             obj.tryCore(@()obj.cobj.SetBackground(device.cobj, background.cobj, device.cobj.OutputSampleRate));
+        end
+        
+        function tf = hasBackground(obj, device)
+            tf = obj.tryCoreWithReturn(@()obj.cobj.Backgrounds.ContainsKey(device.cobj));
         end
 
         function tf = get.shouldWaitForTrigger(obj)

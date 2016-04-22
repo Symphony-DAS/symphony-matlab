@@ -314,29 +314,31 @@ classdef Controller < symphonyui.core.CoreObject
         function e = nextEpoch(obj)
             e = symphonyui.core.Epoch(class(obj.currentProtocol));
 
-            for i = 1:numel(obj.rig.devices)
-                d = obj.rig.devices{i};
-                if ~isempty(d.outputStreams)
+            obj.currentProtocol.prepareEpoch(e);
+            
+            devices = obj.rig.getOutputDevices();
+            for i = 1:numel(devices)
+                d = devices{i};
+                if ~e.hasStimulus(d) && ~e.hasBackground(d)
                     e.setBackground(d, d.background);
                 end
             end
-
-            obj.currentProtocol.prepareEpoch(e);
         end
 
-        function i = nextInterval(obj)
-            i = symphonyui.core.Epoch(class(obj.currentProtocol));
-            i.shouldBePersisted = false;
-            i.addKeyword(obj.INTERVAL_KEYWORD);
+        function e = nextInterval(obj)
+            e = symphonyui.core.Epoch(class(obj.currentProtocol));
+            e.shouldBePersisted = false;
+            e.addKeyword(obj.INTERVAL_KEYWORD);
 
-            for k = 1:numel(obj.rig.devices)
-                d = obj.rig.devices{k};
-                if ~isempty(d.outputStreams)
-                    i.setBackground(d, d.background);
+            obj.currentProtocol.prepareInterval(e);
+            
+            devices = obj.rig.getOutputDevices();
+            for i = 1:numel(devices)
+                d = devices{i};
+                if ~e.hasStimulus(d) && ~e.hasBackground(d)
+                    e.setBackground(d, d.background);
                 end
             end
-
-            obj.currentProtocol.prepareInterval(i);
         end
 
         function enqueueEpoch(obj, epoch)
