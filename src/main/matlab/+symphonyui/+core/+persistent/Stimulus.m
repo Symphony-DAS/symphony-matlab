@@ -5,7 +5,6 @@ classdef Stimulus < symphonyui.core.persistent.IoBase
         units
         parameters
         duration
-        epoch
     end
 
     methods
@@ -28,10 +27,6 @@ classdef Stimulus < symphonyui.core.persistent.IoBase
 
         function d = get.duration(obj)
             d = obj.cobj.Duration.TotalSeconds;
-        end
-        
-        function b = get.epoch(obj)
-            b = symphonyui.core.persistent.Epoch(obj.cobj.Epoch);
         end
 
         function [q, u] = getSampleRate(obj)

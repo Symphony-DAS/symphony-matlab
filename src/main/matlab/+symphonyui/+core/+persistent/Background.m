@@ -1,17 +1,9 @@
-classdef Background < symphonyui.core.persistent.Entity
-
-    properties (SetAccess = private)
-        device
-    end
+classdef Background < symphonyui.core.persistent.IoBase
 
     methods
 
         function obj = Background(cobj)
-            obj@symphonyui.core.persistent.Entity(cobj);
-        end
-
-        function d = get.device(obj)
-            d = symphonyui.core.persistent.Device(obj.cobj.Device);
+            obj@symphonyui.core.persistent.IoBase(cobj);
         end
 
         function [q, u] = getValue(obj)
