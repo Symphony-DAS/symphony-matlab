@@ -9,17 +9,41 @@ function site()
     for i = 1:length(markdownFiles)
         [~, name] = fileparts(markdownFiles(i).name);
         
+        includeFile = fullfile(sitePath, 'include.html');
         inputFile = fullfile(wikiPath, [name '.md']);
         outputFile = fullfile(targetPath, [name '.html']);
         
-        command = sprintf('pandoc -c css/bootstrap.min.css -s -f markdown_github "%s" -o "%s"', inputFile, outputFile);
+        command = sprintf('pandoc -s --tab-stop=2 -H "%s" -c css/override.css -f markdown_github "%s" -o "%s"', includeFile, inputFile, outputFile);
         [status, out] = system(command);
         if status ~= 0
             error(out);
         end
         
+        % Add page title.
+        match = find(inputFile, '<!-- title: [\w.\- ]+ -->');
+        if isempty(match)
+            title = strrep(name, '-', ' ');
+        else
+            title = match{end}(13:end-4);
+        end
+        replace(outputFile, '<title></title>', sprintf('<title>%s</title>', title));
+        
+        % Setup HTML to work better with doc center stylesheets.
+        replace(outputFile, '<body>', ...
+            ['<body>' ...
+            '<div class="content_container" id="content_container">', ...
+            '<div class="container-fluid">', ...
+            '<div class="row">', ...
+            '<div class="col-xs-12">', ...
+            '<section id="doc_center_content" lang="en">', ...
+            '<div id="pgtype-topic">', ...
+            '<h1 class="r2016a">' title '</h1>']);
+        replace(outputFile, '</body>', '</div></section></div></div></div></div></body>');
+        replace(outputFile, '<div class="sourceCode"><pre class="sourceCode matlab"><code class="sourceCode matlab">', '<div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre><code>');
+        replace(outputFile, '</code></pre></div>', '</code></pre></div></div>');
+        
         % Add html extension to links with no extension.
-        replace(outputFile, 'href="\w*\.*\"', '${$0(1:end-1)}.html\"'); 
+        replace(outputFile, 'href="[\w.\-]+"', '${$0(1:end-1)}.html\"'); 
     end
     
     copyfile(fullfile(wikiPath, 'images'), fullfile(targetPath, 'images'));
@@ -27,6 +51,14 @@ function site()
     copyfile(fullfile(sitePath, 'info.xml'), fullfile(targetPath));
     copyfile(fullfile(sitePath, 'helptoc.xml'), fullfile(targetPath));
     copyfile(fullfile(sitePath, 'resources', 'css'), fullfile(targetPath, 'css'));
+end
+
+function match = find(file, expression)
+    fid = fopen(file);
+    text = fread(fid, inf, '*char')';
+    fclose(fid);
+    
+    match = regexp(text, expression, 'match');
 end
 
 function replace(file, expression, replacement)

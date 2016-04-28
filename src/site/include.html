@@ -1,0 +1,20 @@
+<script>
+// Adds styles from iframe parent
+// http://stackoverflow.com/questions/4612374/iframe-inherit-from-parent
+window.onload = function() {
+  if (parent) {
+    var parentStyleSheets = parent.document.styleSheets;
+    var cssString = "";
+    for (var i = 0, count = parentStyleSheets.length; i < count; ++i) {
+      var cssRules = parentStyleSheets[i].cssRules;
+      for (var j = 0, countJ = cssRules.length; j < countJ; ++j)
+          cssString += cssRules[j].cssText;
+    }
+    var style = document.createElement("style");
+    style.type = "text/css";
+    style.innerHTML = cssString;
+    var head = document.getElementsByTagName("head")[0];
+    head.insertBefore(style, head.childNodes[0]);
+  }
+}
+</script>
