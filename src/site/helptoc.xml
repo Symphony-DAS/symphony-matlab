@@ -2,7 +2,12 @@
 <toc version="2.0">
 
     <tocitem target="Home.html">Symphony
-        <tocitem target="Getting-Started.html">Getting Started</tocitem>
+        <tocitem target="Getting-Started.html">Getting Started
+            <tocitem target="Symphony-Product-Description.html">Symphony Product Description</tocitem>
+            <tocitem target="System-Requirements.html">System Requirements</tocitem>
+            <tocitem target="Supported-Hardware.html">Supported Hardware</tocitem>
+            <tocitem target="App-Basics.html">App Basics</tocitem>
+        </tocitem>
         <tocitem target="Rig-Descriptions.html">Rig Descriptions</tocitem>
         <tocitem target="Protocols.html">Protocols</tocitem>
     </tocitem>

@@ -37,7 +37,8 @@ function site()
             '<div class="col-xs-12">', ...
             '<section id="doc_center_content" lang="en">', ...
             '<div id="pgtype-topic">', ...
-            '<h1 class="r2016a">' title '</h1>']);
+            '<h1 itemprop="content title" class="r2016a">' title '</h1>', ...
+            '<div class="doc_topic_desc" itemprop="content purpose"></div>']);
         replace(outputFile, '</body>', '</div></section></div></div></div></div></body>');
         replace(outputFile, '<div class="sourceCode"><pre class="sourceCode matlab"><code class="sourceCode matlab">', '<div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre><code>');
         replace(outputFile, '</code></pre></div>', '</code></pre></div></div>');
@@ -51,6 +52,11 @@ function site()
     copyfile(fullfile(sitePath, 'info.xml'), fullfile(targetPath));
     copyfile(fullfile(sitePath, 'helptoc.xml'), fullfile(targetPath));
     copyfile(fullfile(sitePath, 'resources', 'css'), fullfile(targetPath, 'css'));
+    
+    % Build searchable database.
+    addpath(genpath(fullfile(targetPath)));
+    builddocsearchdb(fullfile(targetPath));
+    rmpath(genpath(fullfile(targetPath)));
 end
 
 function match = find(file, expression)
