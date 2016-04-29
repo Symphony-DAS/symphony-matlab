@@ -6,3 +6,6 @@
   padding-right: 0;
   padding-left: 0;
 }
+div.alert {
+  padding: 15px 15px 15px;
+}
