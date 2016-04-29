@@ -28,6 +28,13 @@ function site()
         end
         replace(outputFile, '<title></title>', sprintf('<title>%s</title>', title));
         
+        match = find(inputFile, '<!-- description: [\w.\- ]+ -->');
+        if isempty(match)
+            description = '';
+        else
+            description = match{end}(19:end-4);
+        end
+        
         % Setup HTML to work better with doc center stylesheets.
         replace(outputFile, '<body>', ...
             ['<body>' ...
@@ -38,7 +45,7 @@ function site()
             '<section id="doc_center_content" lang="en">', ...
             '<div id="pgtype-topic">', ...
             '<h1 itemprop="content title" class="r2016a">' title '</h1>', ...
-            '<div class="doc_topic_desc" itemprop="content purpose"></div>']);
+            '<div class="doc_topic_desc" itemprop="content purpose">' description '</div>']);
         replace(outputFile, '</body>', '</div></section></div></div></div></div></body>');
         replace(outputFile, '<div class="sourceCode"><pre class="sourceCode matlab"><code class="sourceCode matlab">', '<div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre><code>');
         replace(outputFile, '</code></pre></div>', '</code></pre></div></div>');
@@ -56,7 +63,6 @@ function site()
     % Build searchable database.
     addpath(genpath(fullfile(targetPath)));
     builddocsearchdb(fullfile(targetPath));
-    rmpath(genpath(fullfile(targetPath)));
 end
 
 function match = find(file, expression)

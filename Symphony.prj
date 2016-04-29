@@ -11,7 +11,7 @@
       
       
     <file>${PROJECT_ROOT}\src\main\resources\icons\app_16.png</file><file>${PROJECT_ROOT}\src\main\resources\icons\app_24.png</file><file>${PROJECT_ROOT}\src\main\resources\icons\app_48.png</file></param.icons>
-    <param.summary>MATLAB-based electrophysiology data acquisition system</param.summary>
+    <param.summary>Electrophysiology data acquisition system</param.summary>
     <param.description>Symphony is a MATLAB-based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
     <param.version>2.0.1.9</param.version>
@@ -618,13 +618,31 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\Module.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\UiEventData.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\Contents.m</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\css\bootstrap.min.css</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Architecture.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\css\override.css</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\File-Format.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Getting-Started.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helptoc.xml</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Home.html</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\test.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\architecture.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\background.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\device.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\epoch block.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\epoch group.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\epoch.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\experiment.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\file.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\overview.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\resource.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\response.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\source.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\stimulus.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5_file_format.bmpr</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\info.xml</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Installation.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Protocols.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Release-Instructions.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Rig-Descriptions.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Style-Guide.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+epochgroups\Control.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+epochgroups\Drug.m</file>
