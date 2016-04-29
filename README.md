@@ -1,18 +1,12 @@
 # Symphony
 
-Symphony is a MATLAB-based electrophysiology data acquisition system.
+Symphony is a MATLAB-based data acquisition system for electrophysiologists. It provides a framework for writing acquisition routines and a user interface to conduct experiments.
 
 ## Clone
 
 `git clone https://github.com/Symphony-DAS/symphony-matlab2.git --recursive`
 
 **Note:** You must use the `--recursive` option to recursively clone all submodules.
-
-## Requirements
-
-- Matlab 2016a+
-- Windows 7 64-bit
-- [.NET Framework 4.5](https://www.microsoft.com/en-us/download/details.aspx?id=30653&ocid=1484856)
 
 ## Build
 
