@@ -22,13 +22,13 @@ classdef BeginEpochGroupView < appbox.View
 
             set(obj.figureHandle, ...
                 'Name', 'Begin Epoch Group', ...
-                'Position', screenCenter(290, 169));
+                'Position', screenCenter(300, 169));
 
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Padding', 11, ...
                 'Spacing', 11);
-            
+
             groupLayout = uix.VBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
@@ -61,12 +61,12 @@ classdef BeginEpochGroupView < appbox.View
             set(groupGrid, ...
                 'Widths', [65 -1], ...
                 'Heights', [23 23 23]);
-            
+
             obj.carryForwardPropertiesCheckBox = uicontrol( ...
                 'Parent', groupLayout, ...
                 'Style', 'checkbox', ...
                 'String', 'Carry forward properties from last epoch group');
-            
+
             set(groupLayout, 'Heights', [layoutHeight(groupGrid) 23]);
 
             % Begin/Cancel controls.
@@ -100,11 +100,11 @@ classdef BeginEpochGroupView < appbox.View
         function enableBegin(obj, tf)
             set(obj.beginButton, 'Enable', appbox.onOff(tf));
         end
-        
+
         function tf = getEnableBegin(obj)
             tf = appbox.onOff(get(obj.beginButton, 'Enable'));
         end
-        
+
         function enableSelectParent(obj, tf)
             set(obj.parentPopupMenu, 'Enable', appbox.onOff(tf));
         end
@@ -125,7 +125,7 @@ classdef BeginEpochGroupView < appbox.View
             set(obj.parentPopupMenu, 'String', names);
             set(obj.parentPopupMenu, 'Values', values);
         end
-        
+
         function enableSelectSource(obj, tf)
             set(obj.sourcePopupMenu, 'Enable', appbox.onOff(tf));
         end
@@ -167,15 +167,15 @@ classdef BeginEpochGroupView < appbox.View
             set(obj.descriptionPopupMenu, 'String', names);
             set(obj.descriptionPopupMenu, 'Values', values);
         end
-        
+
         function enableCarryForwardProperties(obj, tf)
             set(obj.carryForwardPropertiesCheckBox, 'Enable', appbox.onOff(tf));
         end
-        
+
         function tf = getCarryForwardProperties(obj)
             tf = get(obj.carryForwardPropertiesCheckBox, 'Value');
         end
-        
+
         function setCarryForwardProperties(obj, tf)
             set(obj.carryForwardPropertiesCheckBox, 'Value', tf);
         end
