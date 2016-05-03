@@ -109,22 +109,14 @@ classdef Persistor < symphonyui.core.CoreObject
             end
         end
 
-        function b = beginEpochBlock(obj, protocolId, parametersMap, startTime)
-            if nargin < 4
-                startTime = datetime('now', 'TimeZone', 'local');
-            end
-            dto = obj.dateTimeOffsetFromDatetime(startTime);
+        function b = beginEpochBlock(obj, protocolId, parametersMap)
             params = obj.dictionaryFromMap(parametersMap);
-            cblk = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochBlock(protocolId, params, dto));
+            cblk = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochBlock(protocolId, params));
             b = symphonyui.core.persistent.EpochBlock(cblk);
         end
 
-        function b = endEpochBlock(obj, endTime)
-            if nargin < 2
-                endTime = datetime('now', 'TimeZone', 'local');
-            end
-            dto = obj.dateTimeOffsetFromDatetime(endTime);
-            cblk = obj.tryCoreWithReturn(@()obj.cobj.EndEpochBlock(dto));
+        function b = endEpochBlock(obj)
+            cblk = obj.tryCoreWithReturn(@()obj.cobj.EndEpochBlock());
             b = symphonyui.core.persistent.EpochBlock(cblk);
         end
 

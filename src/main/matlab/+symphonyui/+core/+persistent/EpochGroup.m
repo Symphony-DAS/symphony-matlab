@@ -18,12 +18,12 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         function obj = EpochGroup(cobj)
             obj@symphonyui.core.persistent.TimelineEntity(cobj);
         end
-        
+
         function p = createPreset(obj, name)
             p = createPreset@symphonyui.core.persistent.TimelineEntity(obj, name);
             p.classProperties('label') = obj.label;
         end
-        
+
         function applyPreset(obj, preset)
             applyPreset@symphonyui.core.persistent.TimelineEntity(obj, preset);
             obj.label = preset.classProperties('label');
@@ -40,21 +40,21 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         function s = get.source(obj)
             s = symphonyui.core.persistent.Source(obj.cobj.Source);
         end
-        
+
         function set.source(obj, s)
             obj.cobj.Source = s.cobj;
         end
 
         function g = get.epochGroups(obj)
-            g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.EpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
+            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
 
         function g = get.allEpochGroups(obj)
-            g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.AllEpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
+            g = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
 
         function b = get.epochBlocks(obj)
-            b = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.EpochBlocks, 'startTime', @symphonyui.core.persistent.EpochBlock);
+            b = obj.cellArrayFromEnumerable(obj.cobj.EpochBlocks, @symphonyui.core.persistent.EpochBlock);
         end
 
         function g = get.parent(obj)
@@ -65,7 +65,7 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
                 g = symphonyui.core.persistent.EpochGroup(cgrp);
             end
         end
-        
+
         function a = getAncestors(obj)
             a = {};
             current = obj.parent;
@@ -78,7 +78,7 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         function e = get.experiment(obj)
             e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
         end
-        
+
         function t = getEntityType(obj) %#ok<MANU>
             t = symphonyui.core.persistent.EntityType.EPOCH_GROUP;
         end

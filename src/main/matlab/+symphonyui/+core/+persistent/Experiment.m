@@ -17,12 +17,12 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         function obj = Experiment(cobj)
             obj@symphonyui.core.persistent.TimelineEntity(cobj);
         end
-        
+
         function p = createPreset(obj, name)
             p = createPreset@symphonyui.core.persistent.TimelineEntity(obj, name);
             p.classProperties('purpose') = obj.purpose;
         end
-        
+
         function applyPreset(obj, preset)
             applyPreset@symphonyui.core.persistent.TimelineEntity(obj, preset);
             obj.purpose = preset.classProperties('purpose');
@@ -49,13 +49,13 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
 
         function g = get.epochGroups(obj)
-            g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.EpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
+            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
 
         function g = get.allEpochGroups(obj)
-            g = obj.cellArrayFromEnumerableOrderedBy(obj.cobj.AllEpochGroups, 'startTime', @symphonyui.core.persistent.EpochGroup);
+            g = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
-        
+
         function t = getEntityType(obj) %#ok<MANU>
             t = symphonyui.core.persistent.EntityType.EXPERIMENT;
         end

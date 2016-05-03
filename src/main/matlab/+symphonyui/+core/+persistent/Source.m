@@ -5,6 +5,7 @@ classdef Source < symphonyui.core.persistent.Entity
     end
     
     properties (SetAccess = private)
+        creationTime
         sources
         allSources
         epochGroups
@@ -35,6 +36,10 @@ classdef Source < symphonyui.core.persistent.Entity
         
         function set.label(obj, l)
             obj.cobj.Label = l;
+        end
+        
+        function t = get.creationTime(obj)
+            t = obj.datetimeFromDateTimeOffset(obj.cobj.CreationTime);
         end
 
         function s = get.sources(obj)

@@ -68,7 +68,7 @@ classdef (Abstract) CoreObject < handle
             e = enum.GetEnumerator();
             i = 1;
             while e.MoveNext()
-                c{i} = wrap(e.Current());
+                c{i} = wrap(e.Current()); %#ok<AGROW>
                 i = i + 1;
             end
         end
@@ -78,7 +78,6 @@ classdef (Abstract) CoreObject < handle
                 wrap = @(e)e;
             end
             
-            c = [];
             enum = Symphony.Core.EnumerableExtensions.Wrap(enum);
             e = enum.GetEnumerator();
             e.MoveNext();
