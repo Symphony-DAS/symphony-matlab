@@ -9,9 +9,32 @@
             <tocitem target="Installation.html">Installation</tocitem>
             <tocitem target="App-Basics.html">App Basics</tocitem>
             <tocitem target="Conduct-an-Experiment.html">Conduct an Experiment</tocitem>
+            <tocitem target="Create-a-Package.html">Create a Package</tocitem>
         </tocitem>
-        <tocitem target="Rig-Descriptions.html">Rig Descriptions</tocitem>
-        <tocitem target="Protocols.html">Protocols</tocitem>
+        <tocitem target="Rig-Descriptions.html">Rig Descriptions
+            <tocitem target="Write-a-Rig-Description.html">Write a Rig Description</tocitem>
+            <tocitem target="Add-Configuration-Settings-and-Resources-to-Devices.html">Add Configuration Settings and Resources to Devices</tocitem>
+        </tocitem>
+        <tocitem target="Protocols.html">Protocols
+            <tocitem target="Write-a-Protocol.html">Write a Protocol</tocitem>
+            <tocitem target="Add-Online-Analysis-to-a-Protocol.html">Add Online Analysis to a Protocol</tocitem>
+            <tocitem target="Create-Advanced-Protocol-Properties.html">Create Advanced Protocol Properties</tocitem>
+            <tocitem target="Write-a-Noncontinuous-Protocol.html">Write a Noncontinuous Protocol</tocitem>
+        </tocitem>
+        <tocitem target="Entity-Descriptions.html">Entity Descriptions
+            <tocitem target="Write-an-Experiment-Description.html">Write an Experiment Description</tocitem>
+            <tocitem target="Write-a-Source-Description.html">Write a Source Description</tocitem>
+            <tocitem target="Write-an-Epoch-Group-Description.html">Write an Epoch Group Description</tocitem>
+        </tocitem>
+        <tocitem target="Modules.html">Modules
+            <tocitem target="Write-a-Module.html">Write a Module</tocitem>
+        </tocitem>
+        <tocitem target="Symphony-Development.html">Symphony Development
+            <tocitem target="Architecture.html">Architecture</tocitem>
+            <tocitem target="File-Format.html">File Format</tocitem>
+            <tocitem target="Release-Instructions.html">Release Instructions</tocitem>
+            <tocitem target="Style-Guide.html">Style Guide</tocitem>
+        </tocitem>
     </tocitem>
 
 </toc>
