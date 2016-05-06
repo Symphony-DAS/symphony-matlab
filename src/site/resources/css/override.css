@@ -12,3 +12,9 @@ div.alert {
 blockquote {
   font-size: 13px;
 }
+a.anchor {
+  display: block;
+  position: relative;
+  top: -100px;
+  visibility: hidden;
+}
