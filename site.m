@@ -48,7 +48,7 @@ function site()
             '<div class="doc_topic_desc" itemprop="content purpose">' description '</div>']);
         replace(outputFile, '</body>', '</div></section></div></div></div></div></body>');
         replace(outputFile, '<div class="sourceCode"><pre class="sourceCode matlab"><code class="sourceCode matlab">', '<div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre><code>');
-        replace(outputFile, '</code></pre></div>', '</code></pre></div></div>');
+        replace(outputFile, '</code></pre></div>', '</code></pre></div></div></div>');
         replace(outputFile, '<h[0-9] id="[\w.\- ]+"', '<a class="anchor" id="${$0(9:end-1)}"></a>$0');
         
         % Add html extension to links with no extension.

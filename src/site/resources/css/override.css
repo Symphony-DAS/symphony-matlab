@@ -6,6 +6,9 @@
   padding-right: 0;
   padding-left: 0;
 }
+.code_responsive { 
+  margin-bottom: 10px;
+}
 div.alert {
   padding: 15px 15px 15px;
 }
