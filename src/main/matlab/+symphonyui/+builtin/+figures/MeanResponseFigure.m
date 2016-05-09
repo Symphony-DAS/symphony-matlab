@@ -4,11 +4,13 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
         device
         groupBy
         sweepColor
+        storedSweepColor
     end
     
     properties (Access = private)
         axesHandle
         sweeps
+        storedSweeps
     end
     
     methods
@@ -19,16 +21,28 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
             ip = inputParser();
             ip.addParameter('groupBy', [], @(x)iscellstr(x));
             ip.addParameter('sweepColor', co(1,:), @(x)ischar(x) || isvector(x));
+            ip.addParameter('storedSweepColor', 'r', @(x)ischar(x) || isvector(x));
             ip.parse(varargin{:});
             
             obj.device = device;
             obj.groupBy = ip.Results.groupBy;
             obj.sweepColor = ip.Results.sweepColor;
+            obj.storedSweepColor = ip.Results.storedSweepColor;
             
             obj.createUi();
         end
         
         function createUi(obj)
+            import appbox.*;
+            
+            toolbar = findall(obj.figureHandle, 'Type', 'uitoolbar');
+            storeSweepsButton = uipushtool( ...
+                'Parent', toolbar, ...
+                'TooltipString', 'Store Sweeps', ...
+                'Separator', 'on', ...
+                'ClickedCallback', @obj.onSelectedStoreSweeps);
+            setIconImage(storeSweepsButton, symphonyui.app.App.getResource('icons', 'sweep_store.png'));
+            
             obj.axesHandle = axes( ...
                 'Parent', obj.figureHandle, ...
                 'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
@@ -105,6 +119,25 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
             end
             
             ylabel(obj.axesHandle, units, 'Interpreter', 'none');
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function onSelectedStoreSweeps(obj, ~, ~)
+            if ~isempty(obj.storedSweeps)
+                for i = 1:numel(obj.storedSweeps)
+                    delete(obj.storedSweeps{i});
+                end
+                obj.storedSweeps = {};
+            end
+            for i = 1:numel(obj.sweeps)
+                obj.storedSweeps{i} = copyobj(obj.sweeps{i}.line, obj.axesHandle);
+                set(obj.storedSweeps{i}, ...
+                    'Color', obj.storedSweepColor, ...
+                    'HandleVisibility', 'off');
+            end
         end
         
     end

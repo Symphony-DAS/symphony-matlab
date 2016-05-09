@@ -15,8 +15,9 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
     methods
 
         function obj = ResponseFigure(device, varargin)
-            ip = inputParser();
             co = get(groot, 'defaultAxesColorOrder');
+            
+            ip = inputParser();
             ip.addParameter('sweepColor', co(1,:), @(x)ischar(x) || isvector(x));
             ip.addParameter('storedSweepColor', 'r', @(x)ischar(x) || isvector(x));
             ip.parse(varargin{:});
