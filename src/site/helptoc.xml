@@ -13,7 +13,8 @@
         </tocitem>
         <tocitem target="Rig-Descriptions.html">Rig Descriptions
             <tocitem target="Write-a-Rig-Description.html">Write a Rig Description</tocitem>
-            <tocitem target="Add-Configuration-Settings-and-Resources-to-Devices.html">Add Configuration Settings and Resources to Devices</tocitem>
+            <tocitem target="Add-Configuration-Settings-to-a-Device.html">Add Configuration Settings to a Device</tocitem>
+            <tocitem target="Add-Resources-to-a-Device.html">Add Resources to a Device</tocitem>
         </tocitem>
         <tocitem target="Protocols.html">Protocols
             <tocitem target="Write-a-Protocol.html">Write a Protocol</tocitem>
