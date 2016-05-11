@@ -48,6 +48,9 @@ classdef Controller < symphonyui.core.CoreObject
             if obj.state.isPaused()
                 error('Controller is paused');
             end
+            if obj.state.isRunning()
+                return;
+            end
 
             try
                 obj.prepareRun(protocol, persistor);
