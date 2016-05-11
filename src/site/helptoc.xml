@@ -18,14 +18,13 @@
         </tocitem>
         <tocitem target="Protocols.html">Protocols
             <tocitem target="Write-a-Protocol.html">Write a Protocol</tocitem>
-            <tocitem target="Add-Online-Analysis-to-a-Protocol.html">Add Online Analysis to a Protocol</tocitem>
+            <tocitem target="Add-Figure-Handlers-to-a-Protocol.html">Add Figure Handlers to a Protocol</tocitem>
             <tocitem target="Create-Advanced-Protocol-Properties.html">Create Advanced Protocol Properties</tocitem>
-            <tocitem target="Write-a-Noncontinuous-Protocol.html">Write a Noncontinuous Protocol</tocitem>
+            <tocitem target="Acquisition-Control-Flow">Acquisition Control Flow</tocitem>
+            <tocitem target="Standard-Stimulus-Generators.html">Standard Stimulus Generators</tocitem>
         </tocitem>
         <tocitem target="Entity-Descriptions.html">Entity Descriptions
-            <tocitem target="Write-an-Experiment-Description.html">Write an Experiment Description</tocitem>
-            <tocitem target="Write-a-Source-Description.html">Write a Source Description</tocitem>
-            <tocitem target="Write-an-Epoch-Group-Description.html">Write an Epoch Group Description</tocitem>
+            <tocitem target="Write-an-Entity-Description.html">Write an Entity Description</tocitem>
         </tocitem>
         <tocitem target="Modules.html">Modules
             <tocitem target="Write-a-Module.html">Write a Module</tocitem>
