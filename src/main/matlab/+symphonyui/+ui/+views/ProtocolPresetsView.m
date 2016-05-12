@@ -96,22 +96,32 @@ classdef ProtocolPresetsView < appbox.View
                 data{i, 2} = {obj.applyButton.icon, obj.applyButton.tooltip, tf};
             end
             set(obj.presetsTable, 'Data', data);
-
+            
             enables = get(obj.presetsTable, 'UserData');
             enables.applyEnabled = tf;
             set(obj.presetsTable, 'UserData', enables);
         end
+        
+        function stopEditingApplyProtocolPreset(obj)
+            [~, editor] = obj.presetsTable.getRenderer(2);
+            editor.stopCellEditing();
+        end
 
-        function enableViewOnlyProtocolPreset(obj, tf)
+        function enableViewOnlyProtocolPreset(obj, tf)                        
             data = get(obj.presetsTable, 'Data');
             for i = 1:size(data, 1)
                 data{i, 3} = {obj.viewOnlyButton.icon, obj.viewOnlyButton.tooltip, tf};
             end
             set(obj.presetsTable, 'Data', data);
-
+            
             enables = get(obj.presetsTable, 'UserData');
             enables.viewOnlyEnabled = tf;
             set(obj.presetsTable, 'UserData', enables);
+        end
+        
+        function stopEditingViewOnlyProtocolPreset(obj)
+            [~, editor] = obj.presetsTable.getRenderer(3);
+            editor.stopCellEditing();
         end
 
         function enableRecordProtocolPreset(obj, tf)
@@ -124,6 +134,11 @@ classdef ProtocolPresetsView < appbox.View
             enables = get(obj.presetsTable, 'UserData');
             enables.recordEnabled = tf;
             set(obj.presetsTable, 'UserData', enables);
+        end
+        
+        function stopEditingRecordProtocolPreset(obj)
+            [~, editor] = obj.presetsTable.getRenderer(4);
+            editor.stopCellEditing();
         end
 
         function enableStopProtocolPreset(obj, tf)

@@ -41,21 +41,18 @@ public class MButtonTableCellEditorRenderer extends ButtonTableCellEditorRendere
                                                           final int row,
                                                           final int column) {
         super.configureTableCellEditorRendererComponent(table, editorRendererComponent, forRenderer, "", isSelected, hasFocus, row, column);
-        String icon;
-        String tooltip;
-        Boolean enabled;
+        MJButton button = (MJButton)editorRendererComponent;
         try {
             Object[] values = (Object[])value;
-            icon = (String) values[0];
-            tooltip = (String) values[1];
-            enabled = (Boolean) values[2];
-        } catch (Exception x) {
-            return;
+            button.setIcon(new ImageIcon((String)values[0]));
+            button.setToolTipText((String)values[1]);
+            button.setEnabled((Boolean)values[2]);
+        } catch(Exception ignored) {
+            // Not sure why this is sometimes passed in as junk
+            button.setIcon(null);
+            button.setToolTipText("");
+            button.setEnabled(false);
         }
-        MJButton button = (MJButton)editorRendererComponent;
-        button.setIcon(new ImageIcon(icon));
-        button.setToolTipText(tooltip);
-        button.setEnabled(enabled);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

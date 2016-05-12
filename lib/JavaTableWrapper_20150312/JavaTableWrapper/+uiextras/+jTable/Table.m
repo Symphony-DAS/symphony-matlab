@@ -651,6 +651,12 @@ classdef Table < hgsetget
             
         end
         
+        function [r, e] = getRenderer(obj, col)
+            jColumn = obj.JTable.getColumnModel().getColumn(col-1);
+            r = jColumn.getCellRenderer();
+            e = jColumn.getCellEditor();
+        end
+        
         
         function sizeColumnsToData(obj)
             % sizeColumnsToData - Set column sizes automatically

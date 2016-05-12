@@ -191,6 +191,16 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             obj.view.enableViewOnlyProtocolPreset(enableViewOnlyProtocolPreset);
             obj.view.enableRecordProtocolPreset(enableRecordProtocolPreset);
             obj.view.enableStopProtocolPreset(enableStopProtocolPreset);
+            
+            if ~enableApplyProtocolPreset
+                obj.view.stopEditingApplyProtocolPreset();
+            end
+            if ~enableViewOnlyProtocolPreset
+                obj.view.stopEditingViewOnlyProtocolPreset();
+            end
+            if ~enableRecordProtocolPreset
+                obj.view.stopEditingRecordProtocolPreset();
+            end
         end
 
         function loadSettings(obj)
