@@ -20,6 +20,10 @@ classdef Module < appbox.Presenter
             end
         end
         
+        function createUi(obj, figureHandle) %#ok<INUSD>
+            
+        end
+        
         function setDocumentationService(obj, service)
             obj.documentationService = service;
             obj.didSetDocumentationService();
@@ -47,10 +51,6 @@ classdef Module < appbox.Presenter
             
         end
         
-    end
-    
-    methods (Abstract)
-        createUi(obj, figureHandle);
     end
     
 end
