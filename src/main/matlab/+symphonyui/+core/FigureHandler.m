@@ -43,6 +43,10 @@ classdef FigureHandler < handle
             obj.close();
         end
         
+        function handleEpoch(obj, epoch) %#ok<INUSD>
+            
+        end
+        
         function show(obj)
             figure(obj.figureHandle);
             set(obj.figureHandle, 'CloseRequestFcn', @obj.onSelectedClose);
@@ -88,10 +92,6 @@ classdef FigureHandler < handle
             obj.close();
         end
         
-    end
-    
-    methods (Abstract)
-        handleEpoch(obj, epoch);
     end
     
 end

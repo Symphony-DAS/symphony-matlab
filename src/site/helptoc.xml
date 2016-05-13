@@ -19,6 +19,7 @@
         <tocitem target="Protocols.html">Protocols
             <tocitem target="Write-a-Protocol.html">Write a Protocol</tocitem>
             <tocitem target="Add-Figure-Handlers-to-a-Protocol.html">Add Figure Handlers to a Protocol</tocitem>
+            <tocitem target="Set-the-Preview-for-a-Protocol.html">Set the Preview for a Protocol</tocitem>
             <tocitem target="Create-Advanced-Protocol-Properties.html">Create Advanced Protocol Properties</tocitem>
             <tocitem target="Write-a-Figure-Handler.html">Write a Figure Handler</tocitem>
             <tocitem target="Acquisition-Control-Flow">Acquisition Control Flow</tocitem>
