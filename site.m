@@ -61,6 +61,10 @@ function site()
     copyfile(fullfile(sitePath, 'helptoc.xml'), fullfile(targetPath));
     copyfile(fullfile(sitePath, 'resources', 'css'), fullfile(targetPath, 'css'));
     
+    % Exclude unnecessary files.
+    delete(fullfile(targetPath, 'images', 'file-format', 'file-format.bmpr'));
+    delete(fullfile(targetPath, 'images', 'standard-stimulus-generators', 'intaglio-figures.zip'));
+    
     % Build searchable database.
     addpath(genpath(fullfile(targetPath)));
     builddocsearchdb(fullfile(targetPath));
