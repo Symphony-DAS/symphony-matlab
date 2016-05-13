@@ -22,9 +22,12 @@
             <tocitem target="Create-Advanced-Protocol-Properties.html">Create Advanced Protocol Properties</tocitem>
             <tocitem target="Acquisition-Control-Flow">Acquisition Control Flow</tocitem>
             <tocitem target="Standard-Stimulus-Generators.html">Standard Stimulus Generators</tocitem>
+            <tocitem target="Property-Descriptor-System.html">Property Descriptor System</tocitem>
         </tocitem>
         <tocitem target="Entity-Descriptions.html">Entity Descriptions
             <tocitem target="Write-an-Entity-Description.html">Write an Entity Description</tocitem>
+            <tocitem target="Add-Allowable-Parents-to-an-Entity-Description.html">Add Allowable Parents to an Entity Description</tocitem>
+            <tocitem target="Add-Resources-to-an-Entity-Description.html">Add Resources to an Entity Description</tocitem>
         </tocitem>
         <tocitem target="Modules.html">Modules
             <tocitem target="Write-a-Module.html">Write a Module</tocitem>
