@@ -1,24 +1,51 @@
 classdef Protocol < handle
-
+    % A Protocol is an acquisition routine that defines a sequence of experimental trials, called epochs. Each epoch may
+    % present a set of stimuli and record a set of responses from devices in the current rig. A protocol may also define 
+    % online analysis to perform, typically through the use of FigureHandlers.
+    %
+    % To write new protocols you must subclass the Protocol class. The properties of your subclass define the
+    % user-configuraable values that populate the Protocol Properties section of the main window. The behavior of your 
+    % protocol is defined by overriding methods of the Protocol class.
+    %
+    % Protocol Methods:
+    %   getPreview          - Override to return a ProtocolPreview implementation that manages a preview for this protocol
+    %
+    %   didSetRig           - Override to perform actions after this protocol's rig is set
+    %   didSetPersistor     - Override to perform actions after this protocol's persistor is set
+    %
+    %   prepareRun          - Override to perform actions before the start of the first epoch
+    %   prepareEpoch        - Override to perform actions before each epoch is added to the epoch queue
+    %   prepareInterval     - Override to perform actions before each interval is added to the epoch queue
+    %   completeEpoch       - Override to perform actions after each epoch is completed
+    %   completeInterval    - Override to perform actions after each interval is completed
+    %   completeRun         - Override to perform actions after the last epoch has completed
+    %
+    %   shouldContinuePreloadingEpochs      - Override to return true/false to indicate if this protocol should continue preloading epochs
+    %   shouldWaitToContinuePreparingEpochs - Override to return true/false to indicate if this protocol should wait to continue preparing epochs
+    %   shouldContinuePreparingEpochs       - Override to return true/false to indicate if this protocol should continue preparing epochs
+    %   shouldContinueRun                   - Override to return true/false to indicate if this protocol should continue run
+    %
+    %   isValid             - Override to return true/false to indicate if this protocol is valid and should be able to run
+    
     properties
         sampleRate  % Acquisition sample rate (Hz)
     end
 
     properties (Hidden)
-        sampleRateType
+        sampleRateType  % Property type of the sampleRate property
     end
 
     properties (Access = protected)
-        numEpochsPrepared
-        numEpochsCompleted
-        numIntervalsPrepared
-        numIntervalsCompleted
-        figureHandlerManager
+        numEpochsPrepared       % Number of epochs prepared by this protocol since prepareRun()
+        numEpochsCompleted      % Number of epochs completed by this protocol since prepareRun()
+        numIntervalsPrepared    % Number of intervals prepared by this protocol since prepareRun()
+        numIntervalsCompleted   % Number of intervals completed by this protocol since prepareRun()
+        figureHandlerManager    % Manages figures shown by this protocol
     end
 
     properties (Access = protected, Transient)
-        rig
-        persistor
+        rig         % Rig assigned to this protocol in setRig()
+        persistor   % Persistor assigned to this protocol in setPersistor(), may be empty if there is no persistor
     end
 
     methods
@@ -39,8 +66,11 @@ classdef Protocol < handle
             obj.rig = rig;
             obj.didSetRig();
         end
-
+        
         function didSetRig(obj)
+            % Override to perform actions after this protocol's rig is set, e.g. assign property values based on rig
+            % devices
+            
             rate = obj.rig.sampleRate;
             if isempty(rate)
                 obj.sampleRate = [];
@@ -54,8 +84,10 @@ classdef Protocol < handle
             obj.persistor = persistor;
             obj.didSetPersistor();
         end
-
+        
         function didSetPersistor(obj) %#ok<MANU>
+            % Override to perform actions after this protocol's persistor is set, e.g. assign property values based on
+            % experiment entities. Note that persistor may be assigned as empty is there is no persistor.
 
         end
 
@@ -122,10 +154,16 @@ classdef Protocol < handle
         end
 
         function p = getPreview(obj, panel) %#ok<INUSD>
+            % Override to return a ProtocolPreview implementation that manages a preview for this protocol, e.g.
+            % StimuliPreview
+            
             p = [];
         end
 
         function prepareRun(obj)
+            % Override to perform actions before the start of the first epoch, e.g. show figures, set device 
+            % backgrounds, etc.
+            
             obj.clearFigures();
 
             obj.numEpochsPrepared = 0;
@@ -137,59 +175,89 @@ classdef Protocol < handle
         end
 
         function prepareEpoch(obj, epoch) %#ok<INUSD>
+            % Override to perform actions before each epoch is added to the epoch queue, e.g. add stimuli, responses,
+            % parameters, etc.
+            
             obj.numEpochsPrepared = obj.numEpochsPrepared + 1;
         end
 
         function prepareInterval(obj, interval) %#ok<INUSD>
+            % Override to perform actions before each interval is added to the epoch queue. An interval is an epoch that
+            % is not saved.
+            
             obj.numIntervalsPrepared = obj.numIntervalsPrepared + 1;
         end
 
         function controllerDidStartHardware(obj) %#ok<MANU>
-
+            % Override to perform actions after the DAQ controller actually starts the hardware, e.g. play a 
+            % synchronized visual stimulus from a disparate system
+             
         end
 
         function tf = shouldContinuePreloadingEpochs(obj)
+            % Override to return true/false to indicate if this protocol should continue preloading epochs
+            
             tf = obj.shouldContinuePreparingEpochs();
         end
 
         function tf = shouldWaitToContinuePreparingEpochs(obj) %#ok<MANU>
+            % Override to return true/false to indicate if this protocol should wait to continue preparing epochs
+            
             tf = false;
         end
 
         function tf = shouldContinuePreparingEpochs(obj) %#ok<MANU>
+            % Override to return true/false to indicate if this protocol should continue preparing epochs
+            
             tf = false;
         end
 
         function tf = shouldContinueRun(obj) %#ok<MANU>
+            % Override to return true/false to indicate if this protocol should continue run
+            
             tf = false;
         end
 
         function completeEpoch(obj, epoch)
+            % Override to perform actions after each epoch is completed, e.g. perform post-analysis
+            
             obj.numEpochsCompleted = obj.numEpochsCompleted + 1;
             obj.figureHandlerManager.updateFigures(epoch);
         end
 
         function completeInterval(obj, interval) %#ok<INUSD>
+            % Override to perform actions after each interval is completed
+            
             obj.numIntervalsCompleted = obj.numIntervalsCompleted + 1;
         end
 
         function completeRun(obj) %#ok<MANU>
-
+            % Override to perform actions after the last epoch has completed
+            
         end
 
         function h = showFigure(obj, className, varargin)
+            % Shows a figure handler with the given class name and returns the handler. Additional arguments are passed 
+            % to the handler's constructor.
+            
             h = obj.figureHandlerManager.showFigure(className, varargin{:});
         end
 
         function clearFigures(obj)
+            % Clears all figure handlers of this protocol
+            
             obj.figureHandlerManager.clearFigures();
         end
 
         function closeFigures(obj)
+            % Closes all figure handlers of this protocol
+            
             obj.figureHandlerManager.closeFigures();
         end
 
         function [tf, msg] = isValid(obj) %#ok<MANU>
+            % Override to return true/false to indicate if this protocol is valid and should be able to run
+            
             tf = true;
             msg = [];
         end
@@ -199,6 +267,9 @@ classdef Protocol < handle
     methods (Access = protected)
 
         function [value, type] = createDeviceNamesProperty(obj, expression)
+            % A convenience method for creating a property value/type combination that allows a device name to be
+            % selected from a list of available devices in the rig with names matching the given expression
+            
             names = obj.rig.getDeviceNames(expression);
             if isempty(names)
                 names = {'(None)'};
