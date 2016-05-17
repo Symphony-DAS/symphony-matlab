@@ -46,6 +46,9 @@ classdef Controller < symphonyui.core.CoreObject
         end
 
         function runProtocol(obj, protocol, persistor)
+            % Runs a protocol until the protocol indicates to stop. The persistor may be empty to indicate the protocol
+            % epochs should not be persisted.
+            
             if obj.state.isPaused()
                 error('Controller is paused');
             end
@@ -65,6 +68,8 @@ classdef Controller < symphonyui.core.CoreObject
         end
 
         function resume(obj)
+            % Resumes a controller that's been paused while running a protocol.
+            
             if ~obj.state.isPaused()
                 error('Controller not paused');
             end
@@ -86,6 +91,8 @@ classdef Controller < symphonyui.core.CoreObject
         end
 
         function requestPause(obj)
+            % Requests this controller to complete all currently buffered epochs and then pause.
+            
             if ~obj.state.isRunning()
                 return;
             end
@@ -94,6 +101,8 @@ classdef Controller < symphonyui.core.CoreObject
         end
 
         function requestStop(obj)
+            % Requests this controller stop and discard all incomplete buffered epochs.
+            
             if obj.state.isPaused()
                 obj.state = symphonyui.core.ControllerState.STOPPED;
                 obj.completeRun();

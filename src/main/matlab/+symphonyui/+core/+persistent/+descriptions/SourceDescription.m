@@ -1,4 +1,10 @@
 classdef SourceDescription < symphonyui.core.persistent.descriptions.EntityDescription
+    % An SourceDescription describes the metadata of a source within an experiment.
+    %
+    % SourceDescription Methods:
+    %   addAllowableParentType  - Adds an allowable parent type (class name) for the described source
+    %
+    % See also: EntityDescription
     
     properties
         label
@@ -21,6 +27,9 @@ classdef SourceDescription < symphonyui.core.persistent.descriptions.EntityDescr
         end
         
         function addAllowableParentType(obj, t)
+            % Adds an allowable parent type (class name) for the described source. An empty class name means the
+            % source can be top level.
+            
             if ~isempty(t)
                 validateattributes(t, {'char'}, {'nonempty', 'row'});
             end
