@@ -18,18 +18,19 @@
         </tocitem>
         <tocitem target="Protocols.html">Protocols
             <tocitem target="Write-a-Protocol.html">Write a Protocol</tocitem>
-            <tocitem target="Add-Figure-Handlers-to-a-Protocol.html">Add Figure Handlers to a Protocol</tocitem>
+            <tocitem target="Show-Figure-Handlers-in-a-Protocol.html">Show Figure Handlers in a Protocol</tocitem>
             <tocitem target="Set-the-Preview-for-a-Protocol.html">Set the Preview for a Protocol</tocitem>
-            <tocitem target="Create-Advanced-Protocol-Properties.html">Create Advanced Protocol Properties</tocitem>
             <tocitem target="Write-a-Figure-Handler.html">Write a Figure Handler</tocitem>
-            <tocitem target="Acquisition-Control-Flow">Acquisition Control Flow</tocitem>
             <tocitem target="Standard-Stimulus-Generators.html">Standard Stimulus Generators</tocitem>
-            <tocitem target="Property-Descriptor-System.html">Property Descriptor System</tocitem>
         </tocitem>
         <tocitem target="Entity-Descriptions.html">Entity Descriptions
             <tocitem target="Write-an-Entity-Description.html">Write an Entity Description</tocitem>
             <tocitem target="Add-Allowable-Parents-to-an-Entity-Description.html">Add Allowable Parents to an Entity Description</tocitem>
             <tocitem target="Add-Resources-to-an-Entity-Description.html">Add Resources to an Entity Description</tocitem>
+        </tocitem>
+        <tocitem target="Property-Descriptors.html">Property Descriptors
+            <tocitem target="Use-Property-Descriptors-in-a-Protocol.html">Use Property Descriptors in a Protocol</tocitem>
+            <tocitem target="Use-Property-Descriptors-in-a-Description.html">Use Property Descriptors in a Description</tocitem>
         </tocitem>
         <tocitem target="Modules.html">Modules
             <tocitem target="Write-a-Module.html">Write a Module</tocitem>
