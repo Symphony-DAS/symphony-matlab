@@ -1,7 +1,17 @@
 classdef Rig < handle
+    % A Rig represents an electrophysiology setup. A Rig is constructed with a RigDescription that describes all of its
+    % devices.
+    %
+    % Rig Methods:
+    %   getDevice       - Get the first device whose name matches the given regular expression
+    %   getDevices      - Get a cell array of devices whose names match the given regular expression
+    %   getDeviceNames  - Get all device names that match the given regular expression
+    %
+    %   getOutputDevices    - Get all devices with at least one bound output stream
+    %   getInputDevices     - Get all devices with at least one bound input stream
     
     properties (SetObservable)
-        sampleRate
+        sampleRate  % Common sample rate of DAQ and devices (Measurement)
     end
     
     properties (SetAccess = private)
@@ -14,6 +24,8 @@ classdef Rig < handle
     methods
         
         function obj = Rig(description)
+            % Constructs a Rig with the given RigDescription
+            
             obj.daqController = description.daqController;
             obj.devices = description.devices;
             obj.isClosed = false;
@@ -66,6 +78,8 @@ classdef Rig < handle
         end
         
         function d = getDevice(obj, expression)
+            % Get the first device whose name matches the given regular expression
+            
             for i = 1:numel(obj.devices)
                 if regexpi(obj.devices{i}.name, expression, 'once')
                     d = obj.devices{i};
@@ -76,6 +90,8 @@ classdef Rig < handle
         end
         
         function d = getDevices(obj, expression)
+            % Get a cell array of devices whose names match the given regular expression
+            
             if nargin < 2
                 expression = '.';
             end
@@ -88,6 +104,8 @@ classdef Rig < handle
         end
         
         function n = getDeviceNames(obj, expression)
+            % Get all device names that match the given regular expression
+            
             if nargin < 2
                 expression = '.';
             end
@@ -95,6 +113,8 @@ classdef Rig < handle
         end
         
         function d = getOutputDevices(obj)
+            % Get all devices with at least one bound output stream
+            
             d = {};
             for i = 1:numel(obj.devices)
                 if ~isempty(obj.devices{i}.outputStreams)
@@ -104,6 +124,8 @@ classdef Rig < handle
         end
         
         function d = getInputDevices(obj)
+            % Get all devices with at least one bound input stream
+            
             d = {};
             for i = 1:numel(obj.devices)
                 if ~isempty(obj.devices{i}.inputStreams)
