@@ -3,12 +3,12 @@ classdef Rig < handle
     % devices.
     %
     % Rig Methods:
-    %   getDevice       - Get the first device whose name matches the given regular expression
-    %   getDevices      - Get a cell array of devices whose names match the given regular expression
-    %   getDeviceNames  - Get all device names that match the given regular expression
+    %   getDevice       - Gets the first device whose name matches the given regular expression
+    %   getDevices      - Gets a cell array of devices whose names match the given regular expression
+    %   getDeviceNames  - Gets all device names that match the given regular expression
     %
-    %   getOutputDevices    - Get all devices with at least one bound output stream
-    %   getInputDevices     - Get all devices with at least one bound input stream
+    %   getOutputDevices    - Gets all devices with at least one bound output stream
+    %   getInputDevices     - Gets all devices with at least one bound input stream
     
     properties (SetObservable)
         sampleRate  % Common sample rate of DAQ and devices (Measurement)
@@ -78,7 +78,7 @@ classdef Rig < handle
         end
         
         function d = getDevice(obj, expression)
-            % Get the first device whose name matches the given regular expression
+            % Gets the first device whose name matches the given regular expression
             
             for i = 1:numel(obj.devices)
                 if regexpi(obj.devices{i}.name, expression, 'once')
@@ -90,7 +90,7 @@ classdef Rig < handle
         end
         
         function d = getDevices(obj, expression)
-            % Get a cell array of devices whose names match the given regular expression
+            % Gets a cell array of devices whose names match the given regular expression
             
             if nargin < 2
                 expression = '.';
@@ -104,7 +104,7 @@ classdef Rig < handle
         end
         
         function n = getDeviceNames(obj, expression)
-            % Get all device names that match the given regular expression
+            % Gets all device names that match the given regular expression
             
             if nargin < 2
                 expression = '.';
@@ -113,7 +113,7 @@ classdef Rig < handle
         end
         
         function d = getOutputDevices(obj)
-            % Get all devices with at least one bound output stream
+            % Gets all devices with at least one bound output stream
             
             d = {};
             for i = 1:numel(obj.devices)
@@ -124,7 +124,7 @@ classdef Rig < handle
         end
         
         function d = getInputDevices(obj)
-            % Get all devices with at least one bound input stream
+            % Gets all devices with at least one bound input stream
             
             d = {};
             for i = 1:numel(obj.devices)
