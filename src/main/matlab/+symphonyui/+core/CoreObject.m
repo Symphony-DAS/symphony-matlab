@@ -1,4 +1,5 @@
 classdef (Abstract) CoreObject < handle
+    % A CoreObject is the base class for all Matlab classes that wrap a core .NET class.
     
     properties (SetAccess = private, Hidden)
         cobj

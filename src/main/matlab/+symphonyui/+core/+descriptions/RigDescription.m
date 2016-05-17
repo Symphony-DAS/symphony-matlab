@@ -1,4 +1,9 @@
 classdef RigDescription < symphonyui.core.Description
+    % A RigDescription describes the devices in an electrophysiology setup. In a typical setup, each amplifier channel, 
+    % any stimulation or monitoring devices (such as an LED, valve, temperature controller, light meter, etc.) is 
+    % represented by a distinct device within a RigDescription.
+    %
+    % To write a new rig description you must subclass the RigDescription class. 
     
     properties
         daqController

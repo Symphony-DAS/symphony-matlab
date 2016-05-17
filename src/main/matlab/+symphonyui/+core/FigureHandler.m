@@ -1,7 +1,15 @@
 classdef FigureHandler < handle
+    % A FigureHandler manages a figure displayed by a protocol. It creates the figure controls (typically a plot) and 
+    % updates the figure as each epoch completes. A FigureHandler is generally used to graphically present data and 
+    % perform online analysis.
+    %
+    % To write a new handler:
+    %   1. Subclass FigureHandler
+    %   2. Implement a constructor method to build the figure ui
+    %   3. Implement the handleEpoch method to update the figure when epochs complete
     
     events (NotifyAccess = private)
-        Closed
+        Closed  % Triggers when the handler is closed
     end
     
     properties (Access = protected)

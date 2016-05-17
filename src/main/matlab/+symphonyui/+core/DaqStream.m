@@ -1,11 +1,12 @@
 classdef DaqStream < symphonyui.core.CoreObject
+    % A DaqStream represents a hardware channel of a DAQ device.
     
     properties (SetAccess = private)
-        name
+        name    % Name of this stream
     end
     
     properties
-        sampleRate
+        sampleRate  % Sample rate of this stream (Measurement)
     end
     
     methods

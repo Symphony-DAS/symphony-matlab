@@ -1,7 +1,10 @@
 classdef StimulusGenerator < handle
     % A StimulusGenerator encapsulates the parameters and logic necessary to generate a stimulus.
     %
-    % To write a new generator you must subclass the StimulusGenerator class and implement the generateStimulus method.
+    % To write a new generator:
+    %   1. Subclass StimulusGenerator
+    %   2. Implement the generateStimulus method
+    % 
     % A generator should be able to regenerate a stimulus by being constructed with a map of the stimulus parameters.
     
     methods

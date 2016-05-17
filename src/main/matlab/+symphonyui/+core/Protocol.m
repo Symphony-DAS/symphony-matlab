@@ -3,9 +3,10 @@ classdef Protocol < handle
     % present a set of stimuli and record a set of responses from devices in the current rig. A protocol may also define 
     % online analysis to perform, typically through the use of FigureHandlers.
     %
-    % To write new protocols you must subclass the Protocol class. The properties of your subclass define the
-    % user-configuraable values that populate the Protocol Properties section of the main window. The behavior of your 
-    % protocol is defined by overriding methods of the Protocol class.
+    % To write a new protocol:
+    %   1. Subclass Protocol
+    %   2. Add properties to your subclass to define user-configurable values
+    %   3. Override methods to define protocol behavior
     %
     % Protocol Methods:
     %   getPreview          - Override to return a ProtocolPreview implementation that manages a preview for this protocol

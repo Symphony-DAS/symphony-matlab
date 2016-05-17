@@ -1,4 +1,5 @@
 classdef Measurement < symphonyui.core.CoreObject
+    % A Measurements represents a quantity and a unit of measure.
 
     properties (Constant)
         UNITLESS = '_unitless_'     % char(Symphony.Core.Measurement.UNITLESS);
@@ -6,10 +7,10 @@ classdef Measurement < symphonyui.core.CoreObject
     end
 
     properties (SetAccess = private)
-        quantity
-        quantityInBaseUnits
-        baseUnits
-        displayUnits
+        quantity                % Quantity of this measurement
+        quantityInBaseUnits     % Quantity expressed in base units (e.g. 1 mV would be 1*10^-3 V)
+        baseUnits               % SI units of this measurement
+        displayUnits            % Display units accounting for exponent (e.g. 1x10^-3 V has base units of 'V' but display units of 'mV')
     end
 
     methods

@@ -1,10 +1,26 @@
 classdef Persistor < symphonyui.core.CoreObject
+    % A Persistor exposes the persistent model that allows persisted objects to be annotated and modified after
+    % persistence.
+    %
+    % The persistent hierarchy:
+    %
+    % Experiment
+    %   Devices
+    %   Sources
+    %       Sources (nestable)
+    %   EpochGroups
+    %       EpochGroups (nestable)
+    %       EpochBlocks
+    %           Epochs
+    %               Backgrounds
+    %               Responses
+    %               Stimuli
 
     properties (SetAccess = private)
-        isClosed
-        experiment
-        currentEpochGroup
-        currentEpochBlock
+        isClosed            % Indicates if this persistor is closed
+        experiment          % Root entity of the persistent hierarchy
+        currentEpochGroup   % Currently open epoch group or empty if no epoch group is open
+        currentEpochBlock   % Currently open epoch block or empty if no epoch block is open
     end
 
     methods
@@ -30,6 +46,8 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function d = addDevice(obj, name, manufacturer)
+            % Adds a new device to the persistent hierarchy
+            
             cdev = obj.tryCoreWithReturn(@()obj.cobj.AddDevice(name, manufacturer));
             d = symphonyui.core.persistent.Device(cdev);
         end
@@ -40,6 +58,8 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function s = addSource(obj, parent, description)
+            % Adds a new source to the persistent hierarchy
+            
             if ischar(description)
                 l = description;
                 description = symphonyui.core.persistent.descriptions.SourceDescription();
@@ -66,6 +86,8 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function g = beginEpochGroup(obj, source, description, propertyMap)
+            % Begins a new epoch group, a logical group of consecutive epoch blocks
+            
             if nargin < 4
                 propertyMap = containers.Map();
             end
@@ -96,6 +118,8 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function g = endEpochGroup(obj)
+            % Ends the current epoch group
+            
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.EndEpochGroup());
             g = symphonyui.core.persistent.EpochGroup(cgrp);
         end
@@ -110,12 +134,16 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function b = beginEpochBlock(obj, protocolId, parametersMap)
+            % Begins a new epoch block, a logical group of consectutive epochs produced by a single protocol run
+            
             params = obj.dictionaryFromMap(parametersMap);
             cblk = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochBlock(protocolId, params));
             b = symphonyui.core.persistent.EpochBlock(cblk);
         end
 
         function b = endEpochBlock(obj)
+            % Ends the current epoch block
+            
             cblk = obj.tryCoreWithReturn(@()obj.cobj.EndEpochBlock());
             b = symphonyui.core.persistent.EpochBlock(cblk);
         end
@@ -130,6 +158,8 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function deleteEntity(obj, entity)
+            % Deletes the given persistent entity from the persistent medium
+            
             obj.tryCore(@()obj.cobj.Delete(entity.cobj));
         end
 

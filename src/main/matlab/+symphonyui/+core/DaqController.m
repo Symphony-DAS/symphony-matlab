@@ -1,16 +1,20 @@
 classdef DaqController < symphonyui.core.CoreObject
+    % A DaqController manages an A/D device such as an ITC-18.
+    %
+    % DaqController Methods:
+    %   getStream   - Gets a single stream belonging to this controller by name
     
     properties
-        sampleRate
+        sampleRate  % Sample rate of this controller
     end
     
     properties (SetAccess = protected)
-        sampleRateType
+        sampleRateType  % Property type of the sampleRate property
     end
     
     properties (SetAccess = private)
-        streams
-        processInterval
+        streams             % Streams available in this controller
+        processInterval     % Interval this controller attempts to maintain for process iterations
     end
 
     methods
@@ -28,6 +32,8 @@ classdef DaqController < symphonyui.core.CoreObject
         end
         
         function s = getStream(obj, name)
+            % Gets a single stream belonging to this controller by name
+            
             cstr = obj.tryCoreWithReturn(@()obj.cobj.GetStream(name));
             if isempty(cstr)
                 error(['A stream named ''' name ''' does not exist']);

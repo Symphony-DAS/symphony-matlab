@@ -1,4 +1,5 @@
 classdef CoreEventData < event.EventData
+    % Event data for events triggered by the domain layer.
     
     properties
         data

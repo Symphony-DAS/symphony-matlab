@@ -1,4 +1,5 @@
 classdef FigureHandlerManager < handle
+    % A FigureHandlerManager manages figure handlers for a protocol.
     
     properties (Access = private)
         log

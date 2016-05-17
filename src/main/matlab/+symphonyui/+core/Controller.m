@@ -1,22 +1,23 @@
 classdef Controller < symphonyui.core.CoreObject
-
+    % A Controller serves to run protocols and maintain the epoch queue.
+    
     properties (SetObservable, SetAccess = private)
-        state
+        state   % State of this controller (stopped, paused, running, etc.)
     end
 
     properties (SetAccess = private)
-        rig
-        currentProtocol
-        currentPersistor
+        rig                 % Rig assigned to this controller in setRig()
+        currentProtocol     % Current running or paused protocol
+        currentPersistor    % Current persistor or empty if there is no current persistor
     end
 
     properties (Access = private)
-        epochQueueDuration
+        epochQueueDuration  % Current duration of the epoch queue
     end
 
     properties (Constant, Access = private)
-        MAX_EPOCH_QUEUE_DURATION = seconds(3)
-        INTERVAL_KEYWORD = '_INTERVAL_'
+        MAX_EPOCH_QUEUE_DURATION = seconds(3)   % Max allowable duration of the epoch queue
+        INTERVAL_KEYWORD = '_INTERVAL_'         % Keyword tag to distinguish interval epochs from regular epochs
     end
 
     methods
