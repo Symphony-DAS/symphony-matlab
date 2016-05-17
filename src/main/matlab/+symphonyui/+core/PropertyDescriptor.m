@@ -1,16 +1,19 @@
 classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
+    % A PropertyDescriptor describes a single property within a protocol or description. A PropertyDescriptor can be 
+    % used to restrict a property's type or domain, specify a property's category, set a property to be hidden or 
+    % read-only, and more.
 
     properties
-        name
-        value
-        type
-        category
-        displayName
-        description
-        isReadOnly
-        isHidden
-        isPreferred
-        isRemovable
+        name            % Short name of the property
+        value           % Current value of the the property
+        type            % Type constraints the property value must conform to
+        category        % Name of the category the property should be grouped into
+        displayName     % Descriptive name of the property
+        description     % Detailed description of the property
+        isReadOnly      % Indicates if the property is read only
+        isHidden        % Indicates if the property is hidden
+        isPreferred     % Indicates if the property is preferred
+        isRemovable     % Indicates if the property is removable
     end
 
     properties (Access = private, Transient)

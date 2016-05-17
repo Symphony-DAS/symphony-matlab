@@ -1,4 +1,5 @@
 classdef ProtocolPreview < handle
+    % A ProtocolPreview manages a ui panel to present a preview of protocol's stimuli.
     
     properties (Access = protected)
         panel

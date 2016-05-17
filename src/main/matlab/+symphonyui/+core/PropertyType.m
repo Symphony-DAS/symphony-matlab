@@ -1,9 +1,20 @@
 classdef PropertyType < matlab.mixin.SetGet %#ok<*MCSUP>
+    % A PropertyType encapsulates the primitive type, shape amd domain constraints on a property value.
+    %
+    % Examples:
+    %   PropertyType('denserealsingle', 'scalar')
+    %       Creates a non-sparse single real scalar with unrestricted value
+    %   PropertyType('denserealdouble', 'scalar', [-1, 1])
+    %       Creates a non-sparse double real scalar with value in range -1 to 1
+    %   PropertyType('char', 'row', {'spring', 'summer', 'fall', 'winter'})
+    %       Creates a character array which may be either be 'spring', 'summer', 'fall' or 'winter'
+    %   PropertyType('logical', 'column', {'A', 'B', 'C'})
+    %       Creates a set whose elements are 'A', 'B' and 'C'
     
     properties
-        primitiveType
-        shape
-        domain
+        primitiveType   % Underlying Matlab type for the property
+        shape           % Expected dimension for thr property
+        domain          % Domain of possible property values
     end
     
     properties (Access = private, Transient)

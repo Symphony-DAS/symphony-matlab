@@ -1,4 +1,5 @@
 classdef ProtocolPreset < handle
+    % A ProtocolPreset stores a set of property values for a protocol.
     
     properties (SetAccess = private)
         name
