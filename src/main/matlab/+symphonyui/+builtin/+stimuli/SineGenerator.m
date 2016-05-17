@@ -1,6 +1,5 @@
-% Generates a sine wave stimulus.
-
 classdef SineGenerator < symphonyui.core.StimulusGenerator
+    % Generates a sine wave stimulus.
     
     properties
         preTime     % Leading duration (ms)

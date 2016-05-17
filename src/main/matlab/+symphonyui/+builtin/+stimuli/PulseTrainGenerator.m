@@ -1,6 +1,5 @@
-% Generates a rectangular pulse train stimulus.
-
 classdef PulseTrainGenerator < symphonyui.core.StimulusGenerator
+    % Generates a rectangular pulse train stimulus.
     
     properties
         preTime                     % Leading duration before the train (ms)

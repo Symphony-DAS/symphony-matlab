@@ -1,6 +1,5 @@
-% Generates a single ramp stimulus.
-
 classdef RampGenerator < symphonyui.core.StimulusGenerator
+    % Generates a single ramp stimulus.
     
     properties
         preTime     % Leading duration (ms)

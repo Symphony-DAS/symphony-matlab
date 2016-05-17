@@ -1,6 +1,5 @@
-% Generates an arbitrary waveform stimulus from a specified vector.
-
 classdef WaveformGenerator < symphonyui.core.StimulusGenerator
+    % Generates an arbitrary waveform stimulus from a specified vector.
     
     properties
         waveshape   % Wave as a vector (units)

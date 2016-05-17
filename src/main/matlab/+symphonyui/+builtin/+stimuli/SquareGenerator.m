@@ -1,6 +1,5 @@
-% Generates a square wave stimulus.
-
 classdef SquareGenerator < symphonyui.core.StimulusGenerator
+    % Generates a square wave stimulus.
     
     properties
         preTime     % Leading duration (ms)

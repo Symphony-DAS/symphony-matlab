@@ -1,6 +1,5 @@
-% Generates a single rectangular pulse stimulus.
-
 classdef RepeatingPulseGenerator < symphonyui.core.StimulusGenerator
+    % Generates a single rectangular pulse stimulus.
     
     properties
         preTime     % Leading duration (ms)

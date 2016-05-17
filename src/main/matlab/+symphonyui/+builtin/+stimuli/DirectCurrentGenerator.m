@@ -1,6 +1,5 @@
-% Generates a constant, zero-frequency, direct current stimulus.
-
 classdef DirectCurrentGenerator < symphonyui.core.StimulusGenerator
+    % Generates a constant, zero-frequency, direct current stimulus.
     
     properties
         time        % Duration (s)

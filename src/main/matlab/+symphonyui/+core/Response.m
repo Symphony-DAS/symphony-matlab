@@ -1,7 +1,11 @@
 classdef Response < symphonyui.core.CoreObject
+    % A Response represents a single response (i.e. the input from a single device) during an epoch.
+    %
+    % Response Methods:
+    %   getData     - Gets a vector of the data of this response
     
     properties (SetAccess = private)
-        sampleRate
+        sampleRate  % Sample rate of this response (Measurement)
     end
     
     properties (Access = private)
@@ -24,6 +28,8 @@ classdef Response < symphonyui.core.CoreObject
         end
         
         function [q, u] = getData(obj)
+            % Gets a vector of the data of this response
+            
             if ~isempty(obj.dataCache)
                 q = obj.dataCache.q;
                 u = obj.dataCache.u;

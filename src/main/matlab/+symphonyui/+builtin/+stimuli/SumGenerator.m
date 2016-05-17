@@ -1,7 +1,6 @@
-% Generates a stimulus from the sum of a set of specified stimuli. All stimuli must have the same duration, units and
-% sample rate.
-
 classdef SumGenerator < symphonyui.core.StimulusGenerator
+    % Generates a stimulus from the sum of a set of specified stimuli. All stimuli must have the same duration, units 
+    % and sample rate.
 
     properties
         stimuli     % Cell array of stimuli to sum

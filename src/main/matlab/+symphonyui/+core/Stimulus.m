@@ -1,11 +1,15 @@
 classdef Stimulus < symphonyui.core.CoreObject
+    % A Stimulus represents a single stimulus (i.e. the output of a single device) during an epoch.
+    %
+    % Stimulus Methods:
+    %   getData     - Gets a vector of the data of this stimulus
     
     properties (SetAccess = private)
-        stimulusId
-        sampleRate
-        parameters
-        duration
-        units
+        stimulusId  % Identifier of this stimulus
+        sampleRate  % Sample rate of this stimulus (Measurement)
+        parameters  % Parameters used to generate this stimulus (container.Map)
+        duration    % Duration of this stimulus (duration)
+        units       % Units of this stimulus
     end
     
     methods
@@ -45,6 +49,9 @@ classdef Stimulus < symphonyui.core.CoreObject
         end
         
         function [q, u] = getData(obj, duration)
+            % Gets a vector of the data of this stimulus. Stimuli with infinite duration must specify the duration of
+            % the vector to get.
+            
             if nargin < 2
                 duration = obj.duration;
             end
