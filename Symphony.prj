@@ -14,7 +14,7 @@
     <param.summary>Electrophysiology data acquisition system</param.summary>
     <param.description>Symphony is a MATLAB-based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.0.1.9</param.version>
+    <param.version>2.0.2.1</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -30,7 +30,9 @@
     </param.platforms>
     <param.output>${PROJECT_ROOT}\target</param.output>
     <param.guid>e743f2b1-d1a0-42d2-94cf-75fb1d084943</param.guid>
-    <unset/>
+    <unset>
+      
+    </unset>
     <fileset.main>
       <file>${PROJECT_ROOT}\src\main\matlab\main.m</file>
     </fileset.main>
@@ -618,32 +620,118 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\Module.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\UiEventData.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\Contents.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\_Sidebar.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Add-Allowable-Parents-to-an-Entity-Description.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Add-Configuration-Settings-to-a-Device.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Add-Resources-to-a-Device.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Add-Resources-to-an-Entity-Description.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\App-Basics.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Architecture.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Conduct-an-Experiment.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Create-a-Package.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\css\override.css</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Entity-Descriptions.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\File-Format.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Getting-Started.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_0.cfe</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_0.cfs</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_0.si</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments.gen</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments_1</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helptoc.xml</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Home.html</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\architecture.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\background.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\device.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\epoch block.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\epoch group.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\epoch.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\experiment.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\file.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\overview.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\resource.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\response.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\source.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5\stimulus.png</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\images\hdf5_file_format.bmpr</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-allowable-parents-to-an-entity-description\add-cell.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-allowable-parents-to-an-entity-description\add-subject.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-configuration-settings-to-a-device\constrained1.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-configuration-settings-to-a-device\constrained2.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-configuration-settings-to-a-device\devices.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-configuration-settings-to-a-device\edit-settings.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\app-basics\initialize-rig.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\app-basics\main-window.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\app-basics\pulse-protocol.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\architecture\architecture.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\add-nested-source.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\add-source.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\begin-epoch-group.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\complete-experiment.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\data-file.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\data-manager.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\epoch-block.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\epoch-block2.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\epoch-details.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\epoch-group-details.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\experiment-details.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\nested-source-details.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\new-file.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\record-button.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\conduct-an-experiment\source-details.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\create-a-package\options.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\create-a-package\path.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\create-a-package\root-directory.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\create-a-package\structure.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\background.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\device.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\epoch-block.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\epoch-group.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\epoch.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\experiment.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\file.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\overview.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\resource.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\response.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\source.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\file-format\stimulus.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\installation\installation.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\set-the-preview-for-a-protocol\preview.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\show-figure-handlers-in-a-protocol\mean-response.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\show-figure-handlers-in-a-protocol\response.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\bnoise.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\dc.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\gnoise.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\pulse.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\ramp.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\sine.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\square.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\sum.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\train.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\waveform.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\use-property-descriptors-in-a-description\constrained.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\use-property-descriptors-in-a-protocol\amp.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\use-property-descriptors-in-a-protocol\num-averages.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-figure-handler\handler-with-data.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-figure-handler\handler.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-figure-handler\new-class.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-module\module.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-module\new-class.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-protocol\new-class.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-protocol\properties.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-protocol\run.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-rig-description\initialize-rig.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-a-rig-description\new-class.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-an-entity-description\edit-properties.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\write-an-entity-description\new-class.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\info.xml</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Installation.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Modules.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Property-Descriptors.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Protocols.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Release-Instructions.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Rig-Descriptions.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Set-the-Preview-for-a-Protocol.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Show-Figure-Handlers-in-a-Protocol.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Standard-Stimulus-Generators.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Style-Guide.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Supported-Hardware.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Symphony-Development.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Symphony-Product-Description.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\System-Requirements.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Use-Property-Descriptors-in-a-Description.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Use-Property-Descriptors-in-a-Protocol.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Write-a-Figure-Handler.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Write-a-Module.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Write-a-Protocol.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Write-a-Rig-Description.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\Write-an-Entity-Description.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+epochgroups\Control.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+epochgroups\Drug.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+epochgroups\Wash.m</file>
@@ -717,7 +805,7 @@
     </fileset.resources>
     <fileset.package/>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="target" optional="false">${PROJECT_ROOT}\target</file>
+      <file location="${PROJECT_ROOT}" name="symphony-matlab2" optional="false">${PROJECT_ROOT}\target</file>
     </build-deliverables>
     <workflow/>
     <matlab>
