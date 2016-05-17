@@ -1,4 +1,5 @@
 classdef ResponseStatisticsFigure < symphonyui.core.FigureHandler
+    % Plots statistics calculated from the response of a specified device for each epoch run.
     
     properties (SetAccess = private)
         device

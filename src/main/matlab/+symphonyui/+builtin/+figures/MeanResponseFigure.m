@@ -1,4 +1,5 @@
 classdef MeanResponseFigure < symphonyui.core.FigureHandler
+    % Plots the mean response of a specified device for all epochs run.
     
     properties (SetAccess = private)
         device

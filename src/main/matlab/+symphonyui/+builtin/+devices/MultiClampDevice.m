@@ -1,4 +1,5 @@
 classdef MultiClampDevice < symphonyui.core.Device
+    % Represents a MultiClamp 700[A,B] device.
     
     methods
         

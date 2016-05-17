@@ -1,4 +1,5 @@
 classdef UnitConvertingDevice < symphonyui.core.Device
+    % Represents a generic device (LED, valve, temperature controller, etc.).
     
     properties
         measurementConversionTarget

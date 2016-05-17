@@ -1,4 +1,5 @@
 classdef CalibratedDevice < symphonyui.core.Device
+    % Represents a UnitConvertingDevice with an associated lookup table (LUT).
     
     properties
         measurementConversionTarget

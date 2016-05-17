@@ -1,4 +1,5 @@
 classdef AxopatchDevice < symphonyui.core.Device
+    % Represents an Axopatch device.
     
     properties (Constant)
         % These constants should directly reference Symphony.ExternalDevices but we cannot import the assembly before

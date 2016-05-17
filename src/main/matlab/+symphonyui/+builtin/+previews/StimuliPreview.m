@@ -1,4 +1,5 @@
 classdef StimuliPreview < symphonyui.core.ProtocolPreview
+    % Displays a cell array of stimuli on a 2D plot. 
     
     properties
         createStimuliFcn
@@ -12,6 +13,9 @@ classdef StimuliPreview < symphonyui.core.ProtocolPreview
     methods
         
         function obj = StimuliPreview(panel, createStimuliFcn)
+            % Constructs a StimuliPreview on the given panel with the given stimuli. createStimuliFcn should be a
+            % callback function that creates a cell array of stimuli.
+            
             obj@symphonyui.core.ProtocolPreview(panel);
             obj.createStimuliFcn = createStimuliFcn;
             obj.log = log4m.LogManager.getLogger(class(obj));

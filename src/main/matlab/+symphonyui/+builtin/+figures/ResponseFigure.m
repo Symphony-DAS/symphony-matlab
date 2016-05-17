@@ -1,4 +1,5 @@
 classdef ResponseFigure < symphonyui.core.FigureHandler
+    % Plots the response of a specified device in the most recent epoch.
 
     properties (SetAccess = private)
         device
