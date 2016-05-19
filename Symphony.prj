@@ -30,9 +30,7 @@
     </param.platforms>
     <param.output>${PROJECT_ROOT}\target</param.output>
     <param.guid>e743f2b1-d1a0-42d2-94cf-75fb1d084943</param.guid>
-    <unset>
-      
-    </unset>
+    <unset/>
     <fileset.main>
       <file>${PROJECT_ROOT}\src\main\matlab\main.m</file>
     </fileset.main>
@@ -754,6 +752,7 @@
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Subject.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\log.xml</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\add.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\icons\app.psd</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\app_16.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\app_24.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\app_48.png</file>
@@ -805,7 +804,7 @@
     </fileset.resources>
     <fileset.package/>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="symphony-matlab2" optional="false">${PROJECT_ROOT}\target</file>
+      <file location="${PROJECT_ROOT}" name="target" optional="false">${PROJECT_ROOT}\target</file>
     </build-deliverables>
     <workflow/>
     <matlab>
