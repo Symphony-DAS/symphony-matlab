@@ -645,6 +645,7 @@
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-configuration-settings-to-a-device\devices.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-configuration-settings-to-a-device\edit-settings.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\app-basics\initialize-rig.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\app-basics\launch.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\app-basics\main-window.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\app-basics\pulse-protocol.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\architecture\architecture.png</file>
