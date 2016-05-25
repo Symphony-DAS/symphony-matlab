@@ -12,7 +12,7 @@
       
     <file>${PROJECT_ROOT}\src\main\resources\icons\app_16.png</file><file>${PROJECT_ROOT}\src\main\resources\icons\app_24.png</file><file>${PROJECT_ROOT}\src\main\resources\icons\app_48.png</file></param.icons>
     <param.summary>Data Acquisition System</param.summary>
-    <param.description>Symphony is a MATLAB-based data acquisition system for electrophysiologists.</param.description>
+    <param.description>Symphony is a MATLAB based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
     <param.version>2.0.3.0</param.version>
     <param.products.name>
