@@ -2,6 +2,10 @@ function main()
     import symphonyui.app.*;
     import symphonyui.infra.*;
     
+    busy = appbox.BusyPresenter('This may take a moment.', 'Starting...');
+    busy.go();
+    deleteBusy = onCleanup(@()delete(busy));
+    
     addDotNetAssemblies({'Symphony.Core.dll'});
     addJavaJars({'UIExtrasComboBox.jar', 'UIExtrasTable.jar', 'UIExtrasTable2.jar', 'UIExtrasTree.jar', 'UIExtrasPropertyGrid.jar'});
     
@@ -28,6 +32,7 @@ function main()
     presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, moduleService);
     addlistener(presenter, 'Stopped', @(h,d)session.close());
     
+    delete(busy);
     presenter.showInitializeRig();
     
     protocols = acquisitionService.getAvailableProtocols();
