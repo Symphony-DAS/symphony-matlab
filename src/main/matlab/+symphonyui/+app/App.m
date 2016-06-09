@@ -1,17 +1,25 @@
 classdef App < handle
 
     methods (Static)
-
-        function t = title()
-            t = 'Symphony Data Acquisition System';
+        
+        function n = name()
+            n = 'Symphony';
+        end
+        
+        function d = description()
+            d = 'Data Acquisition System';
         end
 
         function v = version()
             v = '2.0.3.0'; % i.e. 2.0-r
         end
-
-        function c = copyright()
-            c = [char(169) ' 2016 Symphony-DAS'];
+        
+        function o = owner()
+            o = 'Symphony-DAS';
+        end
+        
+        function r = repo()
+            r = 'symphony-matlab2';
         end
 
         function u = documentationUrl()

@@ -34,6 +34,7 @@ classdef AddNotePresenter < appbox.Presenter
             obj.addListener(v, 'Add', @obj.onViewSelectedAdd);
             obj.addListener(v, 'Cancel', @obj.onViewSelectedCancel);
         end
+        
     end
 
     methods (Access = private)

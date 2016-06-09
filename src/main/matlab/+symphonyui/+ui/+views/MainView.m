@@ -52,7 +52,7 @@ classdef MainView < appbox.View
             import symphonyui.app.App;
 
             set(obj.figureHandle, ...
-                'Name', 'Symphony', ...
+                'Name', symphonyui.app.App.name, ...
             	'Position', screenCenter(360, 340));
 
             % File menu.
@@ -148,7 +148,7 @@ classdef MainView < appbox.View
                 'Label', 'User Group', ...
                 'Callback', @(h,d)notify(obj, 'ShowUserGroup'));
             obj.helpMenu.showAbout = uimenu(obj.helpMenu.root, ...
-                'Label', 'About Symphony', ...
+                'Label', ['About ' symphonyui.app.App.name], ...
                 'Separator', 'on', ...
                 'Callback', @(h,d)notify(obj, 'ShowAbout'));
 
@@ -413,9 +413,9 @@ classdef MainView < appbox.View
 
         function setStatus(obj, s)
             if isempty(s)
-                title = 'Symphony';
+                title = symphonyui.app.App.name;
             else
-                title = sprintf('Symphony (%s)', s);
+                title = sprintf('%s (%s)', symphonyui.app.App.name, s);
             end
             set(obj.figureHandle, 'Name', title);
         end
