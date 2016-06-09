@@ -14,7 +14,7 @@
     <param.summary>Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.0.3.0</param.version>
+    <param.version>2.0.3.1</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -326,6 +326,7 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\ComponentWrapper.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\EventData.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\firstNonEmpty.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\GitHubUpdater.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\humanize.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\IntelliHintsTextField.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Label.m</file>
@@ -345,6 +346,8 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\TabGroup.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\TextArea.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\UIControl.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\UpdatePresenter.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\UpdateView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\View.m</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\HDF5.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\hdf5_hldll.dll</file>
