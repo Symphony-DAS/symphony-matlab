@@ -6,15 +6,18 @@ function main()
     busy.go();
     deleteBusy = onCleanup(@()delete(busy));
     
-    updater = appbox.GitHubUpdater();
-    isUpdate = updater.checkForUpdates(App.owner, App.repo, struct('name', App.name, 'version', App.version));
-    if isUpdate
-        p = appbox.UpdatePresenter(updater);
-        p.goWaitStop();
-        id = p.result;
-        if ~isempty(id)
-            matlab.apputil.run(id);
-            return;
+    % MATLAB cannot remove .NET assemblies from the path so only update if this is the first run in the session.
+    if isempty(which('Symphony.Core.SymphonyFramework'))
+        updater = appbox.GitHubUpdater();
+        isUpdate = updater.checkForUpdates(App.owner, App.repo, struct('name', App.name, 'version', App.version));
+        if isUpdate
+            p = appbox.UpdatePresenter(updater);
+            p.goWaitStop();
+            id = p.result;
+            if ~isempty(id)
+                matlab.apputil.run(id);
+                return;
+            end
         end
     end
     
