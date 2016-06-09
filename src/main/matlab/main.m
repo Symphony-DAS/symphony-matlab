@@ -9,7 +9,12 @@ function main()
     updater = appbox.GitHubUpdater();
     isUpdate = updater.checkForUpdates(App.owner, App.repo, struct('name', App.name, 'version', App.version));
     if isUpdate
-        appbox.UpdatePresenter(updater).goWaitStop();
+        p = appbox.UpdatePresenter(updater);
+        p.goWaitStop();
+        if p.result
+            matlab.apputil.run('SymphonyAPP');
+            return;
+        end
     end
     
     addDotNetAssemblies({'Symphony.Core.dll'});
