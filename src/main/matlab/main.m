@@ -6,6 +6,12 @@ function main()
     busy.go();
     deleteBusy = onCleanup(@()delete(busy));
     
+    updater = appbox.GitHubUpdater();
+    isUpdate = updater.checkForUpdates(App.owner, App.repo, struct('name', App.name, 'version', App.version));
+    if isUpdate
+        appbox.UpdatePresenter(updater).goWaitStop();
+    end
+    
     addDotNetAssemblies({'Symphony.Core.dll'});
     addJavaJars({'UIExtrasComboBox.jar', 'UIExtrasTable.jar', 'UIExtrasTable2.jar', 'UIExtrasTree.jar', 'UIExtrasPropertyGrid.jar'});
     
