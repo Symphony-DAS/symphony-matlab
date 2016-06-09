@@ -11,8 +11,9 @@ function main()
     if isUpdate
         p = appbox.UpdatePresenter(updater);
         p.goWaitStop();
-        if p.result
-            matlab.apputil.run('SymphonyAPP');
+        id = p.result;
+        if ~isempty(id)
+            matlab.apputil.run(id);
             return;
         end
     end
