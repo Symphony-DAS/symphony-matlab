@@ -13,9 +13,9 @@ function main()
         if isUpdate
             p = appbox.UpdatePresenter(updater);
             p.goWaitStop();
-            id = p.result;
-            if ~isempty(id)
-                matlab.apputil.run(id);
+            info = p.result;
+            if ~isempty(info)
+                matlab.apputil.run(info.id);
                 return;
             end
         end
