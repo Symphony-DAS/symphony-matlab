@@ -39,6 +39,13 @@ classdef RigDescription < symphonyui.core.Description
             obj.devices{end + 1} = device;
         end
         
+        function removeDevice(obj, device)
+            % Removes a device from this description
+            
+            i = cellfun(@(d)d == device, obj.devices);
+            obj.devices(i) = [];
+        end
+        
     end
     
 end

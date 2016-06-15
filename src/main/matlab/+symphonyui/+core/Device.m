@@ -150,6 +150,10 @@ classdef Device < symphonyui.core.CoreObject
             end
             d = obj;
         end
+        
+        function unbindStream(obj, name)
+            obj.tryCore(@()obj.cobj.UnbindStream(name));
+        end
 
         function s = get.inputStreams(obj)            
             s = obj.cellArrayFromEnumerable(obj.cobj.InputStreams, @symphonyui.core.DaqStream);
