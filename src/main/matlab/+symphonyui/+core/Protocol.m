@@ -93,7 +93,10 @@ classdef Protocol < handle
         end
 
         function p = createPreset(obj, name)
-            p = symphonyui.core.ProtocolPreset(name, class(obj), obj.getPropertyMap());
+            descriptors = obj.getPropertyDescriptors();
+            i = arrayfun(@(d)d.isReadOnly, descriptors);
+            descriptors(i) = [];
+            p = symphonyui.core.ProtocolPreset(name, class(obj), descriptors.toMap());
         end
 
         function applyPreset(obj, preset)
