@@ -55,6 +55,16 @@ classdef InitializeRigPresenter < appbox.Presenter
                 split = strsplit(classNames{i}, '.');
                 displayNames{i} = appbox.humanize(split{end});
             end
+            
+            for i = 1:numel(displayNames)
+                name = displayNames{i};
+                repeats = find(strcmp(name, displayNames));
+                if numel(repeats) > 1
+                    for j = 1:numel(repeats)
+                        displayNames{repeats(j)} = [name ' (' classNames{repeats(j)} ')'];
+                    end
+                end
+            end
 
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
