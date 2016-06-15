@@ -198,6 +198,11 @@ classdef OptionsPresenter < appbox.Presenter
                 return;
             end
             
+            obj.view.showMessage( ...
+                'Options saved. Most values will not apply until the app is restarted.', ...
+                'Options Saved', ...
+                'OK');
+            
             obj.stop();
         end
         
