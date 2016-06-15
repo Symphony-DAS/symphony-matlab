@@ -411,6 +411,10 @@ classdef MainPresenter < appbox.Presenter
         function onViewSelectedViewOnly(obj, ~, ~)
             obj.view.stopEditingProtocolProperties();
             obj.view.update();
+            if ~obj.acquisitionService.isValid()
+                obj.updateStateOfControls();
+                return;
+            end
             try
                 obj.acquisitionService.viewOnly();
             catch x
@@ -423,6 +427,10 @@ classdef MainPresenter < appbox.Presenter
         function onViewSelectedRecord(obj, ~, ~)
             obj.view.stopEditingProtocolProperties();
             obj.view.update();
+            if ~obj.acquisitionService.isValid()
+                obj.updateStateOfControls();
+                return;
+            end
             try
                 obj.acquisitionService.record();
             catch x
