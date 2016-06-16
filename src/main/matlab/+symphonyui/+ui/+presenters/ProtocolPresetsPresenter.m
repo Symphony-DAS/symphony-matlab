@@ -59,6 +59,8 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
 
             a = obj.acquisitionService;
+            obj.addListener(a, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
+            obj.addListener(a, 'SetProtocolProperties', @obj.onServiceSetProtocolProperties);
             obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
             obj.addListener(a, 'AddedProtocolPreset', @obj.onServiceAddedProtocolPreset);
             obj.addListener(a, 'RemovedProtocolPreset', @obj.onServiceRemovedProtocolPreset);
@@ -168,6 +170,14 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         function onServiceEndedEpochGroup(obj, ~, ~)
             obj.updateStateOfControls();
         end
+        
+        function onServiceSelectedProtocol(obj, ~, ~)
+            obj.updateStateOfControls();
+        end
+        
+        function onServiceSetProtocolProperties(obj, ~, ~)
+            obj.updateStateOfControls();
+        end
 
         function onServiceChangedControllerState(obj, ~, ~)
             obj.updateStateOfControls();
@@ -181,16 +191,23 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             controllerState = obj.acquisitionService.getControllerState();
             isStopping = controllerState.isStopping();
             isStopped = controllerState.isStopped();
+            try
+                isValid = obj.acquisitionService.isValid();
+            catch
+                isValid = false;
+            end
 
             enableApplyProtocolPreset = isStopped;
             enableViewOnlyProtocolPreset = isStopped;
             enableRecordProtocolPreset = hasEpochGroup && isStopped;
             enableStopProtocolPreset = ~isStopping && ~isStopped;
+            enableAddProtocolPreset = isValid;
 
             obj.view.enableApplyProtocolPreset(enableApplyProtocolPreset);
             obj.view.enableViewOnlyProtocolPreset(enableViewOnlyProtocolPreset);
             obj.view.enableRecordProtocolPreset(enableRecordProtocolPreset);
             obj.view.enableStopProtocolPreset(enableStopProtocolPreset);
+            obj.view.enableAddProtocolPreset(enableAddProtocolPreset);
             
             if ~enableApplyProtocolPreset
                 obj.view.stopEditingApplyProtocolPreset();

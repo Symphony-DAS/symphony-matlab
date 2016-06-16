@@ -166,6 +166,10 @@ classdef ProtocolPresetsView < appbox.View
                 d{i, 2} = protocolId;
             end
         end
+        
+        function enableAddProtocolPreset(obj, tf)
+            set(obj.addButton, 'Enable', appbox.onOff(tf));
+        end
 
         function addProtocolPreset(obj, name, protocolId)
             enables = get(obj.presetsTable, 'UserData');
