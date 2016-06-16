@@ -419,6 +419,14 @@ classdef MainView < appbox.View
             end
             set(obj.figureHandle, 'Name', title);
         end
+        
+        function setIsValid(obj, tf)
+            if tf
+                set(obj.protocolPopupMenu, 'ForegroundColor', 'black');
+            else
+                set(obj.protocolPopupMenu, 'ForegroundColor', 'red');
+            end
+        end
 
     end
 

@@ -528,6 +528,7 @@ classdef MainPresenter < appbox.Presenter
             obj.view.enableInitializeRig(enableInitializeRig);
             obj.view.enableConfigureDevices(enableConfigureDevices);
             obj.view.setStatus(status);
+            obj.view.setIsValid(isValid);
         end
         
         function onViewSelectedResetProtocol(obj, ~, ~)
