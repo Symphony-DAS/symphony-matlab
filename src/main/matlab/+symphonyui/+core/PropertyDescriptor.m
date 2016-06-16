@@ -168,6 +168,10 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
             end
 
             comment = uiextras.jide.helptext([class(handle) '.' mpo.Name]);
+            if ~strcmpi(mpo.DefiningClass.Name, class(handle)) && numel(comment) >= 2
+                % Remove inherited from text
+                comment(end-1:end) = [];
+            end
             if ~isempty(comment)
                 comment{1} = strtrim(regexprep(comment{1}, ['^' mpo.Name ' -'], ''));
             end
