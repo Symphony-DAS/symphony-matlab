@@ -173,7 +173,7 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
                 comment(end-1:end) = [];
             end
             if ~isempty(comment)
-                comment{1} = strtrim(regexprep(comment{1}, ['^' mpo.Name ' -'], ''));
+                comment{1} = strtrim(regexprep(strtrim(comment{1}), ['^' mpo.Name ' -'], ''));
             end
             comment = strjoin(comment, '\n');
 
