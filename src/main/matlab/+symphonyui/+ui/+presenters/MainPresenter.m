@@ -485,6 +485,7 @@ classdef MainPresenter < appbox.Presenter
             isPausing = controllerState.isPausing();
             isViewingPaused = controllerState.isViewingPaused();
             isRecordingPaused = controllerState.isRecordingPaused();
+            isPaused = controllerState.isPaused();
             isStopping = controllerState.isStopping();
             isStopped = controllerState.isStopped();
             try
@@ -515,10 +516,14 @@ classdef MainPresenter < appbox.Presenter
 
             if ~isValid
                 status = validationMessage;
-            elseif isStopped
-                status = '';
+                statusMode = obj.view.INVALID_STATUS_MODE;
             else
                 status = char(controllerState);
+                if isStopped || isPaused
+                    statusMode = obj.view.VALID_STATUS_MODE;
+                else
+                    statusMode = obj.view.BUSY_STATUS_MODE;
+                end
             end
 
             obj.view.enableNewFile(enableNewFile);
@@ -538,7 +543,7 @@ classdef MainPresenter < appbox.Presenter
             obj.view.enableInitializeRig(enableInitializeRig);
             obj.view.enableConfigureDevices(enableConfigureDevices);
             obj.view.setStatus(status);
-            obj.view.setIsValid(isValid);
+            obj.view.setStatusMode(statusMode);
         end
         
         function onViewSelectedResetProtocol(obj, ~, ~)

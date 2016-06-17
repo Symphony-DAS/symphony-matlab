@@ -43,6 +43,14 @@ classdef MainView < appbox.View
         recordButton
         pauseButton
         stopButton
+        statusLabel
+        statusIcon
+    end
+    
+    properties (Constant)
+        VALID_STATUS_MODE       = 1
+        INVALID_STATUS_MODE     = 2
+        BUSY_STATUS_MODE        = 3
     end
 
     methods
@@ -241,8 +249,19 @@ classdef MainView < appbox.View
                 'String', ['<html><img src="' path2Url(App.getResource('icons', 'stop_big.png')) '"/></html>'], ...
                 'TooltipString', 'Stop', ...
                 'Callback', @(h,d)notify(obj, 'Stop'));
+            
+            statusLayout = uix.HBox( ...
+                'Parent', mainLayout, ...
+                'BackgroundColor', 'white');
+            
+            obj.statusLabel = Label( ...
+                'Parent', statusLayout);
+            obj.statusIcon = Label( ...
+                'Parent', statusLayout);
+            
+            set(statusLayout, 'Widths', [-1 18]);
 
-            set(mainLayout, 'Heights', [-1 34]);
+            set(mainLayout, 'Heights', [-1 34 18]);
         end
 
         function close(obj)
@@ -412,20 +431,18 @@ classdef MainView < appbox.View
         end
 
         function setStatus(obj, s)
-            if isempty(s)
-                title = symphonyui.app.App.name;
-            else
-                title = sprintf('%s (%s)', symphonyui.app.App.name, s);
-            end
-            set(obj.figureHandle, 'Name', title);
+            set(obj.statusLabel, 'String', ['Status: ' s]);
         end
         
-        function setIsValid(obj, tf)
-            if tf
-                set(obj.protocolPopupMenu, 'ForegroundColor', 'black');
-            else
-                set(obj.protocolPopupMenu, 'ForegroundColor', 'red');
+        function setStatusMode(obj, m)
+            icon = '';
+            switch m
+                case obj.INVALID_STATUS_MODE
+                    icon = symphonyui.app.App.getResource('icons', 'invalid.png');
+                case obj.BUSY_STATUS_MODE
+                    icon = symphonyui.app.App.getResource('icons', 'spinner.gif');
             end
+            set(obj.statusIcon, 'Icon', icon)
         end
 
     end

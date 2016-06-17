@@ -8,7 +8,7 @@ classdef NullProtocol < symphonyui.core.Protocol
         
         function [tf, msg] = isValid(obj) %#ok<MANU>
             tf = false;
-            msg = [];
+            msg = 'Cannot run null protocol';
         end
         
     end
