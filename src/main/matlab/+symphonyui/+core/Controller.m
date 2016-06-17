@@ -74,7 +74,7 @@ classdef Controller < symphonyui.core.CoreObject
                 error('Controller not paused');
             end
 
-            if isempty(obj.state.isViewingPaused())
+            if obj.state.isViewingPaused()
                 obj.state = symphonyui.core.ControllerState.VIEWING;
             else
                 obj.state = symphonyui.core.ControllerState.RECORDING;
