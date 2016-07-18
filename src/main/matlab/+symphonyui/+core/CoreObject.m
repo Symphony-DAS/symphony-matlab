@@ -150,7 +150,7 @@ classdef (Abstract) CoreObject < handle
         end
         
         function t = timeSpanFromDuration(obj, d) %#ok<INUSL>
-            t = System.TimeSpan.FromSeconds(seconds(d));
+            t = System.TimeSpan.FromTicks(milliseconds(d) * 10000);
         end
         
         function v = propertyValueFromValue(obj, v) %#ok<INUSL>

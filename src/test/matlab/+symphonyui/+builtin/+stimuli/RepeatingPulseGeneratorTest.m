@@ -9,7 +9,7 @@ classdef RepeatingPulseGeneratorTest < symphonyui.builtin.StimulusGeneratorTestB
         function methodSetup(obj)
             gen = symphonyui.builtin.stimuli.RepeatingPulseGenerator();
             gen.preTime = 50;
-            gen.stimTime = 430.2;
+            gen.stimTime = 430;
             gen.tailTime = 70;
             gen.amplitude = 100;
             gen.mean = -60;
