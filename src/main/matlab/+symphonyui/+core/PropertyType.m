@@ -1,5 +1,5 @@
 classdef PropertyType < matlab.mixin.SetGet %#ok<*MCSUP>
-    % A PropertyType encapsulates the primitive type, shape amd domain constraints on a property value.
+    % A PropertyType encapsulates the primitive type, shape and domain constraints on a property value.
     %
     % Examples:
     %   PropertyType('denserealsingle', 'scalar')
