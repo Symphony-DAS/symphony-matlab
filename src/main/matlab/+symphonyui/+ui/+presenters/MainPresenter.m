@@ -277,22 +277,7 @@ classdef MainPresenter < appbox.Presenter
 
         function populateProtocolList(obj)
             classNames = obj.acquisitionService.getAvailableProtocols();
-
-            displayNames = cell(1, numel(classNames));
-            for i = 1:numel(classNames)
-                split = strsplit(classNames{i}, '.');
-                displayNames{i} = appbox.humanize(split{end});
-            end
-
-            for i = 1:numel(displayNames)
-                name = displayNames{i};
-                repeats = find(strcmp(name, displayNames));
-                if numel(repeats) > 1
-                    for j = 1:numel(repeats)
-                        displayNames{repeats(j)} = [name ' (' classNames{repeats(j)} ')'];
-                    end
-                end
-            end
+            displayNames = symphonyui.ui.util.class2display(classNames);
 
             obj.view.setProtocolList([{'(None)'}, displayNames], [{[]}, classNames]);
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
@@ -597,13 +582,7 @@ classdef MainPresenter < appbox.Presenter
 
         function populateModuleList(obj)
             classNames = obj.moduleService.getAvailableModules();
-
-            displayNames = cell(1, numel(classNames));
-            for i = 1:numel(classNames)
-                split = strsplit(classNames{i}, '.');
-                name = appbox.humanize(split{end});
-                displayNames{i} = appbox.capitalize(name);
-            end
+            displayNames = symphonyui.ui.util.class2display(classNames, true);
 
             for i = 1:numel(classNames)
                 obj.view.addModule(displayNames{i}, classNames{i});

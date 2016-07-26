@@ -76,12 +76,7 @@ classdef NewFilePresenter < appbox.Presenter
 
         function populateDescriptionList(obj)
             classNames = obj.documentationService.getAvailableExperimentDescriptions();
-
-            displayNames = cell(1, numel(classNames));
-            for i = 1:numel(classNames)
-                split = strsplit(classNames{i}, '.');
-                displayNames{i} = appbox.humanize(split{end});
-            end
+            displayNames = symphonyui.ui.util.class2display(classNames);
 
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
