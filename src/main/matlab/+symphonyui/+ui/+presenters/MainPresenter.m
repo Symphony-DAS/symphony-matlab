@@ -277,7 +277,7 @@ classdef MainPresenter < appbox.Presenter
 
         function populateProtocolList(obj)
             classNames = obj.acquisitionService.getAvailableProtocols();
-            displayNames = symphonyui.ui.util.class2display(classNames);
+            displayNames = appbox.class2display(classNames);
 
             obj.view.setProtocolList([{'(None)'}, displayNames], [{[]}, classNames]);
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
@@ -582,7 +582,7 @@ classdef MainPresenter < appbox.Presenter
 
         function populateModuleList(obj)
             classNames = obj.moduleService.getAvailableModules();
-            displayNames = symphonyui.ui.util.class2display(classNames, true);
+            displayNames = appbox.class2display(classNames, true);
 
             for i = 1:numel(classNames)
                 obj.view.addModule(displayNames{i}, classNames{i});

@@ -49,7 +49,7 @@ classdef InitializeRigPresenter < appbox.Presenter
 
         function populateDescriptionList(obj)
             classNames = obj.configurationService.getAvailableRigDescriptions();
-            displayNames = symphonyui.ui.util.class2display(classNames);
+            displayNames = appbox.class2display(classNames);
 
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);

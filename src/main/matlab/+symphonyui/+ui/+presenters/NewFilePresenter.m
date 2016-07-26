@@ -44,7 +44,7 @@ classdef NewFilePresenter < appbox.Presenter
 
         function bind(obj)
             bind@appbox.Presenter(obj);
-            
+
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'BrowseLocation', @obj.onViewSelectedBrowseLocation);
@@ -76,7 +76,7 @@ classdef NewFilePresenter < appbox.Presenter
 
         function populateDescriptionList(obj)
             classNames = obj.documentationService.getAvailableExperimentDescriptions();
-            displayNames = symphonyui.ui.util.class2display(classNames);
+            displayNames = appbox.class2display(classNames);
 
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
@@ -161,11 +161,11 @@ classdef NewFilePresenter < appbox.Presenter
             obj.view.enableOk(tf);
             obj.view.enableCancel(tf);
         end
-        
+
         function updateStateOfControls(obj)
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
-            
+
             obj.view.enableOk(hasDescription);
         end
 

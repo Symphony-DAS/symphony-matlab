@@ -75,7 +75,7 @@ classdef AddSourcePresenter < appbox.Presenter
                 parentType = parent.getDescriptionType();
             end
             classNames = obj.documentationService.getAvailableSourceDescriptions(parentType);
-            displayNames = symphonyui.ui.util.class2display(classNames);
+            displayNames = appbox.class2display(classNames);
 
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
