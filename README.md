@@ -24,4 +24,4 @@ The project directory structure generally follows the [Maven Standard Directory 
 
 ## License
 
-Symphony is licensed under the [MIT License](https://opensource.org/licenses/MIT), which is an [open source license](https://opensource.org/docs/osd).
+Licensed under the [MIT License](https://opensource.org/licenses/MIT), which is an [open source license](https://opensource.org/docs/osd).
