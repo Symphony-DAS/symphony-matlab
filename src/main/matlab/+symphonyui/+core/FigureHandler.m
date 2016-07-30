@@ -31,13 +31,15 @@ classdef FigureHandler < handle
                 'HandleVisibility', 'off', ...
                 'Visible', 'off', ...
                 'DockControls', 'off');
-            if ispc
-                set(obj.figureHandle, 'DefaultUicontrolFontName', 'Segoe UI');
-                set(obj.figureHandle, 'DefaultUicontrolFontSize', 9);
-            elseif ismac
-                set(obj.figureHandle, 'DefaultUicontrolFontName', 'Helvetica Neue');
-                set(obj.figureHandle, 'DefaultUicontrolFontSize', 12);
+            
+            font = javax.swing.UIManager.getDefaults().getFont('Panel.font');
+            for c = {'Uicontrol', 'Uitable', 'Uipanel', 'Uibuttongroup', 'Axes'}
+                c = c{1}; %#ok<FXSET>
+            	set(obj.figureHandle, ['Default' c 'FontName'], char(font.getName()));
+                set(obj.figureHandle, ['Default' c 'FontSize'], font.getSize());
+                set(obj.figureHandle, ['Default' c 'FontUnits'], 'pixels');
             end
+            
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.core.FigureHandlerSettings([matlab.lang.makeValidName(class(obj)) '_' settingsKey]);
             try

@@ -1,11 +1,11 @@
 function main()
     import symphonyui.app.*;
     import symphonyui.infra.*;
-    
-    busy = appbox.BusyPresenter('This may take a moment.', 'Starting...');
+
+    busy = appbox.BusyPresenter('Starting...');
     busy.go();
     deleteBusy = onCleanup(@()delete(busy));
-    
+
     % MATLAB cannot remove .NET assemblies from the path so only update if this is the first run in the session.
     if isempty(which('Symphony.Core.SymphonyFramework'))
         updater = appbox.GitHubUpdater();
@@ -20,41 +20,41 @@ function main()
             end
         end
     end
-    
+
     addDotNetAssemblies({'Symphony.Core.dll'});
     addJavaJars({'UIExtrasComboBox.jar', 'UIExtrasTable.jar', 'UIExtrasTable2.jar', 'UIExtrasTree.jar', 'UIExtrasPropertyGrid.jar'});
-    
+
     options = symphonyui.app.Options.getDefault();
     presets = symphonyui.app.Presets.getDefault();
-    
+
     try
         run(options.startupFile());
     catch x
         warning(['Failed to run startup file: ', x.message]);
     end
-        
+
     Symphony.Core.Logging.ConfigureLogging(options.loggingConfigurationFile(), options.loggingLogDirectory());
-    
+
     session = Session(options, presets);
     persistorFactory = PersistorFactory();
     classRepository = ClassRepository(options.searchPath);
-    
+
     documentationService = DocumentationService(session, persistorFactory, classRepository);
     acquisitionService = AcquisitionService(session, classRepository);
     configurationService = ConfigurationService(session, classRepository);
     moduleService = ModuleService(session, classRepository, documentationService, acquisitionService, configurationService);
-    
+
     presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, moduleService);
     addlistener(presenter, 'Stopped', @(h,d)session.close());
-    
+
     delete(busy);
     presenter.showInitializeRig();
-    
+
     protocols = acquisitionService.getAvailableProtocols();
     if numel(protocols) > 0
         presenter.selectProtocol(protocols{1});
     end
-    
+
     presenter.go();
 end
 

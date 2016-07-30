@@ -78,7 +78,7 @@ classdef MainPresenter < appbox.Presenter
 
         function bind(obj)
             bind@appbox.Presenter(obj);
-            
+
             v = obj.view;
             obj.addListener(v, 'NewFile', @obj.onViewSelectedNewFile);
             obj.addListener(v, 'OpenFile', @obj.onViewSelectedOpenFile);
@@ -152,7 +152,7 @@ classdef MainPresenter < appbox.Presenter
             if isempty(path)
                 return;
             end
-            p = obj.view.showBusy('This may take a moment.', 'Opening file...');
+            p = obj.view.showBusy('Opening file...');
             d = onCleanup(@()delete(p));
             try
                 obj.documentationService.openFile(path);
@@ -232,7 +232,7 @@ classdef MainPresenter < appbox.Presenter
         function onServiceBeganEpochGroup(obj, ~, ~)
             obj.updateStateOfControls();
         end
-        
+
         function onViewSelectedEndEpochGroup(obj, ~, ~)
             try
                 obj.documentationService.endEpochGroup();
@@ -246,7 +246,7 @@ classdef MainPresenter < appbox.Presenter
         function onServiceEndedEpochGroup(obj, ~, ~)
             obj.updateStateOfControls();
         end
-        
+
         function onViewSelectedAddNoteToExperiment(obj, ~, ~)
             experiment = obj.documentationService.getExperiment();
             experimentSet = symphonyui.core.persistent.collections.EntitySet(experiment);
@@ -530,7 +530,7 @@ classdef MainPresenter < appbox.Presenter
             obj.view.setStatus(status);
             obj.view.setStatusMode(statusMode);
         end
-        
+
         function onViewSelectedResetProtocol(obj, ~, ~)
             try
                 obj.acquisitionService.resetProtocol();
@@ -540,11 +540,11 @@ classdef MainPresenter < appbox.Presenter
                 return;
             end
         end
-        
+
         function onViewSelectedShowProtocolPresets(obj, ~, ~)
             obj.showProtocolPresets();
         end
-        
+
         function showProtocolPresets(obj)
             if isempty(obj.protocolPresetsPresenter) || obj.protocolPresetsPresenter.isStopped()
                 obj.protocolPresetsPresenter = symphonyui.ui.presenters.ProtocolPresetsPresenter(obj.documentationService, obj.acquisitionService);

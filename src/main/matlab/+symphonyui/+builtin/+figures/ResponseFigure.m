@@ -17,7 +17,7 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
 
         function obj = ResponseFigure(device, varargin)
             co = get(groot, 'defaultAxesColorOrder');
-            
+
             ip = inputParser();
             ip.addParameter('sweepColor', co(1,:), @(x)ischar(x) || isvector(x));
             ip.addParameter('storedSweepColor', 'r', @(x)ischar(x) || isvector(x));
@@ -43,8 +43,6 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
 
             obj.axesHandle = axes( ...
                 'Parent', obj.figureHandle, ...
-                'FontName', get(obj.figureHandle, 'DefaultUicontrolFontName'), ...
-                'FontSize', get(obj.figureHandle, 'DefaultUicontrolFontSize'), ...
                 'XTickMode', 'auto');
             xlabel(obj.axesHandle, 'sec');
 
