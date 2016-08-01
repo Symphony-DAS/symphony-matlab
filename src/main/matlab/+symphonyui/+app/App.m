@@ -19,7 +19,7 @@ classdef App < handle
         end
         
         function r = repo()
-            r = 'symphony-matlab2';
+            r = 'symphony-matlab';
         end
 
         function u = documentationUrl()
