@@ -1,3 +1,6 @@
 [submodule "lib/appbox"]
 	path = lib/appbox
 	url = https://github.com/cafarm/appbox.git
+[submodule "src/site/docs"]
+	path = src/site/docs
+	url = https://github.com/Symphony-DAS/symphony-docs.git
