@@ -1,16 +1,16 @@
 function site()
     rootPath = fileparts(mfilename('fullpath'));
     sitePath = fullfile(rootPath, 'src', 'site');
-    wikiPath = fullfile(sitePath, 'wiki');
+    docsPath = fullfile(sitePath, 'docs');
     targetPath = fullfile(rootPath, 'target', 'site');
     [~, ~] = mkdir(targetPath);
     
-    markdownFiles = dir(fullfile(wikiPath, '*.md'));
+    markdownFiles = dir(fullfile(docsPath, '*.md'));
     for i = 1:length(markdownFiles)
         [~, name] = fileparts(markdownFiles(i).name);
         
         includeFile = fullfile(sitePath, 'include.html');
-        inputFile = fullfile(wikiPath, [name '.md']);
+        inputFile = fullfile(docsPath, [name '.md']);
         outputFile = fullfile(targetPath, [name '.html']);
         
         command = sprintf('pandoc -s --tab-stop=2 -H "%s" -c css/override.css -f markdown_github "%s" -o "%s"', includeFile, inputFile, outputFile);
@@ -19,21 +19,25 @@ function site()
             error(out);
         end
         
-        % Add page title.
-        match = find(inputFile, '<!-- title: [\w.\- ]+ -->');
-        if isempty(match)
-            title = strrep(name, '-', ' ');
-        else
-            title = match{end}(13:end-4);
-        end
-        replace(outputFile, '<title></title>', sprintf('<title>%s</title>', title));
-        
-        match = find(inputFile, '<!-- description: [\w.\- ]+ -->');
+        % Front matter.
+        match = find(inputFile, '^---(\r\n|\r|\n)(.*?)(\r\n|\r|\n)---(\r\n|\r|\n)');
         if isempty(match)
             description = '';
         else
-            description = match{end}(19:end-4);
+            d = regexp(match{1}, 'description:[\w.\- ]+', 'match', 'once');
+            description = strtrim(d(13:end));
+            replace(outputFile, '<hr />(.*?)</h2>', '', 'once');
         end
+
+        % Move first H1 heading to title.
+        match = find(inputFile, '#[\w.\- ]+');
+        if isempty(match)
+            title = strrep(name, '-', ' ');
+        else
+            title = strtrim(match{1}(2:end));
+            replace(outputFile, ['<h1 id="[\w.\- ]+">' title '</h1>'], '', 'once');
+        end
+        replace(outputFile, '<title></title>', sprintf('<title>%s</title>', title), 'once');
         
         % Setup HTML to work better with doc center stylesheets.
         replace(outputFile, '<body>', ...
@@ -51,11 +55,11 @@ function site()
         replace(outputFile, '</code></pre></div>', '</code></pre></div></div></div>');
         replace(outputFile, '<h[0-9] id="[\w.\- ]+"', '<a class="anchor" id="${$0(9:end-1)}"></a>$0');
         
-        % Add html extension to links with no extension.
-        replace(outputFile, 'href="[\w.\-]+"', '${$0(1:end-1)}.html\"'); 
+        % Replace markdown links with html links.
+        replace(outputFile, 'href="[\w.\-]+.md"', '${$0(1:end-4)}.html\"');
     end
     
-    copyfile(fullfile(wikiPath, 'images'), fullfile(targetPath, 'images'));
+    copyfile(fullfile(docsPath, 'images'), fullfile(targetPath, 'images'));
     
     copyfile(fullfile(sitePath, 'info.xml'), fullfile(targetPath));
     copyfile(fullfile(sitePath, 'helptoc.xml'), fullfile(targetPath));
@@ -74,17 +78,24 @@ function match = find(file, expression)
     fid = fopen(file);
     text = fread(fid, inf, '*char')';
     fclose(fid);
-    
+
     match = regexp(text, expression, 'match');
 end
 
-function replace(file, expression, replacement)
+function replace(file, expression, replacement, opts)
+    if nargin < 4
+        opts = {};
+    end
+    if ~iscell(opts)
+        opts = {opts};
+    end
+
     fid = fopen(file);
     text = fread(fid, inf, '*char')';
     fclose(fid);
-    
-    text = regexprep(text, expression, replacement);
-    
+
+    text = regexprep(text, expression, replacement, opts{:});
+
     fid = fopen(file, 'w');
     fwrite(fid, text);
     fclose(fid);
