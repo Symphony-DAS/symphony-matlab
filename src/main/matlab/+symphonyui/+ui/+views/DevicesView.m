@@ -249,7 +249,9 @@ classdef DevicesView < appbox.View
 
         function requestFigureFocus(obj)
             obj.update();
+            warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
             jframe = get(handle(obj.figureHandle), 'JavaFrame');
+            warning('on','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
             jframe.getAxisComponent().requestFocus();
         end
 
