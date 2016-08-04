@@ -14,7 +14,7 @@
     <param.summary>Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.1.3.3</param.version>
+    <param.version>2.1.3.4</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -319,14 +319,18 @@
       <file>${PROJECT_ROOT}\lib\appbox\lib\UIExtrasComboBox\java_src\src\UIExtrasComboBox\SeparatorListCellRenderer.java</file>
       <file>${PROJECT_ROOT}\lib\appbox\lib\UIExtrasComboBox\java_src\UIExtrasComboBox.iml</file>
       <file>${PROJECT_ROOT}\lib\appbox\lib\UIExtrasComboBox\UIExtrasComboBox.jar</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\+uix\BoxPanel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\+uix\Text.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\BusyPresenter.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\BusyView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Button.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\capitalize.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\class2display.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\ComponentWrapper.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\EventData.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\firstNonEmpty.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\GitHubUpdater.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\hpix.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\humanize.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\IntelliHintsTextField.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Label.m</file>
@@ -349,6 +353,7 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\UpdatePresenter.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\UpdateView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\View.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\vpix.m</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\HDF5.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\hdf5_hldll.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\hdf5dll.dll</file>
@@ -634,13 +639,14 @@
       <file>${PROJECT_ROOT}\src\main\resources\docs\Entity-Descriptions.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\File-Format.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Getting-Started.html</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_1.cfe</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_1.cfs</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_1.si</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_3.cfe</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_3.cfs</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_3.si</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments.gen</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments_2</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments_4</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helptoc.xml</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Home.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\How-to-Contribute.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-allowable-parents-to-an-entity-description\add-cell.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-allowable-parents-to-an-entity-description\add-subject.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-configuration-settings-to-a-device\constrained1.png</file>
@@ -717,12 +723,14 @@
       <file>${PROJECT_ROOT}\src\main\resources\docs\Modules.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Property-Descriptors.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Protocols.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\README.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Release-Instructions.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Rig-Descriptions.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Set-the-Preview-for-a-Protocol.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Show-Figure-Handlers-in-a-Protocol.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Standard-Stimulus-Generators.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Style-Guide.html</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\SUMMARY.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Supported-Hardware.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Symphony-Development.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Symphony-Product-Description.html</file>
