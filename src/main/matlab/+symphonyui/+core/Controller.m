@@ -218,7 +218,7 @@ classdef Controller < symphonyui.core.CoreObject
                     obj.currentProtocol.controllerDidStartHardware();
                 catch ex
                     obj.requestStop();
-                    rethrow(ex);
+                    error(savejson('', ex, 'Compact', true));
                 end
             end
 
@@ -233,7 +233,7 @@ classdef Controller < symphonyui.core.CoreObject
                     end
                 catch ex
                     obj.requestStop();
-                    rethrow(ex);
+                    error(savejson('', ex, 'Compact', true));
                 end
                 if ~obj.currentProtocol.shouldContinueRun()
                     obj.requestStop();
@@ -281,7 +281,15 @@ classdef Controller < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.WaitForCompletedEpochTasks());
 
             if task.IsFaulted
-                error(symphonyui.core.util.netReport(task.Exception.Flatten()));
+                report = symphonyui.core.util.netReport(task.Exception.Flatten());
+                isjson = ~isempty(regexp(report, '^\s*(?:\[.+\])|(?:\{.+\})\s*$', 'once'));
+                if isjson
+                    ex = loadjson(report);
+                    ex.stack = cell2mat(ex.stack{1})';
+                    rethrow(ex);
+                else
+                    error(report);
+                end
             end
         end
 
