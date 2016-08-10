@@ -51,6 +51,8 @@ function main()
     presenter.showInitializeRig();
 
     protocols = acquisitionService.getAvailableProtocols();
+    [~, i] = sort(appbox.class2display(protocols));
+    protocols = protocols(i);
     if numel(protocols) > 0
         presenter.selectProtocol(protocols{1});
     end

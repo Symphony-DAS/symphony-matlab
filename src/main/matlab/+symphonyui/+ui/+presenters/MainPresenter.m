@@ -279,6 +279,9 @@ classdef MainPresenter < appbox.Presenter
             classNames = obj.acquisitionService.getAvailableProtocols();
             displayNames = appbox.class2display(classNames);
 
+            [displayNames, i] = sort(displayNames);
+            classNames = classNames(i);
+
             obj.view.setProtocolList([{'(None)'}, displayNames], [{[]}, classNames]);
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
             obj.view.enableSelectProtocol(numel(classNames) > 0);
@@ -583,6 +586,9 @@ classdef MainPresenter < appbox.Presenter
         function populateModuleList(obj)
             classNames = obj.moduleService.getAvailableModules();
             displayNames = appbox.class2display(classNames, true);
+
+            [displayNames, i] = sort(displayNames);
+            classNames = classNames(i);
 
             for i = 1:numel(classNames)
                 obj.view.addModule(displayNames{i}, classNames{i});

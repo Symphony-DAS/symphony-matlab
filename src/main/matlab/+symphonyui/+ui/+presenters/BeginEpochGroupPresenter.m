@@ -121,6 +121,9 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             classNames = obj.documentationService.getAvailableEpochGroupDescriptions(parentType);
             displayNames = appbox.class2display(classNames);
 
+            [displayNames, i] = sort(displayNames);
+            classNames = classNames(i);
+
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
             else
@@ -139,7 +142,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
                     obj.onViewSelectedCancel();
             end
         end
-        
+
         function onViewSelectedParent(obj, ~, ~)
             obj.selectParent(obj.view.getSelectedParent());
         end
@@ -161,7 +164,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
                 obj.view.showError(x.message);
                 return;
             end
-            
+
             try
                 obj.saveSettings();
             catch x
@@ -182,11 +185,11 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
             hasEpochGroup = ~isempty(obj.documentationService.getExperiment().epochGroups);
-            
+
             obj.view.enableCarryForwardProperties(hasEpochGroup);
             obj.view.enableBegin(hasSource && hasDescription);
         end
-        
+
         function loadSettings(obj)
             obj.view.setCarryForwardProperties(obj.settings.carryForwardProperties);
         end

@@ -77,6 +77,9 @@ classdef AddSourcePresenter < appbox.Presenter
             classNames = obj.documentationService.getAvailableSourceDescriptions(parentType);
             displayNames = appbox.class2display(classNames);
 
+            [displayNames, i] = sort(displayNames);
+            classNames = classNames(i);
+
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
             else

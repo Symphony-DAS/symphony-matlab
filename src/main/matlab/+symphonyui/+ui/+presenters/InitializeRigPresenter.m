@@ -36,7 +36,7 @@ classdef InitializeRigPresenter < appbox.Presenter
 
         function bind(obj)
             bind@appbox.Presenter(obj);
-            
+
             v = obj.view;
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'Initialize', @obj.onViewSelectedInitialize);
@@ -50,6 +50,9 @@ classdef InitializeRigPresenter < appbox.Presenter
         function populateDescriptionList(obj)
             classNames = obj.configurationService.getAvailableRigDescriptions();
             displayNames = appbox.class2display(classNames);
+
+            [displayNames, i] = sort(displayNames);
+            classNames = classNames(i);
 
             if numel(classNames) > 0
                 obj.view.setDescriptionList(displayNames, classNames);
@@ -96,11 +99,11 @@ classdef InitializeRigPresenter < appbox.Presenter
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
         end
-        
+
         function updateStateOfControls(obj)
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
-            
+
             obj.view.enableInitialize(hasDescription);
         end
 
