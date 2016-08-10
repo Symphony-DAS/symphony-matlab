@@ -137,7 +137,7 @@ classdef Table < hgsetget
     %   4. This table is set up for row-based selection only. Cell-based
     %   selection requires additional improvements.
     %
-    
+
     %   Copyright 2013-2015 The MathWorks, Inc.
     %
     % Auth/Revision:
@@ -146,14 +146,14 @@ classdef Table < hgsetget
     %   $Revision: 1078 $  $Date: 2015-02-20 09:13:35 -0500 (Fri, 20 Feb 2015) $
     % ---------------------------------------------------------------------
     %#ok<*PROP>
-    
+
     % DEVELOPER NOTE: Java objects that may be used in a callback must be
     % put on the EDT to make them thread-safe in MATLAB. Otherwise, they
     % could execute along side a MATLAB command and get into a thread-lock
     % situation. Methods of the objects put on the EDT will be executed on
     % the thread-safe EDT.
-    
-    
+
+
     %% User Properties
     properties(Dependent = true)
         BorderType
@@ -218,9 +218,9 @@ classdef Table < hgsetget
     properties(Dependent = true)
         Visible = 'on'
     end
-    
+
     %% Internal properties
-    
+
     properties(GetAccess = protected, SetAccess = protected)
         hPanel % Main panel
         JTable % Java table
@@ -233,15 +233,15 @@ classdef Table < hgsetget
         IsConstructed = false; %true when the constructor is complete (internal)
         CBEnabled = false; %callbacks enabled state (internal)
     end
-    
+
     properties(Dependent = true, SetAccess = protected, GetAccess = protected)
         JColumn
     end
-    
-    properties (Hidden = true) 
+
+    properties (Hidden = true)
         Debug = false;
     end
-    
+
     properties(Constant = true, GetAccess = protected)
         ValidResizeModes = {
             'off'
@@ -256,18 +256,18 @@ classdef Table < hgsetget
             'discontiguous'
             };
     end
-    
-    
+
+
     %% Events
     events(NotifyAccess = private)
         DataChanged % data changed
         SelectionChanged % selection changed
     end % events
-    
-    
+
+
     %% Constructor and Destructor
     methods
-        
+
         function obj = Table(varargin)
             %  uiextras.jTable.Table - Constructor for Table
             % -------------------------------------------------------------------------
@@ -286,11 +286,11 @@ classdef Table < hgsetget
             %           hFig = figure;
             %           obj =  uiextras.jTable.Table('Parent',hFig)
             %
-            
+
             %----- Parse Inputs -----%
             p = inputParser;
             p.KeepUnmatched = false;
-            
+
             % Define defaults and requirements for each parameter
             p.addParamValue('BorderType','line');
             p.addParamValue('BackgroundColor',[1 1 1]); %#ok<*NVREPL>
@@ -333,36 +333,36 @@ classdef Table < hgsetget
             p.addParamValue('Visible','on');
             p.addParamValue('Debug',false);
             p.parse(varargin{:});
-            
+
             % Add customizations to Java path
             uiextras.jTable.loadJavaCustomizations();
-            
+
             % Which parameters are not at defaults and need setting?
             ParamsToSet = rmfield(p.Results, p.UsingDefaults);
-            
+
             % Create the table
             obj.create(ParamsToSet);
-            
+
             % Force drawing updates
             drawnow
-            
+
             % Indicate construction is complete
             obj.IsConstructed = true;
             obj.CBEnabled = true;
-            
+
         end % constructor
-        
+
         function delete(obj)
             %delete  Destructor.
-            
+
             % Disable callbacks
             obj.CBEnabled = false;
-            
+
             % Check if container is already being deleted
             if strcmp(get(obj.Container, 'BeingDeleted'), 'off')
                 delete(obj.Container)
             end
-            
+
             % Loop on each column
             NumCol = obj.JTableModel.getColumnCount();
             for idx = 1:NumCol
@@ -373,7 +373,7 @@ classdef Table < hgsetget
                     set(editor, 'EditingCanceledCallback', []);
                 end
             end
-            
+
             % Remove references to the java objects
             obj.JTable = [];
             obj.JTableModel = [];
@@ -381,25 +381,25 @@ classdef Table < hgsetget
             obj.JSelectionModel = [];
             obj.JScrollPane = [];
             drawnow() % force repaint
-            
+
         end % destructor
-        
+
     end % structors
-    
-    
+
+
     %% Creation methods
     methods (Access = private)
         function create(obj, ParamsToSet)
-            
+
             % Ensure all drawing is caught up before creating the table
             drawnow
-            
+
             % Create table model
             %jTableModel = javaObjectEDT('javax.swing.table.DefaultTableModel');
             jTableModel = javaObjectEDT('com.mathworks.consulting.swing.table.TableModel');
             jTableModel = handle(jTableModel, 'callbackproperties');
             jTableModel.TableChangedCallback = @obj.onTableModelChanged;
-            
+
             % Create table
             %jTable = javaObjectEDT('javax.swing.JTable', jTableModel);
             jTable = javaObjectEDT('com.mathworks.consulting.swing.table.Table', jTableModel);
@@ -408,14 +408,14 @@ classdef Table < hgsetget
             jTable.getTableHeader().setReorderingAllowed(false);
             com.jidesoft.grid.RolloverTableUtils.install(jTable);
             jTable = handle(jTable, 'callbackproperties');
-            
+
             % Get selection model
             jSelectionModel = jTable.getSelectionModel();
             jSelectionModel = javaObjectEDT(jSelectionModel);
             jSelectionModel = handle(jSelectionModel, 'callbackproperties');
             jSelectionModel.ValueChangedCallback = @obj.onSelectionChanged;
             jSelectionModel.setSelectionMode(0); %default to single selection
-            
+
             % Ensure there is a valid parent
             if ~isfield(ParamsToSet,'Parent') || isempty(ParamsToSet.Parent)
                 Parent = gcf;
@@ -423,7 +423,7 @@ classdef Table < hgsetget
                 Parent = ParamsToSet.Parent;
             end
             ParamsToSet = rmfield(ParamsToSet,'Parent');
-            
+
             % Create the base panel
             hPanel = uipanel(...
                 'Parent',Parent,...
@@ -432,16 +432,16 @@ classdef Table < hgsetget
                 'DeleteFcn',@(h,e)onDeleted(obj,h,e),...
                 'ResizeFcn',@(h,e)onResize(obj,h,e),...
                 'UserData',obj);
-            
+
             % Draw table in scroll pane
             jScrollPane = javaObjectEDT('javax.swing.JScrollPane', jTable);
             [jScrollPane, hContainer] = javacomponent(...
                 jScrollPane, [], hPanel);
             set(hContainer,'Units','normalized','Position',[0 0 1 1])
-            
+
             % Draw table in scroll pane
             jScrollPane.setViewportView(jTable);
-            
+
             % Set the java callbacks for the table and the blank scrollpane area
             CbProps = handle(jTable,'CallbackProperties');
             set(CbProps,'MouseClickedCallback',@(src,e)onMouseClick(obj,e,'table'))
@@ -455,11 +455,11 @@ classdef Table < hgsetget
             set(CbProps,'MouseReleasedCallback',@(src,e)onButtonUp(obj,e,'scrollpane'))
             %set(CbProps,'MouseDraggedCallback',@(src,e)onMouseDrag(obj,e,'scrollpane'))
             %set(CbProps,'MouseMovedCallback',@(src,e)onMouseMotion(obj,e,'scrollpane'))
-            
+
             % Get the column model
             jColumnModel = jTable.getColumnModel();
             javaObjectEDT(jColumnModel);
-            
+
             % Store
             obj.hPanel = hPanel;
             obj.JTable = jTable;
@@ -468,20 +468,20 @@ classdef Table < hgsetget
             obj.JSelectionModel = jSelectionModel;
             obj.JScrollPane = jScrollPane;
             obj.Container = hContainer;
-            
+
             % Add properties to the java object for MATLAB data
             schema.prop(jTable,'Tag','MATLAB array');
             schema.prop(jTable,'UserData','MATLAB array');
-            
+
             %RAJ - turn off sorting, as it's not fully implemented
             obj.JTable.setSortingEnabled(false);
-           
+
             % Column Name must be handled first, if specified
             if isfield(ParamsToSet,'ColumnName') && ~isempty(ParamsToSet.ColumnName)
                 obj.ColumnName = ParamsToSet.ColumnName;
                 ParamsToSet = rmfield(ParamsToSet,'ColumnName');
             end
-            
+
             % Set the batch of user-supplied property values
             set(obj,ParamsToSet);
             % Fields = fieldnames(ParamsToSet);
@@ -489,20 +489,20 @@ classdef Table < hgsetget
             %     ThisField = Fields{fIdx};
             %     obj.(ThisField) = ParamsToSet.(ThisField);
             % end
-            
+
             % Now set remaining properties that need to be handled last
-            
-            
+
+
             % Force resize
             obj.onResize();
-            
+
         end %function
     end %methods
-    
-    
+
+
     %% User methods
     methods
-        
+
         function value = getCell(obj, row, col)
             % getCell - Get a cell to the specified value
             % -------------------------------------------------------------------------
@@ -520,29 +520,29 @@ classdef Table < hgsetget
             % Outputs:
             %           value - value from the cell
             %
-            
+
             % Retrieve table model
             JTableModel = obj.JTableModel;
-            
+
             % Get row and column counts
             cv = JTableModel.getColumnCount();
             rv = JTableModel.getRowCount();
-            
+
             % Validate inputs
             validateattributes(row,{'numeric'},{'>',0,'<=',rv,'integer','finite','nonnan','scalar'});
             validateattributes(col,{'numeric'},{'>',0,'<=',cv,'integer','finite','nonnan','scalar'});
-            
+
             % Read from table model
             value = JTableModel.getValueAt(row-1,col-1);
-            
+
             % Cast cells containing an Object to a cell array
             if isa(value,'java.lang.Object[]')
                 value = cell(value);
             end
-            
+
         end
-        
-        
+
+
         function setCell(obj, row, col, value)
             % setCell - Set a cell to the specified value
             % -------------------------------------------------------------------------
@@ -561,22 +561,22 @@ classdef Table < hgsetget
             % Outputs:
             %           none
             %
-            
+
             % Retrieve table model
             JTableModel = obj.JTableModel;
-            
+
             % Get row and column counts
             cv = JTableModel.getColumnCount();
             rv = JTableModel.getRowCount();
-            
+
             % Validate inputs
             validateattributes(row,{'numeric'},{'>',0,'<=',rv,'integer','finite','nonnan','scalar'});
             validateattributes(col,{'numeric'},{'>',0,'<=',cv,'integer','finite','nonnan','scalar'});
             validateattributes(value,{'cell','char','numeric','logical'},{});
-            
+
             % Disable listener
             obj.CBEnabled = false;
-            
+
             % Convert/cast the input to the correct format
             if iscell(value) && ~isempty(ThisValue)
                 if isscalar(value)
@@ -585,79 +585,79 @@ classdef Table < hgsetget
                     value = obj.castToJavaArray(value);
                 end
             end
-            
+
             % Set the value
             JTableModel.setValueAt(value,row-1,col-1);
-            
+
             % Enable listener
             obj.CBEnabled = true;
-            
+
             % Raise event
             notify(obj, 'DataChanged')
-            
+
         end
-        
-        
+
+
         function redraw(obj)
             %redraw  Redraw table.
             %
             %  t.redraw() requests a redraw of the table t.
-            
+
             jScrollPane = obj.JScrollPane;
             jScrollPane.repaint(jScrollPane.getBounds())
-            
+
         end % redraw
-        
-        
+
+
         function refreshRenderers(obj)
-            
+
             % Get the table renderers object, which contains all the java
             % renderers.
             rObj = uiextras.jTable.TableRenderers.getRenderers();
-            
+
             % Get the column formats and associated data
             Formats = obj.ColumnFormat;
             FormatData = obj.ColumnFormatData;
-            
+
             % Loop on each column
             NumCol = obj.JTableModel.getColumnCount();
             for idx = 1:NumCol
-                
+
                 % Get the format data (if any) for the column
                 if numel(Formats) >= idx
                     ThisFormat = Formats{idx};
                 else
                     ThisFormat = '';
-                    
+
                 end
                 if numel(obj.ColumnFormatData) >= idx
                     ThisFormatData = FormatData{idx};
                 else
                     ThisFormatData = {};
                 end
-                
+
                 % Get the Java renderer and editor
                 [r,e] = rObj.getRenderer(ThisFormat, ThisFormatData);
-                
+
                 % Set the renderer and editor to the column
                 jColumn = obj.JTable.getColumnModel().getColumn(idx-1);
                 jColumn.setCellRenderer(r);
                 jColumn.setCellEditor(e);
-                
+
             end
-            
+
             % Redraw the table to show the new renderers
             obj.redraw();
-            
+
         end
-        
+
         function [r, e] = getRenderer(obj, col)
             jColumn = obj.JTable.getColumnModel().getColumn(col-1);
             r = jColumn.getCellRenderer();
             e = jColumn.getCellEditor();
         end
-        
-        
+
+
         function sizeColumnsToData(obj)
             % sizeColumnsToData - Set column sizes automatically
             % -------------------------------------------------------------------------
@@ -673,21 +673,21 @@ classdef Table < hgsetget
             % Outputs:
             %           none
             %
-            
+
             com.mathworks.mwswing.MJUtilities.initJIDE;
             com.jidesoft.grid.TableUtils.autoResizeAllColumns(obj.JTable);
-            
+
         end %function
-        
+
     end %methods
-    
-    
+
+
     %% Internal Static Methods (Helper Functions)
     methods(Access = protected, Static = true)
-        
+
         function jArray = castToJavaArray(value)
             % Cast cell array to a Java Object
-            
+
             sz = numel(value);
             jArray = javaArray('java.lang.Object',sz);
             for aIdx = 1:sz
@@ -705,39 +705,39 @@ classdef Table < hgsetget
                     jArray(aIdx) = '<Unsupported Type>';
                 end
             end
-            
+
         end %function
-        
-        
+
+
         function loadJavaCustomizations()
             % Loads the required custom Java .jar file
-            
+
             % Define the jar file
             JarFile = 'MathWorksConsultingCustomJTable.jar';
             JarPath = fullfile(fileparts(mfilename('fullpath')), JarFile);
-            
+
             % Check if the jar is loaded
             JavaInMem = javaclasspath('-dynamic');
             PathIsLoaded = any(strcmp(JavaInMem,JarPath));
-            
+
             % Load the .jar file
             if ~PathIsLoaded
                 javaaddpath(JarPath);
             end
-            
+
         end %function
-        
+
     end %methods
-    
+
     %% Get/Set methods
-    
+
     methods
-        
+
         % BorderType
         function value = get.BorderType(obj) %#ok<MANU>
             value = [];
         end
-        
+
         function set.BorderType(obj, value)
             switch lower(value)
                 case {'line'}
@@ -749,21 +749,21 @@ classdef Table < hgsetget
             end
             obj.JScrollPane.setBorder(border)
         end
-        
+
         % BackgroundColor
         function value = get.BackgroundColor(obj)
             JColor = obj.JTable.getBackground();
             value = [JColor.getRed() JColor.getGreen() JColor.getBlue()] / 255;
         end % get.BackgroundColor
-        
+
         function set.BackgroundColor(obj, value)
             validateattributes(value,{'numeric'},...
                 {'vector','numel',3,'>=',0,'<=',1})
             JColor = javaObjectEDT('java.awt.Color',value(1),value(2),value(3));
             obj.JTable.setBackground(JColor);
         end % set.BackgroundColor
-        
-        
+
+
         % CBEnabled
         function set.CBEnabled(obj,value)
             drawnow;
@@ -772,7 +772,7 @@ classdef Table < hgsetget
             end
             drawnow;
         end
-        
+
         % ColumnHeaderVisible
         function v = get.ColumnHeaderVisible(obj)
             v = 'on';
@@ -796,11 +796,11 @@ classdef Table < hgsetget
                 end
             end
         end
-        
-        
+
+
         % ColumnEditable
         function value = get.ColumnEditable(obj)
-            
+
             try
                 jTableModel = obj.JTableModel;
                 jEditable = jTableModel.isEditable().toArray();
@@ -810,96 +810,96 @@ classdef Table < hgsetget
                 warning('uiextras:Table:UnknownError', e.message)
             end
             value = com.mathworks.consulting.swing.table.Utilities.object2logical(jEditable)';
-            
+
         end % get.ColumnEditable
-        
-        
+
+
         function set.ColumnEditable(obj, value)
-            
+
             % Check
             validateattributes(value,{'logical'},{'vector'});
-            
+
             % Increase the number of columns if needed
             NumCol = obj.JColumnModel.getColumnCount;
             if numel(value) > NumCol
                 NumCol = numel(value);
                 obj.JTableModel.setColumnCount(NumCol)
             end
-            
+
             % Get the editable vector
             jTableModel = obj.JTableModel;
             jEditable = jTableModel.isEditable();
-            
+
             % Set
             for idx = 1:min(numel(value),jEditable.size())
                 jEditable.set(idx-1,value(idx));
             end
             jTableModel.setEditable(jEditable);
-            
+
             % Redraw the table to update the view
             obj.redraw();
-            
+
         end % set.ColumnEditable
-        
-        
+
+
         % ColumnFormat
         function set.ColumnFormat(obj, value)
-            
+
             % Validate the input
             [StatusOk, Message] = uiextras.jTable.TableRenderers.validateColumnFormat(value);
             if ~StatusOk
                 error(Message);
             end
-            
+
             % Increase the number of columns if needed
             NumCol = obj.JColumnModel.getColumnCount; %#ok<MCSUP>
             if numel(value) > NumCol
                 NumCol = numel(value);
                 obj.JTableModel.setColumnCount(NumCol) %#ok<MCSUP>
             end
-            
+
             % Update the value
             obj.ColumnFormat = value;
-            
+
             % Update the renderers and editors
             obj.refreshRenderers();
-            
+
         end % set.ColumnFormat
-        
-        
+
+
         % ColumnFormatData
         function set.ColumnFormatData(obj, value)
-            
+
             % Validate the input
             validateattributes(value,{'cell'},{'vector'})
-            
+
             % Check that all cells are empty or cellstr arrays
             idxEmpty = cellfun(@isempty,value);
-            idxFunctionHandle = cellfun(@(c)isa(c, 'function_handle'),value(~idxEmpty)); 
+            idxFunctionHandle = cellfun(@(c)isa(c, 'function_handle'),value(~idxEmpty));
             idxCellStr = cellfun(@iscellstr,value(~idxFunctionHandle));
             if ~all(idxCellStr)
                 error('Invalid ColumnFormatData. A cell array of empty values, function handles, or cellstr arrays is required.');
             end
-            
+
             % Update the value
             obj.ColumnFormatData = value;
-            
+
             % Update the renderers and editors
             obj.refreshRenderers();
-            
+
         end % set.ColumnFormatData
-        
-        
+
+
         % ColumnName
         function value = get.ColumnName(obj)
-            
+
             jColumns = obj.JColumn;
             NumCol = numel(jColumns);
             value = cell(1,NumCol);
             for idx = 1:NumCol
                 value{idx} = jColumns(idx).getHeaderValue();
             end
-            
+
             %RAJ - removed below because setting the value in the model
             %overwrites the ColumnEditable values
             %jTableModel = obj.JTableModel;
@@ -908,11 +908,11 @@ classdef Table < hgsetget
             %for idx = 1:ct
             %    value{idx} = char(jTableModel.getColumnName(idx-1));
             %end
-            
+
         end % get.ColumnName
-        
+
         function set.ColumnName(obj, value)
-            
+
             % Increase the number of columns if needed
             jColumns = obj.JColumn;
             NumCol = numel(jColumns);
@@ -921,7 +921,7 @@ classdef Table < hgsetget
                 obj.JTableModel.setColumnCount(NumCol);
                 jColumns = obj.JColumn;
             end
-            
+
             % Create the column names
             NumNames = numel(value);
             identifiers = java.util.Vector();
@@ -933,10 +933,10 @@ classdef Table < hgsetget
             %overwrites the ColumnEditable values
             %obj.JTableModel.setColumnIdentifiers(identifiers)
             obj.redraw;
-            
+
         end % set.ColumnName
-        
-        
+
+
         % ColumnMinWidth
         function value = get.ColumnMinWidth(obj)
             value = zeros(1,0);
@@ -945,30 +945,30 @@ classdef Table < hgsetget
                 value(1,idx) = jColumn(idx).getMinWidth();
             end
         end % get.ColumnMinWidth
-        
+
         function set.ColumnMinWidth(obj, value)
-            
+
             % Validate
             jColumns = obj.JColumn;
             NumCol = numel(jColumns);
             validateattributes(value,{'numeric'},...
                 {'nonnegative','integer','finite','nonnan','vector'});
-            
+
             % Increase the number of columns if needed
             if numel(value) > NumCol
                 NumCol = numel(value);
                 obj.JTableModel.setColumnCount(NumCol)
                 jColumns = obj.JColumn;
             end
-            
+
             % Set
             for idx = 1:min(NumCol,numel(value))
                 jColumns(idx).setMinWidth(value(idx));
             end
-            
+
         end % set.ColumnMinWidth
-        
-        
+
+
         % ColumnMaxWidth
         function value = get.ColumnMaxWidth(obj)
             value = zeros(1,0);
@@ -977,30 +977,30 @@ classdef Table < hgsetget
                 value(1,idx) = jColumn(idx).getMaxWidth();
             end
         end
-        
+
         function set.ColumnMaxWidth(obj, value)
-            
+
             % Validate
             jColumns = obj.JColumn;
             NumCol = numel(jColumns);
             validateattributes(value,{'numeric'},...
                 {'positive','integer','finite','nonnan','vector'});
-            
+
             % Increase the number of columns if needed
             if numel(value) > NumCol
                 NumCol = numel(value);
                 obj.JTableModel.setColumnCount(NumCol)
                 jColumns = obj.JColumn;
             end
-            
+
             % Set
             for idx = 1:min(NumCol,numel(value))
                 jColumns(idx).setMaxWidth(value(idx));
             end
-            
+
         end
-        
-        
+
+
         % ColumnPreferredWidth
         function value = get.ColumnPreferredWidth(obj)
             value = zeros(1,0);
@@ -1009,29 +1009,29 @@ classdef Table < hgsetget
                 value(1,idx) = jColumns(idx).getPreferredWidth();
             end
         end
-        
+
         function set.ColumnPreferredWidth(obj, value)
-            
+
             % Validate
             jColumns = obj.JColumn;
             NumCol = numel(jColumns);
             validateattributes(value,{'numeric'},...
                 {'nonnegative','integer','finite','nonnan','vector'});
-            
+
             % Increase the number of columns if needed
             if numel(value) > NumCol
                 NumCol = numel(value);
                 obj.JTableModel.setColumnCount(NumCol)
                 jColumns = obj.JColumn;
             end
-            
+
             % Set
             for idx = 1:min(NumCol,numel(value))
                 jColumns(idx).setPreferredWidth(value(idx));
             end
-            
+
         end
-        
+
         function value = get.ColumnWidth(obj)
             value = zeros(1,0);
             jColumns = obj.JColumn;
@@ -1039,30 +1039,30 @@ classdef Table < hgsetget
                 value(1,idx) = jColumns(idx).getWidth();
             end
         end % get.ColumnWidth
-        
+
         function set.ColumnWidth(obj, value)
-            
+
             % Validate
             jColumns = obj.JColumn;
             NumCol = numel(jColumns);
             validateattributes(value,{'numeric'},...
                 {'nonnegative','integer','finite','nonnan','vector'});
-            
+
             % Increase the number of columns if needed
             if numel(value) > NumCol
                 NumCol = numel(value);
                 obj.JTableModel.setColumnCount(NumCol)
                 jColumns = obj.JColumn;
             end
-            
+
             % Set
             for idx = 1:min(NumCol,numel(value))
                 jColumns(idx).setWidth(value(idx));
             end
-            
+
         end % set.ColumnWidth
-        
-        
+
+
         % ColumnResizable
         function value = get.ColumnResizable(obj)
             value = true(0,0);
@@ -1071,54 +1071,54 @@ classdef Table < hgsetget
                 value(1,idx) = jColumns(idx).getResizable();
             end
         end
-        
+
         function set.ColumnResizable(obj, value)
-            
+
             % Validate
             jColumns = obj.JColumn;
             NumCol = numel(jColumns);
             validateattributes(value,{'logical'},{'vector'});
-            
+
             % Increase the number of columns if needed
             if numel(value) > NumCol
                 NumCol = numel(value);
                 obj.JTableModel.setColumnCount(NumCol)
                 jColumns = obj.JColumn;
             end
-            
+
             % Set
             for idx = 1:min(NumCol,numel(value))
                 jColumns(idx).setResizable(value(idx));
             end
-            
+
         end
-        
-        
+
+
         % ColumnResizePolicy
         function value = get.ColumnResizePolicy(obj)
-            
+
             % Get policy index
             ModeIdx = obj.JTable.getAutoResizeMode();
-            
+
             % Lookup and provide result
             value = obj.ValidResizeModes{ModeIdx+1};
-            
+
         end
-        
+
         function set.ColumnResizePolicy(obj, value)
-            
+
             % Validate
             value = validatestring(value,obj.ValidResizeModes);
-            
+
             % Get policy index
             ModeIdx = find(strcmp(value,obj.ValidResizeModes), 1) - 1;
-            
+
             % Set
             obj.JTable.setAutoResizeMode(ModeIdx);
-            
+
         end
-        
-        
+
+
         % Data
         function value = get.Data(obj)
             JTableModel = obj.JTableModel;
@@ -1135,25 +1135,25 @@ classdef Table < hgsetget
                 end
             end
         end % get.Data
-        
+
         function set.Data(obj, value)
 
             % Check
             assert(iscell(value) && ndims(value) == 2, ...
                 'uiextras:Table:InvalidArgument', ...
                 'Property ''Data'' must be a cell array.') %#ok<ISMAT>
-            
+
             % Retrieve table model
             if isvalid(obj)
                 JTableModel = obj.JTableModel;
                 SelRows = obj.SelectedRows;
             end
-            
+
             % Disable listener
             if isvalid(obj)
                 obj.CBEnabled = false;
             end
-            
+
             % Increase the number of columns if needed
             NumCol = size(value, 2);
             if isvalid(obj)
@@ -1161,7 +1161,7 @@ classdef Table < hgsetget
                     JTableModel.setColumnCount(NumCol);
                 end
             end
-            
+
             % Add/remove rows if needed
             NumRow = size(value, 1);
             if isvalid(obj)
@@ -1169,7 +1169,7 @@ classdef Table < hgsetget
                     JTableModel.setRowCount(NumRow)
                 end
             end
-            
+
             % Populate table model
             if isvalid(obj)
                 for idx = 1:NumRow
@@ -1183,20 +1183,20 @@ classdef Table < hgsetget
                     end
                 end
             end
-            
+
             % Enable listener
             if isvalid(obj)
                 obj.CBEnabled = true;
             end
-            
+
             % Raise events
             notify(obj,'DataChanged')
             if isvalid(obj) && ~isequal(SelRows, obj.SelectedRows)
                 notify(obj,'SelectionChanged');
             end
-            
+
         end % set.Data
-        
+
         function d = getColumnData(obj, col)
             nRows = obj.JTableModel.getRowCount();
             d = cell(nRows, 1);
@@ -1204,7 +1204,7 @@ classdef Table < hgsetget
                 d{row, 1} = obj.JTableModel.getValueAt(row - 1, col - 1);
             end
         end
-        
+
         function addRow(obj, rowData)
             obj.JTableModel.addRow(rowData);
         end
@@ -1212,11 +1212,11 @@ classdef Table < hgsetget
         function removeRow(obj, index)
             obj.JTableModel.removeRow(index - 1);
         end
-        
-        
+
+
         % Editable
         function value = get.Editable(obj)
-            
+
             jEditor = obj.JTable.getDefaultEditor(...
                 java.lang.Class.forName('java.lang.Object'));
             if isempty(jEditor)
@@ -1224,17 +1224,17 @@ classdef Table < hgsetget
             else
                 value = 'on';
             end
-            
+
         end % get.Editable
-        
-        
+
+
         function set.Editable(obj, value)
-            
+
             % Check
             assert(ischar(value) && any(strcmp(value, {'on','off'})), ...
                 'uiextras:Table:InvalidArgument', ...
                 'Property ''Editable'' must be ''on'' or ''off''.')
-            
+
             % Set
             jEditor = obj.JTable.getDefaultEditor(...
                 java.lang.Class.forName('java.lang.Object'));
@@ -1247,10 +1247,10 @@ classdef Table < hgsetget
                     java.lang.Class.forName('java.lang.Object'), obj.JEditor);
                 obj.JEditor = [];
             end
-            
+
         end % set.Editable
-        
-        
+
+
         % Enabled
         function value = get.Enabled(obj)
             Enabled = get(obj.JTable,'Enabled');
@@ -1260,7 +1260,7 @@ classdef Table < hgsetget
                 value = 'off';
             end
         end
-        
+
         function set.Enabled(obj, value)
             value = validatestring(value,{'on','off'});
             Enabled = strcmp(value,'on');
@@ -1270,7 +1270,7 @@ classdef Table < hgsetget
             setEnabled(sb1,Enabled);
             setEnabled(sb2,Enabled);
         end
-        
+
         % Focusable
         function value = get.Focusable(obj)
             if obj.JTable.isFocusable()
@@ -1279,7 +1279,7 @@ classdef Table < hgsetget
                 value = 'off';
             end
         end
-        
+
         function set.Focusable(obj, value)
             if strcmpi(value, 'on')
                 obj.JTable.setFocusable(true);
@@ -1287,22 +1287,22 @@ classdef Table < hgsetget
                 obj.JTable.setFocusable(false);
             end
         end
-        
-        
+
+
         % FontAngle
         function value = get.FontAngle(obj)
-            
+
             switch obj.JTable.getFont().isItalic()
                 case true
                     value = 'italic';
                 case false
                     value = 'normal';
             end
-            
+
         end % get.FontAngle
-        
+
         function set.FontAngle(obj, value)
-            
+
             jTable = obj.JTable;
             jFont = jTable.getFont();
             switch value
@@ -1322,77 +1322,77 @@ classdef Table < hgsetget
             end
             jTable.setFont(javax.swing.plaf.FontUIResource(...
                 jFont.getName(), jStyle, jFont.getSize()));
-            
+
         end % set.FontAngle
-        
-        
+
+
         % FontName
         function value = get.FontName(obj)
-            
+
             value = char(obj.JTable.getFont().getName());
-            
+
         end % get.FontName
-        
+
         function set.FontName(obj, value)
-            
+
             jTable = obj.JTable;
             jFont = jTable.getFont();
             jTable.setFont(javax.swing.plaf.FontUIResource(...
                 value, jFont.getStyle(), jFont.getSize()));
-            
+
         end % set.FontName
-        
-        
+
+
         % FontSize
         function value = get.FontSize(obj)
-            
+
             value = obj.JTable.getFont().getSize();
-            
+
             % Convert value from pixels to points
             %http://stackoverflow.com/questions/6257784/java-font-size-vs-html-font-size
             % Java font is in pixels, and assumes 72dpi. Windows is
             % typically 96 and up, depending on display settings.
-            dpi = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
-            value = (value * 72 / dpi);
-            
+            %dpi = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
+            %value = (value * 72 / dpi);
+
         end % get.FontSize
-        
+
         function set.FontSize(obj, value)
-            
+
             % Get the current font
             jFont = obj.JTable.getFont();
-            
+
             % Convert value from points to pixels
-            dpi = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
-            value = round(value * dpi / 72);
-            
+            %dpi = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
+            %value = round(value * dpi / 72);
+
             % Create a new Java font
             jFont = javax.swing.plaf.FontUIResource(jFont.getName(),...
                 jFont.getStyle(), value);
-            
+
             % Set
             obj.JTable.setFont(jFont);
-            
+
             % Refresh
             obj.redraw();
-            
+
         end % set.FontSize
-        
-        
+
+
         %FontWeight
         function value = get.FontWeight(obj)
-            
+
             switch obj.JTable.getFont().isBold()
                 case true
                     value = 'bold';
                 case false
                     value = 'normal';
             end
-            
+
         end % get.FontWeight
-        
+
         function set.FontWeight(obj, value)
-            
+
             jTable = obj.JTable;
             jFont = jTable.getFont();
             switch value
@@ -1412,13 +1412,13 @@ classdef Table < hgsetget
             end
             jTable.setFont(javax.swing.plaf.FontUIResource(...
                 jFont.getName(), jStyle, jFont.getSize()));
-            
+
         end % set.FontWeight
-        
-        
+
+
         % JColumn
         function value = get.JColumn(obj)
-            
+
             NumCol = obj.JColumnModel.getColumnCount;
             for idx = 1:NumCol
                 value(idx) = obj.JColumnModel.getColumn(idx-1); %#ok<AGROW>
@@ -1426,74 +1426,74 @@ classdef Table < hgsetget
             if ~NumCol
                 value = zeros(1,0);
             end
-            
+
         end
-        
-        
+
+
         % Parent
         function value = get.Parent(obj)
-            
+
             value = get(obj.hPanel, 'Parent');
-            
+
         end % get.Parent
-        
+
         function set.Parent(obj, value)
-            
+
             set(obj.hPanel, 'Parent', double(value));
-            
+
         end % set.Parent
-        
-        
+
+
         % Position
         function value = get.Position(obj)
-            
+
             value = get(obj.hPanel, 'Position');
-            
+
         end % get.Position
-        
+
         function set.Position(obj, value)
-            
+
             set(obj.hPanel, 'Position', value);
-            
+
         end % set.Position
-        
-        
+
+
         % RowHeight
         function value = get.RowHeight(obj)
-            
+
             value = obj.JTable.getRowHeight();
-            
+
         end % get.RowHeight
-        
+
         function set.RowHeight(obj, value)
-            
+
             % Check
             validateattributes(value,{'numeric'},{'real','positive','scalar'});
-            
+
             % Set
             obj.JTable.setRowHeight(value);
-            
+
         end % set.RowHeight
-        
-        
+
+
         % SelectedRows
         function value = get.SelectedRows(obj)
-            
+
             value = obj.JTable.getSelectedRows() + 1;
-            
+
         end % get.SelectedRows
-        
+
         function set.SelectedRows(obj, value)
-            
+
             % Check
             validateattributes(value,{'numeric'},{'real','integer',...
                 'positive','<=',obj.JTableModel.getRowCount()});
-            
+
             % Turn off callbacks
             if isvalid(obj)
                 obj.CBEnabled = false;
             end
-            
+
             % Set the new value
             if isvalid(obj)
                 obj.JSelectionModel.clearSelection()
@@ -1501,22 +1501,22 @@ classdef Table < hgsetget
                     obj.JSelectionModel.addSelectionInterval(value(idx)-1, value(idx)-1);
                 end
             end
-            
+
             % Scroll to the selection
             if isvalid(obj)
                 if ~isempty(value)
                     obj.JTable.scrollRowToVisible(value(1));
                 end
             end
-            
+
             % Turn on callbacks
             if isvalid(obj)
                 obj.CBEnabled = true;
             end
-            
+
         end % set.SelectedRows
-        
-        
+
+
         function v = getValueAt(obj, row, col)
             if row <= 0
                 v = [];
@@ -1524,35 +1524,35 @@ classdef Table < hgsetget
             end
             v = obj.JTableModel.getValueAt(row - 1, col - 1);
         end
-        
-        
+
+
         % SelectionMode
         function value = get.SelectionMode(obj)
-            
+
             % Get the value from JTable
             mIdx = obj.JSelectionModel.getSelectionMode();
             value = obj.ValidSelectionModes{mIdx+1};
-            
+
         end
-        
+
         function set.SelectionMode(obj, value)
-            
+
             % Check
             value = validatestring(value,obj.ValidSelectionModes);
-            
+
             % Turn off callbacks
             obj.CBEnabled = false;
-            
+
             % Set the value in JTable
             mIdx = find(strcmp(value,obj.ValidSelectionModes),1);
             obj.JSelectionModel.setSelectionMode(mIdx-1)
-            
+
             % Turn on callbacks
             obj.CBEnabled = true;
-            
+
         end
-        
-        
+
+
         % ShowVerticalLines
         function value = get.ShowVerticalLines(obj)
             if obj.JTable.getShowVerticalLines()
@@ -1561,7 +1561,7 @@ classdef Table < hgsetget
                 value = 'off';
             end
         end
-        
+
         function set.ShowVerticalLines(obj, value)
             if strcmpi(value, 'on')
                 obj.JTable.setShowVerticalLines(true);
@@ -1571,190 +1571,190 @@ classdef Table < hgsetget
                 obj.JTable.setIntercellSpacing(java.awt.Dimension(0, 1));
             end
         end
-        
+
         % Tag
         function set.Tag(obj, value)
-            
+
             validateattributes(value,{'char'},{});
             obj.Tag = value;
-            
+
         end %set.Tag
-        
-        
+
+
         % UIContextMenu
         function set.UIContextMenu(obj, value)
-            
+
             % Check
             if ~isempty(value) && ( ~ishghandle(value) || ~isscalar(value) || ...
                     ~strcmp(get(value, 'Type'), 'uicontextmenu') )
                 error('uiextras:Table:InvalidArgument', ...
                     'Property ''UIContextMenu'' must be a handle to a context menu.')
             end
-            
+
             % Set
             obj.UIContextMenu = value;
-            
+
         end % set.UIContextMenu
-        
-        
+
+
         % Units
         function value = get.Units(obj)
-            
+
             value = get(obj.hPanel, 'Units');
-            
+
         end % get.Units
-        
+
         function set.Units(obj, value)
-            
+
             set(obj.hPanel, 'Units', value);
-            
+
         end % set.Units
-        
-        
+
+
         % Visible
         function value = get.Visible(obj)
-            
+
             value = get(obj.hPanel, 'Visible');
-            
+
         end % get.Visible
-        
+
         function set.Visible(obj, value)
-            
+
             % Check
             value = validatestring(value,{'on','off'});
-            
+
             % Set
             set(obj.hPanel, 'Visible', value)
-            
+
         end % set.Visible
-        
+
     end % accessors (get/set methods)
-    
-    
+
+
     %% Event handlers
     methods(Access = private)
-        
-       
+
+
         function tf = callbacksEnabled(obj)
             % Check whether callbacks from Java should trigger a MATLAB
             % callback
             tf = isvalid(obj) && obj.CBEnabled;
-            
+
         end
-        
-        
+
+
         function onDeleted(obj, ~, ~)
             %onDeleted  Event handler
-            
+
             if obj.Debug, disp('onDeleted'); end
-            
+
             obj.delete();
-            
+
         end % onDeleted
-        
-        
+
+
         function onResize(obj, ~, ~)
-            
+
             if obj.Debug, disp('onResize'); end
-            
+
             if ~isempty(obj.Container) && ~isempty(obj.hPanel) &&...
                     ishghandle(obj.Container) && ishghandle(obj.hPanel)
-                
+
                 if obj.Debug, disp('onResize - entered'); end
-                
+
                 try %#ok<TRYNC>
                     pp = getpixelposition(obj.hPanel);
                     w = max(1, pp(3));
                     h = max(1, pp(4));
                     set(obj.Container,'Units','pixels','Position',[1 1 w h])
                 end
-                
+
             end
-            
+
         end %onResize
-        
-        
+
+
         function onButtonDown(obj,e,location)
-            
+
             if obj.Debug, disp('onButtonDown'); end
-            
+
             if callbacksEnabled(obj) && ~isempty(obj.ButtonDownFcn)
-                
+
                 if obj.Debug, disp('onButtonDown - entered'); end
-                
+
                 % Get the position clicked
                 x = e.getX;
                 y = e.getY;
-                
+
                 % Get the cell clicked
                 row = obj.JTable.rowAtPoint(e.getPoint) + 1;
                 col = obj.JTable.columnAtPoint(e.getPoint) + 1;
-                
+
                 % Call the custom callback
                 e1 = struct(...
                     'Position',[x,y],...
                     'Location',location,...
                     'Cell',[row col]);
                 hgfeval(obj.ButtonDownFcn,obj,e1);
-                
+
             end
-            
+
         end %function
-        
+
         function onButtonUp(obj,e,location)
-            
+
             if obj.Debug, disp('onButtonUp'); end
-            
+
             if callbacksEnabled(obj) && ~isempty(obj.ButtonUpFcn)
-                
+
                 if obj.Debug, disp('onButtonUp - entered'); end
-                
+
                 % Get the position clicked
                 x = e.getX;
                 y = e.getY;
-                
+
                 % Get the cell clicked
                 row = obj.JTable.rowAtPoint(e.getPoint) + 1;
                 col = obj.JTable.columnAtPoint(e.getPoint) + 1;
-                
+
                 % Call the custom callback
                 e1 = struct(...
                     'Position',[x,y],...
                     'Location',location,...
                     'Cell',[row col]);
                 hgfeval(obj.ButtonUpFcn,obj,e1);
-                
+
             end
-            
+
         end %function
-        
-        
+
+
         function onMouseClick(obj,e,location)
             % Occurs when the mouse is clicked within the pane
-            
+
             if obj.Debug, disp('onMouseClick'); end
-            
+
             if callbacksEnabled(obj)
-                
+
                 % Get the position clicked
                 x = e.getX;
                 y = e.getY;
-                
+
                 % Get the cell clicked
                 row = obj.JTable.rowAtPoint(e.getPoint) + 1;
                 col = obj.JTable.columnAtPoint(e.getPoint) + 1;
-                
+
                 % Which button was clicked?
                 if e.isMetaDown
                     % Right-click
-                    
+
                     if obj.Debug, disp('onMouseClick - context'); end
-                    
+
                     % Without modifiers, select the row clicked, if it isn't already
                     if row>0 && ~all(obj.SelectedRows == row)
                         obj.SelectedRows = row;
                     end
-                    
+
                     % Display the context menu
                     CMenu = obj.UIContextMenu;
                     if ~isempty(CMenu)
@@ -1762,158 +1762,158 @@ classdef Table < hgsetget
                         mPos = [x+tPos(1) tPos(2)+tPos(4)-y+obj.JScrollPane.getVerticalScrollBar().getValue()];
                         set(CMenu,'Position',mPos,'Visible','on');
                     end
-                    
+
                 elseif ~isempty(obj.MouseClickedCallback)
                     % Other click - fire any custom callback
-                
+
                     if obj.Debug, disp('onMouseClick - entered'); end
-                    
+
                     % Call the custom callback
                     e1 = struct(...
                         'Position',[x,y],...
                         'Location',location,...
                         'Cell',[row col]);
                     hgfeval(obj.MouseClickedCallback,obj,e1);
-                    
+
                 end %if e.isMetaDown
-                
+
             end %if callbacksEnabled(obj)
-            
+
         end %function onMouseClick
-        
-        
+
+
 %         function onMouseDrag(obj,e,location)
-%             
+%
 %             if obj.Debug, disp('onMouseDrag'); end
-%             
+%
 %             if callbacksEnabled(obj) && ~isempty(obj.MouseDraggedCallback)
-%                 
+%
 %                 if obj.Debug, disp('onMouseDrag - entered'); end
-%                 
+%
 %                 % Get the position clicked
 %                 x = e.getX;
 %                 y = e.getY;
-%                 
+%
 %                 % Get the cell clicked
 %                 row = obj.JTable.rowAtPoint(e.getPoint) + 1;
 %                 col = obj.JTable.columnAtPoint(e.getPoint) + 1;
-%                 
+%
 %                 % Call the custom callback
 %                 e1 = struct(...
 %                     'Position',[x,y],...
 %                     'Location',location,...
 %                     'Cell',[row col]);
 %                 hgfeval(obj.MouseDraggedCallback,obj,e1);
-%                 
+%
 %             end
-%             
+%
 %         end %function
-        
+
 %         function onMouseMotion(obj,e,location)
-%             
+%
 %             %if obj.Debug, disp('onMouseMotion'); end
-%             
+%
 %             if callbacksEnabled(obj) && ~isempty(obj.MouseMotionFcn)
-%                 
+%
 %                 if obj.Debug, disp('onMouseMotion - entered'); end
-%                 
+%
 %                 % Get the position clicked
 %                 x = e.getX;
 %                 y = e.getY;
-%                 
+%
 %                 % Get the cell clicked
 %                 row = obj.JTable.rowAtPoint(e.getPoint) + 1;
 %                 col = obj.JTable.columnAtPoint(e.getPoint) + 1;
-%                 
+%
 %                 % Call the custom callback
 %                 e1 = struct(...
 %                     'Position',[x,y],...
 %                     'Location',location,...
 %                     'Cell',[row col]);
 %                 hgfeval(obj.MouseMotionFcn,obj,e1);
-%                 
+%
 %             end
-%             
+%
 %         end %function
-        
-        
+
+
         function onSelectionChanged(obj, ~, eventData)
             %onSelectionChanged  Event handler
-            
+
             if obj.Debug, disp('onSelectionChanged'); end
-            
+
             % This method may be triggered multiple times from a selection.
             % Don't process notifications until the time when changes are
-            % complete.            
+            % complete.
             if callbacksEnabled(obj) && ~eventData.getValueIsAdjusting()
-                
+
                 if obj.Debug, disp('onSelectionChanged - entered'); end
-                
+
                 % Trigger the event
                 notify(obj, 'SelectionChanged')
-                
+
                 % Is there a callback to fire?
                 if ~isempty(obj.CellSelectionCallback)
-                    
+
                     % What was selected?
                     index = obj.SelectedRows;
-                    
+
                     % Prepare event data
                     e1 = struct('Indices',index);
-                    
+
                     % Call the callback
                     hgfeval(obj.CellSelectionCallback, obj, e1);
-                    
+
                 end
-                
+
             end %if callbacksEnabled(obj) && ~eventData.getValueIsAdjusting()
-            
+
         end % onSelectionChanged
-        
-        
+
+
         function onTableModelChanged(obj, ~, eventData)
-            
+
             if obj.Debug, disp('onTableModelChanged'); end
-            
+
             if callbacksEnabled(obj)
-                
+
                 if obj.Debug, disp('onTableModelChanged - entered'); end
-                
+
                 % What rows/columns were changed
                 rv = eventData.getFirstRow() : eventData.getLastRow();
                 cv = eventData.getColumn();
-                
+
                 % What happened?
                 if all(rv == eventData.HEADER_ROW)
                     % column(s) added, removed or changed
-                    
+
                     % Do nothing
-                    
+
                 elseif cv == eventData.ALL_COLUMNS
                     % row(s) added or removed
-                    
+
                     % Do nothing
-                    
+
                 else
-                    
+
                     % Prepare event data
                     indices(:,1) = rv'+1;
                     indices(:,2) = cv+1;
                     e1 = struct('Indices',indices);
-                    
+
                     % Trigger the event
                     notify(obj, 'DataChanged')
-                    
+
                     % Call the callback
                     hgfeval(obj.CellEditCallback, obj, e1);
-                    
+
                 end
-                
+
             end %if callbacksEnabled(obj)
-            
+
         end % onTableModelChanged
-        
+
     end % event handlers
-    
-    
+
+
 end % classdef
