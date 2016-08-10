@@ -4,6 +4,7 @@ classdef Epoch < symphonyui.core.CoreObject
     %
     % Epoch Methods:
     %   addStimulus     - Adds a stimulus to present when this epoch is run
+    %   removeStimulus  - Removes a stimulus for the specified device
     %   getStimulus     - Gets the stimulus for the specified device
     %   hasStimulus     - Indicates if this epoch has a stimulus for the specified device
     %
@@ -46,6 +47,12 @@ classdef Epoch < symphonyui.core.CoreObject
             
             obj.tryCore(@()obj.cobj.Stimuli.Add(device.cobj, stimulus.cobj));
         end
+        
+        function removeStimulus(obj, device)
+            % Removes a stimulus for the specified device
+            
+            obj.tryCore(@()obj.cobj.Stimuli.Remove(device.cobj));
+        end                
         
         function s = getStimulus(obj, device)
             % Gets the stimulus for the specified device 
