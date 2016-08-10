@@ -178,7 +178,7 @@ classdef OptionsView < appbox.View
 
             set(obj.detailCardPanel, 'Selection', 1);
 
-            javacomponent('javax.swing.JSeparator', [], detailLayout);
+            Separator('Parent', detailLayout);
 
             set(detailLayout, 'Heights', [-1 1]);
 

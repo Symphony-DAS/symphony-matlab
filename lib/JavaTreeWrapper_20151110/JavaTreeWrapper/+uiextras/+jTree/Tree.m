@@ -1172,7 +1172,7 @@ classdef Tree < hgsetget
             validateattributes(value,{'numeric','logical'},{'scalar'});
             value = logical(value);
             tObj.jTree.setRootVisible(value); %show/hide root
-            tObj.jTree.setShowsRootHandles(~value); %hide/show top level handles
+            tObj.jTree.setShowsRootHandles(value); %hide/show top level handles
         end
         
         % SelectedNodes
