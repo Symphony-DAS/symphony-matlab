@@ -1,8 +1,8 @@
-classdef SimulatedDaqWithMultiClamp < symphonyui.core.descriptions.RigDescription
+classdef SimulatedHekaDaqWithMultiClamp < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function obj = SimulatedDaqWithMultiClamp()
+        function obj = SimulatedHekaDaqWithMultiClamp()
             import symphonyui.builtin.daqs.*;
             import symphonyui.builtin.devices.*;
             import symphonyui.core.*;
