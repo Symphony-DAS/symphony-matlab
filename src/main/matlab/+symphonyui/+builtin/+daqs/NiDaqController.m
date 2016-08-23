@@ -18,13 +18,16 @@ classdef NiDaqController < symphonyui.core.DaqController
             cobj = NI.NIDAQController(deviceName);
             obj@symphonyui.core.DaqController(cobj);
             
-            NI.NIDAQInputStream.RegisterConverters();
-            NI.NIDAQOutputStream.RegisterConverters();
+            Symphony.Core.Converters.Register(Symphony.Core.Measurement.UNITLESS, Symphony.Core.Measurement.UNITLESS, Symphony.Core.ConvertProcs.Scale(1, Symphony.Core.Measurement.UNITLESS));
+            Symphony.Core.Converters.Register('V', 'V', Symphony.Core.ConvertProcs.Scale(1, 'V'));
             
             obj.sampleRate = symphonyui.core.Measurement(10000, 'Hz');
             obj.sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {1000, 10000, 20000, 50000});
 
             obj.tryCore(@()obj.cobj.InitHardware());
+            
+            Symphony.Core.Converters.Register(Symphony.Core.Measurement.NORMALIZED, 'V', Symphony.Core.ConvertProcs.Scale(-obj.cobj.MinAOVoltage, obj.cobj.MaxAOVoltage, 'V'));
+            Symphony.Core.Converters.Register('V', Symphony.Core.Measurement.NORMALIZED, Symphony.Core.ConvertProcs.Scale(1/(-obj.cobj.MinAIVoltage), 1/obj.cobj.MaxAIVoltage, Symphony.Core.Measurement.NORMALIZED));
         end
         
         function close(obj)
