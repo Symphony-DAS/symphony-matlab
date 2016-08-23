@@ -1,19 +1,25 @@
-classdef SimulatedNiDaqWithMultiClamp < symphonyui.core.descriptions.RigDescription
+classdef NiDaqWithAxopatch < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function obj = SimulatedNiDaqWithMultiClamp()
+        function obj = NiDaqWithAxopatch()
             import symphonyui.builtin.daqs.*;
             import symphonyui.builtin.devices.*;
             import symphonyui.core.*;
             
-            daq = NiSimulationDaqController();
+            daq = NiDaqController();
             obj.daqController = daq;
             
-            amp1 = MultiClampDevice('Amp1', 1).bindStream(daq.getStream('ao0')).bindStream(daq.getStream('ai0'));
+            amp1 = AxopatchDevice('Amp1').bindStream(daq.getStream('ao0'));
+            amp1.bindStream(daq.getStream('ai0'), AxopatchDevice.SCALED_OUTPUT_STREAM_NAME);
+            amp1.bindStream(daq.getStream('ai1'), AxopatchDevice.GAIN_TELEGRAPH_STREAM_NAME);
+            amp1.bindStream(daq.getStream('ai2'), AxopatchDevice.MODE_TELEGRAPH_STREAM_NAME);
             obj.addDevice(amp1);
             
-            amp2 = MultiClampDevice('Amp2', 2).bindStream(daq.getStream('ao1')).bindStream(daq.getStream('ai1'));
+            amp2 = AxopatchDevice('Amp2').bindStream(daq.getStream('ao1'));
+            amp2.bindStream(daq.getStream('ai3'), AxopatchDevice.SCALED_OUTPUT_STREAM_NAME);
+            amp2.bindStream(daq.getStream('ai4'), AxopatchDevice.GAIN_TELEGRAPH_STREAM_NAME);
+            amp2.bindStream(daq.getStream('ai5'), AxopatchDevice.MODE_TELEGRAPH_STREAM_NAME);
             obj.addDevice(amp2);
             
             green = UnitConvertingDevice('Green LED', 'V').bindStream(daq.getStream('ao2'));

@@ -17,6 +17,26 @@ classdef NiDaqController < symphonyui.core.DaqController
             
             cobj = NI.NIDAQController(deviceName);
             obj@symphonyui.core.DaqController(cobj);
+            
+            NI.NIDAQInputStream.RegisterConverters();
+            NI.NIDAQOutputStream.RegisterConverters();
+            
+            obj.sampleRate = symphonyui.core.Measurement(10000, 'Hz');
+            obj.sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {1000, 10000, 20000, 50000});
+
+            obj.tryCore(@()obj.cobj.InitHardware());
+        end
+        
+        function close(obj)
+            close@symphonyui.core.DaqController(obj);
+            obj.tryCore(@()obj.cobj.Dispose());
+        end
+        
+        function s = getStream(obj, name)
+            s = getStream@symphonyui.core.DaqController(obj, name);
+            if strncmp(name, 'd', 1)
+                s = symphonyui.builtin.daqs.NiDigitalDaqStream(s.cobj);
+            end
         end
         
     end
