@@ -10,6 +10,10 @@ classdef NiDigitalDaqStream < symphonyui.core.DaqStream
             obj.tryCore(@()obj.cobj.BitPositions.Add(device.cobj, bit));
         end
         
+        function tf = supportsContinuousSampling(obj)
+            tf = obj.cobj.SupportsContinuousSampling;
+        end
+        
     end
     
 end

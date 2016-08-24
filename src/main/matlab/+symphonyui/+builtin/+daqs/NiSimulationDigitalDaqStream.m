@@ -10,6 +10,10 @@ classdef NiSimulationDigitalDaqStream < symphonyui.core.DaqStream
             % Do nothing.
         end
         
+        function tf = supportsContinuousSampling(obj) %#ok<MANU>
+            tf = true;
+        end
+        
     end
     
 end
