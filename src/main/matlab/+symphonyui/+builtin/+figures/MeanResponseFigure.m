@@ -11,7 +11,6 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
     properties (Access = private)
         axesHandle
         sweeps
-        storedSweeps
     end
 
     methods
@@ -31,6 +30,12 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
             obj.storedSweepColor = ip.Results.storedSweepColor;
 
             obj.createUi();
+            
+            stored = obj.storedSweeps();
+            for i = 1:numel(stored)
+                stored{i}.line = line(stored{i}.x, stored{i}.y, 'Parent', obj.axesHandle, 'Color', obj.storedSweepColor);
+            end
+            obj.storedSweeps(stored);
         end
 
         function createUi(obj)
@@ -43,6 +48,12 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
                 'Separator', 'on', ...
                 'ClickedCallback', @obj.onSelectedStoreSweeps);
             setIconImage(storeSweepsButton, symphonyui.app.App.getResource('icons', 'sweep_store.png'));
+            
+            clearSweepsButton = uipushtool( ...
+                'Parent', toolbar, ...
+                'TooltipString', 'Clear Sweeps', ...
+                'ClickedCallback', @obj.onSelectedClearSweeps);
+            setIconImage(clearSweepsButton, symphonyui.app.App.getResource('icons', 'sweep_clear.png'));
 
             obj.axesHandle = axes( ...
                 'Parent', obj.figureHandle, ...
@@ -105,15 +116,17 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
             end
 
             if isempty(sweepIndex)
-                sweep.line = line(x, y, 'Parent', obj.axesHandle, 'Color', obj.sweepColor);
                 sweep.parameters = parameters;
+                sweep.x = x;
+                sweep.y = y;
                 sweep.count = 1;
+                sweep.line = line(sweep.x, sweep.y, 'Parent', obj.axesHandle, 'Color', obj.sweepColor);
                 obj.sweeps{end + 1} = sweep;
             else
                 sweep = obj.sweeps{sweepIndex};
-                cy = get(sweep.line, 'YData');
-                set(sweep.line, 'YData', (cy * sweep.count + y) / (sweep.count + 1));
+                sweep.y = (sweep.y * sweep.count + y) / (sweep.count + 1);
                 sweep.count = sweep.count + 1;
+                set(sweep.line, 'YData', sweep.y);
                 obj.sweeps{sweepIndex} = sweep;
             end
 
@@ -125,18 +138,47 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
     methods (Access = private)
 
         function onSelectedStoreSweeps(obj, ~, ~)
-            if ~isempty(obj.storedSweeps)
-                for i = 1:numel(obj.storedSweeps)
-                    delete(obj.storedSweeps{i});
-                end
-                obj.storedSweeps = {};
-            end
+            obj.storeSweeps();
+        end
+        
+        function storeSweeps(obj)
+            obj.clearSweeps();
+            
+            store = obj.sweeps;
             for i = 1:numel(obj.sweeps)
-                obj.storedSweeps{i} = copyobj(obj.sweeps{i}.line, obj.axesHandle);
-                set(obj.storedSweeps{i}, ...
+                store{i}.line = copyobj(obj.sweeps{i}.line, obj.axesHandle);
+                set(store{i}.line, ...
                     'Color', obj.storedSweepColor, ...
                     'HandleVisibility', 'off');
             end
+            obj.storedSweeps(store);
+        end
+        
+        function onSelectedClearSweeps(obj, ~, ~)
+            obj.clearSweeps();
+        end
+        
+        function clearSweeps(obj)
+            stored = obj.storedSweeps();
+            for i = 1:numel(stored)
+                delete(stored{i}.line);
+            end
+            
+            obj.storedSweeps([]);
+        end
+
+    end
+    
+    methods (Static)
+
+        function sweeps = storedSweeps(sweeps)
+            % This method stores sweeps across figure handlers.
+
+            persistent stored;
+            if nargin > 0
+                stored = sweeps;
+            end
+            sweeps = stored;
         end
 
     end
