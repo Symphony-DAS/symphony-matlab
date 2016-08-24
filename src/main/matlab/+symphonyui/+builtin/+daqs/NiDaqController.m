@@ -4,7 +4,14 @@ classdef NiDaqController < symphonyui.core.DaqController
     methods
         
         function obj = NiDaqController(deviceName)
-            NET.addAssembly(which('NIDAQInterface.dll'));
+            try
+                NET.addAssembly(which('NIDAQInterface.dll'));
+            catch x
+                if strcmp(x.identifier, 'MATLAB:NET:CLRException:AddAssembly')
+                    error('Unable to load National Instruments assembly. Are you sure you have the NI-DAQmx drivers installed?');
+                end
+                rethrow(x);
+            end
             
             if nargin < 1
                 enum = Symphony.Core.EnumerableExtensions.Wrap(NI.NIDAQController.AvailableControllers());

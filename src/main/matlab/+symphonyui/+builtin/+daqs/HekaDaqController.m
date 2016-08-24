@@ -13,8 +13,15 @@ classdef HekaDaqController < symphonyui.core.DaqController
                 deviceNumber = 0;
             end
 
-            NET.addAssembly(which('HekaDAQInterface.dll'));
-            NET.addAssembly(which('HekaNativeInterop.dll'));
+            try
+                NET.addAssembly(which('HekaDAQInterface.dll'));
+                NET.addAssembly(which('HekaNativeInterop.dll'));
+            catch x
+                if strcmp(x.identifier, 'MATLAB:NET:CLRException:AddAssembly')
+                    error('Unable to load HEKA assemblies. Are you sure you have the HEKA drivers installed?');
+                end
+                rethrow(x);
+            end
 
             switch deviceType
                 case HekaDeviceType.ITC16
