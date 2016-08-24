@@ -18,7 +18,8 @@ classdef HekaDaqController < symphonyui.core.DaqController
                 NET.addAssembly(which('HekaNativeInterop.dll'));
             catch x
                 if strcmp(x.identifier, 'MATLAB:NET:CLRException:AddAssembly')
-                    error('Unable to load HEKA assemblies. Are you sure you have the HEKA drivers installed?');
+                    error(['Unable to load HEKA assemblies. Are you sure you have the HEKA drivers installed? ' ...
+                        'If so, you may also try running MATLAB as Administrator to see if that fixes this problem.']);
                 end
                 rethrow(x);
             end
