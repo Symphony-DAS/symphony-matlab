@@ -14,7 +14,7 @@
     <param.summary>Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.1.3.4</param.version>
+    <param.version>2.2.1.0</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -329,6 +329,7 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\ComponentWrapper.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\EventData.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\firstNonEmpty.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\firstOrElse.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\GitHubUpdater.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\hpix.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\humanize.m</file>
@@ -343,8 +344,10 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessageView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\onOff.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\packageName.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\PasswordField.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Presenter.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\screenCenter.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Separator.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\setIconImage.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Settings.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\TabGroup.m</file>
@@ -362,6 +365,9 @@
       <file>${PROJECT_ROOT}\lib\Core Framework\HekaIOBridge.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\HekaNativeInterop.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\log4net.dll</file>
+      <file>${PROJECT_ROOT}\lib\Core Framework\msvcp100.dll</file>
+      <file>${PROJECT_ROOT}\lib\Core Framework\msvcr100.dll</file>
+      <file>${PROJECT_ROOT}\lib\Core Framework\NIDAQInterface.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\Symphony.Core.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\Symphony.ExternalDevices.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\Symphony.SimulationDAQController.dll</file>
@@ -506,6 +512,10 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\HekaDigitalDaqStream.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\HekaSimulationDaqController.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\HekaSimulationDigitalDaqStream.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\NiDaqController.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\NiDigitalDaqStream.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\NiSimulationDaqController.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\NiSimulationDigitalDaqStream.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+daqs\SimulationDaqController.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+devices\AxopatchDevice.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+builtin\+devices\CalibratedDevice.m</file>
@@ -639,11 +649,11 @@
       <file>${PROJECT_ROOT}\src\main\resources\docs\Entity-Descriptions.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\File-Format.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Getting-Started.html</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_3.cfe</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_3.cfs</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_3.si</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_4.cfe</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_4.cfs</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_4.si</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments.gen</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments_4</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments_5</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helptoc.xml</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Home.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\How-to-Contribute.html</file>
@@ -757,7 +767,10 @@
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\Empty.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\HekaDaqWithAxopatch.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\HekaDaqWithMultiClamp.m</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\SimulatedDaqWithMultiClamp.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\NiDaqWithAxopatch.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\NiDaqWithMultiClamp.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\SimulatedHekaDaqWithMultiClamp.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\SimulatedNiDaqWithMultiClamp.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Cell.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Preparation.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\PropertyDemo.m</file>
@@ -806,6 +819,7 @@
       <file>${PROJECT_ROOT}\src\main\resources\icons\stop_big.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\stop_bigger.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\stop_small.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\icons\sweep_clear.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\sweep_store.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\valid.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\view_only.png</file>
