@@ -1,5 +1,5 @@
 classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqController
-    % Manages a simulated Heka/Instrutech DAQ interface (requires no attached hardware).
+    % Manages a simulated HEKA (InstruTECH) DAQ interface (requires no attached hardware).
     
     methods
 

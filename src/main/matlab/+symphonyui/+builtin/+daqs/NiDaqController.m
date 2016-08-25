@@ -1,5 +1,5 @@
 classdef NiDaqController < symphonyui.core.DaqController
-    % Manages a National Instruments DAQ interface
+    % Manages a National Instruments DAQ interface.
     
     methods
         

@@ -1,5 +1,5 @@
 classdef HekaDaqController < symphonyui.core.DaqController
-    % Manages a Heka/Instrutech DAQ interface (ITC-16, ITC-18, or ITC-1600).
+    % Manages a HEKA (InstruTECH) DAQ interface (ITC-16, ITC-18, or ITC-1600).
 
     methods
 
