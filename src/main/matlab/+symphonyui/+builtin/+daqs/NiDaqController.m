@@ -8,7 +8,9 @@ classdef NiDaqController < symphonyui.core.DaqController
                 NET.addAssembly(which('NIDAQInterface.dll'));
             catch x
                 if strcmp(x.identifier, 'MATLAB:NET:CLRException:AddAssembly')
-                    error('Unable to load National Instruments assembly. Are you sure you have the NI-DAQmx drivers installed?');
+                    error(['Unable to load National Instruments assembly. Are you sure you have the NI-DAQmx drivers ' ...
+                        'installed? Make you choose to install ".NET Framework 4.5 Languages Support" during the ' ...
+                        'NI-DAQmx installer.']);
                 end
                 rethrow(x);
             end
