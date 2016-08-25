@@ -1,8 +1,8 @@
 classdef WaveformGenerator < symphonyui.core.StimulusGenerator
     % Generates an arbitrary waveform stimulus from a specified vector. WaveformGenerator must store the entire waveform
     % vector with the stimulus in order be able to regenerate it (as opposed to just the parameters used to generate
-    % it in the first place). Because of this, prefer using other stimulus generators, or writing your own, over using 
-    % WaveformGenerator to avoid increasing the size of your data files.
+    % it). Because of this, prefer using other stimulus generators, or writing your own, over using WaveformGenerator 
+    % to avoid increasing the size of your data files.
     
     properties
         waveshape   % Wave as a vector (units)
