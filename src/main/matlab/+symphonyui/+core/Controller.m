@@ -280,6 +280,7 @@ classdef Controller < symphonyui.core.CoreObject
             end
             obj.tryCore(@()obj.cobj.WaitForCompletedEpochTasks());
 
+            drawnow();
             if task.IsFaulted
                 report = symphonyui.core.util.netReport(task.Exception.Flatten());
                 isjson = ~isempty(regexp(report, '^\s*(?:\[.+\])|(?:\{.+\})\s*$', 'once'));
