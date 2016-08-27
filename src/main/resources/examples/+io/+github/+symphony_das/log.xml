@@ -13,9 +13,4 @@
     <level value="INFO" />
     <appender-ref ref="RollingFileAppender" />
   </root>
-
-  <logger name="Symphony.ExternalDevices.MultiClampDevice">
-		<level value="WARN" />
-    <appender-ref ref="RollingFileAppender" />
-  </logger>
 </log4net>
