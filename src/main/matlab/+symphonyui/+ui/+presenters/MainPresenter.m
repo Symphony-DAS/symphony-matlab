@@ -117,6 +117,7 @@ classdef MainPresenter < appbox.Presenter
             a = obj.acquisitionService;
             obj.addListener(a, 'SelectedProtocol', @obj.onServiceSelectedProtocol);
             obj.addListener(a, 'SetProtocolProperties', @obj.onServiceSetProtocolProperties);
+            obj.addListener(a, 'AppliedProtocolPreset', @obj.onServiceAppliedProtocolPreset);
             obj.addListener(a, 'ChangedControllerState', @obj.onServiceChangedControllerState);
 
             c = obj.configurationService;
@@ -338,6 +339,15 @@ classdef MainPresenter < appbox.Presenter
         end
 
         function onServiceSetProtocolProperties(obj, ~, ~)
+            obj.updateStateOfControls();
+            obj.updateProtocolProperties();
+            if ~obj.view.isProtocolPreviewMinimized()
+                obj.updateProtocolPreview();
+            end
+        end
+        
+        function onServiceAppliedProtocolPreset(obj, ~, ~)
+            obj.view.stopEditingProtocolProperties();
             obj.updateStateOfControls();
             obj.updateProtocolProperties();
             if ~obj.view.isProtocolPreviewMinimized()

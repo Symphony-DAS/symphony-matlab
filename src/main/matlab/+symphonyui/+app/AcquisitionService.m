@@ -3,6 +3,7 @@ classdef AcquisitionService < handle
     events (NotifyAccess = private)
         SelectedProtocol
         SetProtocolProperties
+        AppliedProtocolPreset
         ChangedControllerState
         AddedProtocolPreset
         RemovedProtocolPreset
@@ -136,8 +137,8 @@ classdef AcquisitionService < handle
             if ~isequal(preset.propertyMap, obj.session.protocol.getPropertyMap())
                 obj.session.protocol.applyPreset(preset);
                 obj.session.protocol.closeFigures();
-                notify(obj, 'SetProtocolProperties');
             end
+            notify(obj, 'AppliedProtocolPreset');
         end
 
         function p = addProtocolPreset(obj, name)
