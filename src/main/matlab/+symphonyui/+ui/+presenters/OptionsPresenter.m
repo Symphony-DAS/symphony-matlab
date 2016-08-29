@@ -111,7 +111,7 @@ classdef OptionsPresenter < appbox.Presenter
         end
         
         function onViewSelectedBrowseLoggingConfigurationFile(obj, ~, ~)
-            file = obj.view.showGetFile('Select Configuration File', '*.m');
+            file = obj.view.showGetFile('Select Configuration File', '*.xml');
             if isempty(file)
                 return;
             end
