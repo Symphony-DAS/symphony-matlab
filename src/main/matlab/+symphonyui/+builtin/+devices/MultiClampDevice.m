@@ -10,7 +10,9 @@ classdef MultiClampDevice < symphonyui.core.Device
                 enum = Symphony.Core.EnumerableExtensions.Wrap(Symphony.ExternalDevices.MultiClampDevice.AvailableSerialNumbers());
                 e = enum.GetEnumerator();
                 if ~e.MoveNext()
-                    error('Unable to find any MultiClamps. Make sure MultiClamp Commander is open and try again.');
+                    error(['Unable to find any MultiClamps. Make sure MultiClamp Commander is open and try again. ' ...
+                        'If you are running MATLAB as Administrator, you may also need to run MultiClamp Commander ' ...
+                        'as Administrator.']);
                 end
                 serialNumber = e.Current();
             end
