@@ -279,7 +279,11 @@ classdef Controller < symphonyui.core.CoreObject
                 pause(0.01);
             end
             obj.tryCore(@()obj.cobj.WaitForCompletedEpochTasks());
-
+            
+            while ~task.IsCompleted
+                pause(0.01);
+            end
+                        
             drawnow();
             if task.IsFaulted
                 report = symphonyui.core.util.netReport(task.Exception.Flatten());
