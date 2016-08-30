@@ -3,10 +3,21 @@ classdef MultiClampDevice < symphonyui.core.Device
     
     methods
         
-        function obj = MultiClampDevice(name, channel, serialNumber)            
+        function obj = MultiClampDevice(name, channel, serialNumberOrComPort, deviceNumber)            
             NET.addAssembly(which('Symphony.ExternalDevices.dll'));
             
-            if nargin < 3
+            if nargin == 2
+                type = '700B';
+                serialNumber = [];
+            elseif nargin == 3
+                type = '700B';
+                serialNumber = serialNumberOrComPort;
+            elseif nargin == 4
+                type = '700A';
+                comPort = serialNumberOrComPort;
+            end
+            
+            if (strcmp(type, '700A') && isempty(comPort)) || (strcmp(type, '700B') && isempty(serialNumber))
                 enum = Symphony.Core.EnumerableExtensions.Wrap(Symphony.ExternalDevices.MultiClampDevice.AvailableSerialNumbers());
                 e = enum.GetEnumerator();
                 if ~e.MoveNext()
@@ -14,7 +25,13 @@ classdef MultiClampDevice < symphonyui.core.Device
                         'If you are running MATLAB as Administrator, you may also need to run MultiClamp Commander ' ...
                         'as Administrator.']);
                 end
-                serialNumber = e.Current();
+                if strcmp(type, '700A')
+                    bytes = uint32(e.Current);
+                    comPort = bitand(bytes, hex2dec('000000FF'));
+                    deviceNumber = bitand(bitshift(bytes, -8), hex2dec('000000FF'));
+                else
+                    serialNumber = e.Current();
+                end
             end
             
             modes = NET.createArray('System.String', 3);
@@ -27,7 +44,11 @@ classdef MultiClampDevice < symphonyui.core.Device
             backgrounds(2) = Symphony.Core.Measurement(0, 'pA');
             backgrounds(3) = Symphony.Core.Measurement(0, 'pA');
             
-            cobj = Symphony.ExternalDevices.MultiClampDevice(serialNumber, channel, Symphony.Core.SystemClock(), [], modes, backgrounds);
+            if strcmp(type, '700A')
+                cobj = Symphony.ExternalDevices.MultiClampDevice(comPort, deviceNumber, channel, Symphony.Core.SystemClock(), [], modes, backgrounds);
+            else
+                cobj = Symphony.ExternalDevices.MultiClampDevice(serialNumber, channel, Symphony.Core.SystemClock(), [], modes, backgrounds);
+            end
             cobj.Name = name;
             obj@symphonyui.core.Device(cobj);
         end
