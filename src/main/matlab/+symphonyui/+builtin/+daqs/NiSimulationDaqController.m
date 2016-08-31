@@ -85,7 +85,7 @@ classdef NiSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqContro
                 while outStreamEnum.MoveNext()
                     outStream = outStreamEnum.Current;
 
-                    if strcmp(char(outStream.Name), strrep(char(inStream.Name), 'i', 'o'))
+                    if strcmp(char(outStream.Name), strrep(char(inStream.Name), 'ai', 'ao')) || strcmp(char(outStream.Name), strrep(char(inStream.Name), 'di', 'do'))
                         outData = output.Item(outStream);
                         inData = InputData(outData.Data, outData.SampleRate, obj.cobj.Clock.Now);
                         break;
@@ -95,7 +95,11 @@ classdef NiSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqContro
                 % If there was no corresponding output, simulate noise.
                 if isempty(inData)
                     samples = Symphony.Core.TimeSpanExtensions.Samples(timeStep, inStream.SampleRate);
-                    noise = Measurement.FromArray(rand(1, samples) - 0.5, 'mV');
+                    if strncmp(char(inStream.Name), 'diport', 6)
+                        noise = Measurement.FromArray(randi(2^16-1, 1, samples), inStream.MeasurementConversionTarget);
+                    else
+                        noise = Measurement.FromArray(rand(1, samples) - 0.5, inStream.MeasurementConversionTarget); 
+                    end
                     inData = InputData(noise, inStream.SampleRate, obj.cobj.Clock.Now);
                 end
 

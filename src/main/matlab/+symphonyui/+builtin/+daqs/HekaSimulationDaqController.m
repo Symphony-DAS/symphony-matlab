@@ -95,7 +95,11 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
                 % If there was no corresponding output, simulate noise.
                 if isempty(inData)
                     samples = Symphony.Core.TimeSpanExtensions.Samples(timeStep, inStream.SampleRate);
-                    noise = Measurement.FromArray(rand(1, samples) - 0.5, 'mV');
+                    if strncmp(char(inStream.Name), 'DIGITAL', 7)
+                        noise = Measurement.FromArray(randi(2^16-1, 1, samples), inStream.MeasurementConversionTarget);
+                    else
+                        noise = Measurement.FromArray(rand(1, samples) - 0.5, inStream.MeasurementConversionTarget); 
+                    end
                     inData = InputData(noise, inStream.SampleRate, obj.cobj.Clock.Now);
                 end
 
