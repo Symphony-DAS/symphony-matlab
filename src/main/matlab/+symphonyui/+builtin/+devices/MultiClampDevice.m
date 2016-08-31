@@ -3,7 +3,17 @@ classdef MultiClampDevice < symphonyui.core.Device
     
     methods
         
-        function obj = MultiClampDevice(name, channel, serialNumberOrComPort, deviceNumber)            
+        function obj = MultiClampDevice(name, channel, serialNumberOrComPort, deviceNumber)
+            % Constructs a MultiClamp device. 
+            %
+            % If you are using MultiClamp 700A Commander you must provide four arguments: a device name, the amp 
+            % channel, the amp COM port, and the amp device number (AKA AxoBus ID). The COM port and device number may 
+            % be provided as empty matrices (i.e. []) to attempt to have them auto-detected.
+            %
+            % If you are using MultiClamp 700B Commander you may provide two or three arguments: a device name, the amp
+            % channel, and the amp serial number. The serial number may be provided as an empty matrix (i.e. []), or not
+            % provided at all, to attempt to have it auto-detected.
+            
             NET.addAssembly(which('Symphony.ExternalDevices.dll'));
             
             if nargin == 2
