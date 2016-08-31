@@ -14,7 +14,7 @@
     <param.summary>Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.2.3.0</param.version>
+    <param.version>2.2.3.1</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -650,11 +650,11 @@
       <file>${PROJECT_ROOT}\src\main\resources\docs\Entity-Descriptions.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\File-Format.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Getting-Started.html</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_0.cfe</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_0.cfs</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_0.si</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_1.cfe</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_1.cfs</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_1.si</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments.gen</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments_1</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments_2</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helptoc.xml</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\How-to-Contribute.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-allowable-parents-to-an-entity-description\add-cell.png</file>
