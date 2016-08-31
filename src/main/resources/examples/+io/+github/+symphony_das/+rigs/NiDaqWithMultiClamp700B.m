@@ -1,8 +1,8 @@
-classdef NiDaqWithMultiClamp < symphonyui.core.descriptions.RigDescription
+classdef NiDaqWithMultiClamp700B < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function obj = NiDaqWithMultiClamp()
+        function obj = NiDaqWithMultiClamp700B()
             import symphonyui.builtin.daqs.*;
             import symphonyui.builtin.devices.*;
             import symphonyui.core.*;
@@ -10,10 +10,10 @@ classdef NiDaqWithMultiClamp < symphonyui.core.descriptions.RigDescription
             daq = NiDaqController();
             obj.daqController = daq;
             
-            amp1 = MultiClampDevice('Amp1', 1).bindStream(daq.getStream('ao0')).bindStream(daq.getStream('ai0'));
+            amp1 = MultiClampDevice('Amp1', 1, []).bindStream(daq.getStream('ao0')).bindStream(daq.getStream('ai0'));
             obj.addDevice(amp1);
             
-            amp2 = MultiClampDevice('Amp2', 2).bindStream(daq.getStream('ao1')).bindStream(daq.getStream('ai1'));
+            amp2 = MultiClampDevice('Amp2', 2, []).bindStream(daq.getStream('ao1')).bindStream(daq.getStream('ai1'));
             obj.addDevice(amp2);
             
             green = UnitConvertingDevice('Green LED', 'V').bindStream(daq.getStream('ao2'));

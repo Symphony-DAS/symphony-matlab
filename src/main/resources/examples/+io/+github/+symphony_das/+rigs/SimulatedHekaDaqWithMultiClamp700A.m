@@ -1,8 +1,8 @@
-classdef SimulatedHekaDaqWithMultiClamp < symphonyui.core.descriptions.RigDescription
+classdef SimulatedHekaDaqWithMultiClamp700A < symphonyui.core.descriptions.RigDescription
     
     methods
         
-        function obj = SimulatedHekaDaqWithMultiClamp()
+        function obj = SimulatedHekaDaqWithMultiClamp700A()
             import symphonyui.builtin.daqs.*;
             import symphonyui.builtin.devices.*;
             import symphonyui.core.*;
@@ -10,10 +10,10 @@ classdef SimulatedHekaDaqWithMultiClamp < symphonyui.core.descriptions.RigDescri
             daq = HekaSimulationDaqController();
             obj.daqController = daq;
             
-            amp1 = MultiClampDevice('Amp1', 1).bindStream(daq.getStream('ANALOG_OUT.0')).bindStream(daq.getStream('ANALOG_IN.0'));
+            amp1 = MultiClampDevice('Amp1', 1, [], []).bindStream(daq.getStream('ANALOG_OUT.0')).bindStream(daq.getStream('ANALOG_IN.0'));
             obj.addDevice(amp1);
             
-            amp2 = MultiClampDevice('Amp2', 2).bindStream(daq.getStream('ANALOG_OUT.1')).bindStream(daq.getStream('ANALOG_IN.1'));
+            amp2 = MultiClampDevice('Amp2', 2, [], []).bindStream(daq.getStream('ANALOG_OUT.1')).bindStream(daq.getStream('ANALOG_IN.1'));
             obj.addDevice(amp2);
             
             green = UnitConvertingDevice('Green LED', 'V').bindStream(daq.getStream('ANALOG_OUT.2'));
