@@ -14,7 +14,7 @@
     <param.summary>Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.2.1.0</param.version>
+    <param.version>2.2.3.0</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -367,6 +367,8 @@
       <file>${PROJECT_ROOT}\lib\Core Framework\log4net.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\msvcp100.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\msvcr100.dll</file>
+      <file>${PROJECT_ROOT}\lib\Core Framework\NationalInstruments.Common.dll</file>
+      <file>${PROJECT_ROOT}\lib\Core Framework\NationalInstruments.DAQmx.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\NIDAQInterface.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\Symphony.Core.dll</file>
       <file>${PROJECT_ROOT}\lib\Core Framework\Symphony.ExternalDevices.dll</file>
@@ -636,7 +638,6 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\Module.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\UiEventData.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\Contents.m</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\_Sidebar.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Add-Allowable-Parents-to-an-Entity-Description.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Add-Configuration-Settings-to-a-Device.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Add-Resources-to-a-Device.html</file>
@@ -649,13 +650,12 @@
       <file>${PROJECT_ROOT}\src\main\resources\docs\Entity-Descriptions.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\File-Format.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\Getting-Started.html</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_4.cfe</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_4.cfs</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_4.si</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_0.cfe</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_0.cfs</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\_0.si</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments.gen</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments_5</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\helpsearch-v3\segments_1</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\helptoc.xml</file>
-      <file>${PROJECT_ROOT}\src\main\resources\docs\Home.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\How-to-Contribute.html</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-allowable-parents-to-an-entity-description\add-cell.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\add-allowable-parents-to-an-entity-description\add-subject.png</file>
@@ -713,6 +713,7 @@
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\sum.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\train.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\standard-stimulus-generators\waveform.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\docs\images\system-requirements\dotnet-lang-support.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\use-property-descriptors-in-a-description\constrained.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\use-property-descriptors-in-a-protocol\amp.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\docs\images\use-property-descriptors-in-a-protocol\num-averages.png</file>
@@ -766,11 +767,15 @@
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+protocols\SealTest.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\Empty.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\HekaDaqWithAxopatch.m</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\HekaDaqWithMultiClamp.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\HekaDaqWithMultiClamp700A.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\HekaDaqWithMultiClamp700B.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\NiDaqWithAxopatch.m</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\NiDaqWithMultiClamp.m</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\SimulatedHekaDaqWithMultiClamp.m</file>
-      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\SimulatedNiDaqWithMultiClamp.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\NiDaqWithMultiClamp700A.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\NiDaqWithMultiClamp700B.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\SimulatedHekaDaqWithMultiClamp700A.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\SimulatedHekaDaqWithMultiClamp700B.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\SimulatedNiDaqWithMultiClamp700A.m</file>
+      <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+rigs\SimulatedNiDaqWithMultiClamp700B.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Cell.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\Preparation.m</file>
       <file>${PROJECT_ROOT}\src\main\resources\examples\+io\+github\+symphony_das\+sources\PropertyDemo.m</file>
