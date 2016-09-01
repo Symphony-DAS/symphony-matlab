@@ -30,7 +30,10 @@ classdef ResponseFigure < symphonyui.core.FigureHandler
             
             stored = obj.storedSweep();
             if ~isempty(stored)
-                stored.line = line(stored.x, stored.y, 'Parent', obj.axesHandle, 'Color', obj.storedSweepColor);
+                stored.line = line(stored.x, stored.y, ...
+                    'Parent', obj.axesHandle, ...
+                    'Color', obj.storedSweepColor, ...
+                    'HandleVisibility', 'off');
             end
             obj.storedSweep(stored);
         end

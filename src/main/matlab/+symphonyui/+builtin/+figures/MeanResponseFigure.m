@@ -33,7 +33,10 @@ classdef MeanResponseFigure < symphonyui.core.FigureHandler
             
             stored = obj.storedSweeps();
             for i = 1:numel(stored)
-                stored{i}.line = line(stored{i}.x, stored{i}.y, 'Parent', obj.axesHandle, 'Color', obj.storedSweepColor);
+                stored{i}.line = line(stored{i}.x, stored{i}.y, ...
+                    'Parent', obj.axesHandle, ...
+                    'Color', obj.storedSweepColor, ...
+                    'HandleVisibility', 'off');
             end
             obj.storedSweeps(stored);
         end
