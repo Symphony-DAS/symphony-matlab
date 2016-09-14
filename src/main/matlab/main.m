@@ -1,6 +1,8 @@
 function main()
     import symphonyui.app.*;
     import symphonyui.infra.*;
+    
+    uix.tracking('off');
 
     busy = appbox.BusyPresenter('Starting...');
     busy.go();
