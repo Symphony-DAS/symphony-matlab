@@ -598,6 +598,18 @@ classdef DataManagerView < appbox.View
             set(obj.sourceCard.labelField, 'String', l);
         end
 
+        function setSourceNodeNormal(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'source.png'));
+        end
+        
+        function setSourceNodeWarn(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'source_warn.png'));
+        end
+        
+        function setSourceNodeTooltip(obj, node, t) %#ok<INUSL>
+            set(node, 'TooltipString', t);
+        end
+
         function setExperimentNode(obj, name, entity)
             value = get(obj.entityTree.Root, 'Value');
             value.entity = entity;
@@ -709,6 +721,17 @@ classdef DataManagerView < appbox.View
             menu = uicontextmenu('Parent', obj.figureHandle);
             menu = obj.addEntityContextMenus(menu);
             set(node, 'UIContextMenu', menu);
+        end
+        
+        function setEpochGroupNodeWarn(obj, node)
+            node.setIcon(symphonyui.app.App.getResource('icons', 'group_warn.png'));
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            menu = obj.addEntityContextMenus(menu);
+            set(node, 'UIContextMenu', menu);
+        end
+        
+        function setEpochGroupNodeTooltip(obj, node, t) %#ok<INUSL>
+            set(node, 'TooltipString', t);
         end
 
         function enableBeginEpochGroupMenu(obj, node, tf) %#ok<INUSL>

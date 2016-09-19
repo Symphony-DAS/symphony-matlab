@@ -168,6 +168,8 @@ classdef DataManagerPresenter < appbox.Presenter
 
             n = obj.view.addSourceNode(parent, source.label, source);
             obj.uuidToNode(source.uuid) = n;
+            
+            obj.updateNodeStateForSourceSet(symphonyui.core.persistent.collections.SourceSet(source));
 
             children = source.sources;
             for i = 1:numel(children)
@@ -207,6 +209,21 @@ classdef DataManagerPresenter < appbox.Presenter
                     g = groups{k};
                     gnode = obj.uuidToNode(g.uuid);
                     obj.view.setNodeName(gnode, [g.label ' (' g.source.label ')']);
+                end
+            end
+        end
+        
+        function updateNodeStateForSourceSet(obj, sourceSet)
+            for i = 1:sourceSet.size
+                source = sourceSet.get(i);
+                snode = obj.uuidToNode(source.uuid);
+                                
+                if any(arrayfun(@(d)d.isPreferred && isempty(d.value), source.getPropertyDescriptors()))                    
+                    obj.view.setSourceNodeWarn(snode);
+                    obj.view.setSourceNodeTooltip(snode, 'Source contains empty preferred properties');
+                else
+                    obj.view.setSourceNodeNormal(snode);
+                    obj.view.setSourceNodeTooltip(snode, '');
                 end
             end
         end
@@ -268,9 +285,11 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.resetSelectedPreset();
             obj.view.update();
             obj.view.setSelectedNodes(node);
-            obj.view.setEpochGroupNodeCurrent(node);
-
-            obj.populateDetailsForEpochGroupSet(symphonyui.core.persistent.collections.EpochGroupSet(group));
+            
+            set = symphonyui.core.persistent.collections.EpochGroupSet(group);
+            obj.updateNodeStateForEpochGroupSet(set);
+            obj.populateDetailsForEpochGroupSet(set);
+            
             obj.updateStateOfControls();
         end
 
@@ -293,9 +312,11 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.update();
             obj.view.setSelectedNodes(node);
             obj.view.collapseNode(node);
-            obj.view.setEpochGroupNodeNormal(node);
-
-            obj.populateDetailsForEpochGroupSet(symphonyui.core.persistent.collections.EpochGroupSet(group));
+            
+            set = symphonyui.core.persistent.collections.EpochGroupSet(group);
+            obj.updateNodeStateForEpochGroupSet(set);
+            obj.populateDetailsForEpochGroupSet(set);
+            
             obj.updateStateOfControls();
         end
 
@@ -308,6 +329,8 @@ classdef DataManagerPresenter < appbox.Presenter
 
             n = obj.view.addEpochGroupNode(parent, [group.label ' (' group.source.label ')'], group);
             obj.uuidToNode(group.uuid) = n;
+            
+            obj.updateNodeStateForEpochGroupSet(symphonyui.core.persistent.collections.EpochGroupSet(group));
 
             blocks = group.epochBlocks;
             for i = 1:numel(blocks)
@@ -396,6 +419,24 @@ classdef DataManagerPresenter < appbox.Presenter
 
                 gnode = obj.uuidToNode(group.uuid);
                 obj.view.setNodeName(gnode, [group.label ' (' group.source.label ')']);
+            end
+        end
+        
+        function updateNodeStateForEpochGroupSet(obj, groupSet)
+            for i = 1:groupSet.size
+                group = groupSet.get(i);
+                gnode = obj.uuidToNode(group.uuid);
+                
+                if group == obj.documentationService.getCurrentEpochGroup()
+                    obj.view.setEpochGroupNodeCurrent(gnode);
+                    obj.view.setEpochGroupNodeTooltip(gnode, 'Current epoch group');
+                elseif any(arrayfun(@(d)d.isPreferred && isempty(d.value), group.getPropertyDescriptors()))                    
+                    obj.view.setEpochGroupNodeWarn(gnode);
+                    obj.view.setEpochGroupNodeTooltip(gnode, 'Epoch group contains empty preferred properties');
+                else
+                    obj.view.setEpochGroupNodeNormal(gnode);
+                    obj.view.setEpochGroupNodeTooltip(gnode, '');
+                end
             end
         end
 
@@ -577,7 +618,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.updateProperties(fields);
         end
 
-        function onViewSetProperty(obj, ~, event)
+        function onViewSetProperty(obj, ~, event)            
             p = event.data.Property;
             entitySet = obj.detailedEntitySet;
             try
@@ -587,6 +628,31 @@ classdef DataManagerPresenter < appbox.Presenter
                 return;
             end
             obj.updatePropertiesForEntitySet(entitySet);
+            obj.updateNodeStateForEntitySet(entitySet);
+        end
+        
+        function updateNodeNamesForEntitySet(obj, entitySet)
+            import symphonyui.core.persistent.EntityType;
+            
+            switch entitySet.getEntityType()
+                case EntityType.SOURCE
+                    obj.updateNodeNamesForSourceSet(entitySet);
+                case EntityType.EXPERIMENT
+                    obj.updateNodeNamesForExperimentSet(entitySet);
+                case EntityType.EPOCH_GROUP
+                    obj.updateNodeNamesForEpochGroupSet(entitySet);                  
+            end
+        end
+        
+        function updateNodeStateForEntitySet(obj, entitySet)
+            import symphonyui.core.persistent.EntityType;
+            
+            switch entitySet.getEntityType()
+                case EntityType.SOURCE
+                    obj.updateNodeStateForSourceSet(entitySet);
+                case EntityType.EPOCH_GROUP
+                    obj.updateNodeStateForEpochGroupSet(entitySet);
+            end
         end
 
         function onViewSelectedAddProperty(obj, ~, ~)
@@ -707,15 +773,8 @@ classdef DataManagerPresenter < appbox.Presenter
             end
 
             obj.populateDetailsForEntitySet(entitySet);
-            
-            switch entitySet.getEntityType()
-                case EntityType.SOURCE
-                    obj.updateNodeNamesForSourceSet(entitySet);
-                case EntityType.EXPERIMENT
-                    obj.updateNodeNamesForExperimentSet(entitySet);
-                case EntityType.EPOCH_GROUP
-                    obj.updateNodeNamesForEpochGroupSet(entitySet);            
-            end
+            obj.updateNodeNamesForEntitySet(entitySet);
+            obj.updateNodeStateForEntitySet(entitySet);
         end
 
         function onViewSelectedAddPreset(obj, ~, ~)
