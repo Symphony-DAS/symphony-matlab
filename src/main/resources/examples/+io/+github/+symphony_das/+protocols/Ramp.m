@@ -1,4 +1,5 @@
 classdef Ramp < symphonyui.core.Protocol
+    % Presents a set of ramp stimuli to a specified amplifier and records from the same amplifier.
     
     properties
         amp                             % Output amplifier

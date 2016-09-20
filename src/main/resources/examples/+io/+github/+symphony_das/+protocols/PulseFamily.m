@@ -1,4 +1,11 @@
 classdef PulseFamily < symphonyui.core.Protocol
+    % Presents families of rectangular pulse stimuli to a specified amplifier and records responses from the same
+    % amplifier. Each family consists of a set of pulse stimuli with signal value starting at firstPulseSignal. With
+    % each subsequent pulse in the family, the signal value is incremented by incrementPerPulse. The family is complete
+    % when this sequence has been executed pulsesInFamily times.
+    %
+    % For example, with values firstPulseSignal = 100, incrementPerPulse = 10, and pulsesInFamily = 5, the sequence of
+    % pulse stimuli signal values would be: 100 then 110 then 120 then 130 then 140.
     
     properties
         amp                             % Output amplifier

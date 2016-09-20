@@ -1,4 +1,11 @@
 classdef LedPulseFamily < symphonyui.core.Protocol
+    % Presents families of rectangular pulse stimuli to a specified LED and records responses from a specified 
+    % amplifier. Each family consists of a set of pulse stimuli with amplitude starting at firstLightAmplitude. With
+    % each subsequent pulse in the family, the amplitude is doubled. The family is complete when this sequence has been
+    % executed pulsesInFamily times.
+    %
+    % For example, with values firstLightAmplitude = 1 and pulsesInFamily = 3, the sequence of pulse stimuli amplitude
+    % values in each family would be: 1 then 2 then 4.
     
     properties
         led                             % Output LED

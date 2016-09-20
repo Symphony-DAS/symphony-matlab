@@ -1,4 +1,5 @@
 classdef Pulse < symphonyui.core.Protocol
+    % Presents a set of rectangular pulse stimuli to a specified amplifier and records from the same amplifier.
     
     properties
         amp                             % Output amplifier

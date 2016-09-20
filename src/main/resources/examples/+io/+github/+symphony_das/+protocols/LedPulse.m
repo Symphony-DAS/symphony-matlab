@@ -1,4 +1,5 @@
 classdef LedPulse < symphonyui.core.Protocol
+    % Presents a set of rectangular pulse stimuli to a specified LED and records from a specified amplifier.
     
     properties
         led                             % Output LED

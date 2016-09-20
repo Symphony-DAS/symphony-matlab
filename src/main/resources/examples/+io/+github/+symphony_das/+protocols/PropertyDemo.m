@@ -1,4 +1,5 @@
 classdef PropertyDemo < symphonyui.core.Protocol
+    % Demonstrates the capabilities of the protocol properties.
     
     properties
         double = pi                 % Standard MatLab type
