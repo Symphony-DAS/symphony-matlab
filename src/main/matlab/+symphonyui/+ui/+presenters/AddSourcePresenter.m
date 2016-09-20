@@ -48,7 +48,7 @@ classdef AddSourcePresenter < appbox.Presenter
     methods (Access = private)
 
         function populateParentList(obj)
-            sources = obj.documentationService.getExperiment().allSources();
+            sources = obj.documentationService.getExperiment().getAllSources();
 
             names = cell(1, numel(sources));
             for i = 1:numel(sources)

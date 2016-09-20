@@ -116,7 +116,7 @@ classdef (Abstract) CoreObject < handle
         function d = dictionaryFromMap(obj, map) %#ok<INUSL>
             d = NET.createGeneric('System.Collections.Generic.Dictionary', {'System.String', 'System.Object'});
             keys = map.keys;
-            for i = 1:numel(keys);
+            for i = 1:numel(keys)
                 key = keys{i};
                 d.Add(key, map(key));
             end

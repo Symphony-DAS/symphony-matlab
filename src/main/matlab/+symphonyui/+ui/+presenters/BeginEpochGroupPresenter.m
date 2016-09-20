@@ -15,7 +15,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
                 initialParent = [];
             end
             if nargin < 3 || isempty(initialSource)
-                sources = documentationService.getExperiment().allSources();
+                sources = documentationService.getExperiment().getAllSources();
                 if isempty(sources)
                     initialSource = [];
                 else
@@ -92,7 +92,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
         end
 
         function populateSourceList(obj)
-            sources = obj.documentationService.getExperiment().allSources();
+            sources = obj.documentationService.getExperiment().getAllSources();
 
             names = cell(1, numel(sources));
             for i = 1:numel(sources)
@@ -184,7 +184,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             hasSource = ~isempty(sourceList{1});
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
-            hasEpochGroup = ~isempty(obj.documentationService.getExperiment().epochGroups);
+            hasEpochGroup = ~isempty(obj.documentationService.getExperiment().getEpochGroups());
 
             obj.view.enableCarryForwardProperties(hasEpochGroup);
             obj.view.enableBegin(hasSource && hasDescription);

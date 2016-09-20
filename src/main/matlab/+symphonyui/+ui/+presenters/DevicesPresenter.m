@@ -73,8 +73,8 @@ classdef DevicesPresenter < appbox.Presenter
 
             obj.view.setName(deviceSet.name);
             obj.view.setManufacturer(deviceSet.manufacturer);
-            obj.view.setInputStreams(strjoin(cellfun(@(s)s.name, deviceSet.inputStreams, 'UniformOutput', false), ', '));
-            obj.view.setOutputStreams(strjoin(cellfun(@(s)s.name, deviceSet.outputStreams, 'UniformOutput', false), ', '));
+            obj.view.setInputStreams(strjoin(cellfun(@(s)s.name, deviceSet.getInputStreams(), 'UniformOutput', false), ', '));
+            obj.view.setOutputStreams(strjoin(cellfun(@(s)s.name, deviceSet.getOutputStreams(), 'UniformOutput', false), ', '));
 
             background = deviceSet.background;
             if isempty(background)
@@ -164,7 +164,7 @@ classdef DevicesPresenter < appbox.Presenter
                 obj.populateConfigurationForDeviceSet(obj.detailedDeviceSet);
             end
         end
-        
+
         function onViewSelectedOk(obj, ~, ~)
             obj.stop();
         end

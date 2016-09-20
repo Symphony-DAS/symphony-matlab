@@ -2,7 +2,6 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
 
     properties (SetAccess = private)
         keywords
-        notes
     end
 
     methods
@@ -99,14 +98,14 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             end
         end
 
-        function n = get.notes(obj)
+        function n = getNotes(obj)
             if isempty(obj.objects)
                 n = {};
                 return;
             end
-            n = obj.objects{1}.notes;
+            n = obj.objects{1}.getNotes();
             for i = 2:numel(obj.objects)
-                n = obj.intersect(n, obj.objects{i}.notes);
+                n = obj.intersect(n, obj.objects{i}.getNotes());
             end
         end
 

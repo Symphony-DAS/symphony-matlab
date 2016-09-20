@@ -176,9 +176,9 @@ classdef MainPresenter < appbox.Presenter
 
         function tf = closeFile(obj)
             tf = false;
-            
+
             experiment = obj.documentationService.getExperiment();
-            entities = [experiment.allSources, experiment.allEpochGroups];
+            entities = [experiment.getAllSources(), experiment.getAllEpochGroups()];
             n = 0;
             for i = 1:numel(entities)
                 if any(arrayfun(@(d)d.isPreferred && isempty(d.value), entities{i}.getPropertyDescriptors()))
@@ -186,11 +186,11 @@ classdef MainPresenter < appbox.Presenter
                 end
             end
             if n > 0
-                message = [num2str(n) ' entities contain empty preferred properties. Are you sure you want to close the current file?']; 
+                message = [num2str(n) ' entities contain empty preferred properties. Are you sure you want to close the current file?'];
             else
                 message = 'Are you sure you want to close the current file?';
             end
-            
+
             result = obj.view.showMessage( ...
                 message, ...
                 'Close File', ...
@@ -360,7 +360,7 @@ classdef MainPresenter < appbox.Presenter
                 obj.updateProtocolPreview();
             end
         end
-        
+
         function onServiceAppliedProtocolPreset(obj, ~, ~)
             obj.view.stopEditingProtocolProperties();
             obj.updateStateOfControls();
@@ -491,7 +491,7 @@ classdef MainPresenter < appbox.Presenter
             import symphonyui.core.ControllerState;
 
             hasOpenFile = obj.documentationService.hasOpenFile();
-            hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().sources);
+            hasSource = hasOpenFile && ~isempty(obj.documentationService.getExperiment().getSources());
             hasEpochGroup = hasOpenFile && ~isempty(obj.documentationService.getCurrentEpochGroup());
             hasAvailableProtocol = ~isempty(obj.acquisitionService.getAvailableProtocols());
             controllerState = obj.acquisitionService.getControllerState();

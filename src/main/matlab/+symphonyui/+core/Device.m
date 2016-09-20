@@ -12,6 +12,9 @@ classdef Device < symphonyui.core.CoreObject
     %   getResourceNames    - Gets the name of all resources on this device
     %
     %   bindStream          - Associates a stream with this device
+    %   getInputStreams     - Gets a cell array of bound input streams
+    %   getOutputStreams    - Gets a cell array of bound output streams
+    %
     %   applyBackground     - Immediately applies the device background to all bound output streams
     
     events (NotifyAccess = private)
@@ -21,8 +24,6 @@ classdef Device < symphonyui.core.CoreObject
     properties (SetAccess = private)
         name            % Human-readable device name 
         manufacturer    % Name of device manufacturer
-        inputStreams    % Cell array of bound input streams
-        outputStreams   % Cell array of bound output streams
     end
 
     properties (Access = private)
@@ -155,11 +156,15 @@ classdef Device < symphonyui.core.CoreObject
             obj.tryCore(@()obj.cobj.UnbindStream(name));
         end
 
-        function s = get.inputStreams(obj)            
+        function s = getInputStreams(obj)
+            % Gets a cell array of bound input streams
+            
             s = obj.cellArrayFromEnumerable(obj.cobj.InputStreams, @symphonyui.core.DaqStream);
         end
 
-        function s = get.outputStreams(obj)
+        function s = getOutputStreams(obj)
+            % Gets a cell array of bound output streams
+            
             s = obj.cellArrayFromEnumerable(obj.cobj.OutputStreams, @symphonyui.core.DaqStream);
         end
 

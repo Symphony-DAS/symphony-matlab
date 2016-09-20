@@ -141,7 +141,7 @@ classdef DocumentationService < handle
             constructor = str2func(description);
             propertyMap = containers.Map();
             if carryForwardProperties
-                allGroups = obj.getExperiment().allEpochGroups;
+                allGroups = obj.getExperiment().getAllEpochGroups();
                 if ~isempty(allGroups)
                     propertyMap = allGroups{end}.getPropertyMap();
                 end

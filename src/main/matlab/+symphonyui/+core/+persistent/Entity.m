@@ -3,10 +3,9 @@ classdef Entity < symphonyui.core.CoreObject
     properties (SetAccess = private)
         uuid
         keywords
-        notes
     end
 
-    properties (Constant)
+    properties (Constant, Access = private)
         DESCRIPTION_TYPE_RESOURCE_NAME = 'descriptionType'
         PROPERTY_DESCRIPTORS_RESOURCE_NAME = 'propertyDescriptors'
     end
@@ -150,7 +149,7 @@ classdef Entity < symphonyui.core.CoreObject
             n = obj.cellArrayFromEnumerable(obj.cobj.GetResourceNames(), @char);
         end
 
-        function n = get.notes(obj)
+        function n = getNotes(obj)
             n = obj.cellArrayFromEnumerable(obj.cobj.Notes, @symphonyui.core.persistent.Note);
         end
 

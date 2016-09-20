@@ -77,12 +77,14 @@ classdef PersistorTest < symphonyui.TestBase
             time2 = datetime('now', 'TimeZone', 'Africa/Johannesburg');
             text2 = 'Hello from Africa!';
             entity.addNote(text2, time2);
-
-            note1 = entity.notes{1};
+            
+            notes = entity.getNotes();
+            
+            note1 = notes{1};
             obj.verifyDatetimesEqual(note1.time, time1);
             obj.verifyEqual(note1.text, text1);
 
-            note2 = entity.notes{2};
+            note2 = notes{2};
             obj.verifyDatetimesEqual(note2.time, time2);
             obj.verifyEqual(note2.text, text2);
         end
@@ -99,10 +101,10 @@ classdef PersistorTest < symphonyui.TestBase
             src = obj.persistor.addSource([], 'src');
 
             obj.verifyEqual(src.label, 'src');
-            obj.verifyEmpty(src.sources);
-            obj.verifyEmpty(src.allSources);
-            obj.verifyEmpty(src.epochGroups);
-            obj.verifyEmpty(src.allEpochGroups);
+            obj.verifyEmpty(src.getSources());
+            obj.verifyEmpty(src.getAllSources());
+            obj.verifyEmpty(src.getEpochGroups());
+            obj.verifyEmpty(src.getAllEpochGroups());
             obj.verifyEmpty(src.parent);
             obj.verifyEqual(src.experiment, obj.persistor.experiment);
 
@@ -113,46 +115,46 @@ classdef PersistorTest < symphonyui.TestBase
             obj.verifyEqual(src1.parent, src);
             obj.verifyEqual(src2.parent, src);
             obj.verifyEqual(src3.parent, src2);
-            obj.verifyCellsAreEquivalent(src.sources, {src1, src2});
-            obj.verifyCellsAreEquivalent(src.allSources, {src1, src2, src3});
+            obj.verifyCellsAreEquivalent(src.getSources(), {src1, src2});
+            obj.verifyCellsAreEquivalent(src.getAllSources(), {src1, src2, src3});
 
             grp1 = obj.persistor.beginEpochGroup(src, 'grp1');
             grp2 = obj.persistor.beginEpochGroup(src, 'grp2');
             grp3 = obj.persistor.beginEpochGroup(src1, 'grp3');
 
-            obj.verifyCellsAreEquivalent(src.epochGroups, {grp1, grp2});
-            obj.verifyCellsAreEquivalent(src.allEpochGroups, {grp1, grp2, grp3});
+            obj.verifyCellsAreEquivalent(src.getEpochGroups(), {grp1, grp2});
+            obj.verifyCellsAreEquivalent(src.getAllEpochGroups(), {grp1, grp2, grp3});
         end
 
         function testExperiment(obj)
             exp = obj.persistor.experiment;
 
             obj.verifyEmpty(exp.purpose);
-            obj.verifyEmpty(exp.devices);
-            obj.verifyEmpty(exp.sources);
-            obj.verifyEmpty(exp.allSources);
-            obj.verifyEmpty(exp.epochGroups);
-            obj.verifyEmpty(exp.allEpochGroups);
+            obj.verifyEmpty(exp.getDevices());
+            obj.verifyEmpty(exp.getSources());
+            obj.verifyEmpty(exp.getAllSources());
+            obj.verifyEmpty(exp.getEpochGroups());
+            obj.verifyEmpty(exp.getAllEpochGroups());
 
             dev1 = obj.persistor.addDevice('dev1', 'man1');
             dev2 = obj.persistor.addDevice('dev2', 'man2');
 
-            obj.verifyCellsAreEquivalent(exp.devices, {dev1, dev2});
+            obj.verifyCellsAreEquivalent(exp.getDevices(), {dev1, dev2});
 
             src1 = obj.persistor.addSource([], 'src1');
             src2 = obj.persistor.addSource([], 'src2');
             src3 = obj.persistor.addSource(src1, 'src3');
 
-            obj.verifyCellsAreEquivalent(exp.sources, {src1, src2});
-            obj.verifyCellsAreEquivalent(exp.allSources, {src1, src2, src3});
+            obj.verifyCellsAreEquivalent(exp.getSources(), {src1, src2});
+            obj.verifyCellsAreEquivalent(exp.getAllSources(), {src1, src2, src3});
 
             grp1 = obj.persistor.beginEpochGroup(src1, 'grp1');
             obj.persistor.endEpochGroup();
             grp2 = obj.persistor.beginEpochGroup(src2, 'grp2');
             grp3 = obj.persistor.beginEpochGroup(src2, 'grp3');
 
-            obj.verifyCellsAreEquivalent(exp.epochGroups, {grp1, grp2});
-            obj.verifyCellsAreEquivalent(exp.allEpochGroups, {grp1, grp2, grp3});
+            obj.verifyCellsAreEquivalent(exp.getEpochGroups(), {grp1, grp2});
+            obj.verifyCellsAreEquivalent(exp.getAllEpochGroups(), {grp1, grp2, grp3});
         end
 
         function testEpochGroup(obj)
@@ -164,8 +166,8 @@ classdef PersistorTest < symphonyui.TestBase
             obj.verifyEqual(obj.persistor.currentEpochGroup, grp);
             obj.verifyEqual(grp.label, 'grp');
             obj.verifyEqual(grp.source, src);
-            obj.verifyEmpty(grp.epochGroups);
-            obj.verifyEmpty(grp.epochBlocks);
+            obj.verifyEmpty(grp.getEpochGroups());
+            obj.verifyEmpty(grp.getEpochBlocks());
             obj.verifyEmpty(grp.parent);
             obj.verifyEqual(grp.experiment, obj.persistor.experiment);
 
@@ -179,14 +181,14 @@ classdef PersistorTest < symphonyui.TestBase
             obj.verifyEqual(grp1.parent, grp);
             obj.verifyEqual(grp2.parent, grp);
             obj.verifyEqual(grp3.parent, grp2);
-            obj.verifyCellsAreEquivalent(grp.epochGroups, {grp1, grp2});
-            obj.verifyCellsAreEquivalent(grp.allEpochGroups, {grp1, grp2, grp3});
+            obj.verifyCellsAreEquivalent(grp.getEpochGroups(), {grp1, grp2});
+            obj.verifyCellsAreEquivalent(grp.getAllEpochGroups(), {grp1, grp2, grp3});
 
             blk1 = obj.persistor.beginEpochBlock('blk1', obj.TEST_PARAMETERS);
             obj.persistor.endEpochBlock();
             blk2 = obj.persistor.beginEpochBlock('blk2', obj.TEST_PARAMETERS);
 
-            obj.verifyCellsAreEquivalent(grp.epochBlocks, {blk1, blk2});
+            obj.verifyCellsAreEquivalent(grp.getEpochBlocks(), {blk1, blk2});
         end
 
         function testEpochBlock(obj)
@@ -199,7 +201,7 @@ classdef PersistorTest < symphonyui.TestBase
             obj.verifyEqual(obj.persistor.currentEpochBlock, blk);
             obj.verifyEqual(blk.protocolId, 'blk');
             obj.verifyEqual(blk.protocolParameters, obj.TEST_PARAMETERS);
-            obj.verifyEmpty(blk.epochs);
+            obj.verifyEmpty(blk.getEpochs());
             obj.verifyEqual(blk.epochGroup, grp);
             obj.verifyEmpty(blk.endTime);
         end

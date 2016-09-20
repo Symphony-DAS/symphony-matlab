@@ -1,8 +1,8 @@
 classdef NiSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqController
     % Manages a simulated National Instruments DAQ interface (requires no attached hardware).
-    
+
     methods
-        
+
         function obj = NiSimulationDaqController()
             for i = 1:32
                 name = ['ai' num2str(i-1)];
@@ -11,7 +11,7 @@ classdef NiSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqContro
                 cstr.Clock = obj.cobj.Clock;
                 obj.addStream(symphonyui.core.DaqStream(cstr));
             end
-            
+
             for i = 1:4
                 name = ['ao' num2str(i-1)];
                 cstr = Symphony.Core.DAQOutputStream(name, obj.cobj);
@@ -35,29 +35,29 @@ classdef NiSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqContro
                 cstr.Clock = obj.cobj.Clock;
                 obj.addStream(symphonyui.core.DaqStream(cstr));
             end
-            
+
             Symphony.Core.Converters.Register(Symphony.Core.Measurement.UNITLESS, Symphony.Core.Measurement.UNITLESS, Symphony.Core.ConvertProcs.Scale(1, Symphony.Core.Measurement.UNITLESS));
             Symphony.Core.Converters.Register('V', 'V', Symphony.Core.ConvertProcs.Scale(1, 'V'));
             Symphony.Core.Converters.Register(Symphony.Core.Measurement.NORMALIZED, 'V', Symphony.Core.ConvertProcs.Scale(10, 'V'));
             Symphony.Core.Converters.Register('V', Symphony.Core.Measurement.NORMALIZED, Symphony.Core.ConvertProcs.Scale(1/10, Symphony.Core.Measurement.NORMALIZED));
-            
+
             obj.sampleRate = symphonyui.core.Measurement(10000, 'Hz');
             obj.sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {1000, 10000, 20000, 50000});
 
             obj.simulationRunner = @(output, timeStep)obj.loopbackRunner(output, timeStep);
         end
-        
+
         function s = getStream(obj, name)
             s = getStream@symphonyui.core.DaqController(obj, name);
             if strncmp(name, 'd', 1)
                 s = symphonyui.builtin.daqs.NiSimulationDigitalDaqStream(s.cobj);
             end
         end
-        
+
     end
-    
+
     methods (Access = private)
-        
+
         function input = loopbackRunner(obj, output, timeStep)
             import Symphony.Core.*;
 
@@ -98,7 +98,7 @@ classdef NiSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqContro
                     if strncmp(char(inStream.Name), 'diport', 6)
                         noise = Measurement.FromArray(randi(2^16-1, 1, samples), inStream.MeasurementConversionTarget);
                     else
-                        noise = Measurement.FromArray(rand(1, samples) - 0.5, inStream.MeasurementConversionTarget); 
+                        noise = Measurement.FromArray(rand(1, samples) - 0.5, inStream.MeasurementConversionTarget);
                     end
                     inData = InputData(noise, inStream.SampleRate, obj.cobj.Clock.Now);
                 end
@@ -106,13 +106,13 @@ classdef NiSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqContro
                 input.Add(inStream, inData);
             end
         end
-        
+
     end
-    
+
     methods (Access = protected)
 
         function setSampleRate(obj, measurement)
-            streams = obj.streams;
+            streams = obj.getStreams();
             for i = 1:numel(streams)
                 streams{i}.sampleRate = measurement;
             end
@@ -120,6 +120,5 @@ classdef NiSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqContro
         end
 
     end
-    
-end
 
+end

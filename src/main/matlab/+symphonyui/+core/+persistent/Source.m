@@ -6,10 +6,6 @@ classdef Source < symphonyui.core.persistent.Entity
     
     properties (SetAccess = private)
         creationTime
-        sources
-        allSources
-        epochGroups
-        allEpochGroups
         parent
         experiment
     end
@@ -42,19 +38,19 @@ classdef Source < symphonyui.core.persistent.Entity
             t = obj.datetimeFromDateTimeOffset(obj.cobj.CreationTime);
         end
 
-        function s = get.sources(obj)
+        function s = getSources(obj)
             s = obj.cellArrayFromEnumerable(obj.cobj.Sources, @symphonyui.core.persistent.Source);
         end
 
-        function s = get.allSources(obj)
+        function s = getAllSources(obj)
             s = obj.cellArrayFromEnumerable(obj.cobj.AllSources, @symphonyui.core.persistent.Source);
         end
 
-        function g = get.epochGroups(obj)
+        function g = getEpochGroups(obj)
             g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
 
-        function g = get.allEpochGroups(obj)
+        function g = getAllEpochGroups(obj)
             g = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
 

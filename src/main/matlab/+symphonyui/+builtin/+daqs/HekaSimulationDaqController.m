@@ -1,6 +1,6 @@
 classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqController
     % Manages a simulated HEKA (InstruTECH) DAQ interface (requires no attached hardware).
-    
+
     methods
 
         function obj = HekaSimulationDaqController()
@@ -98,7 +98,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
                     if strncmp(char(inStream.Name), 'DIGITAL', 7)
                         noise = Measurement.FromArray(randi(2^16-1, 1, samples), inStream.MeasurementConversionTarget);
                     else
-                        noise = Measurement.FromArray(rand(1, samples) - 0.5, inStream.MeasurementConversionTarget); 
+                        noise = Measurement.FromArray(rand(1, samples) - 0.5, inStream.MeasurementConversionTarget);
                     end
                     inData = InputData(noise, inStream.SampleRate, obj.cobj.Clock.Now);
                 end
@@ -112,7 +112,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
     methods (Access = protected)
 
         function setSampleRate(obj, measurement)
-            streams = obj.streams;
+            streams = obj.getStreams();
             for i = 1:numel(streams)
                 streams{i}.sampleRate = measurement;
             end

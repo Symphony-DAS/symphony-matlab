@@ -6,9 +6,6 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
     end
 
     properties (SetAccess = private)
-        epochGroups
-        allEpochGroups
-        epochBlocks
         parent
         experiment
     end
@@ -45,15 +42,15 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
             obj.cobj.Source = s.cobj;
         end
 
-        function g = get.epochGroups(obj)
+        function g = getEpochGroups(obj)
             g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
 
-        function g = get.allEpochGroups(obj)
+        function g = getAllEpochGroups(obj)
             g = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
 
-        function b = get.epochBlocks(obj)
+        function b = getEpochBlocks(obj)
             b = obj.cellArrayFromEnumerable(obj.cobj.EpochBlocks, @symphonyui.core.persistent.EpochBlock);
         end
 

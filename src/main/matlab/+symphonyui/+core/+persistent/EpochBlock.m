@@ -3,7 +3,6 @@ classdef EpochBlock < symphonyui.core.persistent.TimelineEntity
     properties (SetAccess = private)
         protocolId
         protocolParameters
-        epochs
         epochGroup
     end
 
@@ -21,7 +20,7 @@ classdef EpochBlock < symphonyui.core.persistent.TimelineEntity
             p = obj.mapFromKeyValueEnumerable(obj.cobj.ProtocolParameters, @obj.valueFromPropertyValue);
         end
 
-        function e = get.epochs(obj)
+        function e = getEpochs(obj)
             e = obj.cellArrayFromEnumerable(obj.cobj.Epochs, @symphonyui.core.persistent.Epoch);
         end
 

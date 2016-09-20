@@ -46,9 +46,9 @@ classdef EntityType
                     obj = EntityType.SOURCE;
                 case 'Experiment'
                     obj = EntityType.EXPERIMENT;
-                case 'Epoch Group';
+                case 'Epoch Group'
                     obj = EntityType.EPOCH_GROUP;
-                case 'Epoch Block';
+                case 'Epoch Block'
                     obj = EntityType.EPOCH_BLOCK;
                 case 'Epoch'
                     obj = EntityType.EPOCH;
