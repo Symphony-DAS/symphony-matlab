@@ -6,6 +6,9 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
     end
 
     properties (SetAccess = private)
+        epochGroups
+        allEpochGroups
+        epochBlocks
         parent
         experiment
     end
@@ -41,13 +44,28 @@ classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
         function set.source(obj, s)
             obj.cobj.Source = s.cobj;
         end
+        
+        function g = get.epochGroups(obj)
+            warning('The epochGroups property is deprecated. Use getEpochGroups().');
+            g = obj.getEpochGroups();
+        end
 
         function g = getEpochGroups(obj)
             g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
         end
+        
+        function g = get.allEpochGroups(obj)
+            warning('The allEpochGroups property is deprecated. Use getAllEpochGroups().');
+            g = obj.getAllEpochGroups();
+        end
 
         function g = getAllEpochGroups(obj)
             g = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
+        end
+        
+        function b = get.epochBlocks(obj)
+            warning('The epochBlocks property is deprecated. Use getEpochBlocks().');
+            b = obj.getEpochBlocks();
         end
 
         function b = getEpochBlocks(obj)

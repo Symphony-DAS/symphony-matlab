@@ -3,6 +3,7 @@ classdef Entity < symphonyui.core.CoreObject
     properties (SetAccess = private)
         uuid
         keywords
+        notes
     end
 
     properties (Constant, Access = private)
@@ -147,6 +148,11 @@ classdef Entity < symphonyui.core.CoreObject
 
         function n = getResourceNames(obj)
             n = obj.cellArrayFromEnumerable(obj.cobj.GetResourceNames(), @char);
+        end
+        
+        function n = get.notes(obj)
+            warning('The notes property is deprecated. Use getNotes().');
+            n = obj.getNotes();
         end
 
         function n = getNotes(obj)

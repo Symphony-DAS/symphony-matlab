@@ -3,6 +3,7 @@ classdef EpochBlock < symphonyui.core.persistent.TimelineEntity
     properties (SetAccess = private)
         protocolId
         protocolParameters
+        epochs
         epochGroup
     end
 
@@ -18,6 +19,11 @@ classdef EpochBlock < symphonyui.core.persistent.TimelineEntity
 
         function p = get.protocolParameters(obj)
             p = obj.mapFromKeyValueEnumerable(obj.cobj.ProtocolParameters, @obj.valueFromPropertyValue);
+        end
+        
+        function e = get.epochs(obj)
+            warning('The epochs property is deprecated. Use getEpochs().');
+            e = obj.getEpochs();
         end
 
         function e = getEpochs(obj)

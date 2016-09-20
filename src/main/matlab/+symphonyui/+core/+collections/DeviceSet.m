@@ -3,6 +3,8 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
     properties (SetAccess = private)
         name
         manufacturer
+        inputStreams
+        outputStreams
     end
 
     properties
@@ -62,6 +64,11 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
                 d = obj.intersect(d, obj.objects{i}.getConfigurationSettingDescriptors());
             end
         end
+        
+        function s = get.inputStreams(obj)
+            warning('The inputStreams property is deprecated. Use getInputStreams().');
+            s = obj.getInputStreams();
+        end
 
         function s = getInputStreams(obj)
             if isempty(obj.objects)
@@ -82,6 +89,11 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
                     return;
                 end
             end
+        end
+        
+        function s = get.outputStreams(obj)
+            warning('The outputStreams property is deprecated. Use getOutputStreams().');
+            s = obj.getOutputStreams();
         end
 
         function s = getOutputStreams(obj)

@@ -2,6 +2,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
 
     properties (SetAccess = private)
         keywords
+        notes
     end
 
     methods
@@ -96,6 +97,11 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 removed = obj.objects{i}.removeKeyword(keyword);
                 tf = tf || removed;
             end
+        end
+        
+        function n = get.notes(obj)
+            warning('The notes property is deprecated. Use getNotes().');
+            n = obj.getNotes();
         end
 
         function n = getNotes(obj)
