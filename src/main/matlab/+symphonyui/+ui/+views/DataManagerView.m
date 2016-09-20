@@ -585,6 +585,14 @@ classdef DataManagerView < appbox.View
             menu = obj.addEntityContextMenus(menu);
             set(n, 'UIContextMenu', menu);
         end
+        
+        function setSourceNodeNormal(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'source.png'));
+        end
+        
+        function setSourceNodeWarn(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'source_warn.png'));
+        end
 
         function enableSourceLabel(obj, tf)
             set(obj.sourceCard.labelField, 'Enable', appbox.onOff(tf));
@@ -598,24 +606,20 @@ classdef DataManagerView < appbox.View
             set(obj.sourceCard.labelField, 'String', l);
         end
 
-        function setSourceNodeNormal(obj, node) %#ok<INUSL>
-            node.setIcon(symphonyui.app.App.getResource('icons', 'source.png'));
-        end
-        
-        function setSourceNodeWarn(obj, node) %#ok<INUSL>
-            node.setIcon(symphonyui.app.App.getResource('icons', 'source_warn.png'));
-        end
-        
-        function setSourceNodeTooltip(obj, node, t) %#ok<INUSL>
-            set(node, 'TooltipString', t);
-        end
-
         function setExperimentNode(obj, name, entity)
             value = get(obj.entityTree.Root, 'Value');
             value.entity = entity;
             set(obj.entityTree.Root, ...
                 'Name', name, ...
                 'Value', value);
+        end
+        
+        function setExperimentNodeNormal(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'experiment.png'));
+        end
+        
+        function setExperimentNodeWarn(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'experiment_warn.png'));
         end
 
         function n = getExperimentNode(obj)
@@ -663,6 +667,35 @@ classdef DataManagerView < appbox.View
             menu = obj.addEntityContextMenus(menu);
             set(n, 'UIContextMenu', menu);
         end
+        
+        function setEpochGroupNodeCurrent(obj, node)
+            node.setIcon(symphonyui.app.App.getResource('icons', 'group_current.png'));
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', menu, ...
+                'Label', 'Begin Epoch Group...', ...
+                'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
+            uimenu( ...
+                'Parent', menu, ...
+                'Label', 'End Epoch Group', ...
+                'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
+            menu = obj.addEntityContextMenus(menu);
+            set(node, 'UIContextMenu', menu);
+        end
+
+        function setEpochGroupNodeNormal(obj, node)
+            node.setIcon(symphonyui.app.App.getResource('icons', 'group.png'));
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            menu = obj.addEntityContextMenus(menu);
+            set(node, 'UIContextMenu', menu);
+        end
+        
+        function setEpochGroupNodeWarn(obj, node)
+            node.setIcon(symphonyui.app.App.getResource('icons', 'group_warn.png'));
+            menu = uicontextmenu('Parent', obj.figureHandle);
+            menu = obj.addEntityContextMenus(menu);
+            set(node, 'UIContextMenu', menu);
+        end
 
         function enableEpochGroupLabel(obj, tf)
             set(obj.epochGroupCard.labelField, 'Enable', appbox.onOff(tf));
@@ -701,39 +734,6 @@ classdef DataManagerView < appbox.View
             set(obj.epochGroupCard.sourcePopupMenu, 'Values', values);
         end
 
-        function setEpochGroupNodeCurrent(obj, node)
-            node.setIcon(symphonyui.app.App.getResource('icons', 'group_current.png'));
-            menu = uicontextmenu('Parent', obj.figureHandle);
-            uimenu( ...
-                'Parent', menu, ...
-                'Label', 'Begin Epoch Group...', ...
-                'Callback', @(h,d)notify(obj, 'BeginEpochGroup'));
-            uimenu( ...
-                'Parent', menu, ...
-                'Label', 'End Epoch Group', ...
-                'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
-            menu = obj.addEntityContextMenus(menu);
-            set(node, 'UIContextMenu', menu);
-        end
-
-        function setEpochGroupNodeNormal(obj, node)
-            node.setIcon(symphonyui.app.App.getResource('icons', 'group.png'));
-            menu = uicontextmenu('Parent', obj.figureHandle);
-            menu = obj.addEntityContextMenus(menu);
-            set(node, 'UIContextMenu', menu);
-        end
-        
-        function setEpochGroupNodeWarn(obj, node)
-            node.setIcon(symphonyui.app.App.getResource('icons', 'group_warn.png'));
-            menu = uicontextmenu('Parent', obj.figureHandle);
-            menu = obj.addEntityContextMenus(menu);
-            set(node, 'UIContextMenu', menu);
-        end
-        
-        function setEpochGroupNodeTooltip(obj, node, t) %#ok<INUSL>
-            set(node, 'TooltipString', t);
-        end
-
         function enableBeginEpochGroupMenu(obj, node, tf) %#ok<INUSL>
             menu = get(node, 'UIContextMenu');
             children = get(menu, 'Children');
@@ -759,6 +759,14 @@ classdef DataManagerView < appbox.View
             menu = uicontextmenu('Parent', obj.figureHandle);
             menu = obj.addEntityContextMenus(menu);
             set(n, 'UIContextMenu', menu);
+        end
+        
+        function setEpochBlockNodeNormal(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'block.png'));
+        end
+        
+        function setEpochBlockNodeWarn(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'block_warn.png'));
         end
 
         function setEpochBlockProtocolId(obj, i)
@@ -788,6 +796,14 @@ classdef DataManagerView < appbox.View
             menu = uicontextmenu('Parent', obj.figureHandle);
             menu = obj.addEntityContextMenus(menu);
             set(n, 'UIContextMenu', menu);
+        end
+        
+        function setEpochNodeNormal(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'epoch.png'));
+        end
+        
+        function setEpochNodeWarn(obj, node) %#ok<INUSL>
+            node.setIcon(symphonyui.app.App.getResource('icons', 'epoch_warn.png'));
         end
 
         function enableSelectEpochSignal(obj, tf)
@@ -849,6 +865,10 @@ classdef DataManagerView < appbox.View
 
         function setNodeName(obj, node, name) %#ok<INUSL>
             set(node, 'Name', name);
+        end
+        
+        function setNodeTooltip(obj, node, t) %#ok<INUSL>
+            set(node, 'TooltipString', t);
         end
 
         function e = getNodeEntity(obj, node) %#ok<INUSL>
