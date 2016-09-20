@@ -5,7 +5,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
 
         function obj = HekaSimulationDaqController()
             for i = 1:16
-                name = ['ANALOG_IN.' num2str(i-1)];
+                name = ['ai' num2str(i-1)];
                 cstr = Symphony.Core.DAQInputStream(name, obj.cobj);
                 cstr.MeasurementConversionTarget = 'V';
                 cstr.Clock = obj.cobj.Clock;
@@ -13,7 +13,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
             end
 
             for i = 1:8
-                name = ['ANALOG_OUT.' num2str(i-1)];
+                name = ['ao' num2str(i-1)];
                 cstr = Symphony.Core.DAQOutputStream(name, obj.cobj);
                 cstr.MeasurementConversionTarget = 'V';
                 cstr.Clock = obj.cobj.Clock;
@@ -21,7 +21,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
             end
 
             for i = 1:6
-                name = ['DIGITAL_IN.' num2str(i-1)];
+                name = ['diport' num2str(i-1)];
                 cstr = Symphony.Core.DAQInputStream(name, obj.cobj);
                 cstr.MeasurementConversionTarget = Symphony.Core.Measurement.UNITLESS;
                 cstr.Clock = obj.cobj.Clock;
@@ -29,7 +29,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
             end
 
             for i = 1:6
-                name = ['DIGITAL_OUT.' num2str(i-1)];
+                name = ['doport' num2str(i-1)];
                 cstr = Symphony.Core.DAQOutputStream(name, obj.cobj);
                 cstr.MeasurementConversionTarget = Symphony.Core.Measurement.UNITLESS;
                 cstr.Clock = obj.cobj.Clock;
@@ -49,7 +49,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
 
         function s = getStream(obj, name)
             s = getStream@symphonyui.core.DaqController(obj, name);
-            if strncmp(name, 'DIGITAL', 7)
+            if strncmp(name, 'd', 1)
                 s = symphonyui.builtin.daqs.HekaSimulationDigitalDaqStream(s.cobj);
             end
         end
@@ -85,7 +85,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
                 while outStreamEnum.MoveNext()
                     outStream = outStreamEnum.Current;
 
-                    if strcmp(char(outStream.Name), strrep(char(inStream.Name), '_IN.', '_OUT.'))
+                    if strcmp(char(outStream.Name), strrep(char(inStream.Name), 'ai', 'ao')) || strcmp(char(outStream.Name), strrep(char(inStream.Name), 'di', 'do'))
                         outData = output.Item(outStream);
                         inData = InputData(outData.Data, outData.SampleRate, obj.cobj.Clock.Now);
                         break;
@@ -95,7 +95,7 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
                 % If there was no corresponding output, simulate noise.
                 if isempty(inData)
                     samples = Symphony.Core.TimeSpanExtensions.Samples(timeStep, inStream.SampleRate);
-                    if strncmp(char(inStream.Name), 'DIGITAL', 7)
+                    if strncmp(char(inStream.Name), 'diport', 6)
                         noise = Measurement.FromArray(randi(2^16-1, 1, samples), inStream.MeasurementConversionTarget);
                     else
                         noise = Measurement.FromArray(rand(1, samples) - 0.5, inStream.MeasurementConversionTarget);
