@@ -44,66 +44,13 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
             obj.sampleRate = symphonyui.core.Measurement(10000, 'Hz');
             obj.sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {1000, 10000, 20000, 50000});
 
-            obj.simulationRunner = @(output, timeStep)obj.loopbackRunner(output, timeStep);
+            obj.simulationRunner = @symphonyui.builtin.stimulations.loopback;
         end
 
         function s = getStream(obj, name)
             s = getStream@symphonyui.core.DaqController(obj, name);
             if strncmp(name, 'd', 1)
                 s = symphonyui.builtin.daqs.HekaSimulationDigitalDaqStream(s.cobj);
-            end
-        end
-
-    end
-
-    methods (Access = private)
-
-        function input = loopbackRunner(obj, output, timeStep)
-            import Symphony.Core.*;
-
-            % Create the input Dictionary to return.
-            input = NET.createGeneric('System.Collections.Generic.Dictionary', ...
-                {'Symphony.Core.IDAQInputStream', 'Symphony.Core.IInputData'});
-
-            % Get all input streams (i.e. channels) associated with the DAQ controller.
-            inputStreams = NET.invokeGenericMethod('System.Linq.Enumerable', 'ToList', ...
-                {'Symphony.Core.IDAQInputStream'}, obj.cobj.InputStreams);
-
-            % Loop through all input streams.
-            inStreamEnum = inputStreams.GetEnumerator();
-            while inStreamEnum.MoveNext()
-                inStream = inStreamEnum.Current;
-                inData = [];
-
-                if ~inStream.Active
-                    % We don't care to process inactive input streams (i.e. channels without devices).
-                    continue;
-                end
-
-                % Find the corresponding output data and make it into input data.
-                outStreamEnum = output.Keys.GetEnumerator();
-                while outStreamEnum.MoveNext()
-                    outStream = outStreamEnum.Current;
-
-                    if strcmp(char(outStream.Name), strrep(char(inStream.Name), 'ai', 'ao')) || strcmp(char(outStream.Name), strrep(char(inStream.Name), 'di', 'do'))
-                        outData = output.Item(outStream);
-                        inData = InputData(outData.Data, outData.SampleRate, obj.cobj.Clock.Now);
-                        break;
-                    end
-                end
-
-                % If there was no corresponding output, simulate noise.
-                if isempty(inData)
-                    samples = Symphony.Core.TimeSpanExtensions.Samples(timeStep, inStream.SampleRate);
-                    if strncmp(char(inStream.Name), 'diport', 6)
-                        noise = Measurement.FromArray(randi(2^16-1, 1, samples), inStream.MeasurementConversionTarget);
-                    else
-                        noise = Measurement.FromArray(rand(1, samples) - 0.5, inStream.MeasurementConversionTarget);
-                    end
-                    inData = InputData(noise, inStream.SampleRate, obj.cobj.Clock.Now);
-                end
-
-                input.Add(inStream, inData);
             end
         end
 

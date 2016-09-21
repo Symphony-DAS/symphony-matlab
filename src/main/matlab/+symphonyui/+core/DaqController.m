@@ -2,8 +2,10 @@ classdef DaqController < symphonyui.core.CoreObject
     % A DaqController manages an A/D device such as an ITC-18.
     %
     % DaqController Methods:
-    %   getStreams  - Gets all streams available in this controller
-    %   getStream   - Gets a single stream belonging to this controller by name
+    %   getStreams          - Gets all streams available in this controller
+    %   getStream           - Gets a single stream belonging to this controller by name
+    %   getInputStreams     - Gets all input streams available in this controller
+    %   getOutputStreams    - Gets all output streams available in this controller
     
     properties
         sampleRate  % Sample rate of this controller
@@ -49,8 +51,17 @@ classdef DaqController < symphonyui.core.CoreObject
         
         function s = getStreams(obj)
             % Gets all streams available in this controller
-            
             s = obj.cellArrayFromEnumerable(obj.cobj.Streams, @symphonyui.core.DaqStream);
+        end
+        
+        function s = getInputStreams(obj)
+            % Gets all input streams available in this controller
+            s = obj.cellArrayFromEnumerable(obj.cobj.InputStreams, @symphonyui.core.DaqStream);
+        end
+        
+        function s = getOutputStreams(obj)
+            % Gets all output streams available in this controller
+            s = obj.cellArrayFromEnumerable(obj.cobj.OutputStreams, @symphonyui.core.DaqStream);
         end
         
         function setStreamsBackground(obj)
