@@ -34,7 +34,7 @@ function inputMap = loopback(daq, outputMap, timeStep)
             nsamples = seconds(timeStep) * rate.quantityInBaseUnits;
             if strncmp(inStream.name, 'diport', 6)
                 % Digital noise.
-                quantities = randi(2^16-1, 1, samples);
+                quantities = randi(2^16-1, 1, nsamples);
             else
                 % Analog noise.
                 quantities = rand(1, nsamples) - 0.5;
