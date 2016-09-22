@@ -1,6 +1,6 @@
 function inputMap = loopback(daq, outputMap, timeStep)
     % Returns all stimuli on output channels as responses on corresponding input channels (e.g. a stimulus on ao1 will 
-    % return as a response on ai1). Noise is simulated for input channels with no associated output channel.
+    % return as a response on ai1). Noise is simulated for input channels with no corresponding output channel.
 
     inputMap = containers.Map();
     
