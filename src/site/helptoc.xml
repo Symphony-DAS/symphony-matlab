@@ -23,6 +23,10 @@
             <tocitem target="Write-a-Figure-Handler.html">Write a Figure Handler</tocitem>
             <tocitem target="Standard-Stimulus-Generators.html">Standard Stimulus Generators</tocitem>
         </tocitem>
+        <tocitem target="Simulations.html">Simulations
+            <tocitem target="Write-a-Simulation.html">Write a Simulation</tocitem>
+            <tocitem target="Set-the-Simulation-for-a-DAQ-Controller.html">Set the Simulation for a DAQ Controller</tocitem>
+        </tocitem>
         <tocitem target="Entity-Descriptions.html">Entity Descriptions
             <tocitem target="Write-an-Entity-Description.html">Write an Entity Description</tocitem>
             <tocitem target="Add-Allowable-Parents-to-an-Entity-Description.html">Add Allowable Parents to an Entity Description</tocitem>
