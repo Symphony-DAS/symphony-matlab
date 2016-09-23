@@ -233,6 +233,7 @@ classdef Protocol < handle
             % Override to perform actions after each interval is completed
             
             obj.numIntervalsCompleted = obj.numIntervalsCompleted + 1;
+            obj.figureHandlerManager.updateFigures(interval);
         end
 
         function completeRun(obj) %#ok<MANU>

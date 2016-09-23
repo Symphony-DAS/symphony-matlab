@@ -17,7 +17,6 @@ classdef Controller < symphonyui.core.CoreObject
 
     properties (Constant, Access = private)
         MAX_EPOCH_QUEUE_DURATION = seconds(3)   % Max allowable duration of the epoch queue
-        INTERVAL_KEYWORD = '_INTERVAL_'         % Keyword tag to distinguish interval epochs from regular epochs
     end
 
     methods
@@ -226,7 +225,7 @@ classdef Controller < symphonyui.core.CoreObject
             function onCompletedEpoch(obj, ~, event)
                 epoch = symphonyui.core.Epoch(event.Epoch);
                 try
-                    if any(strcmp(epoch.keywords, obj.INTERVAL_KEYWORD))
+                    if epoch.isInterval()
                         obj.currentProtocol.completeInterval(epoch);
                     else
                         obj.currentProtocol.completeEpoch(epoch);
@@ -352,9 +351,8 @@ classdef Controller < symphonyui.core.CoreObject
         end
 
         function e = nextInterval(obj)
-            e = symphonyui.core.Epoch(class(obj.currentProtocol));
+            e = symphonyui.core.Epoch(class(obj.currentProtocol), true);
             e.shouldBePersisted = false;
-            e.addKeyword(obj.INTERVAL_KEYWORD);
 
             obj.currentProtocol.prepareInterval(e);
             

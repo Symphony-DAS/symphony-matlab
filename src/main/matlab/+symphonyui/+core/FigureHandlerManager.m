@@ -37,9 +37,9 @@ classdef FigureHandlerManager < handle
             h = handler;
         end
         
-        function updateFigures(obj, epoch)
+        function updateFigures(obj, epochOrInterval)
             for i = 1:numel(obj.figureHandlers)
-                obj.figureHandlers{i}.handleEpoch(epoch);
+                obj.figureHandlers{i}.handleEpochOrInterval(epochOrInterval);
             end
         end
         

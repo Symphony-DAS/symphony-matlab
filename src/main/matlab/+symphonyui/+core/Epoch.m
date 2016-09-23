@@ -29,10 +29,18 @@ classdef Epoch < symphonyui.core.CoreObject
     properties (SetAccess = private)
         duration    % Duration of this epoch, defined by the duration of its longest stimulus or response (duration)
     end
+    
+    properties (Constant, Access = private)
+        INTERVAL_KEYWORD = '_INTERVAL_'     % Keyword tag to distinguish interval epochs from regular epochs
+    end
 
     methods
 
-        function obj = Epoch(identifier)
+        function obj = Epoch(identifier, isInterval)
+            if nargin < 2
+                isInterval = false;
+            end
+            
             if isa(identifier, 'Symphony.Core.Epoch')
                 cobj = identifier;
             else
@@ -40,6 +48,10 @@ classdef Epoch < symphonyui.core.CoreObject
             end
 
             obj@symphonyui.core.CoreObject(cobj);
+            
+            if isInterval
+                obj.tryCore(@()obj.cobj.Keywords.Add(obj.INTERVAL_KEYWORD));
+            end
         end
 
         function addStimulus(obj, device, stimulus)
@@ -136,6 +148,10 @@ classdef Epoch < symphonyui.core.CoreObject
             % Indicates if this epoch has a background for the specified device
 
             tf = obj.tryCoreWithReturn(@()obj.cobj.Backgrounds.ContainsKey(device.cobj));
+        end
+        
+        function tf = isInterval(obj)
+            tf = obj.tryCoreWithReturn(@()obj.cobj.Keywords.Contains(obj.INTERVAL_KEYWORD));
         end
 
         function tf = get.shouldWaitForTrigger(obj)

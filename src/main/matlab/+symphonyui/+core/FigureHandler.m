@@ -53,6 +53,12 @@ classdef FigureHandler < handle
             obj.close();
         end
         
+        function handleEpochOrInterval(obj, epochOrInterval)
+            if ~epochOrInterval.isInterval()
+                obj.handleEpoch(epochOrInterval);
+            end
+        end
+        
         function handleEpoch(obj, epoch) %#ok<INUSD>
             
         end
