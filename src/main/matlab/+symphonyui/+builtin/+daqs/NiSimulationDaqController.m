@@ -44,7 +44,7 @@ classdef NiSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqContro
             obj.sampleRate = symphonyui.core.Measurement(10000, 'Hz');
             obj.sampleRateType = symphonyui.core.PropertyType('denserealdouble', 'scalar', {1000, 10000, 20000, 50000});
 
-            obj.simulationRunner = @symphonyui.builtin.stimulations.loopback;
+            obj.simulation = symphonyui.builtin.simulations.Loopback();
         end
 
         function s = getStream(obj, name)

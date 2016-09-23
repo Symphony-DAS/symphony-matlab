@@ -1,7 +1,7 @@
 classdef SimulationDaqController < symphonyui.core.DaqController
     
     properties
-        simulationRunner
+        simulation
     end
     
     methods
@@ -13,12 +13,12 @@ classdef SimulationDaqController < symphonyui.core.DaqController
             obj@symphonyui.core.DaqController(cobj);
         end
         
-        function set.simulationRunner(obj, simulationFcn)
-            function cin = runner(obj, fcn, cout, cstep)
+        function set.simulation(obj, s)
+            function cin = runner(obj, simulation, cout, cstep)
                 out = obj.mapFromKeyValueEnumerable(cout, @symphonyui.core.OutputData, @(k)k.Name);
                 step = obj.durationFromTimeSpan(cstep);
                 
-                in = fcn(obj, out, step);
+                in = simulation.run(obj, out, step);
                 
                 cin = NET.createGeneric('System.Collections.Generic.Dictionary', ...
                     {'Symphony.Core.IDAQInputStream', 'Symphony.Core.IInputData'});
@@ -28,8 +28,8 @@ classdef SimulationDaqController < symphonyui.core.DaqController
                     cin.Add(obj.getStream(k).cobj, in(k).cobj);
                 end
             end
-            obj.cobj.SimulationRunner = @(cout, cstep)runner(obj, simulationFcn, cout, cstep);
-            obj.simulationRunner = simulationFcn;
+            obj.cobj.SimulationRunner = @(cout, cstep)runner(obj, s, cout, cstep);
+            obj.simulation = s;
         end
         
         function addStream(obj, stream)
