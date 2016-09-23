@@ -1,18 +1,23 @@
 classdef ClassRepository < handle
-    
+
     properties (Access = private)
         log
+        excludeExpressions
         searchPath
         classMap
     end
-    
+
     methods
-        
-        function obj = ClassRepository(path)
+
+        function obj = ClassRepository(path, exclude)
+            if nargin < 2
+                exclude = '';
+            end
             obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.excludeExpressions = strtrim(strsplit(exclude, ';'));
             obj.setSearchPath(path);
         end
-        
+
         function setSearchPath(obj, path)
             dirs = strsplit(path, ';');
             for i = 1:numel(dirs)
@@ -24,7 +29,7 @@ classdef ClassRepository < handle
             obj.searchPath = path;
             obj.loadAll();
         end
-        
+
         function cn = get(obj, superclass)
             if obj.classMap.isKey(superclass)
                 cn = obj.classMap(superclass);
@@ -32,31 +37,34 @@ classdef ClassRepository < handle
                 cn = {};
             end
         end
-        
+
     end
-    
+
     methods (Access = private)
-        
+
         function loadAll(obj)
             obj.classMap = containers.Map();
-            
+
             dirs = strsplit(obj.searchPath, ';');
             for i = 1:numel(dirs)
                 obj.loadDirectory(dirs{i});
             end
         end
-        
+
         function loadDirectory(obj, path)
             package = appbox.packageName(path);
             if ~isempty(package)
                 package = [package '.'];
             end
-            
+
             listing = dir(path);
             for i = 1:numel(listing)
                 l = listing(i);
                 [~, name, ext] = fileparts(l.name);
                 if strcmpi(ext, '.m') && exist([package name], 'class')
+                    if ~isempty(cell2mat(regexp([package name], obj.excludeExpressions, 'once')))
+                        continue;
+                    end
                     try
                         obj.loadClass([package name]);
                     catch x
@@ -68,7 +76,7 @@ classdef ClassRepository < handle
                 end
             end
         end
-        
+
         function loadClass(obj, name)
             m = meta.class.fromName(name);
             if ~m.Abstract
@@ -87,7 +95,7 @@ classdef ClassRepository < handle
                 end
             end
         end
-        
+
     end
-    
+
 end

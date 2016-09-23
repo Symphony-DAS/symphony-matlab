@@ -5,6 +5,7 @@ classdef Options < appbox.Settings
         fileDefaultName
         fileDefaultLocation
         searchPath
+        searchPathExclude
         loggingConfigurationFile
         loggingLogDirectory
     end
@@ -45,6 +46,15 @@ classdef Options < appbox.Settings
 
         function p = get.searchPath(obj)
             p = obj.get('searchPath', symphonyui.app.App.getResource('examples'));
+        end
+        
+        function set.searchPathExclude(obj, i)
+            validateattributes(i, {'char', 'function_handle'}, {'2d'});
+            obj.put('searchPathExclude', i);
+        end
+        
+        function i = get.searchPathExclude(obj)
+            i = obj.get('searchPathExclude', '');
         end
 
         function f = get.loggingConfigurationFile(obj)

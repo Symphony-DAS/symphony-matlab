@@ -39,7 +39,7 @@ function main()
 
     session = Session(options, presets);
     persistorFactory = PersistorFactory();
-    classRepository = ClassRepository(options.searchPath);
+    classRepository = ClassRepository(options.searchPath, options.searchPathExclude);
 
     documentationService = DocumentationService(session, persistorFactory, classRepository);
     acquisitionService = AcquisitionService(session, classRepository);
