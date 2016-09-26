@@ -58,7 +58,7 @@ classdef DataManagerPresenter < appbox.Presenter
             bind@appbox.Presenter(obj);
 
             v = obj.view;
-            obj.addListener(v, 'SelectedNodes', @obj.onViewSelectedNodes);
+            obj.addListener(v, 'SelectedNodes', @obj.onViewSelectedNodes).Recursive = true;
             obj.addListener(v, 'ConfigureDevices', @obj.onViewSelectedConfigureDevices);
             obj.addListener(v, 'AddSource', @obj.onViewSelectedAddSource);
             obj.addListener(v, 'SetSourceLabel', @obj.onViewSetSourceLabel);
