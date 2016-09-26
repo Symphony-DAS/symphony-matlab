@@ -208,6 +208,7 @@ classdef Table < hgsetget
         Tag = ''
         %TooltipString %RAJ - not implemented
         UIContextMenu = []
+        CellUIContextMenu = []
     end
     properties(Dependent = true)
         Units
@@ -331,6 +332,7 @@ classdef Table < hgsetget
             p.addParamValue('UserData',[]);
             p.addParamValue('Units','normalized');
             p.addParamValue('UIContextMenu',[]);
+            p.addParamValue('CellUIContextMenu',[]);
             p.addParamValue('Visible','on');
             p.addParamValue('Debug',false);
             p.parse(varargin{:});
@@ -1616,6 +1618,22 @@ classdef Table < hgsetget
             obj.UIContextMenu = value;
 
         end % set.UIContextMenu
+        
+        
+        % CellUIContextMenu
+        function set.CellUIContextMenu(obj, value)
+
+            % Check
+            if ~isempty(value) && ( ~ishghandle(value) || ~isscalar(value) || ...
+                    ~strcmp(get(value, 'Type'), 'uicontextmenu') )
+                error('uiextras:Table:InvalidArgument', ...
+                    'Property ''CellUIContextMenu'' must be a handle to a context menu.')
+            end
+
+            % Set
+            obj.CellUIContextMenu = value;
+
+        end % set.CellUIContextMenu
 
 
         % Units
@@ -1772,12 +1790,19 @@ classdef Table < hgsetget
                     if obj.Debug, disp('onMouseClick - context'); end
 
                     % Without modifiers, select the row clicked, if it isn't already
-                    if row>0 && ~all(obj.SelectedRows == row)
+                    if row>0 && (isempty(obj.SelectedRows) || ~all(obj.SelectedRows == row))
                         obj.SelectedRows = row;
+                        
+                        e1 = struct('Indices', obj.SelectedRows);
+                        hgfeval(obj.CellSelectionCallback, obj, e1);
                     end
 
                     % Display the context menu
-                    CMenu = obj.UIContextMenu;
+                    if row>0
+                        CMenu = obj.CellUIContextMenu;
+                    else
+                        CMenu = obj.UIContextMenu;
+                    end
                     if ~isempty(CMenu)
                         tPos = getpixelposition(obj.Container,true);
                         mPos = [x+tPos(1) tPos(2)+tPos(4)-y+obj.JScrollPane.getVerticalScrollBar().getValue()];

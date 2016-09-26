@@ -3,10 +3,11 @@ classdef AcquisitionService < handle
     events (NotifyAccess = private)
         SelectedProtocol
         SetProtocolProperties
-        AppliedProtocolPreset
         ChangedControllerState
         AddedProtocolPreset
         RemovedProtocolPreset
+        AppliedProtocolPreset
+        UpdatedProtocolPreset
     end
 
     properties (Access = private)
@@ -129,18 +130,6 @@ classdef AcquisitionService < handle
             p = obj.session.presets.getProtocolPreset(name);
         end
 
-        function applyProtocolPreset(obj, name)
-            preset = obj.session.presets.getProtocolPreset(name);
-            if ~strcmp(preset.protocolId, class(obj.session.protocol))
-                obj.selectProtocol(preset.protocolId);
-            end
-            if ~isequal(preset.propertyMap, obj.session.protocol.getPropertyMap())
-                obj.session.protocol.applyPreset(preset);
-                obj.session.protocol.closeFigures();
-            end
-            notify(obj, 'AppliedProtocolPreset');
-        end
-
         function p = addProtocolPreset(obj, name)
             p = obj.session.protocol.createPreset(name);
             obj.session.presets.addProtocolPreset(p);
@@ -153,6 +142,29 @@ classdef AcquisitionService < handle
             obj.session.presets.removeProtocolPreset(name);
             obj.session.presets.save();
             notify(obj, 'RemovedProtocolPreset', symphonyui.app.AppEventData(p));
+        end
+        
+        function applyProtocolPreset(obj, name)
+            preset = obj.session.presets.getProtocolPreset(name);
+            if ~strcmp(preset.protocolId, class(obj.session.protocol))
+                obj.selectProtocol(preset.protocolId);
+            end
+            if ~isequal(preset.propertyMap, obj.session.protocol.getPropertyMap())
+                obj.session.protocol.applyPreset(preset);
+                obj.session.protocol.closeFigures();
+            end
+            notify(obj, 'AppliedProtocolPreset');
+        end
+        
+        function updateProtocolPreset(obj, name)
+            old = obj.session.presets.getProtocolPreset(name);
+            if ~strcmp(old.protocolId, class(obj.session.protocol))
+                error('The preset protocol ID does not match the current protocol ID');
+            end
+            new = obj.session.protocol.createPreset(old.name);
+            obj.session.presets.updateProtocolPreset(new);
+            obj.session.presets.save();
+            notify(obj, 'UpdatedProtocolPreset');
         end
 
         function [tf, msg] = isValid(obj)

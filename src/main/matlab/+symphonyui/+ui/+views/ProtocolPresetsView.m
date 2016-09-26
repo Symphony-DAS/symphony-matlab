@@ -1,12 +1,14 @@
 classdef ProtocolPresetsView < appbox.View
 
     events
+        SelectedProtocolPreset
         ViewOnlyProtocolPreset
         RecordProtocolPreset
         StopProtocolPreset
-        ApplyProtocolPreset
         AddProtocolPreset
         RemoveProtocolPreset
+        ApplyProtocolPreset
+        UpdateProtocolPreset
     end
 
     properties (Access = private)
@@ -16,6 +18,7 @@ classdef ProtocolPresetsView < appbox.View
         stopButton
         addButton
         removeButton
+        updateMenu
     end
 
     methods
@@ -51,7 +54,19 @@ classdef ProtocolPresetsView < appbox.View
                 'BorderType', 'none', ...
                 'ShowVerticalLines', 'off', ...
                 'Editable', 'off', ...
-                'MouseClickedCallback', @obj.onTableMouseClicked);
+                'MouseClickedCallback', @obj.onTableMouseClicked, ...
+                'CellSelectionCallback', @(h,d)notify(obj, 'SelectedProtocolPreset'));
+            
+            presetMenu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', presetMenu, ...
+                'Label', 'Apply Protocol Preset', ...
+                'Callback', @(h,d)notify(obj, 'ApplyProtocolPreset'));
+            obj.updateMenu = uimenu( ...
+                'Parent', presetMenu, ...
+                'Label', 'Update Protocol Preset', ...
+                'Callback', @(h,d)notify(obj, 'UpdateProtocolPreset'));
+            set(obj.presetsTable, 'CellUIContextMenu', presetMenu);
             
             filterField = obj.presetsTable.getFilterField();
             javacomponent(filterField, [], filterLayout);
@@ -160,7 +175,6 @@ classdef ProtocolPresetsView < appbox.View
         function addProtocolPreset(obj, name, protocolId)
             enables = get(obj.presetsTable, 'UserData');
             obj.presetsTable.addRow({toDisplayName(name, protocolId), ...
-                {obj.applyButton.icon, obj.applyButton.tooltip, enables.applyEnabled}, ...
                 {obj.viewOnlyButton.icon, obj.viewOnlyButton.tooltip, enables.viewOnlyEnabled}, ...
                 {obj.recordButton.icon, obj.recordButton.tooltip, enables.recordEnabled}});
         end
@@ -170,14 +184,19 @@ classdef ProtocolPresetsView < appbox.View
             index = find(cellfun(@(c)strcmp(fromDisplayName(c), name), presets));
             obj.presetsTable.removeRow(index); %#ok<FNDSB>
         end
+        
+        function enableUpdateProtocolPreset(obj, tf)
+            set(obj.updateMenu, 'Enable', appbox.onOff(tf));
+        end
 
-        function n = getSelectedProtocolPreset(obj)
+        function [name, id] = getSelectedProtocolPreset(obj)
             srows = get(obj.presetsTable, 'SelectedRows');
             rows = obj.presetsTable.getActualRowsAt(srows);
             if isempty(rows)
-                n = [];
+                name = [];
+                id = [];
             else
-                n = fromDisplayName(obj.presetsTable.getValueAt(rows(1), 1));
+                [name, id] = fromDisplayName(obj.presetsTable.getValueAt(rows(1), 1));
             end
         end
 

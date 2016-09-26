@@ -25,6 +25,15 @@ classdef Presets < appbox.Settings
             obj.protocolPresets = presets;
         end
         
+        function updateProtocolPreset(obj, preset)
+            presets = obj.protocolPresets;
+            if ~presets.isKey(preset.name)
+                error([preset.name ' is not an available protocol preset']);
+            end
+            presets(preset.name) = preset;
+            obj.protocolPresets = presets;
+        end
+        
         function p = getProtocolPreset(obj, name)
             presets = obj.protocolPresets;
             if ~presets.isKey(name)
