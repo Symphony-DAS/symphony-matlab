@@ -47,10 +47,10 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             bind@appbox.Presenter(obj);
 
             v = obj.view;
-            obj.addListener(v, 'ApplyProtocolPreset', @obj.onViewSelectedApplyProtocolPreset);
             obj.addListener(v, 'ViewOnlyProtocolPreset', @obj.onViewSelectedViewOnlyProtocolPreset);
             obj.addListener(v, 'RecordProtocolPreset', @obj.onViewSelectedRecordProtocolPreset);
             obj.addListener(v, 'StopProtocolPreset', @obj.onViewSelectedStopProtocolPreset);
+            obj.addListener(v, 'ApplyProtocolPreset', @obj.onViewSelectedApplyProtocolPreset);
             obj.addListener(v, 'AddProtocolPreset', @obj.onViewSelectedAddProtocolPreset);
             obj.addListener(v, 'RemoveProtocolPreset', @obj.onViewSelectedRemoveProtocolPreset);
 
@@ -81,19 +81,6 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             end
 
             obj.view.setProtocolPresets(data);
-        end
-
-        function onViewSelectedApplyProtocolPreset(obj, ~, event)
-            data = event.data;
-            presets = obj.view.getProtocolPresets();
-            name = presets{data.getEditingRow(), 1};
-            try
-                obj.acquisitionService.applyProtocolPreset(name);
-            catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
-                return;
-            end
         end
 
         function onViewSelectedViewOnlyProtocolPreset(obj, ~, event)
@@ -127,6 +114,20 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         function onViewSelectedStopProtocolPreset(obj, ~, ~)
             try
                 obj.acquisitionService.requestStop();
+            catch x
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+                return;
+            end
+        end
+        
+        function onViewSelectedApplyProtocolPreset(obj, ~, ~)
+            name = obj.view.getSelectedProtocolPreset();
+            if ~ischar(name)
+                return;
+            end
+            try
+                obj.acquisitionService.applyProtocolPreset(name);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
@@ -196,22 +197,17 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             catch
                 isValid = false;
             end
-
-            enableApplyProtocolPreset = isStopped;
+            
             enableViewOnlyProtocolPreset = isStopped;
             enableRecordProtocolPreset = hasEpochGroup && isStopped;
             enableStopProtocolPreset = ~isStopping && ~isStopped;
             enableAddProtocolPreset = isValid;
-
-            obj.view.enableApplyProtocolPreset(enableApplyProtocolPreset);
+            
             obj.view.enableViewOnlyProtocolPreset(enableViewOnlyProtocolPreset);
             obj.view.enableRecordProtocolPreset(enableRecordProtocolPreset);
             obj.view.enableStopProtocolPreset(enableStopProtocolPreset);
             obj.view.enableAddProtocolPreset(enableAddProtocolPreset);
             
-            if ~enableApplyProtocolPreset
-                obj.view.stopEditingApplyProtocolPreset();
-            end
             if ~enableViewOnlyProtocolPreset
                 obj.view.stopEditingViewOnlyProtocolPreset();
             end

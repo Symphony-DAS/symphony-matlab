@@ -1,17 +1,16 @@
 classdef ProtocolPresetsView < appbox.View
 
     events
-        ApplyProtocolPreset
         ViewOnlyProtocolPreset
         RecordProtocolPreset
         StopProtocolPreset
+        ApplyProtocolPreset
         AddProtocolPreset
         RemoveProtocolPreset
     end
 
     properties (Access = private)
         presetsTable
-        applyButton
         viewOnlyButton
         recordButton
         stopButton
@@ -38,30 +37,27 @@ classdef ProtocolPresetsView < appbox.View
 
             obj.presetsTable = uiextras.jTable.Table( ...
                 'Parent', mainLayout, ...
-                'ColumnName', {'Preset', 'Apply', 'View Only', 'Record'}, ...
-                'ColumnFormat', {'', 'button', 'button', 'button'}, ...
+                'ColumnName', {'Preset', 'View Only', 'Record'}, ...
+                'ColumnFormat', {'', 'button', 'button'}, ...
                 'ColumnFormatData', ...
                     {{}, ...
-                    @obj.onSelectedApplyProtocolPreset, ...
                     @obj.onSelectedViewOnlyProtocolPreset, ...
                     @obj.onSelectedRecordProtocolPreset}, ...
-                'ColumnMinWidth', [0 40 40 40], ...
-                'ColumnMaxWidth', [java.lang.Integer.MAX_VALUE 40 40 40], ...
+                'ColumnMinWidth', [0 40 40], ...
+                'ColumnMaxWidth', [java.lang.Integer.MAX_VALUE 40 40], ...
                 'Data', {}, ...
-                'UserData', struct('applyEnabled', false, 'viewOnlyEnabled', false, 'recordEnabled', false), ...
+                'UserData', struct('viewOnlyEnabled', false, 'recordEnabled', false), ...
                 'RowHeight', 40, ...
                 'BorderType', 'none', ...
                 'ShowVerticalLines', 'off', ...
-                'Editable', 'off');
+                'Editable', 'off', ...
+                'MouseClickedCallback', @obj.onTableMouseClicked);
             
             filterField = obj.presetsTable.getFilterField();
             javacomponent(filterField, [], filterLayout);
             filterField.setHintText('Type here to filter presets');
             filterField.setColumnIndices(0);
-            filterField.setDisplayNames({'Presets'});
-
-            obj.applyButton.icon = App.getResource('icons', 'apply.png');
-            obj.applyButton.tooltip = 'Apply Protocol Preset';
+            filterField.setDisplayNames({'Preset'});
 
             obj.viewOnlyButton.icon = App.getResource('icons', 'view_only.png');
             obj.viewOnlyButton.tooltip = 'View Only Protocol Preset';
@@ -98,27 +94,10 @@ classdef ProtocolPresetsView < appbox.View
             set(obj.presetsTable, 'ColumnHeaderVisible', false);
         end
 
-        function enableApplyProtocolPreset(obj, tf)
-            data = get(obj.presetsTable, 'Data');
-            for i = 1:size(data, 1)
-                data{i, 2} = {obj.applyButton.icon, obj.applyButton.tooltip, tf};
-            end
-            set(obj.presetsTable, 'Data', data);
-            
-            enables = get(obj.presetsTable, 'UserData');
-            enables.applyEnabled = tf;
-            set(obj.presetsTable, 'UserData', enables);
-        end
-        
-        function stopEditingApplyProtocolPreset(obj)
-            [~, editor] = obj.presetsTable.getRenderer(2);
-            editor.stopCellEditing();
-        end
-
         function enableViewOnlyProtocolPreset(obj, tf)                        
             data = get(obj.presetsTable, 'Data');
             for i = 1:size(data, 1)
-                data{i, 3} = {obj.viewOnlyButton.icon, obj.viewOnlyButton.tooltip, tf};
+                data{i, 2} = {obj.viewOnlyButton.icon, obj.viewOnlyButton.tooltip, tf};
             end
             set(obj.presetsTable, 'Data', data);
             
@@ -128,14 +107,14 @@ classdef ProtocolPresetsView < appbox.View
         end
         
         function stopEditingViewOnlyProtocolPreset(obj)
-            [~, editor] = obj.presetsTable.getRenderer(3);
+            [~, editor] = obj.presetsTable.getRenderer(2);
             editor.stopCellEditing();
         end
 
         function enableRecordProtocolPreset(obj, tf)
             data = get(obj.presetsTable, 'Data');
             for i = 1:size(data, 1)
-                data{i, 4} = {obj.recordButton.icon, obj.recordButton.tooltip, tf};
+                data{i, 3} = {obj.recordButton.icon, obj.recordButton.tooltip, tf};
             end
             set(obj.presetsTable, 'Data', data);
 
@@ -145,7 +124,7 @@ classdef ProtocolPresetsView < appbox.View
         end
         
         function stopEditingRecordProtocolPreset(obj)
-            [~, editor] = obj.presetsTable.getRenderer(4);
+            [~, editor] = obj.presetsTable.getRenderer(3);
             editor.stopCellEditing();
         end
 
@@ -155,12 +134,11 @@ classdef ProtocolPresetsView < appbox.View
 
         function setProtocolPresets(obj, data)
             enables = get(obj.presetsTable, 'UserData');
-            d = cell(size(data, 1), 4);
+            d = cell(size(data, 1), 3);
             for i = 1:size(d, 1)
                 d{i, 1} = toDisplayName(data{i, 1}, data{i, 2});
-                d{i, 2} = {obj.applyButton.icon, obj.applyButton.tooltip, enables.applyEnabled};
-                d{i, 3} = {obj.viewOnlyButton.icon, obj.viewOnlyButton.tooltip, enables.viewOnlyEnabled};
-                d{i, 4} = {obj.recordButton.icon, obj.recordButton.tooltip, enables.recordEnabled};
+                d{i, 2} = {obj.viewOnlyButton.icon, obj.viewOnlyButton.tooltip, enables.viewOnlyEnabled};
+                d{i, 3} = {obj.recordButton.icon, obj.recordButton.tooltip, enables.recordEnabled};
             end
             set(obj.presetsTable, 'Data', d);
         end
@@ -214,12 +192,6 @@ classdef ProtocolPresetsView < appbox.View
     
     methods (Access = private)
         
-        function onSelectedApplyProtocolPreset(obj, ~, event)
-            src = event.getSource();
-            data.getEditingRow = @()obj.presetsTable.getActualRowsAt(src.getEditingRow() + 1);
-            notify(obj, 'ApplyProtocolPreset', symphonyui.ui.UiEventData(data))
-        end
-        
         function onSelectedViewOnlyProtocolPreset(obj, ~, event)
             src = event.getSource();
             data.getEditingRow = @()obj.presetsTable.getActualRowsAt(src.getEditingRow() + 1);
@@ -230,6 +202,12 @@ classdef ProtocolPresetsView < appbox.View
             src = event.getSource();
             data.getEditingRow = @()obj.presetsTable.getActualRowsAt(src.getEditingRow() + 1);
             notify(obj, 'RecordProtocolPreset', symphonyui.ui.UiEventData(data))
+        end
+        
+        function onTableMouseClicked(obj, ~, event)
+            if event.ClickCount == 2
+                notify(obj, 'ApplyProtocolPreset');
+            end
         end
         
     end
