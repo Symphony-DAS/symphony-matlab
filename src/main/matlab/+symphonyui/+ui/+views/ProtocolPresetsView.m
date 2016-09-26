@@ -32,6 +32,9 @@ classdef ProtocolPresetsView < appbox.View
             mainLayout = uix.VBox( ...
                 'Parent', obj.figureHandle, ...
                 'Spacing', 1);
+            
+            filterLayout = uix.HBox( ...
+                'Parent', mainLayout);
 
             obj.presetsTable = uiextras.jTable.Table( ...
                 'Parent', mainLayout, ...
@@ -39,9 +42,9 @@ classdef ProtocolPresetsView < appbox.View
                 'ColumnFormat', {'', 'button', 'button', 'button'}, ...
                 'ColumnFormatData', ...
                     {{}, ...
-                    @(h,d)notify(obj, 'ApplyProtocolPreset', symphonyui.ui.UiEventData(d.getSource())), ...
-                    @(h,d)notify(obj, 'ViewOnlyProtocolPreset', symphonyui.ui.UiEventData(d.getSource())), ...
-                    @(h,d)notify(obj, 'RecordProtocolPreset', symphonyui.ui.UiEventData(d.getSource()))}, ...
+                    @obj.onSelectedApplyProtocolPreset, ...
+                    @obj.onSelectedViewOnlyProtocolPreset, ...
+                    @obj.onSelectedRecordProtocolPreset}, ...
                 'ColumnMinWidth', [0 40 40 40], ...
                 'ColumnMaxWidth', [java.lang.Integer.MAX_VALUE 40 40 40], ...
                 'Data', {}, ...
@@ -49,8 +52,13 @@ classdef ProtocolPresetsView < appbox.View
                 'RowHeight', 40, ...
                 'BorderType', 'none', ...
                 'ShowVerticalLines', 'off', ...
-                'Focusable', 'off', ...
                 'Editable', 'off');
+            
+            filterField = obj.presetsTable.getFilterField();
+            javacomponent(filterField, [], filterLayout);
+            filterField.setHintText('Type here to filter presets');
+            filterField.setColumnIndices(0);
+            filterField.setDisplayNames({'Presets'});
 
             obj.applyButton.icon = App.getResource('icons', 'apply.png');
             obj.applyButton.tooltip = 'Apply Protocol Preset';
@@ -82,7 +90,7 @@ classdef ProtocolPresetsView < appbox.View
                 'Callback', @(h,d)notify(obj, 'RemoveProtocolPreset'));
             set(presetsToolbarLayout, 'Widths', [22 -1 22 22]);
 
-            set(mainLayout, 'Heights', [-1 22]);
+            set(mainLayout, 'Heights', [23 -1 22]);
         end
 
         function show(obj)
@@ -186,7 +194,8 @@ classdef ProtocolPresetsView < appbox.View
         end
 
         function n = getSelectedProtocolPreset(obj)
-            rows = get(obj.presetsTable, 'SelectedRows');
+            srows = get(obj.presetsTable, 'SelectedRows');
+            rows = obj.presetsTable.getActualRowsAt(srows);
             if isempty(rows)
                 n = [];
             else
@@ -197,9 +206,32 @@ classdef ProtocolPresetsView < appbox.View
         function setSelectedProtocolPreset(obj, name)
             presets = obj.presetsTable.getColumnData(1);
             index = find(cellfun(@(c)strcmp(fromDisplayName(c), name), presets));
-            set(obj.presetsTable, 'SelectedRows', index);
+            sindex = obj.presetsTable.getVisualRowsAt(index); %#ok<FNDSB>
+            set(obj.presetsTable, 'SelectedRows', sindex);
         end
 
+    end
+    
+    methods (Access = private)
+        
+        function onSelectedApplyProtocolPreset(obj, ~, event)
+            src = event.getSource();
+            data.getEditingRow = @()obj.presetsTable.getActualRowsAt(src.getEditingRow() + 1);
+            notify(obj, 'ApplyProtocolPreset', symphonyui.ui.UiEventData(data))
+        end
+        
+        function onSelectedViewOnlyProtocolPreset(obj, ~, event)
+            src = event.getSource();
+            data.getEditingRow = @()obj.presetsTable.getActualRowsAt(src.getEditingRow() + 1);
+            notify(obj, 'ViewOnlyProtocolPreset', symphonyui.ui.UiEventData(data))
+        end
+        
+        function onSelectedRecordProtocolPreset(obj, ~, event)
+            src = event.getSource();
+            data.getEditingRow = @()obj.presetsTable.getActualRowsAt(src.getEditingRow() + 1);
+            notify(obj, 'RecordProtocolPreset', symphonyui.ui.UiEventData(data))
+        end
+        
     end
 
 end

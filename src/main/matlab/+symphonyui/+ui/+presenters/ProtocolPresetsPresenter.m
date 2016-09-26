@@ -86,7 +86,7 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         function onViewSelectedApplyProtocolPreset(obj, ~, event)
             data = event.data;
             presets = obj.view.getProtocolPresets();
-            name = presets{data.getEditingRow() + 1, 1};
+            name = presets{data.getEditingRow(), 1};
             try
                 obj.acquisitionService.applyProtocolPreset(name);
             catch x
@@ -99,7 +99,7 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         function onViewSelectedViewOnlyProtocolPreset(obj, ~, event)
             data = event.data;
             presets = obj.view.getProtocolPresets();
-            name = presets{data.getEditingRow() + 1, 1};
+            name = presets{data.getEditingRow(), 1};
             try
                 obj.acquisitionService.applyProtocolPreset(name);
                 obj.acquisitionService.viewOnly();
@@ -113,7 +113,7 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         function onViewSelectedRecordProtocolPreset(obj, ~, event)
             data = event.data;
             presets = obj.view.getProtocolPresets();
-            name = presets{data.getEditingRow() + 1, 1};
+            name = presets{data.getEditingRow(), 1};
             try
                 obj.acquisitionService.applyProtocolPreset(name);
                 obj.acquisitionService.record();

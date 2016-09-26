@@ -229,6 +229,7 @@ classdef Table < hgsetget
         JSelectionModel
         JScrollPane % Java scroll pane
         JEditor % alternate Java cell editor
+        JFilterField
         Container % HG container
         IsConstructed = false; %true when the constructor is complete (internal)
         CBEnabled = false; %callbacks enabled state (internal)
@@ -399,14 +400,17 @@ classdef Table < hgsetget
             jTableModel = javaObjectEDT('com.mathworks.consulting.swing.table.TableModel');
             jTableModel = handle(jTableModel, 'callbackproperties');
             jTableModel.TableChangedCallback = @obj.onTableModelChanged;
-
+            
+            jFilterField = javaObjectEDT('com.jidesoft.grid.QuickTableFilterField', jTableModel);
+            
             % Create table
             %jTable = javaObjectEDT('javax.swing.JTable', jTableModel);
-            jTable = javaObjectEDT('com.mathworks.consulting.swing.table.Table', jTableModel);
+            jTable = javaObjectEDT('com.mathworks.consulting.swing.table.Table', jFilterField.getDisplayTableModel());
             jTable.setFillsViewportHeight(true);
             jTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION)
             jTable.getTableHeader().setReorderingAllowed(false);
             com.jidesoft.grid.RolloverTableUtils.install(jTable);
+            jFilterField.setTable(jTable);
             jTable = handle(jTable, 'callbackproperties');
 
             % Get selection model
@@ -467,6 +471,7 @@ classdef Table < hgsetget
             obj.JColumnModel = jColumnModel;
             obj.JSelectionModel = jSelectionModel;
             obj.JScrollPane = jScrollPane;
+            obj.JFilterField = jFilterField;
             obj.Container = hContainer;
 
             % Add properties to the java object for MATLAB data
@@ -678,6 +683,10 @@ classdef Table < hgsetget
             com.jidesoft.grid.TableUtils.autoResizeAllColumns(obj.JTable);
 
         end %function
+        
+        function f = getFilterField(obj)
+            f = obj.JFilterField;
+        end
 
     end %methods
 
@@ -1523,6 +1532,18 @@ classdef Table < hgsetget
                 return;
             end
             v = obj.JTableModel.getValueAt(row - 1, col - 1);
+        end
+        
+        
+        function r = getActualRowsAt(obj, rows)
+            model = obj.JFilterField.getDisplayTableModel();
+            r = arrayfun(@(i)model.getActualRowAt(i - 1), rows) + 1;
+        end
+        
+        
+        function r = getVisualRowsAt(obj, rows)
+            model = obj.JFilterField.getDisplayTableModel();
+            r = arrayfun(@(i)model.getVisualRowAt(i - 1), rows) + 1;
         end
 
 
