@@ -7,6 +7,8 @@ classdef DocumentationService < handle
         AddedSource
         BeganEpochGroup
         EndedEpochGroup
+        SplitEpochGroup
+        MergedEpochGroups
         AddedEntityPreset
         RemovedEntityPreset
         DeletedEntity
@@ -153,6 +155,14 @@ classdef DocumentationService < handle
         function g = endEpochGroup(obj)
             g = obj.session.getPersistor().endEpochGroup();
             notify(obj, 'EndedEpochGroup', symphonyui.app.AppEventData(g));
+        end
+        
+        function splitEpochGroup(obj, group, splitBlock)
+            notify(obj, 'SplitEpochGroup');
+        end
+        
+        function mergeEpochGroups(obj, group1, group2)
+            notify(obj, 'MergedEpochGroups');
         end
 
         function g = getCurrentEpochGroup(obj)

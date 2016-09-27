@@ -65,6 +65,8 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(v, 'SetExperimentPurpose', @obj.onViewSetExperimentPurpose);
             obj.addListener(v, 'BeginEpochGroup', @obj.onViewSelectedBeginEpochGroup);
             obj.addListener(v, 'EndEpochGroup', @obj.onViewSelectedEndEpochGroup);
+            obj.addListener(v, 'SplitEpochGroup', @obj.onViewSelectedSplitEpochGroup);
+            obj.addListener(v, 'MergeEpochGroups', @obj.onViewSelectedMergeEpochGroups);
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
             obj.addListener(v, 'SelectedEpochGroupSource', @obj.onViewSelectedEpochGroupSource);
             obj.addListener(v, 'SelectedEpochSignal', @obj.onViewSelectedEpochSignal);
@@ -334,6 +336,28 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.populateDetailsForEpochGroupSet(set);
 
             obj.updateStateOfControls();
+        end
+        
+        function onViewSelectedSplitEpochGroup(obj, ~, ~)
+            selectedGroup = [];
+            entitySet = obj.detailedEntitySet;
+            if entitySet.size == 1 && entitySet.getEntityType() == symphonyui.core.persistent.EntityType.EPOCH_GROUP
+                selectedGroup = entitySet.get(1);
+            end
+            
+            presenter = symphonyui.ui.presenters.SplitEpochGroupPresenter(obj.documentationService, selectedGroup);
+            presenter.goWaitStop();
+        end
+        
+        function onViewSelectedMergeEpochGroups(obj, ~, ~)
+            selectedGroup = [];
+            entitySet = obj.detailedEntitySet;
+            if entitySet.size == 1 && entitySet.getEntityType() == symphonyui.core.persistent.EntityType.EPOCH_GROUP
+                selectedGroup = entitySet.get(1);
+            end
+            
+            presenter = symphonyui.ui.presenters.MergeEpochGroupsPresenter(obj.documentationService, selectedGroup);
+            presenter.goWaitStop();
         end
 
         function n = addEpochGroupNode(obj, group)
