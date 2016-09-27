@@ -70,7 +70,7 @@ classdef ProtocolPresetsView < appbox.View
             
             filterField = obj.presetsTable.getFilterField();
             javacomponent(filterField, [], filterLayout);
-            filterField.setHintText('Type here to filter presets');
+            filterField.setHintText('Type here to filter presets. Double-click a preset to apply it.');
             filterField.setColumnIndices(0);
             filterField.setDisplayNames({'Preset'});
 
