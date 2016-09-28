@@ -157,12 +157,14 @@ classdef DocumentationService < handle
             notify(obj, 'EndedEpochGroup', symphonyui.app.AppEventData(g));
         end
         
-        function splitEpochGroup(obj, group, splitBlock)
-            notify(obj, 'SplitEpochGroup');
+        function g = splitEpochGroup(obj, group, block)
+            g = obj.session.getPersistor().splitEpochGroup(group, block);
+            notify(obj, 'SplitEpochGroup', symphonyui.app.AppEventData({group, g}));
         end
         
-        function mergeEpochGroups(obj, group1, group2)
-            notify(obj, 'MergedEpochGroups');
+        function g = mergeEpochGroups(obj, group1, group2)
+            g = obj.session.getPersistor().mergeEpochGroups(group1, group2);
+            notify(obj, 'MergedEpochGroups', symphonyui.app.AppEventData({group1, group2, g}));
         end
 
         function g = getCurrentEpochGroup(obj)
