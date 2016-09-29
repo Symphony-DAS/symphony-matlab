@@ -124,11 +124,12 @@ classdef Persistor < symphonyui.core.CoreObject
             g = symphonyui.core.persistent.EpochGroup(cgrp);
         end
         
-        function g = splitEpochGroup(obj, group, block)
+        function [g1, g2] = splitEpochGroup(obj, group, block)
             % Splits the epoch group after the given epoch block
             
-            cgrp = obj.tryCoreWithReturn(@()obj.cobj.SplitEpochGroup(group.cobj, block.cobj));
-            g = symphonyui.core.persistent.EpochGroup(cgrp);
+            csplit = obj.tryCoreWithReturn(@()obj.cobj.SplitEpochGroup(group.cobj, block.cobj));
+            g1 = symphonyui.core.persistent.EpochGroup(csplit.Item1);
+            g2 = symphonyui.core.persistent.EpochGroup(csplit.Item2);
         end
         
         function g = mergeEpochGroups(obj, group1, group2)

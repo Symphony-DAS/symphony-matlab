@@ -157,14 +157,20 @@ classdef DocumentationService < handle
             notify(obj, 'EndedEpochGroup', symphonyui.app.AppEventData(g));
         end
         
-        function g = splitEpochGroup(obj, group, block)
-            g = obj.session.getPersistor().splitEpochGroup(group, block);
-            notify(obj, 'SplitEpochGroup', symphonyui.app.AppEventData({group, g}));
+        function [g1, g2] = splitEpochGroup(obj, group, block)
+            data.group.uuid = group.uuid;
+            [g1, g2] = obj.session.getPersistor().splitEpochGroup(group, block);
+            data.split1 = g1;
+            data.split2 = g2;
+            notify(obj, 'SplitEpochGroup', symphonyui.app.AppEventData(data));
         end
         
         function g = mergeEpochGroups(obj, group1, group2)
+            data.group1.uuid = group1.uuid;
+            data.group2.uuid = group2.uuid;
             g = obj.session.getPersistor().mergeEpochGroups(group1, group2);
-            notify(obj, 'MergedEpochGroups', symphonyui.app.AppEventData({group1, group2, g}));
+            data.merged = g;
+            notify(obj, 'MergedEpochGroups', symphonyui.app.AppEventData(data));
         end
 
         function g = getCurrentEpochGroup(obj)

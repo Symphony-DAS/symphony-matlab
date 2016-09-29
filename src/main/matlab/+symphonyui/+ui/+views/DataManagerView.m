@@ -657,13 +657,16 @@ classdef DataManagerView < appbox.View
             n = obj.epochGroupsFolderNode;
         end
 
-        function n = addEpochGroupNode(obj, parent, name, entity)
+        function n = addEpochGroupNode(obj, parent, name, entity, index)
+            if nargin < 5
+                index = [];
+            end
             value.entity = entity;
             value.type = symphonyui.ui.views.EntityNodeType.EPOCH_GROUP;
             n = uiextras.jTree.TreeNode( ...
-                'Parent', parent, ...
                 'Name', name, ...
                 'Value', value);
+            n.setParent(parent, index);
             n.setIcon(symphonyui.app.App.getResource('icons', 'group.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
             menu = obj.addEpochGroupContextMenus(menu);
@@ -867,6 +870,10 @@ classdef DataManagerView < appbox.View
 
         function setNodeName(obj, node, name) %#ok<INUSL>
             set(node, 'Name', name);
+        end
+        
+        function i = getNodeIndex(obj, node) %#ok<INUSL>
+            i = find(node.Parent.Children == node, 1);
         end
         
         function setNodeTooltip(obj, node, t) %#ok<INUSL>

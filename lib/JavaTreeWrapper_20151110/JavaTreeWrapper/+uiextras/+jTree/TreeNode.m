@@ -68,7 +68,7 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
     end
     
     properties
-        Parent = uiextras.jTree.TreeNode.empty(0,1) %Parent tree node
+        Parent %Parent tree node
         UIContextMenu %context menu to show when clicking on this node
     end
     
@@ -81,6 +81,10 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
     properties (SetAccess={?uiextras.jTree.Tree, ?uiextras.jTree.TreeNode},...
             GetAccess={?uiextras.jTree.Tree, ?uiextras.jTree.TreeNode})
         jNode %Java object for tree node
+    end
+    
+    properties (Access = private)
+        mParent = uiextras.jTree.TreeNode.empty(0,1);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -352,7 +356,10 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods (Access = protected)
         
-        function newParent = updateParent(nObj,newParent)
+        function newParent = updateParent(nObj,newParent,index)
+            if nargin < 3
+                index = [];
+            end
             
             % Is the new parent empty?
             if isempty(newParent)
@@ -390,8 +397,13 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
                 updateTreeReference(nObj,newParent.Tree)
                 
                 % Update the list of children in the parent
-                ChildIdx = numel(newParent.Children) + 1;
-                newParent.Children(ChildIdx) = nObj;
+                if isempty(index)
+                    ChildIdx = numel(newParent.Children) + 1;
+                else
+                    ChildIdx = index;
+                end
+                c = newParent.Children;
+                newParent.Children = [c(1:ChildIdx-1) nObj c(ChildIdx:end)];
                 
                 % Add this node to the parent node
                 nObj.Tree.insertNode(nObj, newParent, ChildIdx);
@@ -460,11 +472,25 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
         end
         
         % Parent
+        function p = get.Parent(nObj)
+            p = nObj.mParent;
+        end
+        
         function set.Parent(nObj,newParent)
             % Update the parent/child relationship
             newParent = updateParent(nObj,newParent);
             % Set the parent value
-            nObj.Parent = newParent;
+            nObj.mParent = newParent; %#ok<MCSUP>
+        end
+        
+        function setParent(nObj,newParent,idx)
+            if nargin < 3
+                idx = [];
+            end
+            % Update the parent/child relationship
+            newParent = updateParent(nObj,newParent,idx);
+            % Set the parent value
+            nObj.mParent = newParent;
         end
         
         % UIContextMenu

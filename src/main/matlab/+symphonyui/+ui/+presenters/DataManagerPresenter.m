@@ -88,6 +88,8 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
             obj.addListener(d, 'BeganEpochGroup', @obj.onServiceBeganEpochGroup);
             obj.addListener(d, 'EndedEpochGroup', @obj.onServiceEndedEpochGroup);
+            obj.addListener(d, 'SplitEpochGroup', @obj.onServiceSplitEpochGroup);
+            obj.addListener(d, 'MergedEpochGroups', @obj.onServiceMergedEpochGroups);
             obj.addListener(d, 'AddedEntityPreset', @obj.onServiceAddedEntityPreset);
             obj.addListener(d, 'RemovedEntityPreset', @obj.onServiceRemovedEntityPreset);
             obj.addListener(d, 'DeletedEntity', @obj.onServiceDeletedEntity);
@@ -349,6 +351,34 @@ classdef DataManagerPresenter < appbox.Presenter
             presenter.goWaitStop();
         end
         
+        function onServiceSplitEpochGroup(obj, ~, event)
+            data = event.data;
+            
+            group = data.group;
+            split1 = data.split1;
+            split2 = data.split2;
+            
+            oldNode = obj.uuidToNode(group.uuid);
+            oldIndex = obj.view.getNodeIndex(oldNode);
+            
+            obj.view.removeNode(oldNode);
+            obj.uuidToNode.remove(group.uuid);
+            
+            node1 = obj.addEpochGroupNode(split1, oldIndex);
+            node2 = obj.addEpochGroupNode(split2, oldIndex + 1);
+
+            obj.view.stopEditingProperties();
+            obj.view.resetSelectedPreset();
+            obj.view.update();
+            obj.view.setSelectedNodes([node1, node2]);
+
+            set = symphonyui.core.persistent.collections.EpochGroupSet({split1, split2});
+            obj.updateNodeStateForEpochGroupSet(set);
+            obj.populateDetailsForEpochGroupSet(set);
+
+            obj.updateStateOfControls();
+        end
+        
         function onViewSelectedMergeEpochGroups(obj, ~, ~)
             selectedGroup = [];
             entitySet = obj.detailedEntitySet;
@@ -359,15 +389,39 @@ classdef DataManagerPresenter < appbox.Presenter
             presenter = symphonyui.ui.presenters.MergeEpochGroupsPresenter(obj.documentationService, selectedGroup);
             presenter.goWaitStop();
         end
+        
+        function onServiceMergedEpochGroups(obj, ~, event)
+            data = event.data;
+            
+            group1 = data.group1;
+            group2 = data.group2;
+            
+            node1 = obj.uuidToNode(group1.uuid);
+            node2 = obj.uuidToNode(group2.uuid);
+            
+            obj.view.removeNode(node1);
+            obj.view.removeNode(node2);
+            
+            obj.uuidToNode.remove(group1.uuid);
+            obj.uuidToNode.remove(group2.uuid);
 
-        function n = addEpochGroupNode(obj, group)
+            entitySet = obj.getSelectedEntitySet();
+            obj.populateDetailsForEntitySet(entitySet);
+            obj.updateStateOfControls();
+        end
+
+        function n = addEpochGroupNode(obj, group, index)
+            if nargin < 3
+                index = [];
+            end
+            
             if isempty(group.parent)
                 parent = obj.view.getEpochGroupsFolderNode();
             else
                 parent = obj.uuidToNode(group.parent.uuid);
             end
 
-            n = obj.view.addEpochGroupNode(parent, [group.label ' (' group.source.label ')'], group);
+            n = obj.view.addEpochGroupNode(parent, [group.label ' (' group.source.label ')'], group, index);
             obj.uuidToNode(group.uuid) = n;
 
             obj.updateNodeStateForEpochGroupSet(symphonyui.core.persistent.collections.EpochGroupSet(group));
