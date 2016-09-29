@@ -133,7 +133,7 @@ classdef Persistor < symphonyui.core.CoreObject
         end
         
         function g = mergeEpochGroups(obj, group1, group2)
-            % Merges two epoch groups
+            % Merges group1 into group2
             
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.MergeEpochGroups(group1.cobj, group2.cobj));
             g = symphonyui.core.persistent.EpochGroup(cgrp);
