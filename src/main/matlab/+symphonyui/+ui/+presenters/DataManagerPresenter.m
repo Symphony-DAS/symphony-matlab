@@ -438,15 +438,22 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.uuidToNode(group.uuid) = n;
 
             obj.updateNodeStateForEpochGroupSet(symphonyui.core.persistent.collections.EpochGroupSet(group));
-
+                      
             blocks = group.getEpochBlocks();
-            for i = 1:numel(blocks)
-                obj.addEpochBlockNode(blocks{i});
-            end
-
             children = group.getEpochGroups();
-            for i = 1:numel(children)
-                obj.addEpochGroupNode(children{i});
+            
+            sorted = [blocks children];
+            times = cellfun(@(e)e.startTime, sorted, 'UniformOutput', false);
+            [~, i] = sort([times{:}]);
+            sorted = sorted(i);
+            
+            for i = 1:numel(sorted)
+                entity = sorted{i};
+                if isa(entity, 'symphonyui.core.persistent.EpochBlock')
+                    obj.addEpochBlockNode(entity);
+                else
+                    obj.addEpochGroupNode(entity);
+                end
             end
         end
 
