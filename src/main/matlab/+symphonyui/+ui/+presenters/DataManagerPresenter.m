@@ -1031,6 +1031,9 @@ classdef DataManagerPresenter < appbox.Presenter
                     b = blocks{end};
                     if ~obj.uuidToNode.isKey(b.uuid)
                         obj.addEpochBlockNode(b);
+                        if numel(blocks) == 1
+                            obj.view.expandNode(obj.uuidToNode(group.uuid));
+                        end
                     else
                         obj.updateEpochBlockNode(b);
                     end
