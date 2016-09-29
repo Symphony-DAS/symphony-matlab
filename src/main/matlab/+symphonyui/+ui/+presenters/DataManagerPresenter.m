@@ -400,8 +400,8 @@ classdef DataManagerPresenter < appbox.Presenter
             oldNode1 = obj.uuidToNode(group1.uuid);
             oldNode2 = obj.uuidToNode(group2.uuid);
             
-            oldIndex1 = obj.view.getNodeIndex(oldNode);
-            oldIndex2 = obj.view.getNodeIndex(oldNode);
+            oldIndex1 = obj.view.getNodeIndex(oldNode1);
+            oldIndex2 = obj.view.getNodeIndex(oldNode2);
             
             obj.view.removeNode(oldNode1);
             obj.view.removeNode(oldNode2);

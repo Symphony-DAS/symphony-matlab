@@ -120,7 +120,7 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
             obj.view.update();
             
             group1 = obj.view.getSelectedGroup1();
-            group2 = obj.view.getSelectedGroup1();
+            group2 = obj.view.getSelectedGroup2();
             try
                 obj.enableControls(false);
                 obj.view.startSpinner();
