@@ -48,6 +48,22 @@ classdef HekaSimulationDaqController < symphonyui.builtin.daqs.SimulationDaqCont
         end
 
         function s = getStream(obj, name)
+            newName = [];
+            if strncmp(name, 'ANALOG_IN.', 10)
+                newName = ['ai' name(11:end)];
+            elseif strncmp(name, 'ANALOG_OUT.', 11)
+                newName = ['ao' name(12:end)];
+            elseif strncmp(name, 'DIGITAL_IN.', 11)
+                newName = ['diport' name(12:end)];
+            elseif strncmp(name, 'DIGITAL_OUT.', 12)
+                newName = ['doport' name(13:end)];
+            end
+            
+            if ~isempty(newName)
+                warning('The stream name %s is deprecated. Use %s.', name, newName);
+                name = newName;
+            end
+            
             s = getStream@symphonyui.core.DaqController(obj, name);
             if strncmp(name, 'd', 1)
                 s = symphonyui.builtin.daqs.HekaSimulationDigitalDaqStream(s.cobj);
