@@ -110,10 +110,16 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
             group = obj.view.getSelectedGroup();
             block = obj.view.getSelectedBlock();
             try
+                obj.enableControls(false);
+                obj.view.startSpinner();
+                obj.view.update();
+                
                 split = obj.documentationService.splitEpochGroup(group, block);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
+                obj.view.stopSpinner();
+                obj.enableControls(true);
                 return;
             end
             
@@ -123,6 +129,13 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
         
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
+        end
+        
+        function enableControls(obj, tf)
+            obj.view.enableSelectGroup(tf);
+            obj.view.enableSelectBlock(tf);
+            obj.view.enableSplit(tf);
+            obj.view.enableCancel(tf);
         end
 
         function updateStateOfControls(obj)
