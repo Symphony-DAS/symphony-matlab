@@ -9,6 +9,7 @@ classdef MergeEpochGroupsView < appbox.View
     properties (Access = private)
         group1PopupMenu
         group2PopupMenu
+        spinner
         mergeButton
         cancelButton
     end
@@ -53,6 +54,12 @@ classdef MergeEpochGroupsView < appbox.View
             controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
+            spinnerLayout = uix.VBox( ...
+                'Parent', controlsLayout);
+            uix.Empty('Parent', spinnerLayout);
+            obj.spinner = com.mathworks.widgets.BusyAffordance();
+            javacomponent(obj.spinner.getComponent(), [], spinnerLayout);
+            set(spinnerLayout, 'Heights', [4 -1]);
             uix.Empty('Parent', controlsLayout);
             obj.mergeButton = uicontrol( ...
                 'Parent', controlsLayout, ...
@@ -66,7 +73,7 @@ classdef MergeEpochGroupsView < appbox.View
                 'String', 'Cancel', ...
                 'Interruptible', 'off', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
-            set(controlsLayout, 'Widths', [-1 75 75]);
+            set(controlsLayout, 'Widths', [16 -1 75 75]);
 
             set(mainLayout, 'Heights', [-1 23]);
 
@@ -83,6 +90,10 @@ classdef MergeEpochGroupsView < appbox.View
         
         function tf = getEnableMerge(obj)
             tf = appbox.onOff(get(obj.mergeButton, 'Enable'));
+        end
+        
+        function enableCancel(obj, tf)
+            set(obj.cancelButton, 'Enable', appbox.onOff(tf));
         end
         
         function enableSelectGroup1(obj, tf)
@@ -125,6 +136,14 @@ classdef MergeEpochGroupsView < appbox.View
         function setGroup2List(obj, names, values)
             set(obj.group2PopupMenu, 'String', names);
             set(obj.group2PopupMenu, 'Values', values);
+        end
+        
+        function startSpinner(obj)
+            obj.spinner.start();
+        end
+        
+        function stopSpinner(obj)
+            obj.spinner.stop();
         end
         
     end

@@ -122,10 +122,16 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
             group1 = obj.view.getSelectedGroup1();
             group2 = obj.view.getSelectedGroup1();
             try
+                obj.enableControls(false);
+                obj.view.startSpinner();
+                obj.view.update();
+                
                 merged = obj.documentationService.mergeEpochGroups(group1, group2);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
+                obj.view.stopSpinner();
+                obj.enableControls(true);
                 return;
             end
             
@@ -135,6 +141,13 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
         
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
+        end
+        
+        function enableControls(obj, tf)
+            obj.view.enableSelectGroup1(tf);
+            obj.view.enableSelectGroup2(tf);
+            obj.view.enableMerge(tf);
+            obj.view.enableCancel(tf);
         end
 
         function updateStateOfControls(obj)

@@ -395,18 +395,31 @@ classdef DataManagerPresenter < appbox.Presenter
             
             group1 = data.group1;
             group2 = data.group2;
+            merged = data.merged;
             
-            node1 = obj.uuidToNode(group1.uuid);
-            node2 = obj.uuidToNode(group2.uuid);
+            oldNode1 = obj.uuidToNode(group1.uuid);
+            oldNode2 = obj.uuidToNode(group2.uuid);
             
-            obj.view.removeNode(node1);
-            obj.view.removeNode(node2);
+            oldIndex1 = obj.view.getNodeIndex(oldNode);
+            oldIndex2 = obj.view.getNodeIndex(oldNode);
+            
+            obj.view.removeNode(oldNode1);
+            obj.view.removeNode(oldNode2);
             
             obj.uuidToNode.remove(group1.uuid);
             obj.uuidToNode.remove(group2.uuid);
+            
+            node = obj.addEpochGroupNode(merged, min(oldIndex1, oldIndex2));
 
-            entitySet = obj.getSelectedEntitySet();
-            obj.populateDetailsForEntitySet(entitySet);
+            obj.view.stopEditingProperties();
+            obj.view.resetSelectedPreset();
+            obj.view.update();
+            obj.view.setSelectedNodes(node);
+
+            set = symphonyui.core.persistent.collections.EpochGroupSet(merged);
+            obj.updateNodeStateForEpochGroupSet(set);
+            obj.populateDetailsForEpochGroupSet(set);
+
             obj.updateStateOfControls();
         end
 
