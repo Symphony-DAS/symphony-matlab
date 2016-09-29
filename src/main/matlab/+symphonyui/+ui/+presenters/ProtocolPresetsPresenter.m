@@ -5,12 +5,13 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         settings
         documentationService
         acquisitionService
+        configurationService
     end
 
     methods
 
-        function obj = ProtocolPresetsPresenter(documentationService, acquisitionService, view)
-            if nargin < 3
+        function obj = ProtocolPresetsPresenter(documentationService, acquisitionService, configurationService, view)
+            if nargin < 4
                 view = symphonyui.ui.views.ProtocolPresetsView();
             end
             obj = obj@appbox.Presenter(view);
@@ -19,6 +20,7 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             obj.settings = symphonyui.ui.settings.ProtocolPresetsSettings();
             obj.documentationService = documentationService;
             obj.acquisitionService = acquisitionService;
+            obj.configurationService = configurationService;
         end
 
     end
@@ -90,6 +92,21 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
         end
 
         function onViewSelectedViewOnlyProtocolPreset(obj, ~, event)
+            options = obj.configurationService.getOptions();
+            if obj.documentationService.hasOpenFile() && options.warnOnViewOnlyWithOpenFile
+                [result, dontShow] = obj.view.showMessage( ...
+                    'Are you sure you want to run "View Only"? No data will be saved to your file.', ...
+                    'Warning', ...
+                    'Cancel', 'View Only', [], 2, [], ...
+                    'Don''t show this message again');
+                if ~strcmp(result, 'View Only')
+                    return;
+                end
+                if dontShow
+                    options.warnOnViewOnlyWithOpenFile = false;
+                end
+            end
+            
             data = event.data;
             presets = obj.view.getProtocolPresets();
             name = presets{data.getEditingRow(), 1};
