@@ -371,6 +371,8 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.resetSelectedPreset();
             obj.view.update();
             obj.view.setSelectedNodes([node1, node2]);
+            obj.view.expandNode(node1);
+            obj.view.expandNode(node2);
 
             set = symphonyui.core.persistent.collections.EpochGroupSet({split1, split2});
             obj.updateNodeStateForEpochGroupSet(set);
@@ -415,6 +417,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.view.resetSelectedPreset();
             obj.view.update();
             obj.view.setSelectedNodes(node);
+            obj.view.expandNode(node);
 
             set = symphonyui.core.persistent.collections.EpochGroupSet(merged);
             obj.updateNodeStateForEpochGroupSet(set);
