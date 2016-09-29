@@ -8,6 +8,8 @@ classdef DataManagerView < appbox.View
         SetExperimentPurpose
         BeginEpochGroup
         EndEpochGroup
+        SplitEpochGroup
+        MergeEpochGroups
         SetEpochGroupLabel
         SelectedEpochGroupSource
         SelectedEpochSignal
@@ -655,16 +657,19 @@ classdef DataManagerView < appbox.View
             n = obj.epochGroupsFolderNode;
         end
 
-        function n = addEpochGroupNode(obj, parent, name, entity)
+        function n = addEpochGroupNode(obj, parent, name, entity, index)
+            if nargin < 5
+                index = [];
+            end
             value.entity = entity;
             value.type = symphonyui.ui.views.EntityNodeType.EPOCH_GROUP;
             n = uiextras.jTree.TreeNode( ...
-                'Parent', parent, ...
                 'Name', name, ...
                 'Value', value);
+            n.setParent(parent, index);
             n.setIcon(symphonyui.app.App.getResource('icons', 'group.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
-            menu = obj.addEntityContextMenus(menu);
+            menu = obj.addEpochGroupContextMenus(menu);
             set(n, 'UIContextMenu', menu);
         end
         
@@ -679,21 +684,21 @@ classdef DataManagerView < appbox.View
                 'Parent', menu, ...
                 'Label', 'End Epoch Group', ...
                 'Callback', @(h,d)notify(obj, 'EndEpochGroup'));
-            menu = obj.addEntityContextMenus(menu);
+            menu = obj.addEpochGroupContextMenus(menu);
             set(node, 'UIContextMenu', menu);
         end
 
         function setEpochGroupNodeNormal(obj, node)
             node.setIcon(symphonyui.app.App.getResource('icons', 'group.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
-            menu = obj.addEntityContextMenus(menu);
+            menu = obj.addEpochGroupContextMenus(menu);
             set(node, 'UIContextMenu', menu);
         end
         
         function setEpochGroupNodeWarn(obj, node)
             node.setIcon(symphonyui.app.App.getResource('icons', 'group_warn.png'));
             menu = uicontextmenu('Parent', obj.figureHandle);
-            menu = obj.addEntityContextMenus(menu);
+            menu = obj.addEpochGroupContextMenus(menu);
             set(node, 'UIContextMenu', menu);
         end
 
@@ -867,6 +872,10 @@ classdef DataManagerView < appbox.View
             set(node, 'Name', name);
         end
         
+        function i = getNodeIndex(obj, node) %#ok<INUSL>
+            i = find(node.Parent.Children == node, 1);
+        end
+        
         function setNodeTooltip(obj, node, t) %#ok<INUSL>
             set(node, 'TooltipString', t);
         end
@@ -1002,6 +1011,19 @@ classdef DataManagerView < appbox.View
                 otherwise
                     notify(obj, 'SelectedPreset');
             end
+        end
+        
+        function menu = addEpochGroupContextMenus(obj, menu)
+            uimenu( ...
+                'Parent', menu, ...
+                'Label', 'Split Epoch Group...', ...
+                'Separator', appbox.onOff(~isempty(get(menu, 'Children'))), ...
+                'Callback', @(h,d)notify(obj, 'SplitEpochGroup'));
+            uimenu( ...
+                'Parent', menu, ...
+                'Label', 'Merge Epoch Groups...', ...
+                'Callback', @(h,d)notify(obj, 'MergeEpochGroups'));
+            obj.addEntityContextMenus(menu);
         end
 
         function menu = addEntityContextMenus(obj, menu)
