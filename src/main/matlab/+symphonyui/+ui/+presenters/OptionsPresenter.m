@@ -57,6 +57,7 @@ classdef OptionsPresenter < appbox.Presenter
 
         function populateGeneralDetails(obj)
             obj.view.setStartupFile(char(obj.options.startupFile));
+            obj.view.setWarnOnViewOnlyWithOpenFile(obj.options.warnOnViewOnlyWithOpenFile);
         end
 
         function populateFileDetails(obj)
@@ -175,6 +176,7 @@ classdef OptionsPresenter < appbox.Presenter
 
             try
                 startupFile = parse(obj.view.getStartupFile());
+                warnOnViewOnlyWithOpenFile = obj.view.getWarnOnViewOnlyWithOpenFile();
                 fileDefaultName = parse(obj.view.getFileDefaultName());
                 fileDefaultLocation = parse(obj.view.getFileDefaultLocation());
                 searchPath = strjoin(obj.view.getSearchPaths(), ';');
@@ -189,6 +191,9 @@ classdef OptionsPresenter < appbox.Presenter
 
             if ~isequal(startupFile, obj.options.startupFile)
                 obj.options.startupFile = startupFile;
+            end
+            if ~isequal(warnOnViewOnlyWithOpenFile, obj.options.warnOnViewOnlyWithOpenFile)
+                obj.options.warnOnViewOnlyWithOpenFile = warnOnViewOnlyWithOpenFile;
             end
             if ~isequal(fileDefaultName, obj.options.fileDefaultName)
                 obj.options.fileDefaultName = fileDefaultName;

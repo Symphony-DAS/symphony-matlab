@@ -433,6 +433,20 @@ classdef MainPresenter < appbox.Presenter
                 obj.updateStateOfControls();
                 return;
             end
+            options = obj.configurationService.getOptions();
+            if obj.documentationService.hasOpenFile() && options.warnOnViewOnlyWithOpenFile
+                [result, dontShow] = obj.view.showMessage( ...
+                    'Are you sure you want to run "View Only"? No data will be saved to your file.', ...
+                    'Warning', ...
+                    'Cancel', 'View Only', [], 2, [], ...
+                    'Don''t show this message again');
+                if ~strcmp(result, 'View Only')
+                    return;
+                end
+                if dontShow
+                    options.warnOnViewOnlyWithOpenFile = false;
+                end
+            end
             try
                 obj.acquisitionService.viewOnly();
             catch x

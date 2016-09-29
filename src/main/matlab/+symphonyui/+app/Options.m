@@ -2,6 +2,7 @@ classdef Options < appbox.Settings
 
     properties
         startupFile
+        warnOnViewOnlyWithOpenFile
         fileDefaultName
         fileDefaultLocation
         searchPath
@@ -19,6 +20,15 @@ classdef Options < appbox.Settings
         function set.startupFile(obj, f)
             validateattributes(f, {'char', 'function_handle'}, {'2d'});
             obj.put('startupFile', f);
+        end
+        
+        function tf = get.warnOnViewOnlyWithOpenFile(obj)
+            tf = obj.get('warnOnViewOnlyWithOpenFile', true);
+        end
+        
+        function set.warnOnViewOnlyWithOpenFile(obj, tf)
+            validateattributes(tf, {'logical', 'double'}, {'scalar'});
+            obj.put('warnOnViewOnlyWithOpenFile', tf);
         end
 
         function n = get.fileDefaultName(obj)
