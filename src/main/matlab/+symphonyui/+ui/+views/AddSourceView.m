@@ -9,6 +9,7 @@ classdef AddSourceView < appbox.View
     properties (Access = private)
         parentPopupMenu
         descriptionPopupMenu
+        spinner
         addButton
         cancelButton
     end
@@ -53,6 +54,12 @@ classdef AddSourceView < appbox.View
             controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
+            spinnerLayout = uix.VBox( ...
+                'Parent', controlsLayout);
+            uix.Empty('Parent', spinnerLayout);
+            obj.spinner = com.mathworks.widgets.BusyAffordance();
+            javacomponent(obj.spinner.getComponent(), [], spinnerLayout);
+            set(spinnerLayout, 'Heights', [4 -1]);
             uix.Empty('Parent', controlsLayout);
             obj.addButton = uicontrol( ...
                 'Parent', controlsLayout, ...
@@ -66,7 +73,7 @@ classdef AddSourceView < appbox.View
                 'String', 'Cancel', ...
                 'Interruptible', 'off', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
-            set(controlsLayout, 'Widths', [-1 75 75]);
+            set(controlsLayout, 'Widths', [16 -1 75 75]);
 
             set(mainLayout, 'Heights', [-1 23]);
 
@@ -83,6 +90,10 @@ classdef AddSourceView < appbox.View
         
         function tf = getEnableAdd(obj)
             tf = appbox.onOff(get(obj.addButton, 'Enable'));
+        end
+        
+        function enableCancel(obj, tf)
+            set(obj.cancelButton, 'Enable', appbox.onOff(tf));
         end
 
         function enableSelectParent(obj, tf)
@@ -125,6 +136,14 @@ classdef AddSourceView < appbox.View
         function setDescriptionList(obj, names, values)
             set(obj.descriptionPopupMenu, 'String', names);
             set(obj.descriptionPopupMenu, 'Values', values);
+        end
+        
+        function startSpinner(obj)
+            obj.spinner.start();
+        end
+        
+        function stopSpinner(obj)
+            obj.spinner.stop();
         end
 
     end

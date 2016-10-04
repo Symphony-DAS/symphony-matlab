@@ -109,10 +109,16 @@ classdef AddSourcePresenter < appbox.Presenter
             parent = obj.view.getSelectedParent();
             description = obj.view.getSelectedDescription();
             try
+                obj.enableControls(false);
+                obj.view.startSpinner();
+                obj.view.update();
+                
                 source = obj.documentationService.addSource(parent, description);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
+                obj.view.stopSpinner();
+                obj.enableControls(true);
                 return;
             end
 
@@ -122,6 +128,13 @@ classdef AddSourcePresenter < appbox.Presenter
 
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
+        end
+        
+        function enableControls(obj, tf)
+            obj.view.enableSelectParent(tf);
+            obj.view.enableSelectDescription(tf);
+            obj.view.enableAdd(tf);
+            obj.view.enableCancel(tf);
         end
 
         function updateStateOfControls(obj)
