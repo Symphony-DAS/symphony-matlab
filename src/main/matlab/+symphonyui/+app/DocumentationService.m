@@ -19,7 +19,8 @@ classdef DocumentationService < handle
         session
         persistorFactory
         classRepository
-        allowableParentTypesCache
+        sourceDescriptionCache
+        epochGroupDescriptionCache
     end
 
     methods
@@ -29,7 +30,8 @@ classdef DocumentationService < handle
             obj.session = session;
             obj.persistorFactory = persistorFactory;
             obj.classRepository = classRepository;
-            obj.allowableParentTypesCache = containers.Map();
+            obj.sourceDescriptionCache = containers.Map();
+            obj.epochGroupDescriptionCache = containers.Map();
         end
 
         function d = getAvailableExperimentDescriptions(obj)
@@ -84,19 +86,19 @@ classdef DocumentationService < handle
             classNames = obj.classRepository.get('symphonyui.core.persistent.descriptions.SourceDescription');
             for i = 1:numel(classNames)
                 name = classNames{i};
-                if obj.allowableParentTypesCache.isKey(name)
-                    allowableParentTypes = obj.allowableParentTypesCache(name);
+                if obj.sourceDescriptionCache.isKey(name)
+                    description = obj.sourceDescriptionCache(name);
                 else
                     constructor = str2func(name);
                     try
                         description = constructor();
-                        allowableParentTypes = description.getAllowableParentTypes();
-                        obj.allowableParentTypesCache(name) = allowableParentTypes;
+                        obj.sourceDescriptionCache(name) = description;
                     catch x
                         obj.log.debug(x.message, x);
                         continue;
                     end
                 end
+                allowableParentTypes = description.getAllowableParentTypes();
                 if isempty(allowableParentTypes) || any(cellfun(@(t)isequal(t, parentType), allowableParentTypes))
                     d{end + 1} = name; %#ok<AGROW>
                 end
@@ -121,16 +123,22 @@ classdef DocumentationService < handle
             d = {};
             classNames = obj.classRepository.get('symphonyui.core.persistent.descriptions.EpochGroupDescription');
             for i = 1:numel(classNames)
-                constructor = str2func(classNames{i});
-                try
-                    description = constructor();
-                    allowableParentTypes = description.getAllowableParentTypes();
-                catch x
-                    obj.log.debug(x.message, x);
-                    continue;
+                name = classNames{i};
+                if obj.epochGroupDescriptionCache.isKey(name)
+                    description = obj.epochGroupDescriptionCache(name);
+                else
+                    constructor = str2func(name);
+                    try
+                        description = constructor();
+                        obj.epochGroupDescriptionCache(name) = description;
+                    catch x
+                        obj.log.debug(x.message, x);
+                        continue;
+                    end
                 end
+                allowableParentTypes = description.getAllowableParentTypes();
                 if isempty(allowableParentTypes) || any(cellfun(@(t)isequal(t, parentType), allowableParentTypes))
-                    d{end + 1} = classNames{i}; %#ok<AGROW>
+                    d{end + 1} = name; %#ok<AGROW>
                 end
             end
         end
