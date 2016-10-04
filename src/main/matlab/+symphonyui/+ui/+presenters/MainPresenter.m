@@ -301,7 +301,7 @@ classdef MainPresenter < appbox.Presenter
 
             obj.view.setProtocolList([{'(None)'}, displayNames], [{[]}, classNames]);
             obj.view.setSelectedProtocol(obj.acquisitionService.getSelectedProtocol());
-            obj.view.enableSelectProtocol(numel(classNames) > 0);
+            obj.view.enableSelectProtocol(~isempty(classNames));
         end
 
         function onViewSelectedProtocol(obj, ~, ~)
