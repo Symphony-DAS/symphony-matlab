@@ -155,6 +155,10 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             description = obj.view.getSelectedDescription();
             carryForwardProperties = obj.view.getCarryForwardProperties();
             try
+                obj.enableControls(false);
+                obj.view.startSpinner();
+                obj.view.update();                
+                
                 while obj.documentationService.getCurrentEpochGroup() ~= parent
                     obj.documentationService.endEpochGroup();
                 end
@@ -162,6 +166,8 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
+                obj.view.stopSpinner();
+                obj.enableControls(true);
                 return;
             end
 
@@ -177,6 +183,14 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
+        end
+        
+        function enableControls(obj, tf)
+            obj.view.enableSelectParent(tf);
+            obj.view.enableSelectSource(tf);
+            obj.view.enableSelectDescription(tf);
+            obj.view.enableBegin(tf);
+            obj.view.enableCancel(tf);
         end
 
         function updateStateOfControls(obj)
