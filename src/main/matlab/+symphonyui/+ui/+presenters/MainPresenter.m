@@ -659,7 +659,8 @@ classdef MainPresenter < appbox.Presenter
                 symphonyui.app.App.description, ...
                 symphonyui.app.App.version, ...
                 [char(169) ' ' datestr(now, 'yyyy') ' ' symphonyui.app.App.owner]);
-            obj.view.showMessage(message, ['About ' symphonyui.app.App.name]);
+            obj.view.showMessage(message, ['About ' symphonyui.app.App.name], ...
+                'width', 250);
         end
 
         function loadSettings(obj)
