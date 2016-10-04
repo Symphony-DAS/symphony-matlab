@@ -7,6 +7,7 @@ classdef InitializeRigView < appbox.View
 
     properties (Access = private)
         descriptionPopupMenu
+        spinner
         initializeButton
         cancelButton
     end
@@ -40,6 +41,12 @@ classdef InitializeRigView < appbox.View
             controlsLayout = uix.HBox( ...
                 'Parent', mainLayout, ...
                 'Spacing', 7);
+            spinnerLayout = uix.VBox( ...
+                'Parent', controlsLayout);
+            uix.Empty('Parent', spinnerLayout);
+            obj.spinner = com.mathworks.widgets.BusyAffordance();
+            javacomponent(obj.spinner.getComponent(), [], spinnerLayout);
+            set(spinnerLayout, 'Heights', [4 -1]);
             uix.Empty('Parent', controlsLayout);
             obj.initializeButton = uicontrol( ...
                 'Parent', controlsLayout, ...
@@ -53,7 +60,7 @@ classdef InitializeRigView < appbox.View
                 'String', 'Cancel', ...
                 'Interruptible', 'off', ...
                 'Callback', @(h,d)notify(obj, 'Cancel'));
-            set(controlsLayout, 'Widths', [-1 75 75]);
+            set(controlsLayout, 'Widths', [16 -1 75 75]);
 
             set(mainLayout, 'Heights', [-1 23]);
 
@@ -70,6 +77,10 @@ classdef InitializeRigView < appbox.View
         
         function tf = getEnableInitialize(obj)
             tf = appbox.onOff(get(obj.initializeButton, 'Enable'));
+        end
+        
+        function enableCancel(obj, tf)
+            set(obj.cancelButton, 'Enable', appbox.onOff(tf));
         end
 
         function enableSelectDescription(obj, tf)
@@ -91,6 +102,14 @@ classdef InitializeRigView < appbox.View
         function setDescriptionList(obj, names, values)
             set(obj.descriptionPopupMenu, 'String', names);
             set(obj.descriptionPopupMenu, 'Values', values);
+        end
+        
+        function startSpinner(obj)
+            obj.spinner.start();
+        end
+        
+        function stopSpinner(obj)
+            obj.spinner.stop();
         end
 
     end

@@ -78,11 +78,17 @@ classdef InitializeRigPresenter < appbox.Presenter
 
             description = obj.view.getSelectedDescription();
             try
+                obj.enableControls(false);
+                obj.view.startSpinner();
+                obj.view.update();
+                
                 obj.configurationService.initializeRig(description);
             catch x
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 obj.configurationService.initializeRig([]);
+                obj.view.stopSpinner();
+                obj.enableControls(true);
                 return;
             end
 
@@ -98,6 +104,12 @@ classdef InitializeRigPresenter < appbox.Presenter
 
         function onViewSelectedCancel(obj, ~, ~)
             obj.stop();
+        end
+        
+        function enableControls(obj, tf)
+            obj.view.enableSelectDescription(tf);
+            obj.view.enableInitialize(tf);
+            obj.view.enableCancel(tf);
         end
 
         function updateStateOfControls(obj)
