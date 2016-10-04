@@ -2,6 +2,7 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
     
     properties (Access = private)
         log
+        enables
         documentationService
         initialGroup1
     end
@@ -19,6 +20,7 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
             obj.view.setWindowStyle('modal');
             
             obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.enables = symphonyui.ui.util.trueStruct('selectGroup1', 'selectGroup2', 'merge', 'cancel');
             obj.documentationService = documentationService;
             obj.initialGroup1 = initialGroup1;
         end
@@ -61,7 +63,9 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
             else
                 obj.view.setGroup1List({'(None)'}, {[]});
             end
-            obj.view.enableSelectGroup1(numel(groups) > 0);
+            
+            obj.enables.selectGroup1 = ~isempty(groups);
+            obj.view.enableSelectGroup1(obj.enables.selectGroup1);
         end
         
         function selectGroup1(obj, group)
@@ -98,7 +102,9 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
             else
                 obj.view.setGroup2List({'(None)'}, {[]});
             end
-            obj.view.enableSelectGroup2(numel(groups) > 0);
+            
+            obj.enables.selectGroup2 = ~isempty(groups);
+            obj.view.enableSelectGroup2(obj.enables.selectGroup2);
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -122,7 +128,7 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
             group1 = obj.view.getSelectedGroup1();
             group2 = obj.view.getSelectedGroup2();
             try
-                obj.enableControls(false);
+                obj.disableControls();
                 obj.view.startSpinner();
                 obj.view.update();
                 
@@ -131,7 +137,7 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 obj.view.stopSpinner();
-                obj.enableControls(true);
+                obj.updateStateOfControls();
                 return;
             end
             
@@ -143,18 +149,21 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
             obj.stop();
         end
         
-        function enableControls(obj, tf)
-            obj.view.enableSelectGroup1(tf);
-            obj.view.enableSelectGroup2(tf);
-            obj.view.enableMerge(tf);
-            obj.view.enableCancel(tf);
+        function disableControls(obj)
+            obj.view.enableSelectGroup1(false);
+            obj.view.enableSelectGroup2(false);
+            obj.view.enableMerge(false);
+            obj.view.enableCancel(false);
         end
 
         function updateStateOfControls(obj)
             group2List = obj.view.getGroup2List();
             hasGroup2 = ~isempty(group2List{1});
-
-            obj.view.enableMerge(hasGroup2);
+            
+            obj.view.enableSelectGroup1(obj.enables.selectGroup1);
+            obj.view.enableSelectGroup2(obj.enables.selectGroup2);
+            obj.view.enableMerge(hasGroup2 && obj.enables.merge);
+            obj.view.enableCancel(obj.enables.cancel);
         end
         
     end

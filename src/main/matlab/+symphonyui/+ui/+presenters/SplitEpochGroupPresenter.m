@@ -2,6 +2,7 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
     
     properties (Access = private)
         log
+        enables
         documentationService
         initialGroup
     end
@@ -19,6 +20,7 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
             obj.view.setWindowStyle('modal');
             
             obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.enables = symphonyui.ui.util.trueStruct('selectGroup', 'selectBlock', 'split', 'cancel');
             obj.documentationService = documentationService;
             obj.initialGroup = initialGroup;
         end
@@ -61,7 +63,9 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
             else
                 obj.view.setGroupList({'(None)'}, {[]});
             end
-            obj.view.enableSelectGroup(numel(groups) > 0);
+            
+            obj.enables.selectGroup = ~isempty(groups);
+            obj.view.enableSelectGroup(obj.enables.selectGroup);
         end
         
         function selectGroup(obj, group)
@@ -86,7 +90,9 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
             else
                 obj.view.setBlockList({'(None)'}, {[]});
             end
-            obj.view.enableSelectBlock(numel(blocks) > 0);
+            
+            obj.enables.selectBlock = ~isempty(blocks);
+            obj.view.enableSelectBlock(obj.enables.selectBlock);
         end
         
         function onViewKeyPress(obj, ~, event)
@@ -110,7 +116,7 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
             group = obj.view.getSelectedGroup();
             block = obj.view.getSelectedBlock();
             try
-                obj.enableControls(false);
+                obj.disableControls();
                 obj.view.startSpinner();
                 obj.view.update();
                 
@@ -119,7 +125,7 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 obj.view.stopSpinner();
-                obj.enableControls(true);
+                obj.updateStateOfControls();
                 return;
             end
             
@@ -131,18 +137,21 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
             obj.stop();
         end
         
-        function enableControls(obj, tf)
-            obj.view.enableSelectGroup(tf);
-            obj.view.enableSelectBlock(tf);
-            obj.view.enableSplit(tf);
-            obj.view.enableCancel(tf);
+        function disableControls(obj)
+            obj.view.enableSelectGroup(false);
+            obj.view.enableSelectBlock(false);
+            obj.view.enableSplit(false);
+            obj.view.enableCancel(false);
         end
 
         function updateStateOfControls(obj)
             blockList = obj.view.getBlockList();
             hasBlock = ~isempty(blockList{1});
 
-            obj.view.enableSplit(hasBlock);
+            obj.view.enableSelectGroup(obj.enables.selectGroup);
+            obj.view.enableSelectBlock(obj.enables.selectBlock);
+            obj.view.enableSplit(hasBlock && obj.enables.split);
+            obj.view.enableCancel(obj.enables.cancel);
         end
         
     end

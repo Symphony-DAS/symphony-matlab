@@ -4,6 +4,7 @@ classdef NewFilePresenter < appbox.Presenter
         log
         options
         settings
+        enables
         documentationService
     end
 
@@ -19,6 +20,8 @@ classdef NewFilePresenter < appbox.Presenter
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.options = options;
             obj.settings = symphonyui.ui.settings.NewFileSettings();
+            obj.enables = symphonyui.ui.util.trueStruct('name', 'location', 'browseLocation', 'selectDescription', ...
+                'ok', 'cancel');
             obj.documentationService = documentationService;
         end
 
@@ -86,7 +89,9 @@ classdef NewFilePresenter < appbox.Presenter
             else
                 obj.view.setDescriptionList({'(None)'}, {[]});
             end
-            obj.view.enableSelectDescription(numel(classNames) > 0);
+            
+            obj.enables.selectDescription = ~isempty(classNames);
+            obj.view.enableSelectDescription(obj.enables.selectDescription);
         end
 
         function onViewKeyPress(obj, ~, event)
@@ -129,7 +134,7 @@ classdef NewFilePresenter < appbox.Presenter
                     end
                 end
 
-                obj.enableControls(false);
+                obj.disableControls();
                 obj.view.startSpinner();
                 obj.view.update();
 
@@ -138,7 +143,7 @@ classdef NewFilePresenter < appbox.Presenter
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 obj.view.stopSpinner();
-                obj.enableControls(true);
+                obj.updateStateOfControls();
                 return;
             end
 
@@ -156,20 +161,25 @@ classdef NewFilePresenter < appbox.Presenter
             obj.stop();
         end
 
-        function enableControls(obj, tf)
-            obj.view.enableName(tf);
-            obj.view.enableLocation(tf);
-            obj.view.enableBrowseLocation(tf);
-            obj.view.enableSelectDescription(tf);
-            obj.view.enableOk(tf);
-            obj.view.enableCancel(tf);
+        function disableControls(obj)
+            obj.view.enableName(false);
+            obj.view.enableLocation(false);
+            obj.view.enableBrowseLocation(false);
+            obj.view.enableSelectDescription(false);
+            obj.view.enableOk(false);
+            obj.view.enableCancel(false);
         end
 
         function updateStateOfControls(obj)
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
-
-            obj.view.enableOk(hasDescription);
+            
+            obj.view.enableName(obj.enables.name);
+            obj.view.enableLocation(obj.enables.location);
+            obj.view.enableBrowseLocation(obj.enables.browseLocation);
+            obj.view.enableSelectDescription(obj.enables.selectDescription);
+            obj.view.enableOk(hasDescription && obj.enables.ok);
+            obj.view.enableCancel(obj.enables.cancel);
         end
 
         function loadSettings(obj)

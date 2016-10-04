@@ -2,6 +2,7 @@ classdef AddSourcePresenter < appbox.Presenter
 
     properties (Access = private)
         log
+        enables
         documentationService
         initialParent
     end
@@ -19,6 +20,7 @@ classdef AddSourcePresenter < appbox.Presenter
             obj.view.setWindowStyle('modal');
 
             obj.log = log4m.LogManager.getLogger(class(obj));
+            obj.enables = symphonyui.ui.util.trueStruct('selectParent', 'selectDescription', 'add', 'cancel');
             obj.documentationService = documentationService;
             obj.initialParent = initialParent;
         end
@@ -58,7 +60,9 @@ classdef AddSourcePresenter < appbox.Presenter
             values = [{[]}, sources];
 
             obj.view.setParentList(names, values);
-            obj.view.enableSelectParent(numel(sources) > 0);
+            
+            obj.enables.selectParent = ~isempty(sources);
+            obj.view.enableSelectParent(obj.enables.selectParent);
         end
 
         function selectParent(obj, parent)
@@ -85,7 +89,9 @@ classdef AddSourcePresenter < appbox.Presenter
             else
                 obj.view.setDescriptionList({'(None)'}, {[]});
             end
-            obj.view.enableSelectDescription(numel(classNames) > 0);
+            
+            obj.enables.selectDescription = ~isempty(classNames);
+            obj.view.enableSelectDescription(obj.enables.selectDescription);
         end
 
         function onViewKeyPress(obj, ~, event)
@@ -109,7 +115,7 @@ classdef AddSourcePresenter < appbox.Presenter
             parent = obj.view.getSelectedParent();
             description = obj.view.getSelectedDescription();
             try
-                obj.enableControls(false);
+                obj.disableControls();
                 obj.view.startSpinner();
                 obj.view.update();
                 
@@ -118,7 +124,7 @@ classdef AddSourcePresenter < appbox.Presenter
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 obj.view.stopSpinner();
-                obj.enableControls(true);
+                obj.updateStateOfControls();
                 return;
             end
 
@@ -130,18 +136,21 @@ classdef AddSourcePresenter < appbox.Presenter
             obj.stop();
         end
         
-        function enableControls(obj, tf)
-            obj.view.enableSelectParent(tf);
-            obj.view.enableSelectDescription(tf);
-            obj.view.enableAdd(tf);
-            obj.view.enableCancel(tf);
+        function disableControls(obj)
+            obj.view.enableSelectParent(false);
+            obj.view.enableSelectDescription(false);
+            obj.view.enableAdd(false);
+            obj.view.enableCancel(false);
         end
 
         function updateStateOfControls(obj)
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
 
-            obj.view.enableAdd(hasDescription);
+            obj.view.enableSelectParent(obj.enables.selectParent);
+            obj.view.enableSelectDescription(obj.enables.selectDescription);
+            obj.view.enableAdd(hasDescription && obj.enables.add);
+            obj.view.enableCancel(obj.enables.cancel);
         end
 
     end

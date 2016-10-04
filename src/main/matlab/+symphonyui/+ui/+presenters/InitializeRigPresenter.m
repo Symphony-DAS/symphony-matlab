@@ -3,6 +3,7 @@ classdef InitializeRigPresenter < appbox.Presenter
     properties (Access = private)
         log
         settings
+        enables
         configurationService
     end
 
@@ -17,6 +18,7 @@ classdef InitializeRigPresenter < appbox.Presenter
 
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.InitializeRigSettings();
+            obj.enables = symphonyui.ui.util.trueStruct('selectDescription', 'initialize', 'cancel');
             obj.configurationService = configurationService;
         end
 
@@ -59,7 +61,9 @@ classdef InitializeRigPresenter < appbox.Presenter
             else
                 obj.view.setDescriptionList({'(None)'}, {[]});
             end
-            obj.view.enableSelectDescription(numel(classNames) > 0);
+            
+            obj.enables.selectDescription = ~isempty(classNames);
+            obj.view.enableSelectDescription(obj.enables.selectDescription);
         end
 
         function onViewKeyPress(obj, ~, event)
@@ -78,7 +82,7 @@ classdef InitializeRigPresenter < appbox.Presenter
 
             description = obj.view.getSelectedDescription();
             try
-                obj.enableControls(false);
+                obj.disableControls();
                 obj.view.startSpinner();
                 obj.view.update();
                 
@@ -88,7 +92,7 @@ classdef InitializeRigPresenter < appbox.Presenter
                 obj.view.showError(x.message);
                 obj.configurationService.initializeRig([]);
                 obj.view.stopSpinner();
-                obj.enableControls(true);
+                obj.updateStateOfControls();
                 return;
             end
 
@@ -106,17 +110,19 @@ classdef InitializeRigPresenter < appbox.Presenter
             obj.stop();
         end
         
-        function enableControls(obj, tf)
-            obj.view.enableSelectDescription(tf);
-            obj.view.enableInitialize(tf);
-            obj.view.enableCancel(tf);
+        function disableControls(obj)
+            obj.view.enableSelectDescription(false);
+            obj.view.enableInitialize(false);
+            obj.view.enableCancel(false);
         end
 
         function updateStateOfControls(obj)
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
-
-            obj.view.enableInitialize(hasDescription);
+            
+            obj.view.enableSelectDescription(obj.enables.selectDescription);
+            obj.view.enableInitialize(hasDescription && obj.enables.initialize);
+            obj.view.enableCancel(obj.enables.cancel);
         end
 
         function loadSettings(obj)

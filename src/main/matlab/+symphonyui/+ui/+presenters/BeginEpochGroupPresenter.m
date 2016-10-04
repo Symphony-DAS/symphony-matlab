@@ -3,6 +3,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
     properties (Access = private)
         log
         settings
+        enables
         documentationService
         initialParent
         initialSource
@@ -30,6 +31,8 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
             obj.log = log4m.LogManager.getLogger(class(obj));
             obj.settings = symphonyui.ui.settings.BeginEpochGroupSettings();
+            obj.enables = symphonyui.ui.util.trueStruct('selectParent', 'selectSource', 'selectDescription', ...
+                'carryForwardProperties', 'begin', 'cancel');
             obj.documentationService = documentationService;
             obj.initialParent = initialParent;
             obj.initialSource = initialSource;
@@ -82,7 +85,9 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             values = [{[]}, parents];
 
             obj.view.setParentList(names, values);
-            obj.view.enableSelectParent(numel(parents) > 0);
+            
+            obj.enables.selectParent = ~isempty(parents);
+            obj.view.enableSelectParent(obj.enables.selectParent);
         end
 
         function selectParent(obj, parent)
@@ -104,7 +109,9 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             else
                 obj.view.setSourceList({'(None)'}, {[]});
             end
-            obj.view.enableSelectSource(numel(sources) > 0);
+            
+            obj.enables.selectSource = ~isempty(sources);
+            obj.view.enableSelectSource(obj.enables.selectSource);
         end
 
         function selectSource(obj, source)
@@ -129,7 +136,9 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             else
                 obj.view.setDescriptionList({'(None)'}, {[]});
             end
-            obj.view.enableSelectDescription(numel(classNames) > 0);
+            
+            obj.enables.selectDescription = ~isempty(classNames);
+            obj.view.enableSelectDescription(obj.enables.selectDescription);
         end
 
         function onViewKeyPress(obj, ~, event)
@@ -155,9 +164,9 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             description = obj.view.getSelectedDescription();
             carryForwardProperties = obj.view.getCarryForwardProperties();
             try
-                obj.enableControls(false);
+                obj.disableControls()
                 obj.view.startSpinner();
-                obj.view.update();                
+                obj.view.update();
                 
                 while obj.documentationService.getCurrentEpochGroup() ~= parent
                     obj.documentationService.endEpochGroup();
@@ -167,7 +176,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
                 obj.view.stopSpinner();
-                obj.enableControls(true);
+                obj.updateStateOfControls();
                 return;
             end
 
@@ -185,12 +194,13 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             obj.stop();
         end
         
-        function enableControls(obj, tf)
-            obj.view.enableSelectParent(tf);
-            obj.view.enableSelectSource(tf);
-            obj.view.enableSelectDescription(tf);
-            obj.view.enableBegin(tf);
-            obj.view.enableCancel(tf);
+        function disableControls(obj)
+            obj.view.enableSelectParent(false);
+            obj.view.enableSelectSource(false);
+            obj.view.enableSelectDescription(false);
+            obj.view.enableCarryForwardProperties(false);
+            obj.view.enableBegin(false);
+            obj.view.enableCancel(false);
         end
 
         function updateStateOfControls(obj)
@@ -199,9 +209,13 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             descriptionList = obj.view.getDescriptionList();
             hasDescription = ~isempty(descriptionList{1});
             hasEpochGroup = ~isempty(obj.documentationService.getExperiment().getEpochGroups());
-
-            obj.view.enableCarryForwardProperties(hasEpochGroup);
-            obj.view.enableBegin(hasSource && hasDescription);
+            
+            obj.view.enableSelectParent(obj.enables.selectParent);
+            obj.view.enableSelectSource(obj.enables.selectSource);
+            obj.view.enableSelectDescription(obj.enables.selectDescription);
+            obj.view.enableCarryForwardProperties(hasEpochGroup && obj.enables.carryForwardProperties);
+            obj.view.enableBegin(hasSource && hasDescription && obj.enables.begin);
+            obj.view.enableCancel(obj.enables.cancel);
         end
 
         function loadSettings(obj)
