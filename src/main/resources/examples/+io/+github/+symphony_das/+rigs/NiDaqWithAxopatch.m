@@ -36,6 +36,10 @@ classdef NiDaqWithAxopatch < symphonyui.core.descriptions.RigDescription
                 'type', PropertyType('char', 'row', {'', 'low', 'medium', 'high'}));
             obj.addDevice(blue);
             
+            % Digital streams represent digital ports not individual digital lines. A port is a collection of lines. A 
+            % line is an individual signal that carries bit values (0s and 1s). To associate a device with a line you 
+            % must first bind the device to the port (i.e. stream), and then associate the device with a bit position 
+            % that signifies a line within the port.
             trigger1 = UnitConvertingDevice('Trigger1', symphonyui.core.Measurement.UNITLESS).bindStream(daq.getStream('doport0'));
             daq.getStream('doport0').setBitPosition(trigger1, 0);
             obj.addDevice(trigger1);

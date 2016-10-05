@@ -36,6 +36,11 @@ classdef HekaDaqWithAxopatch < symphonyui.core.descriptions.RigDescription
                 'type', PropertyType('char', 'row', {'', 'low', 'medium', 'high'}));
             obj.addDevice(blue);
 
+            % Digital streams represent digital ports not individual digital lines. A port is a collection of lines. A 
+            % line is an individual signal that carries bit values (0s and 1s). To associate a device with a line you 
+            % must first bind the device to the port (i.e. stream), and then associate the device with a bit position 
+            % that signifies a line within the port. Note: The ITC-18 front panel digital lines are in [di/do]port1, 
+            % not [di/do]port0.
             trigger1 = UnitConvertingDevice('Trigger1', symphonyui.core.Measurement.UNITLESS).bindStream(daq.getStream('doport1'));
             daq.getStream('doport1').setBitPosition(trigger1, 0);
             obj.addDevice(trigger1);

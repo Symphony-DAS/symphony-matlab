@@ -7,6 +7,8 @@ classdef NiDigitalDaqStream < symphonyui.core.DaqStream
         end
         
         function setBitPosition(obj, device, bit)
+            % Associates a bound device with a particular line of a port.
+            
             obj.tryCore(@()obj.cobj.BitPositions.Add(device.cobj, bit));
         end
         
