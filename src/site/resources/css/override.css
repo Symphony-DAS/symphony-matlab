@@ -1,6 +1,7 @@
 .content_container {
   padding: 0 0 0;
   border-bottom: 0;
+  overflow: hidden;
 }
 .container-fluid {
   padding-right: 0;
