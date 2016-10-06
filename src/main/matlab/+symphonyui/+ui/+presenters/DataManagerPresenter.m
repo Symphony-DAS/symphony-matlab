@@ -589,13 +589,16 @@ classdef DataManagerPresenter < appbox.Presenter
             % Protocol parameters
             map = map2pmap(blockSet.protocolParameters);
             try
-                properties = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                for i = 1:numel(fields)
+                    fields(i).DisplayName = appbox.humanize(fields(i).Name);
+                end
             catch x
-                properties = uiextras.jide.PropertyGridField.empty(0, 1);
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
-            obj.view.setEpochBlockProtocolParameters(properties);
+            obj.view.setEpochBlockProtocolParameters(fields);
 
             obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
 
@@ -649,6 +652,9 @@ classdef DataManagerPresenter < appbox.Presenter
             map = map2pmap(epochSet.protocolParameters);
             try
                 fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                for i = 1:numel(fields)
+                    fields(i).DisplayName = appbox.humanize(fields(i).Name);
+                end
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
@@ -709,6 +715,9 @@ classdef DataManagerPresenter < appbox.Presenter
             map = map2pmap(signalSet.getDeviceConfigurationMap());
             try
                 fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                for i = 1:numel(fields)
+                    fields(i).DisplayName = appbox.humanize(fields(i).Name);
+                end
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
