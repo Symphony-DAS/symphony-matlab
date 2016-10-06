@@ -25,7 +25,7 @@ classdef EpochBlockSet < symphonyui.core.persistent.collections.TimelineEntitySe
             end
             m = obj.objects{1}.protocolParameters;
             for i = 2:numel(obj.objects)
-                m = obj.intersectMaps(m, obj.objects{i}.protocolParameters);
+                m = appbox.intersectMaps(m, obj.objects{i}.protocolParameters);
             end
         end
         
