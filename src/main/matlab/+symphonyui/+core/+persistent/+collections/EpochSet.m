@@ -43,6 +43,17 @@ classdef EpochSet < symphonyui.core.persistent.collections.TimelineEntitySet
             end
         end
         
+        function m = getBackgroundMap(obj)
+            if isempty(obj.objects)
+                m = containers.Map();
+                return;
+            end
+            m = cellWrapValues(obj.objects{1}.getBackgroundMap());
+            for i = 2:numel(obj.objects)
+                m = obj.intersectMaps(m, cellWrapValues(obj.objects{i}.getBackgroundMap()), true);
+            end
+        end
+        
     end
     
 end

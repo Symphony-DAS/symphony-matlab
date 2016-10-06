@@ -69,7 +69,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(v, 'MergeEpochGroups', @obj.onViewSelectedMergeEpochGroups);
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
             obj.addListener(v, 'SelectedEpochGroupSource', @obj.onViewSelectedEpochGroupSource);
-            obj.addListener(v, 'SelectedEpochSignal', @obj.onViewSelectedEpochSignal);
+            obj.addListener(v, 'SelectedEpochSignals', @obj.onViewSelectedEpochSignals);
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
@@ -628,16 +628,21 @@ classdef DataManagerPresenter < appbox.Presenter
         function populateDetailsForEpochSet(obj, epochSet)
             responseMap = epochSet.getResponseMap();
             stimulusMap = epochSet.getStimulusMap();
+            backgroundMap = epochSet.getBackgroundMap();
 
-            names = [strcat(responseMap.keys, ' response'), strcat(stimulusMap.keys, ' stimulus')];
-            values = [responseMap.values, stimulusMap.values];
+            names = [ ...
+                strcat(responseMap.keys, ' response'), ...
+                strcat(stimulusMap.keys, ' stimulus'), ...
+                strcat(backgroundMap.keys, ' background')];
+            values = [responseMap.values, stimulusMap.values, backgroundMap.values];
+            obj.view.enableSelectEpochSignal(~isempty(names));
             if isempty(names)
                 names = {'(None)'};
                 values = {[]};
             end
             obj.view.setEpochSignalList(names, values);
 
-            obj.populateDetailsForSignals(obj.view.getSelectedEpochSignal());
+            obj.populateDetailsForSignals(obj.view.getSelectedEpochSignals());
 
             % Protocol parameters
             map = map2pmap(epochSet.protocolParameters);
@@ -670,13 +675,14 @@ classdef DataManagerPresenter < appbox.Presenter
             end
         end
 
-        function onViewSelectedEpochSignal(obj, ~, ~)
-            obj.populateDetailsForSignals(obj.view.getSelectedEpochSignal());
+        function onViewSelectedEpochSignals(obj, ~, ~)
+            obj.populateDetailsForSignals(obj.view.getSelectedEpochSignals());
         end
 
-        function populateDetailsForSignals(obj, signals)
+        function populateDetailsForSignals(obj, signals)            
             obj.view.clearEpochDataAxes();
 
+            signals = [signals{:}];
             ylabels = cell(1, numel(signals));
             llabels = cell(1, numel(signals));
             colorOrder = get(groot, 'defaultAxesColorOrder');
@@ -686,8 +692,9 @@ classdef DataManagerPresenter < appbox.Presenter
                 rate = s.getSampleRate();
                 xdata = (1:numel(ydata))/rate;
                 color = colorOrder(mod(i - 1, size(colorOrder, 1)) + 1, :);
+                type = appbox.class2display(class(s));
                 ylabels{i} = [s.device.name ' (' yunits ')'];
-                llabels{i} = datestr(s.epoch.startTime, 'HH:MM:SS:FFF');
+                llabels{i} = [datestr(s.epoch.startTime, 'HH:MM:SS:FFF') ' ' s.device.name ' ' lower(type{1})];
                 obj.view.addEpochDataLine(xdata, ydata, color);
             end
 
