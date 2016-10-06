@@ -18,6 +18,17 @@ classdef IoBase < symphonyui.core.persistent.Entity
         function b = get.epoch(obj)
             b = symphonyui.core.persistent.Epoch(obj.cobj.Epoch);
         end
+        
+        function m = getDeviceConfigurationMap(obj)
+            m = containers.Map();
+            spans = obj.cellArrayFromEnumerable(obj.cobj.ConfigurationSpans);
+            for i = 1:numel(spans)
+                nodes = obj.cellArrayFromEnumerable(spans{i}.Nodes);
+                for k = 1:numel(nodes)
+                    m = appbox.unionMaps(m, obj.mapFromKeyValueEnumerable(nodes{i}.Configuration));
+                end
+            end
+        end
 
     end
 

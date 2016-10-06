@@ -642,7 +642,8 @@ classdef DataManagerPresenter < appbox.Presenter
             end
             obj.view.setEpochSignalList(names, values);
 
-            obj.populateDetailsForSignals(obj.view.getSelectedEpochSignals());
+            signals = obj.view.getSelectedEpochSignals();
+            obj.populateDetailsForEpochSignalSet(symphonyui.core.persistent.collections.IoBaseSet([signals{:}]));
 
             % Protocol parameters
             map = map2pmap(epochSet.protocolParameters);
@@ -676,18 +677,18 @@ classdef DataManagerPresenter < appbox.Presenter
         end
 
         function onViewSelectedEpochSignals(obj, ~, ~)
-            obj.populateDetailsForSignals(obj.view.getSelectedEpochSignals());
+            signals = obj.view.getSelectedEpochSignals();
+            obj.populateDetailsForEpochSignalSet(symphonyui.core.persistent.collections.IoBaseSet([signals{:}]));
         end
 
-        function populateDetailsForSignals(obj, signals)            
+        function populateDetailsForEpochSignalSet(obj, signalSet)            
             obj.view.clearEpochDataAxes();
-
-            signals = [signals{:}];
-            ylabels = cell(1, numel(signals));
-            llabels = cell(1, numel(signals));
+            
+            ylabels = cell(1, signalSet.size);
+            llabels = cell(1, signalSet.size);
             colorOrder = get(groot, 'defaultAxesColorOrder');
-            for i = 1:numel(signals)
-                s = signals{i};
+            for i = 1:signalSet.size
+                s = signalSet.get(i);
                 [ydata, yunits] = s.getData();
                 rate = s.getSampleRate();
                 xdata = (1:numel(ydata))/rate;
@@ -703,6 +704,17 @@ classdef DataManagerPresenter < appbox.Presenter
             if numel(llabels) > 1
                 obj.view.addEpochDataLegend(llabels);
             end
+            
+            % Device configuration
+            map = map2pmap(signalSet.getDeviceConfigurationMap());
+            try
+                fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
+            catch x
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
+            obj.view.setEpochSignalConfiguration(fields);
         end
 
         function populateDetailsForHeterogeneousEntitySet(obj, entitySet)

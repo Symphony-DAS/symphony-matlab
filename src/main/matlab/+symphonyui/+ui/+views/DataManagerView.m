@@ -815,19 +815,6 @@ classdef DataManagerView < appbox.View
             node.setIcon(symphonyui.app.App.getResource('icons', 'epoch_warn.png'));
         end
 
-        function enableSelectEpochSignal(obj, tf)
-            set(obj.epochCard.signalListBox, 'Enable', appbox.onOff(tf));
-        end
-
-        function s = getSelectedEpochSignals(obj)
-            s = get(obj.epochCard.signalListBox, 'Value');
-        end
-
-        function setEpochSignalList(obj, names, values)
-            set(obj.epochCard.signalListBox, 'String', names);
-            set(obj.epochCard.signalListBox, 'Values', values);
-        end
-
         function clearEpochDataAxes(obj)
             cla(obj.epochCard.axes);
             legend(obj.epochCard.axes, 'off');
@@ -858,6 +845,23 @@ classdef DataManagerView < appbox.View
                 'Units', 'normalized', ...
                 'Position', get(groot, 'defaultAxesPosition'));
             set(fig, 'Visible', 'on');
+        end
+        
+        function enableSelectEpochSignal(obj, tf)
+            set(obj.epochCard.signalListBox, 'Enable', appbox.onOff(tf));
+        end
+
+        function s = getSelectedEpochSignals(obj)
+            s = get(obj.epochCard.signalListBox, 'Value');
+        end
+
+        function setEpochSignalList(obj, names, values)
+            set(obj.epochCard.signalListBox, 'String', names);
+            set(obj.epochCard.signalListBox, 'Values', values);
+        end
+        
+        function setEpochSignalConfiguration(obj, fields)
+            set(obj.epochCard.grid, 'Properties', fields);
         end
 
         function setEpochProtocolParameters(obj, fields)
