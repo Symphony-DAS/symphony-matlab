@@ -622,7 +622,12 @@ classdef DataManagerPresenter < appbox.Presenter
 
         function n = addEpochNode(obj, epoch)
             parent = obj.uuidToNode(epoch.epochBlock.uuid);
-            n = obj.view.addEpochNode(parent, datestr(epoch.startTime, 'HH:MM:SS:FFF'), epoch);
+            name = datestr(epoch.startTime, 'HH:MM:SS:FFF');
+            parameters = appbox.mapstr(epoch.protocolParameters);
+            if ~isempty(parameters)
+                name = [name ' [' parameters ']'];
+            end
+            n = obj.view.addEpochNode(parent, name, epoch);
             obj.uuidToNode(epoch.uuid) = n;
 
             obj.updateNodeStateForEpochSet(symphonyui.core.persistent.collections.EpochSet(epoch));
