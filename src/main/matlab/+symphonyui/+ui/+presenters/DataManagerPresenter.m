@@ -69,7 +69,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(v, 'MergeEpochGroups', @obj.onViewSelectedMergeEpochGroups);
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
             obj.addListener(v, 'SelectedEpochGroupSource', @obj.onViewSelectedEpochGroupSource);
-            obj.addListener(v, 'SelectedEpochSignal', @obj.onViewSelectedEpochSignal);
+            obj.addListener(v, 'SelectedEpochSignals', @obj.onViewSelectedEpochSignals);
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
@@ -589,13 +589,16 @@ classdef DataManagerPresenter < appbox.Presenter
             % Protocol parameters
             map = map2pmap(blockSet.protocolParameters);
             try
-                properties = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                for i = 1:numel(fields)
+                    fields(i).DisplayName = appbox.humanize(fields(i).Name);
+                end
             catch x
-                properties = uiextras.jide.PropertyGridField.empty(0, 1);
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
-            obj.view.setEpochBlockProtocolParameters(properties);
+            obj.view.setEpochBlockProtocolParameters(fields);
 
             obj.view.setCardSelection(obj.view.EPOCH_BLOCK_CARD);
 
@@ -628,21 +631,30 @@ classdef DataManagerPresenter < appbox.Presenter
         function populateDetailsForEpochSet(obj, epochSet)
             responseMap = epochSet.getResponseMap();
             stimulusMap = epochSet.getStimulusMap();
+            backgroundMap = epochSet.getBackgroundMap();
 
-            names = [strcat(responseMap.keys, ' response'), strcat(stimulusMap.keys, ' stimulus')];
-            values = [responseMap.values, stimulusMap.values];
+            names = [ ...
+                strcat(responseMap.keys, ' response'), ...
+                strcat(stimulusMap.keys, ' stimulus'), ...
+                strcat(backgroundMap.keys, ' background')];
+            values = [responseMap.values, stimulusMap.values, backgroundMap.values];
+            obj.view.enableSelectEpochSignal(~isempty(names));
             if isempty(names)
                 names = {'(None)'};
                 values = {[]};
             end
             obj.view.setEpochSignalList(names, values);
 
-            obj.populateDetailsForSignals(obj.view.getSelectedEpochSignal());
+            signals = obj.view.getSelectedEpochSignals();
+            obj.populateDetailsForEpochSignalSet(symphonyui.core.persistent.collections.IoBaseSet([signals{:}]));
 
             % Protocol parameters
             map = map2pmap(epochSet.protocolParameters);
             try
                 fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                for i = 1:numel(fields)
+                    fields(i).DisplayName = appbox.humanize(fields(i).Name);
+                end
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
@@ -670,24 +682,26 @@ classdef DataManagerPresenter < appbox.Presenter
             end
         end
 
-        function onViewSelectedEpochSignal(obj, ~, ~)
-            obj.populateDetailsForSignals(obj.view.getSelectedEpochSignal());
+        function onViewSelectedEpochSignals(obj, ~, ~)
+            signals = obj.view.getSelectedEpochSignals();
+            obj.populateDetailsForEpochSignalSet(symphonyui.core.persistent.collections.IoBaseSet([signals{:}]));
         end
 
-        function populateDetailsForSignals(obj, signals)
+        function populateDetailsForEpochSignalSet(obj, signalSet)            
             obj.view.clearEpochDataAxes();
-
-            ylabels = cell(1, numel(signals));
-            llabels = cell(1, numel(signals));
+            
+            ylabels = cell(1, signalSet.size);
+            llabels = cell(1, signalSet.size);
             colorOrder = get(groot, 'defaultAxesColorOrder');
-            for i = 1:numel(signals)
-                s = signals{i};
+            for i = 1:signalSet.size
+                s = signalSet.get(i);
                 [ydata, yunits] = s.getData();
                 rate = s.getSampleRate();
                 xdata = (1:numel(ydata))/rate;
                 color = colorOrder(mod(i - 1, size(colorOrder, 1)) + 1, :);
+                type = appbox.class2display(class(s));
                 ylabels{i} = [s.device.name ' (' yunits ')'];
-                llabels{i} = datestr(s.epoch.startTime, 'HH:MM:SS:FFF');
+                llabels{i} = [datestr(s.epoch.startTime, 'HH:MM:SS:FFF') ' ' s.device.name ' ' lower(type{1})];
                 obj.view.addEpochDataLine(xdata, ydata, color);
             end
 
@@ -696,6 +710,20 @@ classdef DataManagerPresenter < appbox.Presenter
             if numel(llabels) > 1
                 obj.view.addEpochDataLegend(llabels);
             end
+            
+            % Device configuration
+            map = map2pmap(signalSet.getDeviceConfigurationMap());
+            try
+                fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
+                for i = 1:numel(fields)
+                    fields(i).DisplayName = appbox.humanize(fields(i).Name);
+                end
+            catch x
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
+            obj.view.setEpochSignalConfiguration(fields);
         end
 
         function populateDetailsForHeterogeneousEntitySet(obj, entitySet)
@@ -985,7 +1013,8 @@ classdef DataManagerPresenter < appbox.Presenter
             result = obj.view.showMessage( ...
                 ['Are you sure you want to delete ''' strjoin(names, ',') '''?'], 'Delete Entity', ...
                 'button1', 'Cancel', ...
-                'button2', 'Delete');
+                'button2', 'Delete', ...
+                'width', 300);
             if ~strcmp(result, 'Delete')
                 return;
             end

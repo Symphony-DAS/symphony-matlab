@@ -61,10 +61,10 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             end
             d = obj.objects{1}.getConfigurationSettingDescriptors();
             for i = 2:numel(obj.objects)
-                d = obj.intersect(d, obj.objects{i}.getConfigurationSettingDescriptors());
+                d = appbox.intersect(d, obj.objects{i}.getConfigurationSettingDescriptors());
             end
         end
-        
+
         function s = get.inputStreams(obj)
             warning('The inputStreams property is deprecated. Use getInputStreams().');
             s = obj.getInputStreams();
@@ -77,7 +77,7 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             end
             s = obj.objects{1}.getInputStreams();
             for i = 2:numel(obj.objects)
-                s = obj.intersect(s, obj.objects{i}.getInputStreams());
+                s = appbox.intersect(s, obj.objects{i}.getInputStreams());
             end
         end
 
@@ -90,7 +90,7 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
                 end
             end
         end
-        
+
         function s = get.outputStreams(obj)
             warning('The outputStreams property is deprecated. Use getOutputStreams().');
             s = obj.getOutputStreams();
@@ -103,7 +103,7 @@ classdef DeviceSet < symphonyui.core.collections.ObjectSet
             end
             s = obj.objects{1}.getOutputStreams();
             for i = 2:numel(obj.objects)
-                s = obj.intersect(s, obj.objects{i}.getOutputStreams());
+                s = appbox.intersect(s, obj.objects{i}.getOutputStreams());
             end
         end
 

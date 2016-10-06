@@ -17,7 +17,7 @@ classdef EpochSet < symphonyui.core.persistent.collections.TimelineEntitySet
             end
             m = obj.objects{1}.protocolParameters;
             for i = 2:numel(obj.objects)
-                m = obj.intersectMaps(m, obj.objects{i}.protocolParameters);
+                m = appbox.intersectMaps(m, obj.objects{i}.protocolParameters);
             end
         end
         
@@ -28,7 +28,7 @@ classdef EpochSet < symphonyui.core.persistent.collections.TimelineEntitySet
             end
             m = cellWrapValues(obj.objects{1}.getStimulusMap());
             for i = 2:numel(obj.objects)
-                m = obj.intersectMaps(m, cellWrapValues(obj.objects{i}.getStimulusMap()), true);
+                m = appbox.intersectMaps(m, cellWrapValues(obj.objects{i}.getStimulusMap()), true);
             end
         end
         
@@ -39,7 +39,18 @@ classdef EpochSet < symphonyui.core.persistent.collections.TimelineEntitySet
             end
             m = cellWrapValues(obj.objects{1}.getResponseMap());
             for i = 2:numel(obj.objects)
-                m = obj.intersectMaps(m, cellWrapValues(obj.objects{i}.getResponseMap()), true);
+                m = appbox.intersectMaps(m, cellWrapValues(obj.objects{i}.getResponseMap()), true);
+            end
+        end
+        
+        function m = getBackgroundMap(obj)
+            if isempty(obj.objects)
+                m = containers.Map();
+                return;
+            end
+            m = cellWrapValues(obj.objects{1}.getBackgroundMap());
+            for i = 2:numel(obj.objects)
+                m = appbox.intersectMaps(m, cellWrapValues(obj.objects{i}.getBackgroundMap()), true);
             end
         end
         

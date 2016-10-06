@@ -17,6 +17,14 @@ classdef Background < symphonyui.core.persistent.IoBase
             q = double(System.Decimal.ToDouble(s.Quantity));
             u = char(s.DisplayUnits);
         end
+        
+        function [q, u] = getData(obj)
+            epoch = obj.epoch;
+            d = epoch.endTime - epoch.startTime;
+            [v, u] = obj.getValue();
+            s = double(System.Decimal.ToDouble(obj.cobj.SampleRate.QuantityInBaseUnits));
+            q = v * ones(1, round(s * milliseconds(d) / 1000));
+        end
 
     end
 

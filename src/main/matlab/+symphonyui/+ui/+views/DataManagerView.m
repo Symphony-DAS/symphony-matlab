@@ -12,7 +12,7 @@ classdef DataManagerView < appbox.View
         MergeEpochGroups
         SetEpochGroupLabel
         SelectedEpochGroupSource
-        SelectedEpochSignal
+        SelectedEpochSignals
         SetProperty
         AddProperty
         RemoveProperty
@@ -69,7 +69,7 @@ classdef DataManagerView < appbox.View
 
             set(obj.figureHandle, ...
                 'Name', 'Data Manager', ...
-                'Position', screenCenter(611, 450));
+                'Position', screenCenter(800, 520));
 
             obj.toolbar = Menu(obj.figureHandle);
             obj.configureDevicesTool = obj.toolbar.addPushTool( ...
@@ -323,22 +323,22 @@ classdef DataManagerView < appbox.View
             epochLayout = uix.VBox( ...
                 'Parent', obj.detailCardPanel, ...
                 'Spacing', 7);
-            epochGrid = uix.Grid( ...
+            signalLayout = uix.HBox( ...
                 'Parent', epochLayout, ...
                 'Spacing', 7);
-            Label( ...
-                'Parent', epochGrid, ...
-                'String', 'Plotted signal:');
-            obj.epochCard.signalPopupMenu = MappedPopupMenu( ...
-                'Parent', epochGrid, ...
-                'String', {' '}, ...
-                'HorizontalAlignment', 'left', ...
-                'Callback', @(h,d)notify(obj, 'SelectedEpochSignal'));
-            set(epochGrid, ...
-                'Widths', [80 -1], ...
-                'Heights', 23);
+            signalMasterLayout = uix.VBox( ...
+                'Parent', signalLayout);
+            obj.epochCard.signalListBox = MappedListBox( ...
+                'Parent', signalMasterLayout, ...
+                'Max', 10, ...
+                'Min', 1, ...
+                'Enable', 'off', ...
+                'Callback', @(h,d)notify(obj, 'SelectedEpochSignals'));
+            signalDetailLayout = uix.VBox( ...
+                'Parent', signalLayout, ...
+                'Spacing', 7);
             obj.epochCard.panel = uipanel( ...
-                'Parent', epochLayout, ...
+                'Parent', signalDetailLayout, ...
                 'BorderType', 'line', ...
                 'HighlightColor', [130/255 135/255 144/255], ...
                 'BackgroundColor', 'w');
@@ -351,12 +351,16 @@ classdef DataManagerView < appbox.View
                 'Callback', @(h,d)notify(obj, 'OpenAxesInNewWindow'));
             set(obj.epochCard.axes, 'UIContextMenu', axesMenu);
             set(obj.epochCard.panel, 'UIContextMenu', axesMenu);
+            obj.epochCard.grid = uiextras.jide.PropertyGrid(signalDetailLayout, ...
+                'EditorStyle', 'readonly');
+            set(signalDetailLayout, 'Heights', [-2 -1]);
+            set(signalLayout, 'Widths', [-1 -2]);
             obj.epochCard.annotationsLayout = uix.VBox( ...
                 'Parent', epochLayout);
             obj.epochCard.presetLayout = uix.VBox( ...
                 'Parent', epochLayout);
             set(epochLayout, ...
-                'Heights', [layoutHeight(epochGrid) -1 -1 23]);
+                'Heights', [-2 -1 23]);
 
             % Tab group.
             obj.tabGroup = TabGroup( ...
@@ -496,7 +500,7 @@ classdef DataManagerView < appbox.View
             end
             set(obj.presetPopupMenu, 'GetJControlFcn', @getPresetMenuJControl);
 
-            set(mainLayout, 'Widths', [-1 -2]);
+            set(mainLayout, 'Widths', [-1 -2.5]);
         end
 
         function show(obj)
@@ -811,23 +815,6 @@ classdef DataManagerView < appbox.View
             node.setIcon(symphonyui.app.App.getResource('icons', 'epoch_warn.png'));
         end
 
-        function enableSelectEpochSignal(obj, tf)
-            set(obj.epochCard.signalPopupMenu, 'Enable', appbox.onOff(tf));
-        end
-
-        function s = getSelectedEpochSignal(obj)
-            s = get(obj.epochCard.signalPopupMenu, 'Value');
-        end
-
-        function setSelectedEpochSignal(obj, s)
-            set(obj.epochCard.signalPopupMenu, 'Value', s);
-        end
-
-        function setEpochSignalList(obj, names, values)
-            set(obj.epochCard.signalPopupMenu, 'String', names);
-            set(obj.epochCard.signalPopupMenu, 'Values', values);
-        end
-
         function clearEpochDataAxes(obj)
             cla(obj.epochCard.axes);
             legend(obj.epochCard.axes, 'off');
@@ -858,6 +845,23 @@ classdef DataManagerView < appbox.View
                 'Units', 'normalized', ...
                 'Position', get(groot, 'defaultAxesPosition'));
             set(fig, 'Visible', 'on');
+        end
+        
+        function enableSelectEpochSignal(obj, tf)
+            set(obj.epochCard.signalListBox, 'Enable', appbox.onOff(tf));
+        end
+
+        function s = getSelectedEpochSignals(obj)
+            s = get(obj.epochCard.signalListBox, 'Value');
+        end
+
+        function setEpochSignalList(obj, names, values)
+            set(obj.epochCard.signalListBox, 'String', names);
+            set(obj.epochCard.signalListBox, 'Values', values);
+        end
+        
+        function setEpochSignalConfiguration(obj, fields)
+            set(obj.epochCard.grid, 'Properties', fields);
         end
 
         function setEpochProtocolParameters(obj, fields)

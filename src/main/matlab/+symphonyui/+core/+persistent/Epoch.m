@@ -60,6 +60,14 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
         function b = getBackgrounds(obj)
             b = obj.cellArrayFromEnumerable(obj.cobj.Backgrounds, @symphonyui.core.persistent.Background);
         end
+        
+        function m = getBackgroundMap(obj)
+            m = containers.Map();
+            b = obj.getBackgrounds();
+            for i = 1:numel(b)
+                m(b{i}.device.name) = b{i};
+            end
+        end
 
         function b = get.epochBlock(obj)
             b = symphonyui.core.persistent.EpochBlock(obj.cobj.EpochBlock);

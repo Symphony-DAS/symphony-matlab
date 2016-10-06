@@ -49,7 +49,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             end
             m = obj.objects{1}.getPropertyMap();
             for i = 2:numel(obj.objects)
-                m = obj.intersectMaps(m, obj.objects{i}.getPropertyMap());
+                m = appbox.intersectMaps(m, obj.objects{i}.getPropertyMap());
             end
         end
 
@@ -68,7 +68,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             end
             d = obj.objects{1}.getPropertyDescriptors();
             for i = 2:numel(obj.objects)
-                d = obj.intersect(d, obj.objects{i}.getPropertyDescriptors());
+                d = appbox.intersect(d, obj.objects{i}.getPropertyDescriptors());
             end
         end
 
@@ -79,7 +79,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             end
             k = obj.objects{1}.keywords;
             for i = 2:numel(obj.objects)
-                k = obj.intersect(k, obj.objects{i}.keywords);
+                k = appbox.intersect(k, obj.objects{i}.keywords);
             end
         end
 
@@ -98,7 +98,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
                 tf = tf || removed;
             end
         end
-        
+
         function n = get.notes(obj)
             warning('The notes property is deprecated. Use getNotes().');
             n = obj.getNotes();
@@ -111,7 +111,7 @@ classdef EntitySet < symphonyui.core.collections.ObjectSet
             end
             n = obj.objects{1}.getNotes();
             for i = 2:numel(obj.objects)
-                n = obj.intersect(n, obj.objects{i}.getNotes());
+                n = appbox.intersect(n, obj.objects{i}.getNotes());
             end
         end
 
