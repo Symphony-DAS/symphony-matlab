@@ -344,6 +344,10 @@ classdef DataManagerView < appbox.View
                 'BackgroundColor', 'w');
             obj.epochCard.axes = axes( ...
                 'Parent', obj.epochCard.panel);
+            yyaxis(obj.epochCard.axes, 'right');
+            set(obj.epochCard.axes, 'YColor', 'black');
+            yyaxis(obj.epochCard.axes, 'left');
+            set(obj.epochCard.axes, 'YColor', 'black');
             axesMenu = uicontextmenu('Parent', obj.figureHandle);
             uimenu( ...
                 'Parent', axesMenu, ...
@@ -816,18 +820,47 @@ classdef DataManagerView < appbox.View
         end
 
         function clearEpochDataAxes(obj)
+            yyaxis(obj.epochCard.axes, 'left');
+            cla(obj.epochCard.axes);
+            yyaxis(obj.epochCard.axes, 'right');
             cla(obj.epochCard.axes);
             legend(obj.epochCard.axes, 'off');
         end
 
-        function setEpochDataAxesLabels(obj, x, y)
-            xlabel(obj.epochCard.axes, x, ...
-                'Interpreter', 'none');
-            ylabel(obj.epochCard.axes, y, ...
-                'Interpreter', 'none');
+        function setEpochDataXLabel(obj, label)
+            xlabel(obj.epochCard.axes, label, ...
+                'Interpreter', 'tex');
+        end
+        
+        function setEpochDataYLabel(obj, label, lr)
+            if nargin < 3
+                lr = 'left';
+            end
+            yyaxis(obj.epochCard.axes, lr);
+            ylabel(obj.epochCard.axes, label, ...
+                'Interpreter', 'tex');
+        end
+        
+        function setEpochDataYAxisVisible(obj, tf, lr)
+            if nargin < 3
+                lr = 'left';
+            end
+            yaxis = get(obj.epochCard.axes, 'YAxis');
+            if strcmp(lr, 'left')
+                i = 1;
+            elseif strcmp(lr, 'right')
+                i = 2;
+            else
+                error('lr must be left or right');
+            end
+            set(yaxis(i), 'Visible', appbox.onOff(tf));
         end
 
-        function addEpochDataLine(obj, x, y, color)
+        function addEpochDataLine(obj, x, y, color, lr)
+            if nargin < 5
+                lr = 'left';
+            end
+            yyaxis(obj.epochCard.axes, lr);
             line(x, y, 'Parent', obj.epochCard.axes, 'Color', color);
         end
 

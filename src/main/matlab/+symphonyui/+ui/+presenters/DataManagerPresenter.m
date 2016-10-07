@@ -695,7 +695,8 @@ classdef DataManagerPresenter < appbox.Presenter
         function populateDetailsForEpochSignalSet(obj, signalSet)            
             obj.view.clearEpochDataAxes();
             
-            ylabels = cell(1, signalSet.size);
+            inYLabels = {};
+            outYLabels = {};
             llabels = cell(1, signalSet.size);
             colorOrder = get(groot, 'defaultAxesColorOrder');
             for i = 1:signalSet.size
@@ -704,14 +705,39 @@ classdef DataManagerPresenter < appbox.Presenter
                 rate = s.getSampleRate();
                 xdata = (1:numel(ydata))/rate;
                 color = colorOrder(mod(i - 1, size(colorOrder, 1)) + 1, :);
+                label = [s.device.name ' (' strrep(yunits, '_', '\_') ')'];
+                if isa(s, 'symphonyui.core.persistent.Response')
+                    inYLabels{end + 1} = label; %#ok<AGROW>
+                    obj.view.addEpochDataLine(xdata, ydata, color, 'left');
+                else
+                    outYLabels{end + 1} = label; %#ok<AGROW>
+                    obj.view.addEpochDataLine(xdata, ydata, color, 'right');
+                end
                 type = appbox.class2display(class(s));
-                ylabels{i} = [s.device.name ' (' yunits ')'];
                 llabels{i} = [datestr(s.epoch.startTime, 'HH:MM:SS:FFF') ' ' s.device.name ' ' lower(type{1})];
-                obj.view.addEpochDataLine(xdata, ydata, color);
             end
 
-            obj.view.setEpochDataAxesLabels('Time (s)', strjoin(unique(ylabels), ', '));
-
+            obj.view.setEpochDataXLabel('Time (s)');
+            
+            rightYLabel = '';
+            rightYAxisVisible = false;
+            if ~isempty(inYLabels) && ~isempty(outYLabels)
+                leftYLabel = ['\bfIn:\rm ' strjoin(unique(inYLabels), ', ')];
+                rightYLabel = ['\bfOut:\rm ' strjoin(unique(outYLabels), ', ')];
+                leftYAxisVisible = true;
+                rightYAxisVisible = true;
+            elseif ~isempty(inYLabels)
+                leftYLabel = strjoin(unique(inYLabels), ', ');
+                leftYAxisVisible = true;
+            else
+                leftYLabel = strjoin(unique(outYLabels), ', ');
+                leftYAxisVisible = true;
+            end
+            obj.view.setEpochDataYLabel(leftYLabel, 'left');
+            obj.view.setEpochDataYLabel(rightYLabel, 'right');
+            obj.view.setEpochDataYAxisVisible(leftYAxisVisible, 'left');
+            obj.view.setEpochDataYAxisVisible(rightYAxisVisible, 'right');
+                
             if numel(llabels) > 1
                 obj.view.addEpochDataLegend(llabels);
             end
