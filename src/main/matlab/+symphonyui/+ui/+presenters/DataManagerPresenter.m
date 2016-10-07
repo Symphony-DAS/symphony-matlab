@@ -82,7 +82,6 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(v, 'ManagePresets', @obj.onViewSelectedManagePresets);
             obj.addListener(v, 'SendEntityToWorkspace', @obj.onViewSelectedSendEntityToWorkspace);
             obj.addListener(v, 'DeleteEntity', @obj.onViewSelectedDeleteEntity);
-            obj.addListener(v, 'OpenAxesInNewWindow', @obj.onViewSelectedOpenAxesInNewWindow);
 
             d = obj.documentationService;
             obj.addListener(d, 'AddedSource', @obj.onServiceAddedSource);
@@ -1074,10 +1073,6 @@ classdef DataManagerPresenter < appbox.Presenter
             entitySet = obj.getSelectedEntitySet();
             obj.populateDetailsForEntitySet(entitySet);
             obj.updateStateOfControls();
-        end
-
-        function onViewSelectedOpenAxesInNewWindow(obj, ~, ~)
-            obj.view.openEpochDataAxesInNewWindow();
         end
 
         function onServiceChangedControllerState(obj, ~, ~)

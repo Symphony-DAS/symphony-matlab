@@ -25,7 +25,6 @@ classdef DataManagerView < appbox.View
         ManagePresets
         SendEntityToWorkspace
         DeleteEntity
-        OpenAxesInNewWindow
     end
 
     properties (Access = private)
@@ -348,13 +347,6 @@ classdef DataManagerView < appbox.View
             set(obj.epochCard.axes, 'YColor', 'black');
             yyaxis(obj.epochCard.axes, 'left');
             set(obj.epochCard.axes, 'YColor', 'black');
-            axesMenu = uicontextmenu('Parent', obj.figureHandle);
-            uimenu( ...
-                'Parent', axesMenu, ...
-                'Label', 'Open in new window', ...
-                'Callback', @(h,d)notify(obj, 'OpenAxesInNewWindow'));
-            set(obj.epochCard.axes, 'UIContextMenu', axesMenu);
-            set(obj.epochCard.panel, 'UIContextMenu', axesMenu);
             obj.epochCard.grid = uiextras.jide.PropertyGrid(signalDetailLayout, ...
                 'EditorStyle', 'readonly');
             set(signalDetailLayout, 'Heights', [-2 -1]);
@@ -866,18 +858,6 @@ classdef DataManagerView < appbox.View
 
         function addEpochDataLegend(obj, str)
             legend(obj.epochCard.axes, str);
-        end
-
-        function openEpochDataAxesInNewWindow(obj)
-            fig = figure( ...
-                'MenuBar', 'figure', ...
-                'Toolbar', 'figure', ...
-                'Visible', 'off');
-            axes = copyobj(obj.epochCard.axes, fig);
-            set(axes, ...
-                'Units', 'normalized', ...
-                'Position', get(groot, 'defaultAxesPosition'));
-            set(fig, 'Visible', 'on');
         end
         
         function enableSelectEpochSignal(obj, tf)
