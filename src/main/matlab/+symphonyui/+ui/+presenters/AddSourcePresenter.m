@@ -29,11 +29,14 @@ classdef AddSourcePresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function willGo(obj, ~, ~)
+        function willGo(obj)
             obj.populateParentList();
             obj.populateDescriptionList();
-            obj.selectParent(obj.initialParent);
         end
+        
+        function didGo(obj)
+            obj.selectParent(obj.initialParent);
+        end            
 
         function bind(obj)
             bind@appbox.Presenter(obj);

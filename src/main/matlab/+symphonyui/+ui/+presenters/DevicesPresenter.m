@@ -24,7 +24,7 @@ classdef DevicesPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function willGo(obj, ~, ~)
+        function willGo(obj)
             obj.populateDeviceList();
             obj.updateStateOfControls();
         end

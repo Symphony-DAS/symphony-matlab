@@ -29,9 +29,12 @@ classdef SplitEpochGroupPresenter < appbox.Presenter
     
     methods (Access = protected)
 
-        function willGo(obj, ~, ~)
+        function willGo(obj)
             obj.populateGroupList();
             obj.populateBlockList();
+        end
+        
+        function didGo(obj)
             obj.selectGroup(obj.initialGroup);
         end
 

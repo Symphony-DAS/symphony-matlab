@@ -26,7 +26,7 @@ classdef InitializeRigPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function willGo(obj, ~, ~)
+        function willGo(obj)
             obj.populateDescriptionList();
             try
                 obj.loadSettings();

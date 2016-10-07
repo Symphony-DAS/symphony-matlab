@@ -29,9 +29,12 @@ classdef MergeEpochGroupsPresenter < appbox.Presenter
     
     methods (Access = protected)
 
-        function willGo(obj, ~, ~)
+        function willGo(obj)
             obj.populateGroup1List();
             obj.populateGroup2List();
+        end
+        
+        function didGo(obj)
             obj.selectGroup1(obj.initialGroup1);
         end
 

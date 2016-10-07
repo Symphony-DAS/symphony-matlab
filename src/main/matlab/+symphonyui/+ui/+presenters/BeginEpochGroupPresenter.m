@@ -42,7 +42,7 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
 
     methods (Access = protected)
 
-        function willGo(obj, ~, ~)
+        function willGo(obj)
             obj.populateParentList();
             obj.populateSourceList();
             obj.populateDescriptionList();
@@ -51,10 +51,13 @@ classdef BeginEpochGroupPresenter < appbox.Presenter
             catch x
                 obj.log.debug(['Failed to load presenter settings: ' x.message], x);
             end
+        end
+        
+        function didGo(obj)
             obj.selectParent(obj.initialParent);
             obj.selectSource(obj.initialSource);
         end
-
+        
         function bind(obj)
             bind@appbox.Presenter(obj);
 
