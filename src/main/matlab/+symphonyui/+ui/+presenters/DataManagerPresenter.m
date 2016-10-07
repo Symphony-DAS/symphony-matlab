@@ -742,7 +742,7 @@ classdef DataManagerPresenter < appbox.Presenter
             end
             
             % Device configuration
-            map = map2pmap(signalSet.getDeviceConfigurationMap());
+            map = map2pmap(signalSet.getConfigurationMap());
             try
                 fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
                 for i = 1:numel(fields)

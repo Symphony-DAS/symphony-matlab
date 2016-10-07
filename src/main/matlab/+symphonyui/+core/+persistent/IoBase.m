@@ -19,7 +19,7 @@ classdef IoBase < symphonyui.core.persistent.Entity
             b = symphonyui.core.persistent.Epoch(obj.cobj.Epoch);
         end
         
-        function m = getDeviceConfigurationMap(obj)
+        function m = getConfigurationMap(obj)
             m = containers.Map();
             spans = obj.cellArrayFromEnumerable(obj.cobj.ConfigurationSpans);
             for i = 1:numel(spans)
