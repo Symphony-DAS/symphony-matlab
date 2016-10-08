@@ -28,20 +28,19 @@ classdef Device < symphonyui.core.CoreObject
         outputStreams   % Cell array of bound output streams
     end
 
-    properties (Access = private)
-        configurationSettingDescriptors
-    end
-
     properties (SetObservable)
         sampleRate  % Common input and output sample rate (Measurement)
         background  % Background applied to bound output streams when stopped (Measurement)
+    end
+    
+    properties (Constant)
+        CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME = 'configurationSettingDescriptors';
     end
 
     methods
 
         function obj = Device(cobj)
             obj@symphonyui.core.CoreObject(cobj);
-            obj.configurationSettingDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
         end
 
         function delete(obj)
@@ -70,7 +69,7 @@ classdef Device < symphonyui.core.CoreObject
             end
             descriptors(end + 1) = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
             obj.tryCore(@()obj.cobj.Configuration.Add(name, obj.propertyValueFromValue(value)));
-            obj.configurationSettingDescriptors = descriptors;
+            obj.updateConfigurationSettingDescriptorsResource(descriptors);
         end
 
         function setConfigurationSetting(obj, name, value)
@@ -87,7 +86,7 @@ classdef Device < symphonyui.core.CoreObject
             end
             d.value = value;
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
-            obj.configurationSettingDescriptors = descriptors;
+            obj.updateConfigurationSettingDescriptorsResource(descriptors);
             notify(obj, 'SetConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
 
@@ -116,11 +115,16 @@ classdef Device < symphonyui.core.CoreObject
             end
             descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.Configuration.Remove(name));
-            obj.configurationSettingDescriptors = descriptors;
+            obj.updateConfigurationSettingDescriptorsResource(descriptors);
         end
 
         function d = getConfigurationSettingDescriptors(obj)
-            d = obj.configurationSettingDescriptors;
+            if any(strcmp(obj.getResourceNames(), obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME))
+                d = obj.getResource(obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME);
+            else
+                d = symphonyui.core.PropertyDescriptor.empty(0, 1);
+                obj.addResource(obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME, d);
+            end
         end
 
         function addResource(obj, name, variable)
@@ -128,6 +132,15 @@ classdef Device < symphonyui.core.CoreObject
             
             bytes = getByteStreamFromArray(variable);
             obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.byte-stream', name, bytes));
+        end
+        
+        function tf = removeResource(obj, name)
+            % Removes a resource from this device
+            
+            if strcmp(name, obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME)
+                error('Cannot remove configuration setting descriptors resource');
+            end
+            tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(name));
         end
 
         function v = getResource(obj, name)
@@ -227,7 +240,16 @@ classdef Device < symphonyui.core.CoreObject
             end
             d.value = value;
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
-            obj.configurationSettingDescriptors = descriptors;
+            obj.updateConfigurationSettingDescriptorsResource(descriptors);
+        end
+
+    end
+    
+    methods (Access = private)
+
+        function updateConfigurationSettingDescriptorsResource(obj, descriptors)
+            obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME));
+            obj.addResource(obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME, descriptors);
         end
 
     end

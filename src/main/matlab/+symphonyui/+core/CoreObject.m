@@ -163,9 +163,15 @@ classdef (Abstract) CoreObject < handle
         end
         
         function v = valueFromPropertyValue(obj, v) %#ok<INUSL>
-            if ischar(v) && ~isempty(regexp(v, '^\s*(?:\[.+\])|(?:\{.+\})\s*$', 'once'))
-                try %#ok<TRYNC>
-                    v = loadjson(v);
+            if ischar(v)
+                if strcmp(v, 'null')
+                    v = [];
+                elseif strcmp(v, '[]')
+                    v = {};
+                elseif ~isempty(regexp(v, '^\s*(?:\[.+\])|(?:\{.+\})\s*$', 'once'))
+                    try %#ok<TRYNC>
+                        v = loadjson(v);
+                    end
                 end
             end
         end

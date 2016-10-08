@@ -70,6 +70,7 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
             obj.addListener(v, 'SelectedEpochGroupSource', @obj.onViewSelectedEpochGroupSource);
             obj.addListener(v, 'SelectedEpochSignals', @obj.onViewSelectedEpochSignals);
+            obj.addListener(v, 'SetEpochSignalConfigurationSetting', @obj.onViewSetSetEpochSignalConfigurationSetting);
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
@@ -741,19 +742,42 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.addEpochDataLegend(llabels);
             end
             
-            % Device configuration
-            map = map2pmap(signalSet.getConfigurationMap());
+            obj.populateEpochSignalConfigurationForSignalSet(signalSet);
+        end
+        
+        function onViewSetSetEpochSignalConfigurationSetting(obj, ~, event)
+            p = event.data.Property;
+            signals = obj.view.getSelectedEpochSignals();
+            signalSet = symphonyui.core.persistent.collections.IoBaseSet([signals{:}]);
             try
-                fields = uiextras.jide.PropertyGridField.GenerateFrom(map);
-                for i = 1:numel(fields)
-                    fields(i).DisplayName = appbox.humanize(fields(i).Name);
-                end
+                signalSet.setConfigurationSetting(p.Name, p.Value);
+            catch x
+                obj.view.showError(x.message);
+                return;
+            end
+            obj.updateEpochSignalConfigurationForSignalSet(signalSet);
+        end
+        
+        function populateEpochSignalConfigurationForSignalSet(obj, signalSet)
+            try
+                fields = symphonyui.ui.util.desc2field(signalSet.getConfigurationSettingDescriptors());
             catch x
                 fields = uiextras.jide.PropertyGridField.empty(0, 1);
                 obj.log.debug(x.message, x);
                 obj.view.showError(x.message);
             end
             obj.view.setEpochSignalConfiguration(fields);
+        end
+
+        function updateEpochSignalConfigurationForSignalSet(obj, signalSet)
+            try
+                fields = symphonyui.ui.util.desc2field(signalSet.getConfigurationSettingDescriptors());
+            catch x
+                fields = uiextras.jide.PropertyGridField.empty(0, 1);
+                obj.log.debug(x.message, x);
+                obj.view.showError(x.message);
+            end
+            obj.view.updateEpochSignalConfiguration(fields);
         end
 
         function populateDetailsForHeterogeneousEntitySet(obj, entitySet)

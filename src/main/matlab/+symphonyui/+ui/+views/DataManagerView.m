@@ -13,6 +13,7 @@ classdef DataManagerView < appbox.View
         SetEpochGroupLabel
         SelectedEpochGroupSource
         SelectedEpochSignals
+        SetEpochSignalConfigurationSetting
         SetProperty
         AddProperty
         RemoveProperty
@@ -348,7 +349,7 @@ classdef DataManagerView < appbox.View
             yyaxis(obj.epochCard.axes, 'left');
             set(obj.epochCard.axes, 'YColor', 'black');
             obj.epochCard.grid = uiextras.jide.PropertyGrid(signalDetailLayout, ...
-                'EditorStyle', 'readonly');
+                'Callback', @(h,d)notify(obj, 'SetEpochSignalConfigurationSetting', symphonyui.ui.UiEventData(d)));
             set(signalDetailLayout, 'Heights', [-2 -1]);
             set(signalLayout, 'Widths', [-1 -2]);
             obj.epochCard.annotationsLayout = uix.VBox( ...
@@ -875,6 +876,10 @@ classdef DataManagerView < appbox.View
         
         function setEpochSignalConfiguration(obj, fields)
             set(obj.epochCard.grid, 'Properties', fields);
+        end
+        
+        function updateEpochSignalConfiguration(obj, fields)
+            obj.epochCard.grid.UpdateProperties(fields);
         end
 
         function setEpochProtocolParameters(obj, fields)
