@@ -509,6 +509,7 @@ classdef DataManagerView < appbox.View
         function close(obj)
             close@appbox.View(obj);
             obj.toolbar.close();
+            obj.epochCard.grid.Close();
             obj.propertiesTab.grid.Close();
             obj.parametersTab.grid.Close();
         end
