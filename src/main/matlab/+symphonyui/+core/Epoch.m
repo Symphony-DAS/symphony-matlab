@@ -16,11 +16,13 @@ classdef Epoch < symphonyui.core.CoreObject
     %   setBackground   - Sets a background value for a device while this epoch is run
     %   hasBackground   - Indicates if this epoch has a background for the specified device
     %
-    %   addParameter    - Adds a key/value pair (parameter) to this epoch
-    %   addKeyword      - Adds a keyword tage to this epoch
+    %   addParameter    - Adds a key/value parameter to this epoch
+    %   addProperty     - Adds a key/value property to this epoch
+    %   addKeyword      - Adds a keyword tag to this epoch
 
     properties
         parameters              % Parameters added to this epoch (containers.Map)
+        propertyMap             % Properties added to this epoch (containers.Map)
         keywords                % Keywords attached to this epoch
         shouldWaitForTrigger    % Indicates if this epoch should wait for an external trigger before running
         shouldBePersisted       % Indicates if this epoch should be persisted upon completion
@@ -122,9 +124,19 @@ classdef Epoch < symphonyui.core.CoreObject
         end
 
         function addParameter(obj, name, value)
-            % Adds a key/value pair (parameter) to this epoch
+            % Adds a key/value parameter to this epoch
 
             obj.tryCore(@()obj.cobj.ProtocolParameters.Add(name, obj.propertyValueFromValue(value)));
+        end
+        
+        function m = get.propertyMap(obj)
+            m = obj.mapFromKeyValueEnumerable(obj.cobj.Properties, @obj.valueFromPropertyValue);
+        end
+        
+        function addProperty(obj, name, value)
+            % Adds a key/value property to this epoch
+            
+            obj.tryCore(@()obj.cobj.Properties.Add(name, obj.propertyValueFromValue(value)));
         end
 
         function k = get.keywords(obj)
