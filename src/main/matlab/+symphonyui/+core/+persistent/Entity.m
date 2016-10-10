@@ -79,7 +79,7 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function m = getPropertyMap(obj)
-            m = obj.getPropertyDescriptors().toMap();
+            m = obj.mapFromKeyValueEnumerable(obj.cobj.Properties, @obj.valueFromPropertyValue);
         end
 
         function v = getProperty(obj, name)
@@ -111,6 +111,12 @@ classdef Entity < symphonyui.core.CoreObject
                 d = obj.getResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME);
             else
                 d = symphonyui.core.PropertyDescriptor.empty(0, 1);
+                m = obj.getPropertyMap();
+                keys = m.keys;
+                for i = 1:numel(keys)
+                    k = keys{i};
+                    d(end + 1) = symphonyui.core.PropertyDescriptor(k, m(k), 'isReadOnly', true, 'isRemovable', false); %#ok<AGROW>
+                end
             end
         end
 

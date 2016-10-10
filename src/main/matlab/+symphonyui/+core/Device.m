@@ -89,6 +89,10 @@ classdef Device < symphonyui.core.CoreObject
             obj.updateConfigurationSettingDescriptorsResource(descriptors);
             notify(obj, 'SetConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
+        
+        function m = getConfigurationSettingMap(obj)
+            m = obj.mapFromKeyValueEnumerable(obj.cobj.Configuration, @obj.valueFromPropertyValue);
+        end
 
         function v = getConfigurationSetting(obj, name)
             % Gets the value of an existing configuration setting
@@ -123,7 +127,12 @@ classdef Device < symphonyui.core.CoreObject
                 d = obj.getResource(obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME);
             else
                 d = symphonyui.core.PropertyDescriptor.empty(0, 1);
-                obj.addResource(obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME, d);
+                m = obj.getConfigurationSettingMap();
+                keys = m.keys;
+                for i = 1:numel(keys)
+                    k = keys{i};
+                    d(end + 1) = symphonyui.core.PropertyDescriptor(k, m(k), 'isReadOnly', true, 'isRemovable', false); %#ok<AGROW>
+                end
             end
         end
 
