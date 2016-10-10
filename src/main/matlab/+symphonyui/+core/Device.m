@@ -8,6 +8,7 @@ classdef Device < symphonyui.core.CoreObject
     %   removeConfigurationSetting  - Removes a configuration setting from this device
     %
     %   addResource         - Adds a new resource to this device
+    %   removeResource      - Removes a resource from this device
     %   getResource         - Gets a resource by name
     %   getResourceNames    - Gets the name of all resources on this device
     %
