@@ -13,6 +13,7 @@ classdef DataManagerView < appbox.View
         SetEpochGroupLabel
         SelectedEpochGroupSource
         SelectedEpochSignals
+        UnlockEpochSignalConfigurationSettings
         SetEpochSignalConfigurationSetting
         SetProperty
         AddProperty
@@ -349,7 +350,14 @@ classdef DataManagerView < appbox.View
             yyaxis(obj.epochCard.axes, 'left');
             set(obj.epochCard.axes, 'YColor', 'black');
             obj.epochCard.grid = uiextras.jide.PropertyGrid(signalDetailLayout, ...
+                'Enable', false, ...
                 'Callback', @(h,d)notify(obj, 'SetEpochSignalConfigurationSetting', symphonyui.ui.UiEventData(d)));
+            signalConfigurationMenu = uicontextmenu('Parent', obj.figureHandle);
+            uimenu( ...
+                'Parent', signalConfigurationMenu, ...
+                'Label', 'Unlock', ...
+                'Callback', @(h,d)notify(obj, 'UnlockEpochSignalConfigurationSettings'));
+            set(obj.epochCard.grid, 'UIContextMenu', signalConfigurationMenu);
             set(signalDetailLayout, 'Heights', [-2 -1]);
             set(signalLayout, 'Widths', [-1 -2]);
             obj.epochCard.annotationsLayout = uix.VBox( ...
@@ -873,6 +881,10 @@ classdef DataManagerView < appbox.View
         function setEpochSignalList(obj, names, values)
             set(obj.epochCard.signalListBox, 'String', names);
             set(obj.epochCard.signalListBox, 'Values', values);
+        end
+        
+        function enableEpochSignalConfiguration(obj, tf)
+            set(obj.epochCard.grid, 'Enable', tf);
         end
         
         function setEpochSignalConfiguration(obj, fields)

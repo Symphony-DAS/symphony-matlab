@@ -70,7 +70,8 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.addListener(v, 'SetEpochGroupLabel', @obj.onViewSetEpochGroupLabel);
             obj.addListener(v, 'SelectedEpochGroupSource', @obj.onViewSelectedEpochGroupSource);
             obj.addListener(v, 'SelectedEpochSignals', @obj.onViewSelectedEpochSignals);
-            obj.addListener(v, 'SetEpochSignalConfigurationSetting', @obj.onViewSetSetEpochSignalConfigurationSetting);
+            obj.addListener(v, 'UnlockEpochSignalConfigurationSettings', @obj.onViewSelectedUnlockEpochSignalConfigurationSettings);
+            obj.addListener(v, 'SetEpochSignalConfigurationSetting', @obj.onViewSetEpochSignalConfigurationSetting);
             obj.addListener(v, 'SetProperty', @obj.onViewSetProperty);
             obj.addListener(v, 'AddProperty', @obj.onViewSelectedAddProperty);
             obj.addListener(v, 'RemoveProperty', @obj.onViewSelectedRemoveProperty);
@@ -745,7 +746,11 @@ classdef DataManagerPresenter < appbox.Presenter
             obj.populateEpochSignalConfigurationForSignalSet(signalSet);
         end
         
-        function onViewSetSetEpochSignalConfigurationSetting(obj, ~, event)
+        function onViewSelectedUnlockEpochSignalConfigurationSettings(obj, ~, ~)
+            obj.view.enableEpochSignalConfiguration(true);
+        end
+        
+        function onViewSetEpochSignalConfigurationSetting(obj, ~, event)
             p = event.data.Property;
             signals = obj.view.getSelectedEpochSignals();
             signalSet = symphonyui.core.persistent.collections.IoBaseSet([signals{:}]);
@@ -767,6 +772,7 @@ classdef DataManagerPresenter < appbox.Presenter
                 obj.view.showError(x.message);
             end
             obj.view.setEpochSignalConfiguration(fields);
+            obj.view.enableEpochSignalConfiguration(false);
         end
 
         function updateEpochSignalConfigurationForSignalSet(obj, signalSet)

@@ -58,6 +58,8 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
         DescriptionBorderType
         % Editor style
         EditorStyle
+        % Right-click menu on pane
+        UIContextMenu = []
     end
     properties (Access = private)
         % A matlab.ui.container.internal.JavaWrapper.
@@ -113,10 +115,12 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
             self.EditorStyle = 'normal';
 
             set(self.Table, 'KeyPressedCallback', @self.OnKeyPressed);
+            set(self.Table, 'MouseClickedCallback', @self.OnMouseClicked);
         end
 
         function Close(self)
             set(self.Table, 'KeyPressedCallback', []);
+            set(self.Table, 'MouseClickedCallback', []);
             if ~isempty(self.Model)
                 set(self.Model, 'PropertyChangeCallback', []);  % clear callback
             end
@@ -269,6 +273,10 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
                 self.Model.setEditorStyle(style);
             end
             self.EditorStyle = s;
+        end
+        
+        function set.UIContextMenu(obj, m)
+            obj.UIContextMenu = m;
         end
         
         function StopEditing(self)
@@ -433,6 +441,17 @@ classdef PropertyGrid < uiextras.jide.UIControl %#ok<*MCSUP>
                     if ~isempty(name)  % edit property value
                         self.EditMatrix(name);
                     end
+            end
+        end
+        
+        function OnMouseClicked(self, ~, event)
+            if event.isMetaDown && ~isempty(self.UIContextMenu)
+                x = event.getX;
+                y = event.getY;
+                
+                tPos = getpixelposition(self.Container, true);
+                mPos = [x+tPos(1) tPos(2)+tPos(4)-y+self.Pane.getScrollPane.getVerticalScrollBar().getValue()];
+                set(self.UIContextMenu, 'Position', mPos, 'Visible', 'on');
             end
         end
 
