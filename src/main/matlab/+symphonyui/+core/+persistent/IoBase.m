@@ -46,13 +46,7 @@ classdef IoBase < symphonyui.core.persistent.Entity
         function d = getConfigurationSettingDescriptors(obj)
             d = symphonyui.core.PropertyDescriptor.empty(0, 1);
             
-            dev = obj.device;
-            if any(strcmp(dev.getResourceNames(), symphonyui.core.Device.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME))
-                dd = dev.getResource(symphonyui.core.Device.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME);
-            else
-                dd = symphonyui.core.PropertyDescriptor.empty(0, 1);
-            end
-            
+            dd = obj.device.getConfigurationSettingDescriptors();
             m = obj.getConfigurationSettingMap();
             keys = m.keys;
             for i = 1:numel(keys)

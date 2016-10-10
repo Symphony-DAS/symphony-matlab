@@ -6,7 +6,7 @@ classdef Entity < symphonyui.core.CoreObject
         notes
     end
 
-    properties (Constant)
+    properties (Constant, Access = private)
         DESCRIPTION_TYPE_RESOURCE_NAME = 'descriptionType'
         PROPERTY_DESCRIPTORS_RESOURCE_NAME = 'propertyDescriptors'
     end

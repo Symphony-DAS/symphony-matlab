@@ -33,7 +33,7 @@ classdef Device < symphonyui.core.CoreObject
         background  % Background applied to bound output streams when stopped (Measurement)
     end
     
-    properties (Constant)
+    properties (Constant, Access = private)
         CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME = 'configurationSettingDescriptors';
     end
 
