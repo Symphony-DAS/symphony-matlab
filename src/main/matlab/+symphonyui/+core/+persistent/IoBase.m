@@ -20,12 +20,16 @@ classdef IoBase < symphonyui.core.persistent.Entity
         end
         
         function m = getConfigurationSettingMap(obj)
+            dev = obj.device;
             m = containers.Map();
             spans = obj.cellArrayFromEnumerable(obj.cobj.ConfigurationSpans);
             for i = 1:numel(spans)
                 nodes = obj.cellArrayFromEnumerable(spans{i}.Nodes);
                 for k = 1:numel(nodes)
-                    m = appbox.unionMaps(m, obj.mapFromKeyValueEnumerable(nodes{k}.Configuration, @obj.valueFromPropertyValue));
+                    if strcmp(char(nodes{k}.Name), dev.name)
+                        m = obj.mapFromKeyValueEnumerable(nodes{k}.Configuration, @obj.valueFromPropertyValue);
+                        break;
+                    end
                 end
             end
         end
