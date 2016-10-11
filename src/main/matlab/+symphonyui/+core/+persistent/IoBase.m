@@ -25,7 +25,7 @@ classdef IoBase < symphonyui.core.persistent.Entity
             for i = 1:numel(spans)
                 nodes = obj.cellArrayFromEnumerable(spans{i}.Nodes);
                 for k = 1:numel(nodes)
-                    m = appbox.unionMaps(m, obj.mapFromKeyValueEnumerable(nodes{i}.Configuration, @obj.valueFromPropertyValue));
+                    m = appbox.unionMaps(m, obj.mapFromKeyValueEnumerable(nodes{k}.Configuration, @obj.valueFromPropertyValue));
                 end
             end
         end
