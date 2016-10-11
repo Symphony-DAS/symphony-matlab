@@ -142,6 +142,13 @@ classdef PropertyDescriptor < matlab.mixin.SetGet %#ok<*MCSUP>
                 s.(p{i}) = obj.(p{i});
             end
         end
+        
+        function tf = isequal(obj, other)
+            % More efficient than default isequal()
+            tf = isa(other, 'symphonyui.core.PropertyDescriptor') ...
+                && isequal(obj.field, other.field) ...
+                && isequal(obj.isRemovable, other.isRemovable);
+        end
 
     end
 
