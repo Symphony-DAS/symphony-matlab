@@ -1027,8 +1027,12 @@ classdef DataManagerPresenter < appbox.Presenter
                 preset = obj.documentationService.getEntityPreset(name, entitySet.getEntityType(), entitySet.getDescriptionType());
                 entitySet.applyPreset(preset);
             catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
+                msg = x.message;
+                for i = 1:numel(x.cause)
+                    msg = sprintf('%s\n- %s', msg, x.cause{i}.message);
+                end
+                obj.log.debug(msg, x);
+                obj.view.showError(msg);
                 return;
             end
 

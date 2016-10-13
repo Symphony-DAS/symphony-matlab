@@ -115,8 +115,12 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
                 obj.acquisitionService.applyProtocolPreset(name);
                 obj.acquisitionService.viewOnly();
             catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
+                msg = x.message;
+                for i = 1:numel(x.cause)
+                    msg = sprintf('%s\n- %s', msg, x.cause{i}.message);
+                end
+                obj.log.debug(msg, x);
+                obj.view.showError(msg);
                 return;
             end
         end
@@ -129,8 +133,12 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
                 obj.acquisitionService.applyProtocolPreset(name);
                 obj.acquisitionService.record();
             catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
+                msg = x.message;
+                for i = 1:numel(x.cause)
+                    msg = sprintf('%s\n- %s', msg, x.cause{i}.message);
+                end
+                obj.log.debug(msg, x);
+                obj.view.showError(msg);
                 return;
             end
         end
@@ -182,8 +190,12 @@ classdef ProtocolPresetsPresenter < appbox.Presenter
             try
                 obj.acquisitionService.applyProtocolPreset(name);
             catch x
-                obj.log.debug(x.message, x);
-                obj.view.showError(x.message);
+                msg = x.message;
+                for i = 1:numel(x.cause)
+                    msg = sprintf('%s\n- %s', msg, x.cause{i}.message);
+                end
+                obj.log.debug(msg, x);
+                obj.view.showError(msg);
                 return;
             end
         end
