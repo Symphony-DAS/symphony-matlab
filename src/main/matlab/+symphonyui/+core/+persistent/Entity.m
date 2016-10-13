@@ -55,7 +55,7 @@ classdef Entity < symphonyui.core.CoreObject
                     if isempty(exception)
                         exception = MException('symphonyui:core:persistent:Entity', 'Failed to set one or more property values');
                     end
-                    exception.addCause(x);
+                    exception = exception.addCause(x);
                 end
             end
             if ~isempty(exception)
