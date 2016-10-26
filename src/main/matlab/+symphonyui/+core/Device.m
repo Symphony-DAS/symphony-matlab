@@ -5,6 +5,7 @@ classdef Device < symphonyui.core.CoreObject
     %   addConfigurationSetting     - Adds a new configuration setting to this device
     %   setConfigurationSetting     - Sets the value of an existing configuration setting of this device
     %   getConfigurationSetting     - Gets the value of an existing configuration setting
+    %   hasConfigurationSetting     - Indicates if a configuration setting exists
     %   removeConfigurationSetting  - Removes a configuration setting from this device
     %
     %   addResource         - Adds a new resource to this device
@@ -103,6 +104,14 @@ classdef Device < symphonyui.core.CoreObject
                 error([name ' does not exist']);
             end
             v = d.value;
+        end
+        
+        function tf = hasConfigurationSetting(obj, name)
+            % Indicates if a configuration setting exists
+            
+            descriptors = obj.getConfigurationSettingDescriptors();
+            d = descriptors.findByName(name);
+            tf = ~isempty(d);
         end
 
         function tf = removeConfigurationSetting(obj, name)
