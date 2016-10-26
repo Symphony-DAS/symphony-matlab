@@ -19,7 +19,10 @@ classdef Device < symphonyui.core.CoreObject
     %   applyBackground     - Immediately applies the device background to all bound output streams
     
     events (NotifyAccess = private)
-        SetConfigurationSetting     % Triggers when a configuration setting value is set
+        AddedConfigurationSetting       % Triggers when a configuration setting is added
+        SetConfigurationSetting         % Triggers when a configuration setting value is set
+        RemovedConfigurationSetting     % Triggers when a configuration setting is removed
+        AddedResource                   % Triggers when a resource is added
     end
 
     properties (SetAccess = private)
@@ -68,9 +71,11 @@ classdef Device < symphonyui.core.CoreObject
             if ~isempty(descriptors.findByName(name))
                 error([name ' already exists']);
             end
-            descriptors(end + 1) = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
+            d = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
+            descriptors(end + 1) = d;
             obj.tryCore(@()obj.cobj.Configuration.Add(name, obj.propertyValueFromValue(value)));
             obj.updateConfigurationSettingDescriptorsResource(descriptors);
+            notify(obj, 'AddedConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
 
         function setConfigurationSetting(obj, name, value)
@@ -129,6 +134,7 @@ classdef Device < symphonyui.core.CoreObject
             descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.Configuration.Remove(name));
             obj.updateConfigurationSettingDescriptorsResource(descriptors);
+            notify(obj, 'RemovedConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
 
         function d = getConfigurationSettingDescriptors(obj)
@@ -150,6 +156,7 @@ classdef Device < symphonyui.core.CoreObject
             
             bytes = getByteStreamFromArray(variable);
             obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.byte-stream', name, bytes));
+            notify(obj, 'AddedResource', symphonyui.core.CoreEventData(struct('name', name, 'data', bytes)));
         end
 
         function v = getResource(obj, name)
@@ -250,6 +257,7 @@ classdef Device < symphonyui.core.CoreObject
             d.value = value;
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
             obj.updateConfigurationSettingDescriptorsResource(descriptors);
+            notify(obj, 'SetConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
 
     end
