@@ -9,6 +9,7 @@ classdef Device < symphonyui.core.CoreObject
     %   removeConfigurationSetting  - Removes a configuration setting from this device
     %
     %   addResource         - Adds a new resource to this device
+    %   removeResource      - Removes a resource from this device
     %   getResource         - Gets a resource by name
     %   getResourceNames    - Gets the name of all resources on this device
     %
@@ -157,6 +158,15 @@ classdef Device < symphonyui.core.CoreObject
             bytes = getByteStreamFromArray(variable);
             obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.byte-stream', name, bytes));
             notify(obj, 'AddedResource', symphonyui.core.CoreEventData(struct('name', name, 'data', bytes)));
+        end
+        
+        function tf = removeResource(obj, name)
+            % Removes a resource from this device
+            
+            if strcmp(name, obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME)
+                error('Cannot remove configuration setting descriptors resource');
+            end
+            tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(name));
         end
 
         function v = getResource(obj, name)
