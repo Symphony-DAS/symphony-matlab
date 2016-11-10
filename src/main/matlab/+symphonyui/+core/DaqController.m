@@ -16,7 +16,6 @@ classdef DaqController < symphonyui.core.CoreObject
     end
     
     properties (SetAccess = private)
-        streams             % Streams available in this controller
         processInterval     % Interval this controller attempts to maintain for process iterations
     end
 
@@ -42,11 +41,6 @@ classdef DaqController < symphonyui.core.CoreObject
                 error(['A stream named ''' name ''' does not exist']);
             end
             s = symphonyui.core.DaqStream(cstr);
-        end
-        
-        function s = get.streams(obj)
-            warning('The streams property is deprecated. Use getStreams().');
-            s = obj.getStreams();
         end
         
         function s = getStreams(obj)

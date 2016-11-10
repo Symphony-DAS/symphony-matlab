@@ -29,8 +29,6 @@ classdef Device < symphonyui.core.CoreObject
     properties (SetAccess = private)
         name            % Human-readable device name 
         manufacturer    % Name of device manufacturer
-        inputStreams    % Cell array of bound input streams
-        outputStreams   % Cell array of bound output streams
     end
 
     properties (SetObservable)
@@ -196,21 +194,11 @@ classdef Device < symphonyui.core.CoreObject
         function unbindStream(obj, name)
             obj.tryCore(@()obj.cobj.UnbindStream(name));
         end
-        
-        function s = get.inputStreams(obj)
-            warning('The inputStreams property is deprecated. Use getInputStreams().');
-            s = obj.getInputStreams();
-        end
 
         function s = getInputStreams(obj)
             % Gets a cell array of bound input streams
             
             s = obj.cellArrayFromEnumerable(obj.cobj.InputStreams, @symphonyui.core.DaqStream);
-        end
-        
-        function s = get.outputStreams(obj)
-            warning('The outputStreams property is deprecated. Use getOutputStreams().');
-            s = obj.getOutputStreams();
         end
 
         function s = getOutputStreams(obj)

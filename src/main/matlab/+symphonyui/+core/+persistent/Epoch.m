@@ -2,9 +2,6 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
 
     properties (SetAccess = private)
         protocolParameters
-        responses
-        stimuli
-        backgrounds
         epochBlock
     end
 
@@ -16,11 +13,6 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
 
         function p = get.protocolParameters(obj)
             p = obj.mapFromKeyValueEnumerable(obj.cobj.ProtocolParameters, @obj.valueFromPropertyValue);
-        end
-        
-        function r = get.responses(obj)
-            warning('The responses property is deprecated. Use getResponses().');
-            r = obj.getResponses();
         end
 
         function r = getResponses(obj)
@@ -34,11 +26,6 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
                 m(r{i}.device.name) = r{i};
             end
         end
-        
-        function s = get.stimuli(obj)
-            warning('The stimuli property is deprecated. Use getStimuli().');
-            s = obj.getStimuli();
-        end
 
         function s = getStimuli(obj)
             s = obj.cellArrayFromEnumerable(obj.cobj.Stimuli, @(ce)obj.entityFactory.create(ce));
@@ -50,11 +37,6 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
             for i = 1:numel(s)
                 m(s{i}.device.name) = s{i};
             end
-        end
-        
-        function b = get.backgrounds(obj)
-            warning('The backgrounds property is deprecated. Use getBackgrounds().');
-            b = obj.getBackgrounds();
         end
 
         function b = getBackgrounds(obj)

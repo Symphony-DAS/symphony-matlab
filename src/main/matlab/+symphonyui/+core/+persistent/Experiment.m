@@ -3,14 +3,6 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
     properties
         purpose
     end
-    
-    properties (SetAccess = private)
-        devices
-        sources
-        allSources
-        epochGroups
-        allEpochGroups
-    end
 
     methods
 
@@ -35,46 +27,21 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         function set.purpose(obj, p)
             obj.cobj.Purpose = p;
         end
-        
-        function d = get.devices(obj)
-            warning('The devices property is deprecated. Use getDevices().');
-            d = obj.getDevices();
-        end
 
         function d = getDevices(obj)
             d = obj.cellArrayFromEnumerable(obj.cobj.Devices, @(ce)obj.entityFactory.create(ce));
-        end
-        
-        function s = get.sources(obj)
-            warning('The sources property is deprecated. Use getSources().');
-            s = obj.getSources();
         end
 
         function s = getSources(obj)
             s = obj.cellArrayFromEnumerable(obj.cobj.Sources, @(ce)obj.entityFactory.create(ce));
         end
-        
-        function s = get.allSources(obj)
-            warning('The allSources property is deprecated. Use getAllSources().');
-            s = obj.getAllSources();
-        end
 
         function s = getAllSources(obj)
             s = obj.cellArrayFromEnumerable(obj.cobj.AllSources, @(ce)obj.entityFactory.create(ce));
         end
-        
-        function g = get.epochGroups(obj)
-            warning('The epochGroups property is deprecated. Use getEpochGroups().');
-            g = obj.getEpochGroups();
-        end
 
         function g = getEpochGroups(obj)
             g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @(ce)obj.entityFactory.create(ce));
-        end
-        
-        function g = get.allEpochGroups(obj)
-            warning('The allEpochGroups property is deprecated. Use getAllEpochGroups().');
-            g = obj.getAllEpochGroups();
         end
 
         function g = getAllEpochGroups(obj)

@@ -6,10 +6,6 @@ classdef Source < symphonyui.core.persistent.Entity
     
     properties (SetAccess = private)
         creationTime
-        sources
-        allSources
-        epochGroups
-        allEpochGroups
         parent
         experiment
     end
@@ -41,37 +37,17 @@ classdef Source < symphonyui.core.persistent.Entity
         function t = get.creationTime(obj)
             t = obj.datetimeFromDateTimeOffset(obj.cobj.CreationTime);
         end
-        
-        function s = get.sources(obj)
-            warning('The sources property is deprecated. Use getSources().');
-            s = obj.getSources();
-        end
 
         function s = getSources(obj)
             s = obj.cellArrayFromEnumerable(obj.cobj.Sources, @(ce)obj.entityFactory.create(ce));
-        end
-        
-        function s = get.allSources(obj)
-            warning('The allSources property is deprecated. Use getAllSources().');
-            s = obj.getAllSources();
         end
 
         function s = getAllSources(obj)
             s = obj.cellArrayFromEnumerable(obj.cobj.AllSources, @(ce)obj.entityFactory.create(ce));
         end
-        
-        function g = get.epochGroups(obj)
-            warning('The epochGroups property is deprecated. Use getEpochGroups().');
-            g = obj.getEpochGroups();
-        end
 
         function g = getEpochGroups(obj)
             g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @(ce)obj.entityFactory.create(ce));
-        end
-        
-        function g = get.allEpochGroups(obj)
-            warning('The allEpochGroups property is deprecated. Use getAllEpochGroups().');
-            g = obj.getAllEpochGroups();
         end
 
         function g = getAllEpochGroups(obj)
