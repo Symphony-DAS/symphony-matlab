@@ -22,11 +22,19 @@ classdef Persistor < symphonyui.core.CoreObject
         currentEpochGroup   % Currently open epoch group or empty if no epoch group is open
         currentEpochBlock   % Currently open epoch block or empty if no epoch block is open
     end
+    
+    properties (Access = private)
+        entityFactory
+    end
 
     methods
 
-        function obj = Persistor(cobj)
+        function obj = Persistor(cobj, factory)
+            if nargin < 2
+                factory = symphonyui.core.persistent.EntityFactory();
+            end
             obj@symphonyui.core.CoreObject(cobj);
+            obj.entityFactory = factory;
         end
 
         function delete(obj)
@@ -42,19 +50,19 @@ classdef Persistor < symphonyui.core.CoreObject
         end
 
         function e = get.experiment(obj)
-            e = symphonyui.core.persistent.Experiment(obj.cobj.Experiment);
+            e = obj.entityFactory.create(obj.cobj.Experiment);
         end
 
         function d = addDevice(obj, name, manufacturer)
             % Adds a new device to the persistent hierarchy
             
             cdev = obj.tryCoreWithReturn(@()obj.cobj.AddDevice(name, manufacturer));
-            d = symphonyui.core.persistent.Device(cdev);
+            d = obj.entityFactory.create(cdev);
         end
 
         function d = device(obj, name, manufacturer)
             cdev = obj.tryCoreWithReturn(@()obj.cobj.Device(name, manufacturer));
-            d = symphonyui.core.persistent.Device(cdev);
+            d = obj.entityFactory.create(cdev);
         end
 
         function s = addSource(obj, parent, description)
@@ -78,7 +86,7 @@ classdef Persistor < symphonyui.core.CoreObject
             end
             csrc = obj.tryCoreWithReturn(@()obj.cobj.AddSource(description.label, cparent));
             try
-                s = symphonyui.core.persistent.Source.newSource(csrc, description);
+                s = symphonyui.core.persistent.Source.newSource(csrc, obj.entityFactory, description);
             catch x
                 obj.tryCore(@()obj.cobj.Delete(csrc));
                 rethrow(x);
@@ -108,7 +116,7 @@ classdef Persistor < symphonyui.core.CoreObject
             end
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochGroup(description.label, source.cobj));
             try
-                g = symphonyui.core.persistent.EpochGroup.newEpochGroup(cgrp, description);
+                g = symphonyui.core.persistent.EpochGroup.newEpochGroup(cgrp, obj.entityFactory, description);
                 g.setPropertyMap(propertyMap);
             catch x
                 obj.endEpochGroup();
@@ -121,22 +129,22 @@ classdef Persistor < symphonyui.core.CoreObject
             % Ends the current epoch group
             
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.EndEpochGroup());
-            g = symphonyui.core.persistent.EpochGroup(cgrp);
+            g = obj.entityFactory.create(cgrp);
         end
         
         function [g1, g2] = splitEpochGroup(obj, group, block)
             % Splits the epoch group after the given epoch block
             
             csplit = obj.tryCoreWithReturn(@()obj.cobj.SplitEpochGroup(group.cobj, block.cobj));
-            g1 = symphonyui.core.persistent.EpochGroup(csplit.Item1);
-            g2 = symphonyui.core.persistent.EpochGroup(csplit.Item2);
+            g1 = obj.entityFactory.create(csplit.Item1);
+            g2 = obj.entityFactory.create(csplit.Item2);
         end
         
         function g = mergeEpochGroups(obj, group1, group2)
             % Merges group1 into group2
             
             cgrp = obj.tryCoreWithReturn(@()obj.cobj.MergeEpochGroups(group1.cobj, group2.cobj));
-            g = symphonyui.core.persistent.EpochGroup(cgrp);
+            g = obj.entityFactory.create(cgrp);
         end
 
         function g = get.currentEpochGroup(obj)
@@ -144,7 +152,7 @@ classdef Persistor < symphonyui.core.CoreObject
             if isempty(cgrp)
                 g = [];
             else
-                g = symphonyui.core.persistent.EpochGroup(cgrp);
+                g = obj.entityFactory.create(cgrp);
             end
         end
 
@@ -153,14 +161,14 @@ classdef Persistor < symphonyui.core.CoreObject
             
             params = obj.dictionaryFromMap(parametersMap);
             cblk = obj.tryCoreWithReturn(@()obj.cobj.BeginEpochBlock(protocolId, params));
-            b = symphonyui.core.persistent.EpochBlock(cblk);
+            b = obj.entityFactory.create(cblk);
         end
 
         function b = endEpochBlock(obj)
             % Ends the current epoch block
             
             cblk = obj.tryCoreWithReturn(@()obj.cobj.EndEpochBlock());
-            b = symphonyui.core.persistent.EpochBlock(cblk);
+            b = obj.entityFactory.create(cblk);
         end
 
         function b = get.currentEpochBlock(obj)
@@ -168,7 +176,7 @@ classdef Persistor < symphonyui.core.CoreObject
             if isempty(cblk)
                 b = [];
             else
-                b = symphonyui.core.persistent.EpochBlock(cblk);
+                b = obj.entityFactory.create(cblk);
             end
         end
 
@@ -183,8 +191,9 @@ classdef Persistor < symphonyui.core.CoreObject
     methods (Static)
 
         function p = newPersistor(cobj, description)
-            symphonyui.core.persistent.Experiment.newExperiment(cobj.Experiment, description);
-            p = symphonyui.core.Persistor(cobj);
+            factory = symphonyui.core.persistent.EntityFactory();
+            symphonyui.core.persistent.Experiment.newExperiment(cobj.Experiment, factory, description);
+            p = symphonyui.core.Persistor(cobj, factory);
         end
 
     end

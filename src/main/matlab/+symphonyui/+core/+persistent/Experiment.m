@@ -14,8 +14,8 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
 
     methods
 
-        function obj = Experiment(cobj)
-            obj@symphonyui.core.persistent.TimelineEntity(cobj);
+        function obj = Experiment(cobj, factory)
+            obj@symphonyui.core.persistent.TimelineEntity(cobj, factory);
         end
 
         function p = createPreset(obj, name)
@@ -42,7 +42,7 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
 
         function d = getDevices(obj)
-            d = obj.cellArrayFromEnumerable(obj.cobj.Devices, @symphonyui.core.persistent.Device);
+            d = obj.cellArrayFromEnumerable(obj.cobj.Devices, @(ce)obj.entityFactory.create(ce));
         end
         
         function s = get.sources(obj)
@@ -51,7 +51,7 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
 
         function s = getSources(obj)
-            s = obj.cellArrayFromEnumerable(obj.cobj.Sources, @symphonyui.core.persistent.Source);
+            s = obj.cellArrayFromEnumerable(obj.cobj.Sources, @(ce)obj.entityFactory.create(ce));
         end
         
         function s = get.allSources(obj)
@@ -60,7 +60,7 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
 
         function s = getAllSources(obj)
-            s = obj.cellArrayFromEnumerable(obj.cobj.AllSources, @symphonyui.core.persistent.Source);
+            s = obj.cellArrayFromEnumerable(obj.cobj.AllSources, @(ce)obj.entityFactory.create(ce));
         end
         
         function g = get.epochGroups(obj)
@@ -69,7 +69,7 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
 
         function g = getEpochGroups(obj)
-            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @symphonyui.core.persistent.EpochGroup);
+            g = obj.cellArrayFromEnumerable(obj.cobj.EpochGroups, @(ce)obj.entityFactory.create(ce));
         end
         
         function g = get.allEpochGroups(obj)
@@ -78,7 +78,7 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
         end
 
         function g = getAllEpochGroups(obj)
-            g = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @symphonyui.core.persistent.EpochGroup);
+            g = obj.cellArrayFromEnumerable(obj.cobj.AllEpochGroups, @(ce)obj.entityFactory.create(ce));
         end
 
         function t = getEntityType(obj) %#ok<MANU>
@@ -89,9 +89,9 @@ classdef Experiment < symphonyui.core.persistent.TimelineEntity
 
     methods (Static)
 
-        function e = newExperiment(cobj, description)
-            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, description);
-            e = symphonyui.core.persistent.Experiment(cobj);
+        function e = newExperiment(cobj, factory, description)
+            symphonyui.core.persistent.TimelineEntity.newTimelineEntity(cobj, factory, description);
+            e = factory.create(cobj);
         end
 
     end

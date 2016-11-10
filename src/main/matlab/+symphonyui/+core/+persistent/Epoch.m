@@ -10,8 +10,8 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
 
     methods
 
-        function obj = Epoch(cobj)
-            obj@symphonyui.core.persistent.TimelineEntity(cobj);
+        function obj = Epoch(cobj, factory)
+            obj@symphonyui.core.persistent.TimelineEntity(cobj, factory);
         end
 
         function p = get.protocolParameters(obj)
@@ -24,7 +24,7 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
         end
 
         function r = getResponses(obj)
-            r = obj.cellArrayFromEnumerable(obj.cobj.Responses, @symphonyui.core.persistent.Response);
+            r = obj.cellArrayFromEnumerable(obj.cobj.Responses, @(ce)obj.entityFactory.create(ce));
         end
 
         function m = getResponseMap(obj)
@@ -41,7 +41,7 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
         end
 
         function s = getStimuli(obj)
-            s = obj.cellArrayFromEnumerable(obj.cobj.Stimuli, @symphonyui.core.persistent.Stimulus);
+            s = obj.cellArrayFromEnumerable(obj.cobj.Stimuli, @(ce)obj.entityFactory.create(ce));
         end
 
         function m = getStimulusMap(obj)
@@ -58,7 +58,7 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
         end
 
         function b = getBackgrounds(obj)
-            b = obj.cellArrayFromEnumerable(obj.cobj.Backgrounds, @symphonyui.core.persistent.Background);
+            b = obj.cellArrayFromEnumerable(obj.cobj.Backgrounds, @(ce)obj.entityFactory.create(ce));
         end
         
         function m = getBackgroundMap(obj)
@@ -70,7 +70,7 @@ classdef Epoch < symphonyui.core.persistent.TimelineEntity
         end
 
         function b = get.epochBlock(obj)
-            b = symphonyui.core.persistent.EpochBlock(obj.cobj.EpochBlock);
+            b = obj.entityFactory.create(obj.cobj.EpochBlock);
         end
 
         function t = getEntityType(obj) %#ok<MANU>

@@ -2,8 +2,8 @@ classdef Background < symphonyui.core.persistent.IoBase
 
     methods
 
-        function obj = Background(cobj)
-            obj@symphonyui.core.persistent.IoBase(cobj);
+        function obj = Background(cobj, factory)
+            obj@symphonyui.core.persistent.IoBase(cobj, factory);
         end
 
         function [q, u] = getValue(obj)

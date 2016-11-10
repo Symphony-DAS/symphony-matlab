@@ -8,8 +8,8 @@ classdef Resource < symphonyui.core.persistent.Entity
 
     methods
 
-        function obj = Resource(cobj)
-            obj@symphonyui.core.persistent.Entity(cobj);
+        function obj = Resource(cobj, factory)
+            obj@symphonyui.core.persistent.Entity(cobj, factory);
         end
         
         function n = get.uti(obj)

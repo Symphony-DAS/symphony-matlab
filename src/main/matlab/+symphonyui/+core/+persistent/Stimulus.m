@@ -9,8 +9,8 @@ classdef Stimulus < symphonyui.core.persistent.IoBase
 
     methods
 
-        function obj = Stimulus(cobj)
-            obj@symphonyui.core.persistent.IoBase(cobj);
+        function obj = Stimulus(cobj, factory)
+            obj@symphonyui.core.persistent.IoBase(cobj, factory);
         end
 
         function i = get.stimulusId(obj)

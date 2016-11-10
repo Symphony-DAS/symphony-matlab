@@ -7,16 +7,16 @@ classdef IoBase < symphonyui.core.persistent.Entity
 
     methods
 
-        function obj = IoBase(cobj)
-            obj@symphonyui.core.persistent.Entity(cobj);
+        function obj = IoBase(cobj, factory)
+            obj@symphonyui.core.persistent.Entity(cobj, factory);
         end
 
         function d = get.device(obj)
-            d = symphonyui.core.persistent.Device(obj.cobj.Device);
+            d = obj.entityFactory.create(obj.cobj.Device);
         end
         
         function b = get.epoch(obj)
-            b = symphonyui.core.persistent.Epoch(obj.cobj.Epoch);
+            b = obj.entityFactory.create(obj.cobj.Epoch);
         end
         
         function m = getConfigurationSettingMap(obj)

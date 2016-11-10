@@ -1,9 +1,19 @@
 classdef Entity < symphonyui.core.CoreObject
-
+    
+    events (NotifyAccess = private)
+        AddedProperty
+        SetProperty
+        RemovedProperty
+    end
+    
     properties (SetAccess = private)
         uuid
         keywords
         notes
+    end
+    
+    properties (Access = protected)
+        entityFactory
     end
 
     properties (Constant, Hidden)
@@ -13,8 +23,9 @@ classdef Entity < symphonyui.core.CoreObject
 
     methods
 
-        function obj = Entity(cobj)
+        function obj = Entity(cobj, factory)
             obj@symphonyui.core.CoreObject(cobj);
+            obj.entityFactory = factory;
         end
 
         function i = get.uuid(obj)
@@ -40,9 +51,11 @@ classdef Entity < symphonyui.core.CoreObject
             if ~isempty(descriptors.findByName(name))
                 error([name ' already exists']);
             end
-            descriptors(end + 1) = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
+            d = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
+            descriptors(end + 1) = d;
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
             obj.updatePropertyDescriptorsResource(descriptors);
+            notify(obj, 'AddedProperty', symphonyui.core.CoreEventData(d));
         end
 
         function setPropertyMap(obj, map)
@@ -76,6 +89,7 @@ classdef Entity < symphonyui.core.CoreObject
             d.value = value;
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
             obj.updatePropertyDescriptorsResource(descriptors);
+            notify(obj, 'SetProperty', symphonyui.core.CoreEventData(d));
         end
 
         function m = getPropertyMap(obj)
@@ -104,6 +118,7 @@ classdef Entity < symphonyui.core.CoreObject
             descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(name));
             obj.updatePropertyDescriptorsResource(descriptors);
+            notify(obj, 'RemovedProperty', symphonyui.core.CoreEventData(d));
         end
 
         function d = getPropertyDescriptors(obj)
@@ -199,8 +214,8 @@ classdef Entity < symphonyui.core.CoreObject
 
     methods (Static)
 
-        function e = newEntity(cobj, description)
-            e = symphonyui.core.persistent.Entity(cobj);
+        function newEntity(cobj, factory, description)
+            e = symphonyui.core.persistent.Entity(cobj, factory);
 
             e.addResource(e.DESCRIPTION_TYPE_RESOURCE_NAME, description.getType());
 
