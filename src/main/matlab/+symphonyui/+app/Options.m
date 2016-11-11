@@ -2,6 +2,7 @@ classdef Options < appbox.Settings
 
     properties
         startupFile
+        cleanupFile
         warnOnViewOnlyWithOpenFile
         fileDefaultName
         fileDefaultLocation
@@ -20,6 +21,15 @@ classdef Options < appbox.Settings
         function set.startupFile(obj, f)
             validateattributes(f, {'char', 'function_handle'}, {'2d'});
             obj.put('startupFile', f);
+        end
+        
+        function f = get.cleanupFile(obj)
+            f = obj.get('cleanupFile', '');
+        end
+
+        function set.cleanupFile(obj, f)
+            validateattributes(f, {'char', 'function_handle'}, {'2d'});
+            obj.put('cleanupFile', f);
         end
         
         function tf = get.warnOnViewOnlyWithOpenFile(obj)

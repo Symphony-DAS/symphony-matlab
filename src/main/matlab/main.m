@@ -48,6 +48,7 @@ function main()
 
     presenter = symphonyui.ui.presenters.MainPresenter(documentationService, acquisitionService, configurationService, moduleService);
     addlistener(presenter, 'Stopped', @(h,d)session.close());
+    addlistener(presenter, 'Stopped', @(h,d)run(options.cleanupFile()));
 
     delete(busy);
     presenter.showInitializeRig();

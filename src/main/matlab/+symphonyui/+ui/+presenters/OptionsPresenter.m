@@ -33,6 +33,7 @@ classdef OptionsPresenter < appbox.Presenter
             obj.addListener(v, 'KeyPress', @obj.onViewKeyPress);
             obj.addListener(v, 'SelectedNode', @obj.onViewSelectedNode);
             obj.addListener(v, 'BrowseStartupFile', @obj.onViewSelectedBrowseStartupFile);
+            obj.addListener(v, 'BrowseCleanupFile', @obj.onViewSelectedBrowseCleanupFile);
             obj.addListener(v, 'BrowseFileDefaultLocation', @obj.onViewSelectedBrowseFileDefaultLocation);
             obj.addListener(v, 'BrowseLoggingConfigurationFile', @obj.onViewSelectedBrowseLoggingConfigurationFile);
             obj.addListener(v, 'BrowseLoggingLogDirectory', @obj.onViewSelectedBrowseLoggingLogDirectory);
@@ -57,6 +58,7 @@ classdef OptionsPresenter < appbox.Presenter
 
         function populateGeneralDetails(obj)
             obj.view.setStartupFile(char(obj.options.startupFile));
+            obj.view.setCleanupFile(char(obj.options.cleanupFile));
             obj.view.setWarnOnViewOnlyWithOpenFile(obj.options.warnOnViewOnlyWithOpenFile);
         end
 
@@ -103,6 +105,14 @@ classdef OptionsPresenter < appbox.Presenter
                 return;
             end
             obj.view.setStartupFile(file);
+        end
+        
+        function onViewSelectedBrowseCleanupFile(obj, ~, ~)
+            file = obj.view.showGetFile('Select Cleanup File', '*.m');
+            if isempty(file)
+                return;
+            end
+            obj.view.setCleanupFile(file);
         end
 
         function onViewSelectedBrowseFileDefaultLocation(obj, ~, ~)
@@ -177,6 +187,7 @@ classdef OptionsPresenter < appbox.Presenter
 
             try
                 startupFile = parse(obj.view.getStartupFile());
+                cleanupFile = parse(obj.view.getCleanupFile());
                 warnOnViewOnlyWithOpenFile = obj.view.getWarnOnViewOnlyWithOpenFile();
                 fileDefaultName = parse(obj.view.getFileDefaultName());
                 fileDefaultLocation = parse(obj.view.getFileDefaultLocation());
@@ -192,6 +203,9 @@ classdef OptionsPresenter < appbox.Presenter
 
             if ~isequal(startupFile, obj.options.startupFile)
                 obj.options.startupFile = startupFile;
+            end
+            if ~isequal(cleanupFile, obj.options.cleanupFile)
+                obj.options.cleanupFile = cleanupFile;
             end
             if ~isequal(warnOnViewOnlyWithOpenFile, obj.options.warnOnViewOnlyWithOpenFile)
                 obj.options.warnOnViewOnlyWithOpenFile = warnOnViewOnlyWithOpenFile;
