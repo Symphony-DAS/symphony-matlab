@@ -124,7 +124,12 @@ classdef PropertyType
                 validateattributes(domain, {'cell'}, {'vector'});
                 if ~(islogical(self) && isvector(self))  % interpret as exhaustive enumeration of domain elements
                     for k = 1 : numel(domain)
-                        assert(self.CanAccept(domain{k}), ...
+                        if strcmp(self.PrimitiveType, 'cellstr')
+                            v = domain(k);
+                        else
+                            v = domain{k};
+                        end
+                        assert(self.CanAccept(v), ...
                             'PropertyType:InvalidArgumentValue', ...
                             'Invalid value specified for property domain.');
                     end
@@ -603,7 +608,7 @@ classdef PropertyType
                 case 'logical'
                     type = {'int8','uint8','int16','uint16','int32','uint32'};
                 case 'cellstr'
-                    type = {'char'};
+                    type = {};
                 otherwise
                     type = {};
             end
