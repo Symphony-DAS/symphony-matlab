@@ -1,6 +1,6 @@
 classdef Experiment < symphonyui.core.persistent.TimelineEntity
 
-    properties
+    properties (SetObservable)
         purpose
     end
 

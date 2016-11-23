@@ -24,6 +24,7 @@ classdef Device < symphonyui.core.CoreObject
         SetConfigurationSetting         % Triggers when a configuration setting value is set
         RemovedConfigurationSetting     % Triggers when a configuration setting is removed
         AddedResource                   % Triggers when a resource is added
+        RemovedResource                 % Triggers when a resource is removed
     end
 
     properties (SetAccess = private)
@@ -165,6 +166,9 @@ classdef Device < symphonyui.core.CoreObject
                 error('Cannot remove configuration setting descriptors resource');
             end
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(name));
+            if tf
+                notify(obj, 'RemovedResource', symphonyui.core.CoreEventData(struct('name', name)));
+            end
         end
 
         function v = getResource(obj, name)

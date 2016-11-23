@@ -1,6 +1,6 @@
 classdef EpochGroup < symphonyui.core.persistent.TimelineEntity
-
-    properties
+    
+    properties (SetObservable)
         label
         source
     end

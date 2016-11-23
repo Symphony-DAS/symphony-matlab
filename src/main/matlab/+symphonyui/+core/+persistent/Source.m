@@ -1,6 +1,6 @@
 classdef Source < symphonyui.core.persistent.Entity
 
-    properties
+    properties (SetObservable)
         label
     end
     

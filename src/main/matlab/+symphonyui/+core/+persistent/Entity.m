@@ -4,6 +4,11 @@ classdef Entity < symphonyui.core.CoreObject
         AddedProperty
         SetProperty
         RemovedProperty
+        AddedKeyword
+        RemovedKeyword
+        AddedResource
+        RemovedResource
+        AddedNote
     end
     
     properties (SetAccess = private)
@@ -117,7 +122,9 @@ classdef Entity < symphonyui.core.CoreObject
             descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(name));
             obj.updatePropertyDescriptorsResource(descriptors);
-            notify(obj, 'RemovedProperty', symphonyui.core.CoreEventData(d));
+            if tf
+                notify(obj, 'RemovedProperty', symphonyui.core.CoreEventData(d));
+            end
         end
 
         function d = getPropertyDescriptors(obj)
@@ -140,15 +147,22 @@ classdef Entity < symphonyui.core.CoreObject
 
         function tf = addKeyword(obj, keyword)
             tf = obj.tryCoreWithReturn(@()obj.cobj.AddKeyword(keyword));
+            if tf
+                notify(obj, 'AddedKeyword', symphonyui.core.CoreEventData(keyword));
+            end
         end
 
         function tf = removeKeyword(obj, keyword)
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveKeyword(keyword));
+            if tf
+                notify(obj, 'RemovedKeyword', symphonyui.core.CoreEventData(keyword));
+            end
         end
 
         function addResource(obj, name, variable)
             bytes = getByteStreamFromArray(variable);
             obj.tryCoreWithReturn(@()obj.cobj.AddResource('com.mathworks.byte-stream', name, bytes));
+            notify(obj, 'AddedResource', symphonyui.core.CoreEventData(struct('name', name, 'data', bytes)));
         end
 
         function v = getResource(obj, name)
@@ -164,6 +178,9 @@ classdef Entity < symphonyui.core.CoreObject
                 error('Cannot remove property descriptors resource');
             end
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(name));
+            if tf
+                notify(obj, 'RemovedResource', symphonyui.core.CoreEventData(struct('name', name)));
+            end
         end
 
         function n = getResourceNames(obj)
@@ -181,6 +198,7 @@ classdef Entity < symphonyui.core.CoreObject
             dto = obj.dateTimeOffsetFromDatetime(time);
             cnote = obj.tryCoreWithReturn(@()obj.cobj.AddNote(dto, text));
             n = symphonyui.core.persistent.Note(cnote);
+            notify(obj, 'AddedNote', symphonyui.core.CoreEventData(n));
         end
 
         function t = getEntityType(obj) %#ok<MANU>
