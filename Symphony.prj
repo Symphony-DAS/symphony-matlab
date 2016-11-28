@@ -14,7 +14,7 @@
     <param.summary>Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.3.3.0</param.version>
+    <param.version>2.4.3.0</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -323,12 +323,18 @@
       <file>${PROJECT_ROOT}\lib\appbox\lib\UIExtrasComboBox\java_src\src\UIExtrasComboBox\SeparatorListCellRenderer.java</file>
       <file>${PROJECT_ROOT}\lib\appbox\lib\UIExtrasComboBox\java_src\UIExtrasComboBox.iml</file>
       <file>${PROJECT_ROOT}\lib\appbox\lib\UIExtrasComboBox\UIExtrasComboBox.jar</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\+uix\AButtonGroup.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\+uix\BoxPanel.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\+uix\HButtonGroup.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\+uix\license.txt</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\+uix\Panel.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\+uix\Text.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\+uix\VButtonGroup.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\BusyPresenter.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\BusyView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Button.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\capitalize.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\CheckBoxPopupMenu.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\class2display.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\ComponentWrapper.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\EventData.m</file>
@@ -338,11 +344,14 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\hpix.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\humanize.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\IntelliHintsTextField.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\intersect.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\intersectMaps.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Label.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\layoutHeight.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\ListBox.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MappedListBox.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MappedPopupMenu.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\mapstr.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\Menu.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessagePresenter.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\MessageView.m</file>
@@ -357,6 +366,7 @@
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\TabGroup.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\TextArea.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\UIControl.m</file>
+      <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\unionMaps.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\UpdatePresenter.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\UpdateView.m</file>
       <file>${PROJECT_ROOT}\lib\appbox\src\main\matlab\+appbox\View.m</file>
@@ -550,6 +560,7 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\+collections\EpochGroupSet.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\+collections\EpochSet.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\+collections\ExperimentSet.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\+collections\IoBaseSet.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\+collections\SourceSet.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\+collections\TimelineEntitySet.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\+descriptions\EntityDescription.m</file>
@@ -559,6 +570,7 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\Background.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\Device.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\Entity.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\EntityFactory.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\EntityPreset.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\EntityType.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+core\+persistent\Epoch.m</file>
@@ -628,6 +640,7 @@
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\NewFileSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+settings\ProtocolPresetsSettings.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\desc2field.m</file>
+      <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+util\trueStruct.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddConfigurationSettingView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddEntityPresetView.m</file>
       <file>${PROJECT_ROOT}\src\main\matlab\+symphonyui\+ui\+views\AddKeywordView.m</file>
@@ -805,6 +818,7 @@
       <file>${PROJECT_ROOT}\src\main\resources\icons\app_48.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\block.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\block_warn.png</file>
+      <file>${PROJECT_ROOT}\src\main\resources\icons\copy.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\device.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\device_backgrounds.png</file>
       <file>${PROJECT_ROOT}\src\main\resources\icons\epoch.png</file>

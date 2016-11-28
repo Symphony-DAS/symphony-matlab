@@ -11,7 +11,7 @@ classdef App < handle
         end
 
         function v = version()
-            v = '2.3.3.0'; % i.e. 2.3-r
+            v = '2.4.3.0'; % i.e. 2.4-r
         end
         
         function o = owner()
