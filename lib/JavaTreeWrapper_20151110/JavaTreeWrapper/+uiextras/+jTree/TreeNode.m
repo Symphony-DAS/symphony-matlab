@@ -459,6 +459,10 @@ classdef TreeNode < hgsetget & matlab.mixin.Heterogeneous
             value = char(nObj.jNode.getTooltipString());
         end
         function set.TooltipString(nObj,value)
+            if isempty(value)
+                nObj.jNode.setTooltipString([]);
+                return;
+            end
             validateattributes(value,{'char'},{});
             nObj.jNode.setTooltipString(java.lang.String(value));
         end
