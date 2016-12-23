@@ -101,12 +101,11 @@ classdef Entity < symphonyui.core.CoreObject
         end
 
         function v = getProperty(obj, name)
-            descriptors = obj.getPropertyDescriptors();
-            d = descriptors.findByName(name);
-            if isempty(d)
+            m = obj.getPropertyMap();
+            if ~m.isKey(name)
                 error([name ' does not exist']);
             end
-            v = d.value;
+            v = m(name);
         end
 
         function tf = removeProperty(obj, name)

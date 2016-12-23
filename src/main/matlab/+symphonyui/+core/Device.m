@@ -103,20 +103,18 @@ classdef Device < symphonyui.core.CoreObject
         function v = getConfigurationSetting(obj, name)
             % Gets the value of an existing configuration setting
             
-            descriptors = obj.getConfigurationSettingDescriptors();
-            d = descriptors.findByName(name);
-            if isempty(d)
+            m = obj.getConfigurationSettingMap();
+            if ~m.isKey(name)
                 error([name ' does not exist']);
             end
-            v = d.value;
+            v = m(name);
         end
         
         function tf = hasConfigurationSetting(obj, name)
             % Indicates if a configuration setting exists
             
-            descriptors = obj.getConfigurationSettingDescriptors();
-            d = descriptors.findByName(name);
-            tf = ~isempty(d);
+            m = obj.getConfigurationSettingMap();
+            tf = m.isKey(name);
         end
 
         function tf = removeConfigurationSetting(obj, name)
