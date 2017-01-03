@@ -19,6 +19,10 @@ classdef Entity < symphonyui.core.CoreObject
     properties (Access = protected)
         entityFactory
     end
+    
+    properties (Access = private)
+        propertyDescriptors
+    end
 
     properties (Constant, Hidden)
         DESCRIPTION_TYPE_RESOURCE_NAME = 'descriptionType'
@@ -58,7 +62,7 @@ classdef Entity < symphonyui.core.CoreObject
             d = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
             descriptors(end + 1) = d;
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
-            obj.updatePropertyDescriptorsResource(descriptors);
+            obj.updatePropertyDescriptors(descriptors);
             notify(obj, 'AddedProperty', symphonyui.core.CoreEventData(d));
         end
 
@@ -92,7 +96,7 @@ classdef Entity < symphonyui.core.CoreObject
             end
             d.value = value;
             obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
-            obj.updatePropertyDescriptorsResource(descriptors);
+            obj.updatePropertyDescriptors(descriptors);
             notify(obj, 'SetProperty', symphonyui.core.CoreEventData(d));
         end
 
@@ -120,13 +124,18 @@ classdef Entity < symphonyui.core.CoreObject
             end
             descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.RemoveProperty(name));
-            obj.updatePropertyDescriptorsResource(descriptors);
+            obj.updatePropertyDescriptors(descriptors);
             if tf
                 notify(obj, 'RemovedProperty', symphonyui.core.CoreEventData(d));
             end
         end
 
         function d = getPropertyDescriptors(obj)
+            if ~isempty(obj.propertyDescriptors)
+                d = obj.propertyDescriptors;
+                return;
+            end
+            
             if any(strcmp(obj.getResourceNames(), obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME))
                 d = obj.getResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME);
             else
@@ -138,6 +147,7 @@ classdef Entity < symphonyui.core.CoreObject
                     d(end + 1) = symphonyui.core.PropertyDescriptor(k, m(k), 'isReadOnly', true, 'isRemovable', false); %#ok<AGROW>
                 end
             end
+            obj.propertyDescriptors = d;
         end
 
         function k = get.keywords(obj)
@@ -216,9 +226,10 @@ classdef Entity < symphonyui.core.CoreObject
 
     methods (Access = private)
 
-        function updatePropertyDescriptorsResource(obj, descriptors)
+        function updatePropertyDescriptors(obj, descriptors)
             obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME));
             obj.addResource(obj.PROPERTY_DESCRIPTORS_RESOURCE_NAME, descriptors);
+            obj.propertyDescriptors = descriptors;
         end
 
     end

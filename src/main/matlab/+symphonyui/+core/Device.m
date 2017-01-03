@@ -37,6 +37,10 @@ classdef Device < symphonyui.core.CoreObject
         background  % Background applied to bound output streams when stopped (Measurement)
     end
     
+    properties (Access = private)
+        configurationSettingDescriptors
+    end
+    
     properties (Constant, Hidden)
         CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME = 'configurationSettingDescriptors';
     end
@@ -74,7 +78,7 @@ classdef Device < symphonyui.core.CoreObject
             d = symphonyui.core.PropertyDescriptor(name, value, varargin{:});
             descriptors(end + 1) = d;
             obj.tryCore(@()obj.cobj.Configuration.Add(name, obj.propertyValueFromValue(value)));
-            obj.updateConfigurationSettingDescriptorsResource(descriptors);
+            obj.updateConfigurationSettingDescriptors(descriptors);
             notify(obj, 'AddedConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
 
@@ -92,7 +96,7 @@ classdef Device < symphonyui.core.CoreObject
             end
             d.value = value;
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
-            obj.updateConfigurationSettingDescriptorsResource(descriptors);
+            obj.updateConfigurationSettingDescriptors(descriptors);
             notify(obj, 'SetConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
         
@@ -131,11 +135,16 @@ classdef Device < symphonyui.core.CoreObject
             end
             descriptors(index) = [];
             tf = obj.tryCoreWithReturn(@()obj.cobj.Configuration.Remove(name));
-            obj.updateConfigurationSettingDescriptorsResource(descriptors);
+            obj.updateConfigurationSettingDescriptors(descriptors);
             notify(obj, 'RemovedConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
 
         function d = getConfigurationSettingDescriptors(obj)
+            if ~isempty(obj.configurationSettingDescriptors)
+                d = obj.configurationSettingDescriptors;
+                return;
+            end
+            
             if any(strcmp(obj.getResourceNames(), obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME))
                 d = obj.getResource(obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME);
             else
@@ -147,6 +156,7 @@ classdef Device < symphonyui.core.CoreObject
                     d(end + 1) = symphonyui.core.PropertyDescriptor(k, m(k), 'isReadOnly', true, 'isRemovable', false); %#ok<AGROW>
                 end
             end
+            obj.configurationSettingDescriptors = d;
         end
 
         function addResource(obj, name, variable)
@@ -256,7 +266,7 @@ classdef Device < symphonyui.core.CoreObject
             end
             d.value = value;
             obj.tryCore(@()obj.cobj.Configuration.Item(name, obj.propertyValueFromValue(value)));
-            obj.updateConfigurationSettingDescriptorsResource(descriptors);
+            obj.updateConfigurationSettingDescriptors(descriptors);
             notify(obj, 'SetConfigurationSetting', symphonyui.core.CoreEventData(d));
         end
 
@@ -264,9 +274,10 @@ classdef Device < symphonyui.core.CoreObject
     
     methods (Access = private)
 
-        function updateConfigurationSettingDescriptorsResource(obj, descriptors)
+        function updateConfigurationSettingDescriptors(obj, descriptors)
             obj.tryCoreWithReturn(@()obj.cobj.RemoveResource(obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME));
             obj.addResource(obj.CONFIGURATION_SETTING_DESCRIPTORS_RESOURCE_NAME, descriptors);
+            obj.configurationSettingDescriptors = descriptors;
         end
 
     end

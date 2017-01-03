@@ -24,6 +24,10 @@ classdef PropertyType < matlab.mixin.SetGet %#ok<*MCSUP>
     methods
         
         function obj = PropertyType(primitiveType, shape, domain)
+            if nargin == 1 && isa(primitiveType, 'uiextras.jide.PropertyType')
+                obj.type = primitiveType;
+                return;
+            end
             if strcmp(primitiveType, 'object')
                 error('Type of object is not supported');
             end
@@ -82,7 +86,7 @@ classdef PropertyType < matlab.mixin.SetGet %#ok<*MCSUP>
         
         function t = autoDiscover(value)
             pt = uiextras.jide.PropertyType.AutoDiscover(value);
-            t = symphonyui.core.PropertyType(pt.PrimitiveType, pt.Shape, pt.Domain);
+            t = symphonyui.core.PropertyType(pt);
         end
         
     end
