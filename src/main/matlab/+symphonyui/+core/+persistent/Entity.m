@@ -68,16 +68,34 @@ classdef Entity < symphonyui.core.CoreObject
 
         function setPropertyMap(obj, map)
             exception = [];
+            descriptors = obj.getPropertyDescriptors();
+            setDescriptors = symphonyui.core.PropertyDescriptor.empty(0, 1);
             names = map.keys;
             for i = 1:numel(names)
                 try
-                    obj.setProperty(names{i}, map(names{i}));
+                    name = names{i};
+                    value = map(name);
+                    d = descriptors.findByName(name);
+                    if isempty(d)
+                        d = symphonyui.core.PropertyDescriptor(name, value, 'isRemovable', true);
+                        descriptors(end + 1) = d; %#ok<AGROW>
+                    end
+                    if d.isReadOnly
+                        error([name ' is read only']);
+                    end
+                    d.value = value;
+                    obj.tryCore(@()obj.cobj.AddProperty(name, obj.propertyValueFromValue(value)));
+                    setDescriptors(end + 1) = d; %#ok<AGROW>
                 catch x
                     if isempty(exception)
                         exception = MException('symphonyui:core:persistent:Entity', 'Failed to set one or more property values');
                     end
                     exception = exception.addCause(x);
                 end
+            end
+            obj.updatePropertyDescriptors(descriptors);
+            for i = 1:numel(setDescriptors)
+                notify(obj, 'SetProperty', symphonyui.core.CoreEventData(setDescriptors(i)));
             end
             if ~isempty(exception)
                 throw(exception);
