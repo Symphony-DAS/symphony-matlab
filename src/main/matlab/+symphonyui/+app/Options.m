@@ -6,6 +6,7 @@ classdef Options < appbox.Settings
         warnOnViewOnlyWithOpenFile
         fileDefaultName
         fileDefaultLocation
+        fileCleanupFunction
         searchPath
         searchPathExclude
         loggingConfigurationFile
@@ -57,6 +58,15 @@ classdef Options < appbox.Settings
         function set.fileDefaultLocation(obj, n)
             validateattributes(n, {'char', 'function_handle'}, {'2d'});
             obj.put('fileDefaultLocation', n);
+        end
+        
+        function n = get.fileCleanupFunction(obj)
+            n = obj.get('fileCleanupFunction', @(documentationService)[]);
+        end
+
+        function set.fileCleanupFunction(obj, n)
+            validateattributes(n, {'function_handle'}, {'scalar'});
+            obj.put('fileCleanupFunction', n);
         end
 
         function set.searchPath(obj, p)

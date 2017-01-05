@@ -63,6 +63,14 @@ classdef DocumentationService < handle
         end
 
         function closeFile(obj)
+            if ~obj.hasOpenFile()
+                error('No open file');
+            end
+            try
+                obj.session.options.fileCleanupFunction(obj);
+            catch x
+                obj.log.debug(['Failed to run file cleanup function: ' x.message], x);
+            end
             group = obj.getCurrentEpochGroup();
             while ~isempty(group)
                 obj.endEpochGroup();

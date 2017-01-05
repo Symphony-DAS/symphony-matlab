@@ -65,6 +65,7 @@ classdef OptionsPresenter < appbox.Presenter
         function populateFileDetails(obj)
             obj.view.setFileDefaultName(char(obj.options.fileDefaultName));
             obj.view.setFileDefaultLocation(char(obj.options.fileDefaultLocation));
+            obj.view.setFileCleanupFunction(char(obj.options.fileCleanupFunction));
         end
 
         function populateSearchPathDetails(obj)
@@ -184,13 +185,14 @@ classdef OptionsPresenter < appbox.Presenter
                     out = str2func(in);
                 end
             end
-
+            
             try
                 startupFile = parse(obj.view.getStartupFile());
                 cleanupFile = parse(obj.view.getCleanupFile());
                 warnOnViewOnlyWithOpenFile = obj.view.getWarnOnViewOnlyWithOpenFile();
                 fileDefaultName = parse(obj.view.getFileDefaultName());
                 fileDefaultLocation = parse(obj.view.getFileDefaultLocation());
+                fileCleanupFunction = str2func(obj.view.getFileCleanupFunction());
                 searchPath = strjoin(obj.view.getSearchPaths(), ';');
                 searchPathExclude = obj.view.getSearchPathExclude();
                 loggingConfigurationFile = parse(obj.view.getLoggingConfigurationFile());
@@ -215,6 +217,9 @@ classdef OptionsPresenter < appbox.Presenter
             end
             if ~isequal(fileDefaultLocation, obj.options.fileDefaultLocation)
                 obj.options.fileDefaultLocation = fileDefaultLocation;
+            end
+            if ~isequal(fileCleanupFunction, obj.options.fileCleanupFunction)
+                obj.options.fileCleanupFunction = fileCleanupFunction;
             end
             if ~isequal(searchPath, obj.options.searchPath)
                 obj.options.searchPath = searchPath;
