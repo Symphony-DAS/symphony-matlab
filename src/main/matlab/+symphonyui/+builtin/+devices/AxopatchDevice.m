@@ -33,12 +33,25 @@ classdef AxopatchDevice < symphonyui.core.Device
             obj@symphonyui.core.Device(cobj);
         end
         
+        function m = availableModes(obj) %#ok<MANU>
+            m = {'Track', 'VClamp', 'I0', 'IClampNormal', 'IClampFast'};
+        end
+        
         function m = getMode(obj)
             try
                 m = char(obj.cobj.CurrentDeviceParameters.OperatingMode);
             catch
                 error('Cannot get Axopatch mode.');
             end
+        end
+        
+        function setBackgroundForMode(obj, mode, background)
+            obj.tryCore(@()obj.cobj.SetBackgroundForMode(mode, background.cobj));
+        end
+        
+        function b = getBackgroundForMode(obj, mode)
+            cb = obj.tryCoreWithReturn(@()obj.cobj.BackgroundForMode(mode));
+            b = symphonyui.core.Measurement(cb);
         end
         
     end

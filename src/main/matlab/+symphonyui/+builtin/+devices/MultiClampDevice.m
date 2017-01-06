@@ -68,6 +68,10 @@ classdef MultiClampDevice < symphonyui.core.Device
             obj.tryCore(@()obj.cobj.Dispose());
         end
         
+        function m = availableModes(obj) %#ok<MANU>
+            m = {'VClamp', 'I0', 'IClamp'};
+        end
+        
         function m = getMode(obj)
             if obj.cobj.HasDeviceOutputParameters()
                 m = char(obj.cobj.CurrentDeviceOutputParameters.Data.OperatingMode);
@@ -76,6 +80,15 @@ classdef MultiClampDevice < symphonyui.core.Device
             else
                 error('Cannot get MultiClamp mode. Make sure MultiClamp Commander is open or try toggling the mode.');
             end
+        end
+        
+        function setBackgroundForMode(obj, mode, background)
+            obj.tryCore(@()obj.cobj.SetBackgroundForMode(mode, background.cobj));
+        end
+        
+        function b = getBackgroundForMode(obj, mode)
+            cb = obj.tryCoreWithReturn(@()obj.cobj.BackgroundForMode(mode));
+            b = symphonyui.core.Measurement(cb);
         end
         
     end

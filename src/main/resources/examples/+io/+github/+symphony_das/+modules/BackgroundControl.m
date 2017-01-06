@@ -92,6 +92,13 @@ classdef BackgroundControl < symphonyui.ui.Module
                 obj.view.showError(x.message);
                 return;
             end
+            if ismethod(device, 'availableModes')
+                for i = 1:numel(device.availableModes)
+                    mode = device.availableModes{i};
+                    b = device.getBackgroundForMode(mode);
+                    device.setBackgroundForMode(mode, symphonyui.core.Measurement(p.Value, b.displayUnits));
+                end
+            end
         end
 
         function onServiceInitializedRig(obj, ~, ~)
