@@ -23,7 +23,7 @@ classdef App < handle
         end
 
         function u = documentationUrl()
-            u = symphonyui.app.App.getResource('docs', 'Home.html');
+            u = symphonyui.app.App.getResource('docs', 'README.html');
         end
 
         function u = userGroupUrl()
