@@ -14,7 +14,7 @@
     <param.summary>Data Acquisition System</param.summary>
     <param.description>Symphony is a MATLAB based data acquisition system for electrophysiologists.</param.description>
     <param.screenshot>${PROJECT_ROOT}\src\main\resources\screenshot.png</param.screenshot>
-    <param.version>2.4.3.0</param.version>
+    <param.version>2.5.3.0</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
