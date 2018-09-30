@@ -6,7 +6,7 @@ function data = loadubjson(fname,varargin)
 %
 % parse a JSON (JavaScript Object Notation) file or string
 %
-% authors:Qianqian Fang (fangq<at> nmr.mgh.harvard.edu)
+% authors:Qianqian Fang (q.fang <at> neu.edu)
 % created on 2013/08/01
 %
 % $Id$
@@ -44,7 +44,7 @@ function data = loadubjson(fname,varargin)
 %      dat=loadubjson(['examples' filesep 'example1.ubj'],'SimplifyCell',1)
 %
 % license:
-%     BSD License, see LICENSE_BSD.txt files for details 
+%     BSD or GPL version 3, see LICENSE_{BSD,GPLv3}.txt files for details 
 %
 % -- this function is part of JSONLab toolbox (http://iso2mesh.sf.net/cgi-bin/index.cgi?jsonlab)
 %
@@ -154,13 +154,9 @@ function [data, adv]=parse_block(type,count,varargin)
 global pos inStr isoct fileendian systemendian
 [cid,len]=elem_info(type);
 datastr=inStr(pos:pos+len*count-1);
-if(isoct)
-    newdata=int8(datastr);
-else
-    newdata=uint8(datastr);
-end
+newdata=uint8(datastr);
 id=strfind('iUIlLdD',type);
-if(id<=5 && fileendian~=systemendian)
+if(fileendian~=systemendian)
     newdata=swapbytes(typecast(newdata,cid));
 end
 data=typecast(newdata,cid);
@@ -309,12 +305,8 @@ function num = parse_number(varargin)
     type={'int8','uint8','int16','int32','int64','single','double'};
     bytelen=[1,1,2,4,8,4,8];
     datastr=inStr(pos+1:pos+bytelen(id));
-    if(isoct)
-        newdata=int8(datastr);
-    else
-        newdata=uint8(datastr);
-    end
-    if(id<=5 && fileendian~=systemendian)
+    newdata=uint8(datastr);
+    if(fileendian~=systemendian)
         newdata=swapbytes(typecast(newdata,type{id}));
     end
     num=typecast(newdata,type{id});

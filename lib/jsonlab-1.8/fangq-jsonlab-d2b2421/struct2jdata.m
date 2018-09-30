@@ -4,7 +4,7 @@ function newdata=struct2jdata(data,varargin)
 %
 % convert a JData object (in the form of a struct array) into an array
 %
-% authors:Qianqian Fang (fangq<at> nmr.mgh.harvard.edu)
+% authors:Qianqian Fang (q.fang <at> neu.edu)
 %
 % input:
 %      data: a struct array. If data contains JData keywords in the first
@@ -28,7 +28,7 @@ function newdata=struct2jdata(data,varargin)
 %      ubjdata=struct2jdata(obj);
 %
 % license:
-%     BSD License, see LICENSE_BSD.txt files for details 
+%     BSD or GPL version 3, see LICENSE_{BSD,GPLv3}.txt files for details 
 %
 % -- this function is part of JSONLab toolbox (http://iso2mesh.sf.net/cgi-bin/index.cgi?jsonlab)
 %
