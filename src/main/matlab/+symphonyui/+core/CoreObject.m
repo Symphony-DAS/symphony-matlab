@@ -171,6 +171,9 @@ classdef (Abstract) CoreObject < handle
                 elseif ~isempty(regexp(v, '^\s*(?:\[.+\])|(?:\{.+\})\s*$', 'once'))
                     try %#ok<TRYNC>
                         v = loadjson(v);
+                        if iscell(v)
+                            v = cellfun(@convertStringsToChars, v, 'UniformOutput', false);
+                        end
                     end
                 end
             end
