@@ -143,6 +143,8 @@ classdef (Abstract) CoreObject < handle
             tz = char(t);
             if tz(1) == '+'
                 tz(1) = [];
+            elseif strcmp(tz, 'Z')
+                tz = '00:00';
             end
             offset = System.TimeSpan.Parse(tz);
             dto = System.DateTimeOffset(t.Year, t.Month, t.Day, t.Hour, t.Minute, floor(t.Second), round(1000*rem(t.Second, 1)), offset);
