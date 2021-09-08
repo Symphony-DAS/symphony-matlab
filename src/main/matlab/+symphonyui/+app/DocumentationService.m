@@ -123,7 +123,11 @@ classdef DocumentationService < handle
                 error([description ' is not an available source description for the current parent type']);
             end
             constructor = str2func(description);
-            s = obj.session.getPersistor().addSource(parent, constructor());
+            if nargin(constructor) == 1
+                s = obj.session.getPersistor().addSource(parent, constructor(parent));
+            else
+                s = obj.session.getPersistor().addSource(parent, constructor());
+            end
             notify(obj, 'AddedSource', symphonyui.app.AppEventData(s));
         end
 
